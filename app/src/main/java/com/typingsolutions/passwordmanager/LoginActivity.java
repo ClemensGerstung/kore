@@ -26,11 +26,13 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             loginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
+
+            //TODO: register IServiceCallback
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            //TODO: unregister IServiceCallback
         }
     };
 
