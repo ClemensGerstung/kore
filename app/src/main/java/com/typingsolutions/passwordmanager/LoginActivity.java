@@ -1,9 +1,6 @@
 package com.typingsolutions.passwordmanager;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.DrawableRes;
@@ -12,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
+import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
 import com.typingsolutions.passwordmanager.service.LoginService;
 
 public class LoginActivity extends AppCompatActivity {
@@ -20,6 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     private FloatingActionButton add;
 
     private ILoginServiceRemote loginServiceRemote;
+    private LoginReceiver loginReceiver;
 
     private ServiceConnection loginServiceConnection = new ServiceConnection() {
         @Override
@@ -54,14 +53,22 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         Intent intent = new Intent(this, LoginService.class);
         bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
+
+        IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
+        loginReceiver = new LoginReceiver();
+
+        getApplicationContext().registerReceiver(loginReceiver, intentFilter);
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         unbindService(loginServiceConnection);
+        getApplicationContext().unregisterReceiver(loginReceiver);
+
+        super.onPause();
     }
 
     public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {

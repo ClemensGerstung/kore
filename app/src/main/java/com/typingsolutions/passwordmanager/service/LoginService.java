@@ -2,7 +2,10 @@ package com.typingsolutions.passwordmanager.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
+import android.os.SystemClock;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
 
@@ -94,7 +97,7 @@ public class LoginService extends Service {
                 public void run() {
                     long lastSystemTime = SystemClock.currentThreadTimeMillis();
 
-                    while(timeRemaining >= 0){
+                    while (timeRemaining >= 0) {
                         long currentSystemTime = SystemClock.currentThreadTimeMillis();
                         int subtract = (int) (currentSystemTime - lastSystemTime);
                         lastSystemTime = currentSystemTime;
@@ -107,6 +110,10 @@ public class LoginService extends Service {
                     }
                 }
             });
+
+            boolean isBlocked() {
+                return timeRemaining >= 0;
+            }
 
             void increaseTries() {
                 boolean start = false;
@@ -183,7 +190,9 @@ public class LoginService extends Service {
         public void remove(int id) {
             for (BlockedUser blockedUser : blockedUserList) {
                 if (blockedUser.id == id) {
-                    blockedUserList.remove(blockedUser);
+                    if (!blockedUser.isBlocked()) {
+                        blockedUserList.remove(blockedUser);
+                    }
                     break;
                 }
             }
