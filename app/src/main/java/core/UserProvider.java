@@ -28,7 +28,7 @@ public class UserProvider {
         this.currentUser = null;
     }
 
-    public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
+    public User login(ILoginServiceRemote remote, String password) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
 
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
         Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
@@ -64,7 +64,7 @@ public class UserProvider {
         }
 
         if(remote != null) {
-            boolean result = remote.login(username, passwordHash, dbPasswordHash);
+            boolean result = remote.login(id, passwordHash, dbPasswordHash);
 
             if (!result) {
                 throw new LoginException("Your login credentials are wrong!");
@@ -72,7 +72,7 @@ public class UserProvider {
         }
 
         if (currentUser == null) {
-            currentUser = new User(id, username, salt, passwordHash);
+            currentUser = new User(id, username, password, salt, passwordHash);
         }
 
         cursor.close();
@@ -108,7 +108,7 @@ public class UserProvider {
         long id = DatabaseProvider.getConnection(context).insert(DatabaseProvider.CREATE_USER, username, passwordHash, salt);
         if (autoLogin) {
             setUsername(username);
-            User user = login(null, password, false);
+            User user = login(null, password);
             return user;
         }
 

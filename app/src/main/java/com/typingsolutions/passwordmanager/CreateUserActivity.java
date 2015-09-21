@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +20,10 @@ import android.widget.EditText;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 import core.UserProvider;
 import core.Utils;
+import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
+
+import java.security.NoSuchAlgorithmException;
 
 public class CreateUserActivity extends AppCompatActivity {
 
@@ -142,7 +146,7 @@ public class CreateUserActivity extends AppCompatActivity {
             userProvider.createUser(usernameEditText.getText().toString(), passwordEditText.getText().toString(), Utils.getSalt(), autoLoginSwitch.isChecked());
             Snackbar.make(rootView, "Created user " + usernameEditText.getText().toString(), Snackbar.LENGTH_LONG).show();
             onBackPressed();
-        } catch (UserProviderException e) {
+        } catch (UserProviderException | RemoteException | NoSuchAlgorithmException | LoginException e) {
             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
             usernameEditText.requestFocus();
             switchMenuState(false);
