@@ -5,9 +5,9 @@ import core.User;
 import core.IServiceCallback;
 
 interface ILoginServiceRemote {
-    User login(in String username, in String passwordHash);
+    boolean login(in String username, in String passwordHash, in String dbPasswordHash);
 
-    void getBlockedTimeAsync();
+    oneway void getBlockedTimeAsync();
     void registerCallback(IServiceCallback callback);
     void unregisterCallback(IServiceCallback callback);
 }

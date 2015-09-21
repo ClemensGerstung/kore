@@ -19,9 +19,12 @@ class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String DOES_USER_EXISTS = "SELECT COUNT(*) = 1 FROM users WHERE name=?;";
 
-    public static final String GET_USER_ID = "SELECT id FROM users WHERE name=? AND passwordHash=?";
+    public static final String GET_USER_ID = "SELECT id FROM users WHERE name=?;";
 
     public static final String CREATE_USER = "INSERT INTO users(name, passwordHash, salt) VALUES (?,?,?);";
+
+    public static final String GET_SALT_AND_PASSWORDHASH_BY_ID = "SELECT salt, passwordHash FROM users WHERE id=?;";
+
 
     private static DatabaseProvider INSTANCE;
 
@@ -92,6 +95,7 @@ class DatabaseProvider extends SQLiteOpenHelper {
         return update(query, args);
     }
 
+    @Deprecated
     public DatabaseProvider rawQuery(String query) {
         SQLiteDatabase db = getReadableDatabase();
         db.execSQL(query);

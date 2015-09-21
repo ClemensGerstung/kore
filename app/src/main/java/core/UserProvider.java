@@ -2,6 +2,9 @@ package core;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.RemoteException;
+import com.typingsolutions.passwordmanager.ILoginServiceRemote;
+import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
 import java.security.NoSuchAlgorithmException;
@@ -14,7 +17,7 @@ public class UserProvider {
     private String username;
 
     public static UserProvider getInstance(Context context) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new UserProvider(context);
         }
         return INSTANCE;
@@ -25,23 +28,55 @@ public class UserProvider {
         this.currentUser = null;
     }
 
-    public User login(String passwordHash, String salt, boolean safeLogin) throws UserProviderException {
-        Cursor cursor = DatabaseProvider.getConnection(context).query(DatabaseProvider.GET_USER_ID, username, passwordHash);
-        if(cursor.getCount() == 0) {
-            throw new UserProviderException("Your login credentials are wrong");
-        }
+    public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
+
+        DatabaseProvider connection = DatabaseProvider.getConnection(context);
+        Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
 
         int id = -1;
+        String salt = null;
+        String passwordHash = null;
+        String dbPasswordHash = null;
 
-        while (cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             id = cursor.getInt(0);
+        }
+
+        if (id == -1) {
+            throw new UserProviderException("Couldn't find your username");
+        }
+
+        cursor = connection.query(DatabaseProvider.GET_SALT_AND_PASSWORDHASH_BY_ID, Integer.toString(id));
+
+        if (cursor.moveToNext()) {
+            salt = cursor.getString(0);
+            dbPasswordHash = cursor.getString(1);
+        }
+
+        if (salt == null || dbPasswordHash == null) {
+            throw new UserProviderException("Something went wrong");
+        }
+
+        passwordHash = Utils.getHashedString(password + Utils.getHashedString(salt));
+
+        if (passwordHash == null) {
+            throw new UserProviderException("Something went wrong");
+        }
+
+        if(remote != null) {
+            boolean result = remote.login(username, passwordHash, dbPasswordHash);
+
+            if (!result) {
+                throw new LoginException("Your login credentials are wrong!");
+            }
+        }
+
+        if (currentUser == null) {
+            currentUser = new User(id, username, salt, passwordHash);
         }
 
         cursor.close();
         DatabaseProvider.dismiss();
-        if(currentUser == null) {
-            currentUser = new User(id, username, salt, passwordHash);
-        }
         return currentUser;
     }
 
@@ -49,7 +84,7 @@ public class UserProvider {
         Cursor cursor = DatabaseProvider.getConnection(context).query(DatabaseProvider.DOES_USER_EXISTS, username);
 
         int i = 0;
-        while (cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             i = cursor.getInt(0);
         }
 
@@ -58,8 +93,8 @@ public class UserProvider {
         return i == 1;
     }
 
-    public User createUser(String username, String password, String salt, boolean autoLogin) throws UserProviderException {
-        if(userExists(username)) {
+    public User createUser(String username, String password, String salt, boolean autoLogin) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
+        if (userExists(username)) {
             throw new UserProviderException("Your username already exists");
         }
 
@@ -71,14 +106,13 @@ public class UserProvider {
         }
 
         long id = DatabaseProvider.getConnection(context).insert(DatabaseProvider.CREATE_USER, username, passwordHash, salt);
-        if(autoLogin) {
+        if (autoLogin) {
             setUsername(username);
-            User user = login(passwordHash, salt, false);
-            user.setPlainPassword(password);
+            User user = login(null, password, false);
             return user;
         }
 
-        if(currentUser == null) {
+        if (currentUser == null) {
             currentUser = new User((int) id, username, password, salt, passwordHash);
         }
         return currentUser;

@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Context;
 import android.view.View;
+import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.LoginActivity;
 
 public class LoginCallback extends BaseCallback {
@@ -14,6 +15,7 @@ public class LoginCallback extends BaseCallback {
 
     @Override
     public void onClick(View v) {
+
 
     }
 
