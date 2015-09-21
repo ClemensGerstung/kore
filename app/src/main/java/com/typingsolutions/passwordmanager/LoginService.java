@@ -22,8 +22,8 @@ public class LoginService extends Service {
     private final ILoginServiceRemote.Stub binder  = new ILoginServiceRemote.Stub() {
 
         @Override
-        public User login(String username, String passwordHash) throws RemoteException {
-            return null;
+        public boolean login(String username, String passwordHash, String dbPasswordHash) throws RemoteException {
+            return false;
         }
 
         @Override

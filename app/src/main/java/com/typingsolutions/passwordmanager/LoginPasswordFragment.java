@@ -13,6 +13,7 @@ import android.widget.*;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.ShowEnterPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTextWatcher;
+import core.IServiceCallback;
 import core.UserProvider;
 
 
