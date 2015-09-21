@@ -6,17 +6,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
-import com.typingsolutions.passwordmanager.callbacks.ShowEnterPasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
+import com.typingsolutions.passwordmanager.service.LoginService;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             loginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
             //TODO: register IServiceCallback
-
         }
 
         @Override
@@ -38,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
             //TODO: unregister IServiceCallback
         }
     };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
