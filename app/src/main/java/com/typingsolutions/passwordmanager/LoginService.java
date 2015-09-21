@@ -12,7 +12,21 @@ import core.User;
 
 public class LoginService extends Service {
 
+    // tries until block
+    static int TRIES_FOR_SMALL_BLOCK = 3;
+    static int TRIES_FOR_MEDIUM_BLOCK = 6;
+    static int TRIES_FOR_LARGE_BLOCK = 9;
+    static int TRIES_FOR_FINAL_BLOCK = 12;
+
+    // block times in ms
+    static int SMALL_BLOCK_TIME = 30000;    // 0.5 minutes
+    static int MEDIUM_BLOCK_TIME = 60000;   // 1 minute
+    static int LARGE_BLOCK_TIME = 150000;   // 2.5 minutes
+    static int FINAL_BLOCK_TIME = 300000;   // 5 minutes
+
     private final RemoteCallbackList<IServiceCallback> callbacks = new RemoteCallbackList<>();
+
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -22,8 +36,13 @@ public class LoginService extends Service {
     private final ILoginServiceRemote.Stub binder  = new ILoginServiceRemote.Stub() {
 
         @Override
-        public boolean login(String username, String passwordHash, String dbPasswordHash) throws RemoteException {
-            return false;
+        public boolean login(int id, String passwordHash, String dbPasswordHash) throws RemoteException {
+            if(!passwordHash.equals(dbPasswordHash)) {
+                // TODO: add to a list with blocked users
+            }
+            // TODO: remove form list with blocked users
+
+            return true;
         }
 
         @Override
@@ -32,7 +51,7 @@ public class LoginService extends Service {
 
             for (int i = 0; i < size; i++) {
                 try {
-                    callbacks.getBroadcastItem(i).getLockTime(null, 0, 0);
+                    callbacks.getBroadcastItem(i).getLockTime(0, 0, 0);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -55,4 +74,24 @@ public class LoginService extends Service {
             }
         }
     };
+
+    private class BlockedUserList {
+        class BlockedUser {
+            int id;
+            int timeRemaining;
+            int completeTime;
+            int tries;
+
+
+        }
+
+
+        public void add(int id) {
+
+        }
+
+        public void remove(int id) {
+
+        }
+    }
 }
