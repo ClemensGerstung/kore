@@ -64,10 +64,16 @@ public class UserProvider {
         }
 
         if(remote != null) {
+            boolean blocked = remote.isUserBlocked(id);
+
+            if (blocked) {
+                throw new LoginException("Sorry, but your user is blocked!", LoginException.BLOCKED);
+            }
+
             boolean result = remote.login(id, passwordHash, dbPasswordHash);
 
             if (!result) {
-                throw new LoginException("Your login credentials are wrong!");
+                throw new LoginException("Your login credentials are wrong!", LoginException.WRONG);
             }
         }
 

@@ -23,12 +23,27 @@ public class LoginCallback extends BaseCallback {
 
     @Override
     public void onClick(View v) {
+        User user = null;
         try {
-            User user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
+            user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
         } catch (UserProviderException | NoSuchAlgorithmException | RemoteException e) {
-            Snackbar.make(v, "Sorry, your name doesn't exist", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
         } catch (LoginException e) {
-            e.printStackTrace();
+            Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
+
+            // TODO: getFragment
+
+            switch (e.getState()) {
+                case LoginException.BLOCKED:
+                    // loginPasswordFragment.lock(user.getId());
+
+                    break;
+                case LoginException.WRONG:
+                    // clear EditText
+
+                    break;
+                default:
+            }
         }
     }
 

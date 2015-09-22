@@ -53,16 +53,22 @@ public class LoginService extends Service {
         }
 
         @Override
-        public void getBlockedTimeAsync() throws RemoteException {
+        public void getBlockedTimeAsync(int id) throws RemoteException {
             final int size = callbacks.beginBroadcast();
 
             for (int i = 0; i < size; i++) {
-                for (BlockedUserList.BlockedUser user : blockedUserList) {
-                    callbacks.getBroadcastItem(i).getLockTime(user.id, user.timeRemaining, user.completeTime);
-                }
+                BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
+                if(user == null) continue;
+                callbacks.getBroadcastItem(i).getLockTime(user.id, user.timeRemaining, user.completeTime);
             }
 
             callbacks.finishBroadcast();
+        }
+
+        @Override
+        public boolean isUserBlocked(int id) throws RemoteException {
+            BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
+            return user != null;
         }
 
         @Override
@@ -196,6 +202,15 @@ public class LoginService extends Service {
                     break;
                 }
             }
+        }
+
+        BlockedUser getUserById(int id) {
+            for (BlockedUser blockedUser : blockedUserList) {
+                if (blockedUser.id == id) {
+                    return blockedUser;
+                }
+            }
+            return null;
         }
     }
 }
