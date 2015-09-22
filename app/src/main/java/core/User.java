@@ -56,4 +56,8 @@ public class User {
     public List<Password> getPasswords() {
         return passwords;
     }
+
+    public int getId() {
+        return id;
+    }
 }

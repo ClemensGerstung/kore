@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,12 +24,13 @@ public class LoginPasswordFragment extends Fragment {
     private CheckBox safeLogin;
     private LinearLayout notUser;
     private ImageView background;
+    private LoginActivity loginActivity;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Context context = getActivity();
-        LoginActivity loginActivity = (LoginActivity) getActivity();
+        loginActivity = (LoginActivity) getActivity();
 
         try {
             password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
@@ -52,14 +54,36 @@ public class LoginPasswordFragment extends Fragment {
         replaceTemplate(username);
         replaceTemplate(notUserName);
 
-
         return view;
     }
 
-    private void replaceTemplate(TextView textView){
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            loginActivity.getLoginServiceRemote().registerCallback(null);
+        } catch (RemoteException ignored) {}
+    }
+
+    @Override
+    public void onPause() {
+
+
+        super.onPause();
+    }
+
+    private void replaceTemplate(TextView textView) {
         String text = textView.getText().toString();
         text = text.replace("{User.Name}", UserProvider.getInstance(getActivity()).getUsername());
         textView.setText(text);
     }
 
+    public void lock(int id) {
+        // TODO: lock this shit...
+    }
+
+    public void retapePassword() {
+        password.setText("");
+        password.requestFocus();
+    }
 }

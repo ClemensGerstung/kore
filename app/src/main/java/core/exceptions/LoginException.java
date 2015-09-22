@@ -1,21 +1,20 @@
 package core.exceptions;
 
-/**
- * Created by Clemens on 9/21/2015.
- */
+
 public class LoginException extends Exception {
-    public LoginException() {
-    }
 
-    public LoginException(String detailMessage) {
+    public static final int BLOCKED = 1;
+
+    public static final int WRONG = 2;
+
+    private int state;
+
+    public LoginException(String detailMessage, int state) {
         super(detailMessage);
+        this.state = state;
     }
 
-    public LoginException(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
-    }
-
-    public LoginException(Throwable throwable) {
-        super(throwable);
+    public int getState() {
+        return state;
     }
 }
