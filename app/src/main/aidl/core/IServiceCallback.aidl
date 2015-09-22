@@ -1,5 +1,5 @@
 package core;
 
 interface IServiceCallback {
-    void getLockTime(int id, int time, int maxTime);
+    void getLockTime(int time, int completeTime);
 }

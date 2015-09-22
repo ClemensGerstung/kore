@@ -8,6 +8,8 @@ interface ILoginServiceRemote {
 
     oneway void getBlockedTimeAsync(int id);
     boolean isUserBlocked(int id);
+    int getMaxBlockTime(int id);
+
     void registerCallback(IServiceCallback callback);
     void unregisterCallback(IServiceCallback callback);
 }

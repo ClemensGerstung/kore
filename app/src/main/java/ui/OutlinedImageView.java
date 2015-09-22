@@ -6,20 +6,24 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class OutlinedImageView extends ImageView {
-    private static final Paint BLUE_ANTIALAISED;
-    private static final Paint GREY_ANTIALAISED;
+    private static final Paint BLUE_ANTI_ALIASED;
+    private static final Paint GREY_ANTI_ALIASED;
 
     private RectF bound;
+    private boolean blocked;
+    private int maxBlockTime;
+    private int remainingBlockTime;
 
     static {
-        BLUE_ANTIALAISED = new Paint(Paint.ANTI_ALIAS_FLAG);
-        BLUE_ANTIALAISED.setColor(0xff1976D2);
-        BLUE_ANTIALAISED.setStrokeWidth(5.f);
-        GREY_ANTIALAISED = new Paint(Paint.ANTI_ALIAS_FLAG);
-        GREY_ANTIALAISED.setColor(0xffe0e0e0);
+        BLUE_ANTI_ALIASED = new Paint(Paint.ANTI_ALIAS_FLAG);
+        BLUE_ANTI_ALIASED.setColor(0xff1976D2);
+        BLUE_ANTI_ALIASED.setStrokeWidth(5.f);
+        GREY_ANTI_ALIASED = new Paint(Paint.ANTI_ALIAS_FLAG);
+        GREY_ANTI_ALIASED.setColor(0xffe0e0e0);
     }
 
     public OutlinedImageView(Context context) {
@@ -40,12 +44,22 @@ public class OutlinedImageView extends ImageView {
             bound = new RectF(0, 0, getWidth(), getHeight());
         }
 
-        canvas.drawArc(bound, 270, 90, false, BLUE_ANTIALAISED);
+        if (blocked) {
+            canvas.drawArc(bound, 270, 360.f * remainingBlockTime / maxBlockTime, false, BLUE_ANTI_ALIASED);
+        }
 
-        canvas.drawCircle(getWidth() / 2.f, getHeight() / 2.f, getWidth() / 2.f - 7.5f, GREY_ANTIALAISED);
+        canvas.drawCircle(getWidth() / 2.f, getHeight() / 2.f, getWidth() / 2.f - 7.5f, GREY_ANTI_ALIASED);
 
         super.onDraw(canvas);
     }
 
+    public void reset() {
+        update(0, Integer.MAX_VALUE);
+    }
 
+    public void update(int timeRemaining, int completeTime) {
+        maxBlockTime = completeTime;
+        remainingBlockTime = timeRemaining;
+        blocked = remainingBlockTime > 0;
+    }
 }

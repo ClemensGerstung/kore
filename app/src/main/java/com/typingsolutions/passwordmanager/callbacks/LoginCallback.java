@@ -3,8 +3,10 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.content.Context;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import com.typingsolutions.passwordmanager.LoginActivity;
+import com.typingsolutions.passwordmanager.LoginPasswordFragment;
 import core.User;
 import core.UserProvider;
 import core.exceptions.LoginException;
@@ -31,19 +33,19 @@ public class LoginCallback extends BaseCallback {
         } catch (LoginException e) {
             Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
 
-            // TODO: getFragment
+            Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
 
-            switch (e.getState()) {
-                case LoginException.BLOCKED:
-                    // loginPasswordFragment.lock(user.getId());
+            LoginPasswordFragment loginPasswordFragment = null;
 
-                    break;
-                case LoginException.WRONG:
-                    // clear EditText
+            if (fragment instanceof LoginPasswordFragment) {
+                loginPasswordFragment = (LoginPasswordFragment) fragment;
 
-                    break;
-                default:
+                if (e.getState() == LoginException.WRONG) {
+                    loginPasswordFragment.retypePassword();
+                }
             }
+
+
         }
     }
 

@@ -15,6 +15,7 @@ public class UserProvider {
     private Context context;
     private User currentUser;
     private String username;
+    private int id;
 
     public static UserProvider getInstance(Context context) {
         if (INSTANCE == null) {
@@ -33,7 +34,7 @@ public class UserProvider {
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
         Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
 
-        int id = -1;
+        id = -1;
         String salt = null;
         String passwordHash = null;
         String dbPasswordHash = null;
@@ -134,5 +135,9 @@ public class UserProvider {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getId() {
+        return id;
     }
 }
