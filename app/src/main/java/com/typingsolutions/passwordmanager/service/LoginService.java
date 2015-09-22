@@ -17,6 +17,7 @@ import java.util.List;
 public class LoginService extends Service {
 
     public static final String INTENT_ACTION = "com.typingsolutions.passwordmanager.service.LoginService.UPDATE_BLOCKING";
+    public static final String INTENT_RESET_FLAG = "com.typingsolutions.passwordmanager.service.LoginService.RESET";
 
     // tries until block
     static int TRIES_FOR_SMALL_BLOCK = 3;
@@ -59,7 +60,8 @@ public class LoginService extends Service {
             for (int i = 0; i < size; i++) {
                 BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
                 if(user == null) continue;
-                callbacks.getBroadcastItem(i).getLockTime(user.id, user.timeRemaining, user.completeTime);
+                if(!user.isBlocked()) continue;
+                callbacks.getBroadcastItem(i).getLockTime(user.timeRemaining, user.completeTime);
             }
 
             callbacks.finishBroadcast();
@@ -68,7 +70,15 @@ public class LoginService extends Service {
         @Override
         public boolean isUserBlocked(int id) throws RemoteException {
             BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
-            return user != null;
+            if(user == null) return false;
+            return user.isBlocked();
+        }
+
+        @Override
+        public int getMaxBlockTime(int id) throws RemoteException {
+            BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
+            if(user == null) return -1;
+            return user.completeTime;
         }
 
         @Override
@@ -98,27 +108,34 @@ public class LoginService extends Service {
             int completeTime = 0;
             int tries = 0;
 
-            private Thread lock = new Thread(new Runnable() {
+            Runnable lockRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    long lastSystemTime = SystemClock.currentThreadTimeMillis();
+                    long lastSystemTime = SystemClock.elapsedRealtime();
 
-                    while (timeRemaining >= 0) {
-                        long currentSystemTime = SystemClock.currentThreadTimeMillis();
+                    Intent intent = new Intent(INTENT_ACTION);
+                    while (timeRemaining > 0) {
+                        long currentSystemTime = SystemClock.elapsedRealtime();
                         int subtract = (int) (currentSystemTime - lastSystemTime);
                         lastSystemTime = currentSystemTime;
                         timeRemaining = timeRemaining - subtract;
 
-                        Intent intent = new Intent(INTENT_ACTION);
                         getApplicationContext().sendBroadcast(intent);
 
                         SystemClock.sleep(1000);
                     }
+
+                    intent.putExtra(INTENT_RESET_FLAG, true);
+                    getApplicationContext().sendBroadcast(intent);
+
+                    lockThread = null;
                 }
-            });
+            };
+
+            private Thread lockThread;
 
             boolean isBlocked() {
-                return timeRemaining >= 0;
+                return timeRemaining > 0;
             }
 
             void increaseTries() {
@@ -142,7 +159,8 @@ public class LoginService extends Service {
                     start = true;
                 }
                 if (start) {
-                    lock.start();
+                    lockThread = new Thread(lockRunnable);
+                    lockThread.start();
                 }
             }
 
@@ -154,7 +172,6 @@ public class LoginService extends Service {
                 BlockedUser that = (BlockedUser) o;
 
                 return id == that.id;
-
             }
 
             @Override

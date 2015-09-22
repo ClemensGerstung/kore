@@ -10,11 +10,11 @@
         <service android:name=".service.LoginService"
                  android:process=":LoginService"/>
 
-        <receiver android:name=".receiver.LoginReceiver">
-            <intent-filter>
-                <action android:name="com.typingsolutions.passwordmanager.service.LoginService.UPDATE_BLOCKING"/>
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".receiver.LoginReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.typingsolutions.passwordmanager.service.LoginService.UPDATE_BLOCKING"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <activity
                 android:name=".LoginActivity"

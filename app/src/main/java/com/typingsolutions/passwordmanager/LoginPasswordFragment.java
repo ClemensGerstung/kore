@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.ShowEnterPasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTextWatcher;
 import core.IServiceCallback;
 import core.UserProvider;
+import ui.OutlinedImageView;
 
 
 public class LoginPasswordFragment extends Fragment {
@@ -23,8 +25,10 @@ public class LoginPasswordFragment extends Fragment {
     private EditText password;
     private CheckBox safeLogin;
     private LinearLayout notUser;
-    private ImageView background;
+    private OutlinedImageView background;
     private LoginActivity loginActivity;
+
+    private GetLockTimeServiceCallback serviceCallback;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -44,10 +48,12 @@ public class LoginPasswordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_password_layout, container, false);
 
-        background = (ImageView) view.findViewById(R.id.loginpasswordlayout_imageview_background);
+        background = (OutlinedImageView) view.findViewById(R.id.loginpasswordlayout_imageview_background);
         notUser = (LinearLayout) view.findViewById(R.id.loginpasswordlayout_linearlayout_notuser);
         password = (EditText) view.findViewById(R.id.loginpasswordlayout_edittext_password);
         safeLogin = (CheckBox) view.findViewById(R.id.loginpasswordlayout_checkbox_safelogin);
+
+        serviceCallback = new GetLockTimeServiceCallback(background);
 
         final TextView username = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_bonjourname);
         final TextView notUserName = (TextView) notUser.findViewById(R.id.loginpasswordlayout_textview_notuser);
@@ -61,14 +67,15 @@ public class LoginPasswordFragment extends Fragment {
     public void onResume() {
         super.onResume();
         try {
-            loginActivity.getLoginServiceRemote().registerCallback(null);
+            loginActivity.getLoginServiceRemote().registerCallback(serviceCallback);
         } catch (RemoteException ignored) {}
     }
 
     @Override
     public void onPause() {
-
-
+        try {
+            loginActivity.getLoginServiceRemote().unregisterCallback(serviceCallback);
+        } catch (RemoteException ignored) {}
         super.onPause();
     }
 
@@ -78,12 +85,12 @@ public class LoginPasswordFragment extends Fragment {
         textView.setText(text);
     }
 
-    public void lock(int id) {
-        // TODO: lock this shit...
-    }
-
-    public void retapePassword() {
+    public void retypePassword() {
         password.setText("");
         password.requestFocus();
+    }
+
+    public OutlinedImageView getBackground() {
+        return background;
     }
 }
