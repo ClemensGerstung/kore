@@ -28,6 +28,8 @@ public class LoginCallback extends BaseCallback {
         User user = null;
         try {
             user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
+
+            // TODO: start PasswordOverviewActivity
         } catch (UserProviderException | NoSuchAlgorithmException | RemoteException e) {
             Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
         } catch (LoginException e) {

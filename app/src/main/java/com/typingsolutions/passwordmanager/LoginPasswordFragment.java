@@ -46,6 +46,7 @@ public class LoginPasswordFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: show BlockedView if blocked
         View view = inflater.inflate(R.layout.login_password_layout, container, false);
 
         background = (OutlinedImageView) view.findViewById(R.id.loginpasswordlayout_imageview_background);

@@ -54,12 +54,17 @@ public class OutlinedImageView extends ImageView {
     }
 
     public void reset() {
-        update(0, Integer.MAX_VALUE);
+        maxBlockTime = 0;
+        remainingBlockTime = Integer.MAX_VALUE;
+        blocked = false;
     }
 
     public void update(int timeRemaining, int completeTime) {
         maxBlockTime = completeTime;
         remainingBlockTime = timeRemaining;
         blocked = remainingBlockTime > 0;
+        if(!blocked) {
+            reset();
+        }
     }
 }

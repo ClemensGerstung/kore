@@ -59,8 +59,8 @@ public class LoginService extends Service {
 
             for (int i = 0; i < size; i++) {
                 BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
-                if(user == null) continue;
-                if(!user.isBlocked()) continue;
+                if (user == null) continue;
+                if (!user.isBlocked()) continue;
                 callbacks.getBroadcastItem(i).getLockTime(user.timeRemaining, user.completeTime);
             }
 
@@ -70,14 +70,14 @@ public class LoginService extends Service {
         @Override
         public boolean isUserBlocked(int id) throws RemoteException {
             BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
-            if(user == null) return false;
+            if (user == null) return false;
             return user.isBlocked();
         }
 
         @Override
         public int getMaxBlockTime(int id) throws RemoteException {
             BlockedUserList.BlockedUser user = blockedUserList.getUserById(id);
-            if(user == null) return -1;
+            if (user == null) return -1;
             return user.completeTime;
         }
 
@@ -114,7 +114,7 @@ public class LoginService extends Service {
                     long lastSystemTime = SystemClock.elapsedRealtime();
 
                     Intent intent = new Intent(INTENT_ACTION);
-                    while (timeRemaining > 0) {
+                    do {
                         long currentSystemTime = SystemClock.elapsedRealtime();
                         int subtract = (int) (currentSystemTime - lastSystemTime);
                         lastSystemTime = currentSystemTime;
@@ -123,10 +123,8 @@ public class LoginService extends Service {
                         getApplicationContext().sendBroadcast(intent);
 
                         SystemClock.sleep(1000);
-                    }
+                    } while (timeRemaining > 0);
 
-                    intent.putExtra(INTENT_RESET_FLAG, true);
-                    getApplicationContext().sendBroadcast(intent);
 
                     lockThread = null;
                 }
