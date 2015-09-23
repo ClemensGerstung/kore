@@ -11,11 +11,14 @@ import java.security.NoSuchAlgorithmException;
 
 public class DatabaseProvider extends SQLiteOpenHelper {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 0x02;
 
-    private static final String INSTALL = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT UNIQUE, passwordHash TEXT, salt TEXT);" +
-            "CREATE TABLE IF NOT EXISTS passwords(id INTEGER PRIMARY KEY, username TEXT, program TEXT, position INTEGER, userId INTEGER, FOREIGN KEY(userId) REFERENCES users(id));" +
-            "CREATE TABLE IF NOT EXISTS history(id INTEGER PRIMARY KEY, value TEXT, dateChanged DATE, passwordId INTEGER, FOREIGN KEY(passwordId) REFERENCES passwords(id));";
+    private static final String INSTALL_USERS =
+            "CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT UNIQUE, passwordHash TEXT, salt TEXT);";
+    private static final String INSTALL_PASSWORDS =
+            "CREATE TABLE passwords(id INTEGER PRIMARY KEY, username TEXT, program TEXT, position INTEGER, userId INTEGER, FOREIGN KEY(userId) REFERENCES users(id));";
+    private static final String INSTALL_HISTORY =
+            "CREATE TABLE history(id INTEGER PRIMARY KEY, value TEXT, dateChanged DATE, passwordId INTEGER, FOREIGN KEY(passwordId) REFERENCES passwords(id));";
 
     public static final String DOES_USER_EXISTS = "SELECT COUNT(*) = 1 FROM users WHERE name=?;";
 
@@ -25,7 +28,19 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String GET_SALT_AND_PASSWORDHASH_BY_ID = "SELECT salt, passwordHash FROM users WHERE id=?;";
 
-    public static final String GET_ALL_PASSWORDS_BY_USER_ID = "SELECT p.id, p.program, p.username, h.id, h.value, h.dateChanged FROM users u JOIN passwords p ON p.userId=u.id JOIN history h ON h.passwordId=p.id SELECT u.id=? ORDER BY u.position;";
+    public static final String GET_ALL_PASSWORDS_BY_USER_ID =
+            "SELECT passwords.id AS _id, " +
+                    "passwords.position, " +
+                    "passwords.program, " +
+                    "passwords.username, " +
+                    "history.id, " +
+                    "history.value, " +
+                    "history.dateChanged " +
+            "FROM users " +
+            "JOIN passwords ON passwords.userId = users.id " +
+            "JOIN history ON history.passwordId = passwords.id " +
+            "WHERE users.id = ? " +
+            "ORDER BY passwords.position;";
 
     private static DatabaseProvider INSTANCE;
 
@@ -113,7 +128,9 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(INSTALL);
+        db.execSQL(INSTALL_USERS);
+        db.execSQL(INSTALL_PASSWORDS);
+        db.execSQL(INSTALL_HISTORY);
     }
 
     @Override

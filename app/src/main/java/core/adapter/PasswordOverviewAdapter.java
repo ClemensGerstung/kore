@@ -2,23 +2,66 @@ package core.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
+import android.widget.TextView;
+import com.typingsolutions.passwordmanager.R;
 
-public class PasswordOverviewAdapter extends CursorAdapter {
+public class PasswordOverviewAdapter extends BaseAdapter {
 
-    public PasswordOverviewAdapter(Context context, Cursor c) {
-        super(context, c, false);
+    private Context context;
+    private LayoutInflater inflater;
+
+    public PasswordOverviewAdapter(Context context) {
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+    }
+
+
+    @Override
+    public int getCount() {
+        return 0;
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+    public Object getItem(int position) {
         return null;
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public long getItemId(int position) {
+        return 0;
+    }
 
+    @Override
+    public View getView(int position, View recycledView, ViewGroup parent) {
+        View view = recycledView;
+        ViewHolder viewHolder;
+
+        if(recycledView == null) {
+            view = inflater.inflate(R.layout.password_list_item_layout, parent);
+            viewHolder = new ViewHolder();
+            viewHolder.program = (TextView) view.findViewById(R.id.passwordlistitemlayout_textview_program);
+            viewHolder.username = (TextView) view.findViewById(R.id.passwordlistitemlayout_textview_username);
+            viewHolder.password = (TextView) view.findViewById(R.id.passwordlistitemlayout_textview_password);
+
+            view.setTag(ViewHolder.TAG, viewHolder);
+        }
+        else {
+            viewHolder = (ViewHolder) view.getTag(ViewHolder.TAG);
+        }
+
+        return view;
+    }
+
+    private class ViewHolder {
+        static final int TAG = 0xb17c;
+
+        TextView program;
+        TextView username;
+        TextView password;
     }
 }

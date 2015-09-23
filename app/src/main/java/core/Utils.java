@@ -6,6 +6,10 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Utils {
 
@@ -57,5 +61,11 @@ public class Utils {
 
     public static boolean isSafe(String password) {
         return password.matches(REGEX_PASSWORD_SAFETY);
+    }
+
+    public static String getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 }
