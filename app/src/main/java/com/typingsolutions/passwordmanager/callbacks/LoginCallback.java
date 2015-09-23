@@ -1,12 +1,14 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import com.typingsolutions.passwordmanager.LoginActivity;
-import com.typingsolutions.passwordmanager.LoginPasswordFragment;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
+import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
+import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.User;
 import core.UserProvider;
 import core.exceptions.LoginException;
@@ -29,7 +31,8 @@ public class LoginCallback extends BaseCallback {
         try {
             user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
 
-            // TODO: start PasswordOverviewActivity
+            Intent intent = new Intent(context, PasswordOverviewActivity.class);
+            context.startActivity(intent);
         } catch (UserProviderException | NoSuchAlgorithmException | RemoteException e) {
             Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
         } catch (LoginException e) {
@@ -37,10 +40,8 @@ public class LoginCallback extends BaseCallback {
 
             Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
 
-            LoginPasswordFragment loginPasswordFragment = null;
-
             if (fragment instanceof LoginPasswordFragment) {
-                loginPasswordFragment = (LoginPasswordFragment) fragment;
+                LoginPasswordFragment loginPasswordFragment = (LoginPasswordFragment) fragment;
 
                 if (e.getState() == LoginException.WRONG) {
                     loginPasswordFragment.retypePassword();

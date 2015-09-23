@@ -1,21 +1,23 @@
-package com.typingsolutions.passwordmanager;
+package com.typingsolutions.passwordmanager.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.EditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
-import com.typingsolutions.passwordmanager.callbacks.ShowEnterPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTextWatcher;
-import core.IServiceCallback;
 import core.UserProvider;
 import ui.OutlinedImageView;
 
@@ -34,7 +36,11 @@ public class LoginPasswordFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Context context = getActivity();
-        loginActivity = (LoginActivity) getActivity();
+        Activity activity = getActivity();
+
+        if(activity instanceof LoginActivity) {
+            loginActivity = (LoginActivity) activity;
+        }
 
         try {
             password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));

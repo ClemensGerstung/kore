@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager;
+package com.typingsolutions.passwordmanager.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 import core.UserProvider;
 import core.Utils;
