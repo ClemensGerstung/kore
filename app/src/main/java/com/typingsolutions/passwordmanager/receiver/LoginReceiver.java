@@ -21,7 +21,6 @@ public class LoginReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-
         int id = UserProvider.getInstance(loginActivity).getId();
 
         try {
@@ -35,11 +34,6 @@ public class LoginReceiver extends BroadcastReceiver {
 
             if (fragment instanceof LoginPasswordFragment) {
                 loginPasswordFragment = (LoginPasswordFragment) fragment;
-
-                if(intent.getBooleanExtra(LoginService.INTENT_RESET_FLAG, false)) {
-                    loginPasswordFragment.getBackground().invalidate();
-                }
-
                 loginPasswordFragment.getBackground().invalidate();
             }
         }
