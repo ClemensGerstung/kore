@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteStatement;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-class DatabaseProvider extends SQLiteOpenHelper {
+public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final int VERSION = 1;
 
@@ -25,6 +25,7 @@ class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String GET_SALT_AND_PASSWORDHASH_BY_ID = "SELECT salt, passwordHash FROM users WHERE id=?;";
 
+    public static final String GET_ALL_PASSWORDS_BY_USER_ID = "SELECT p.id, p.program, p.username, h.id, h.value, h.dateChanged FROM users u JOIN passwords p ON p.userId=u.id JOIN history h ON h.passwordId=p.id SELECT u.id=? ORDER BY u.position;";
 
     private static DatabaseProvider INSTANCE;
 
