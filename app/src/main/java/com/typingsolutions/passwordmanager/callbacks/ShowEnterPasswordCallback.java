@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
-import com.typingsolutions.passwordmanager.LoginActivity;
-import com.typingsolutions.passwordmanager.LoginPasswordFragment;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
+import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import com.typingsolutions.passwordmanager.R;
 import core.UserProvider;
 

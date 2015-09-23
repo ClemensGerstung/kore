@@ -13,7 +13,7 @@ class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final int VERSION = 1;
 
-    private static final String INSTALL = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT, passwordHash TEXT, salt TEXT);" +
+    private static final String INSTALL = "CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT UNIQUE, passwordHash TEXT, salt TEXT);" +
             "CREATE TABLE IF NOT EXISTS passwords(id INTEGER PRIMARY KEY, username TEXT, program TEXT, position INTEGER, userId INTEGER, FOREIGN KEY(userId) REFERENCES users(id));" +
             "CREATE TABLE IF NOT EXISTS history(id INTEGER PRIMARY KEY, value TEXT, dateChanged DATE, passwordId INTEGER, FOREIGN KEY(passwordId) REFERENCES passwords(id));";
 

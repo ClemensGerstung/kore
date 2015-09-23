@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.service;
+package com.typingsolutions.passwordmanager.services;
 
 import android.app.Service;
 import android.content.Intent;

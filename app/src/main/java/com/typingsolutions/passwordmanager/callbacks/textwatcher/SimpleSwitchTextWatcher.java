@@ -3,7 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks.textwatcher;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.typingsolutions.passwordmanager.LoginActivity;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;

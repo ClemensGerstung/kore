@@ -7,7 +7,7 @@
             android:icon="@drawable/icon"
             android:label="@string/app_name">
 
-        <service android:name=".service.LoginService"
+        <service android:name=".services.LoginService"
                  android:process=":LoginService"/>
 
         <!--<receiver android:name=".receiver.LoginReceiver">-->
@@ -17,7 +17,7 @@
         <!--</receiver>-->
 
         <activity
-                android:name=".LoginActivity"
+                android:name=".activities.LoginActivity"
                 android:theme="@style/Base.AppTheme"
                 android:label="@string/app_name">
             <intent-filter>
@@ -26,9 +26,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".CreateUserActivity"
+
+        <activity android:name=".activities.CreateUserActivity"
                   android:theme="@style/Base.AppTheme"
                   android:label="Create User"/>
+
+        <activity android:name=".activities.PasswordOverviewActivity"
+                  android:theme="@style/Base.AppTheme"
+                  android:label="@string/app_name"/>
     </application>
 
 </manifest>

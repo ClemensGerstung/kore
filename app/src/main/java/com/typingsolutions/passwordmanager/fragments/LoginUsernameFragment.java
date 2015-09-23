@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager;
+package com.typingsolutions.passwordmanager.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.ShowEnterPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTextWatcher;
-
-import java.lang.reflect.InvocationTargetException;
 
 public class LoginUsernameFragment extends Fragment {
 

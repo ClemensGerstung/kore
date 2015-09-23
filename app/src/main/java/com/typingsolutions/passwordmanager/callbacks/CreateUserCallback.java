@@ -3,7 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import com.typingsolutions.passwordmanager.CreateUserActivity;
+import com.typingsolutions.passwordmanager.activities.CreateUserActivity;
 
 public class CreateUserCallback extends BaseCallback {
 

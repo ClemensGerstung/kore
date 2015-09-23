@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import com.typingsolutions.passwordmanager.LoginActivity;
-import com.typingsolutions.passwordmanager.LoginPasswordFragment;
-import com.typingsolutions.passwordmanager.service.LoginService;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
+import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.UserProvider;
 
 public class LoginReceiver extends BroadcastReceiver {

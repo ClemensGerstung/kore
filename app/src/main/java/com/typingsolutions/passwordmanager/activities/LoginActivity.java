@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager;
+package com.typingsolutions.passwordmanager.activities;
 
 import android.content.*;
 import android.os.Bundle;
@@ -7,10 +7,13 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import com.typingsolutions.passwordmanager.ILoginServiceRemote;
+import com.typingsolutions.passwordmanager.fragments.LoginUsernameFragment;
+import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
-import com.typingsolutions.passwordmanager.service.LoginService;
+import com.typingsolutions.passwordmanager.services.LoginService;
 
 public class LoginActivity extends AppCompatActivity {
 
