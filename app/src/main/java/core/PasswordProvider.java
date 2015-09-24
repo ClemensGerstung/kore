@@ -14,8 +14,10 @@ public class PasswordProvider {
     private int userId;
     private List<Password> passwords;
 
+    private OnPasswordAddedToDatabase onPasswordAddedToDatabase;
+
     public static PasswordProvider getInstance(Context context, int userId) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new PasswordProvider(context, userId);
         }
         return INSTANCE;
@@ -34,17 +36,21 @@ public class PasswordProvider {
 
         String userIdString = Integer.toString(userId);
         Cursor cursor = connection.query(DatabaseProvider.GET_MAX_POSITION, userIdString);
-        if(cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             position = cursor.getInt(0);
         }
 
         passwordId = (int) connection.insert(DatabaseProvider.INSERT_PASSWORD, username, program, Integer.toString(position), userIdString);
 
-        if(passwordId == -1) {
+        if (passwordId == -1) {
             throw new PasswordProviderException("Couldn't insert your password");
         }
 
-        insertPasswordHistoryItem(password, passwordId);
+        int historyId = insertPasswordHistoryItem(password, passwordId);
+
+        if (onPasswordAddedToDatabase != null) {
+            onPasswordAddedToDatabase.onPasswordAdded(passwordId, historyId);
+        }
 
         return passwordId;
     }
@@ -59,7 +65,7 @@ public class PasswordProvider {
 
         historyId = (int) connection.insert(DatabaseProvider.INSERT_HISTORY_FOR_PASSWORD, value, Utils.getDate(), Integer.toString(passwordId));
 
-        if(historyId == -1) {
+        if (historyId == -1) {
             throw new PasswordProviderException("Couldn't insert your password");
         }
 
@@ -74,5 +80,15 @@ public class PasswordProvider {
         return passwords.get(index);
     }
 
+    public boolean contains(Password p) {
+        return passwords.contains(p);
+    }
 
+    public void setOnPasswordAddedToDatabase(OnPasswordAddedToDatabase onPasswordAddedToDatabase) {
+        this.onPasswordAddedToDatabase = onPasswordAddedToDatabase;
+    }
+
+    public interface OnPasswordAddedToDatabase {
+        void onPasswordAdded(int passwordId, int historyId);
+    }
 }
