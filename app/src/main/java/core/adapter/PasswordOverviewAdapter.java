@@ -3,6 +3,7 @@ package core.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,13 @@ import core.UserProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PasswordOverviewAdapter extends BaseAdapter {
+public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewAdapter.ViewHolder> {
 
     private Context context;
     private LayoutInflater inflater;
 
     public PasswordOverviewAdapter(Context context) {
+        super();
         this.context = context;
         inflater = LayoutInflater.from(context);
     }
@@ -35,56 +37,39 @@ public class PasswordOverviewAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        PasswordProvider provider = getProvider();
-        return provider.size();
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
+        View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+
+        return viewHolder;
     }
 
     @Override
-    public Object getItem(int position) {
-        PasswordProvider provider = getProvider();
-        return provider.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        PasswordProvider provider = getProvider();
-        Password password = provider.get(position);
-        return password.getId();
-    }
-
-    @Override
-    public View getView(int position, View recycledView, ViewGroup parent) {
-        View view = recycledView;
-        ViewHolder viewHolder;
-
-        if (recycledView == null) {
-            view = inflater.inflate(R.layout.password_list_item_layout, parent);
-            viewHolder = new ViewHolder();
-            viewHolder.program = (TextView) view.findViewById(R.id.passwordlistitemlayout_textview_program);
-            viewHolder.username = (TextView) view.findViewById(R.id.passwordlistitemlayout_textview_username);
-            viewHolder.password = (TextView) view.findViewById(R.id.passwordlistitemlayout_textview_password);
-
-            view.setTag(ViewHolder.TAG, viewHolder);
-        } else {
-            viewHolder = (ViewHolder) view.getTag(ViewHolder.TAG);
-        }
-
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Password password = getProvider().get(position);
-        PasswordHistory passwordHistory = password.getPasswordHistory().get(0);
+        PasswordHistory history = password.getPasswordHistory().get(0);
 
-        viewHolder.program.setText(password.getProgram());
+        viewHolder.password.setText(history.getValue());
         viewHolder.username.setText(password.getUsername());
-        viewHolder.program.setText(passwordHistory.getValue());
-
-        return view;
+        viewHolder.program.setText(password.getProgram());
     }
 
-    private class ViewHolder {
-        static final int TAG = 0xb17c;
+    @Override
+    public int getItemCount() {
+        return getProvider().size();
+    }
 
-        TextView program;
-        TextView username;
-        TextView password;
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView program;
+        final TextView username;
+        final TextView password;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
+            username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
+            password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
+        }
     }
 }

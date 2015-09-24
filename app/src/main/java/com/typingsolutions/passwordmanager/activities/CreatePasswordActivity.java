@@ -96,6 +96,8 @@ public class CreatePasswordActivity extends AppCompatActivity {
                     Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
 
+                onBackPressed();
+
                 break;
         }
 

@@ -1,12 +1,11 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.internal.widget.ListViewCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,29 +17,34 @@ import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
-public class PasswordOverviewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Password> {
+public class PasswordOverviewActivity extends AppCompatActivity {
 
-    static final int PASSWORD_LOADER_ID = 0xCCCC;
-
-    private ListViewCompat passwordListViewCompat;
+    private RecyclerView passwordRecyclerView;
     private Toolbar toolbar;
     private FloatingActionButton addPasswordFloatingActionButton;
     private TextView noPasswordsTextView;
 
     private PasswordOverviewAdapter passwordOverviewAdapter;
+    private AsyncPasswordLoader passwordLoader;
+    private RecyclerView.LayoutManager layoutManager;
 
     private AsyncPasswordLoader.ItemAddCallback itemAddCallback = new AsyncPasswordLoader.ItemAddCallback() {
         @Override
         public void itemAdded(Password password) {
-            if(noPasswordsTextView.getVisibility() == View.VISIBLE) {
+            if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
                 noPasswordsTextView.setVisibility(View.INVISIBLE);
             }
+
             int userId = UserProvider.getInstance(PasswordOverviewActivity.this).getId();
             PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-            provider.add(password);
-            passwordOverviewAdapter.notifyDataSetChanged();
+
+            if (!provider.contains(password)) {
+                provider.add(password);
+                passwordOverviewAdapter.notifyDataSetChanged();
+            }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class PasswordOverviewActivity extends AppCompatActivity implements Loade
         setContentView(R.layout.password_list_layout);
 
         // get elements from XML-View
-        passwordListViewCompat = (ListViewCompat) findViewById(R.id.passwordlistlayout_listview_passwords);
+        passwordRecyclerView = (RecyclerView) findViewById(R.id.passwordlistlayout_listview_passwords);
         toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
         addPasswordFloatingActionButton = (FloatingActionButton) findViewById(R.id.passwordlistlayout_floatingactionbutton_add);
         noPasswordsTextView = (TextView) findViewById(R.id.passwordlistlayout_textview_nopasswords);
@@ -61,16 +65,32 @@ public class PasswordOverviewActivity extends AppCompatActivity implements Loade
 
         // init and set adapter
         passwordOverviewAdapter = new PasswordOverviewAdapter(this);
-        passwordListViewCompat.setAdapter(passwordOverviewAdapter);
+        layoutManager = new LinearLayoutManager(this);
+        passwordRecyclerView.setAdapter(passwordOverviewAdapter);
+        passwordRecyclerView.setLayoutManager(layoutManager);
 
-        // init background loader for passwords
-        getLoaderManager().initLoader(PASSWORD_LOADER_ID, null, this);
+        // load passwords in background
+        UserProvider userProvider = UserProvider.getInstance(this);
+        int userId = userProvider.getId();
+
+        passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
+        passwordLoader.setItemAddCallback(itemAddCallback);
+        passwordLoader.execute();
+
+        // init passwordProvider
+        PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
+        provider.setOnPasswordAddedToDatabase(new PasswordProvider.OnPasswordAddedToDatabase() {
+            @Override
+            public void onPasswordAdded(int passwordId, int historyId) {
+                passwordOverviewAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getLoaderManager().getLoader(PASSWORD_LOADER_ID).forceLoad();
     }
 
     @Override
@@ -84,41 +104,6 @@ public class PasswordOverviewActivity extends AppCompatActivity implements Loade
     public boolean onOptionsItemSelected(MenuItem item) {
 
         return true;
-    }
-
-    @Override
-    public Loader<Password> onCreateLoader(int id, Bundle bundle) {
-        AsyncPasswordLoader loader = null;
-
-        switch (id) {
-            case PASSWORD_LOADER_ID:
-                String userId = Integer.toString(UserProvider.getInstance(this).getId());
-                loader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, userId);
-                loader.setItemAddCallback(itemAddCallback);
-                break;
-        }
-
-        return loader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Password> loader, Password password) {
-        int id = loader.getId();
-        switch (id) {
-            case PASSWORD_LOADER_ID:
-
-                break;
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Password> loader) {
-        int id = loader.getId();
-        switch (id) {
-            case PASSWORD_LOADER_ID:
-
-                break;
-        }
     }
 
 
