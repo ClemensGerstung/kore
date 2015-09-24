@@ -34,14 +34,8 @@ public class Password {
         passwordHistory = null;
     }
 
-    public int addToHistory(String password) {
-        String date = Utils.getDate();
-
-        return 0;
-    }
-
     void addHistoryItem(int id, String value, String date) {
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        DateFormat dateFormat = new SimpleDateFormat();
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(date);
@@ -74,5 +68,25 @@ public class Password {
         result = 31 * result + username.hashCode();
         result = 31 * result + program.hashCode();
         return result;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public List<PasswordHistory> getPasswordHistory() {
+        return passwordHistory;
     }
 }

@@ -42,6 +42,12 @@ public class DatabaseProvider extends SQLiteOpenHelper {
             "WHERE users.id = ? " +
             "ORDER BY passwords.position;";
 
+    public static final String INSERT_PASSWORD = "INSERT INTO passwords(username, program, position, userId) VALUES(?,?,?,?);";
+
+    public static final String GET_MAX_POSITION = "SELECT MAX(passwords.position) FROM passwords JOIN users ON users.id=passwords.userId WHERE users.id=?;";
+
+    public static final String INSERT_HISTORY_FOR_PASSWORD = "INSERT INTO history(value, dateChanged, passwordId) VALUES (?,?,?)";
+
     private static DatabaseProvider INSTANCE;
 
     private Cursor lastCursor;

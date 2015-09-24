@@ -37,11 +37,15 @@ public class AsyncPasswordLoader extends AsyncTaskLoader<Password> {
                 lastPassword.addHistoryItem(historyId, value, dateChanged);
             } else {
                 password = new Password(passwordId, position, username, program);
-                if(lastPassword.equals(password)) {
+                if (lastPassword.equals(password)) {
                     lastPassword.addHistoryItem(historyId, value, dateChanged);
                 } else {
-                    callback.itemAdded(lastPassword);
-                    lastPassword = null;
+                    if (callback != null) {
+                        callback.itemAdded(lastPassword);
+                    }
+
+                    lastPassword = new Password(passwordId, position, username, program);
+                    lastPassword.addHistoryItem(historyId, value, dateChanged);
                 }
             }
         }
