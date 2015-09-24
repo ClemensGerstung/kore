@@ -53,11 +53,17 @@ public class User {
         this.salt = salt;
     }
 
-    public List<Password> getPasswords() {
-        return passwords;
-    }
-
     public int getId() {
         return id;
+    }
+
+    public int addPassword(String program, String username, String password) {
+        int position = -1;
+        int passwordId = -1;
+        int historyId = -1;
+
+
+
+        return 0;
     }
 }

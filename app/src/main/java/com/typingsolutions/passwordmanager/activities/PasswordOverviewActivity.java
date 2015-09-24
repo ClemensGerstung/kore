@@ -11,13 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
-import core.AsyncPasswordLoader;
-import core.DatabaseProvider;
-import core.Password;
-import core.UserProvider;
+import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
 public class PasswordOverviewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Password> {
@@ -30,6 +28,19 @@ public class PasswordOverviewActivity extends AppCompatActivity implements Loade
     private TextView noPasswordsTextView;
 
     private PasswordOverviewAdapter passwordOverviewAdapter;
+
+    private AsyncPasswordLoader.ItemAddCallback itemAddCallback = new AsyncPasswordLoader.ItemAddCallback() {
+        @Override
+        public void itemAdded(Password password) {
+            if(noPasswordsTextView.getVisibility() == View.VISIBLE) {
+                noPasswordsTextView.setVisibility(View.INVISIBLE);
+            }
+            int userId = UserProvider.getInstance(PasswordOverviewActivity.this).getId();
+            PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
+            provider.add(password);
+            passwordOverviewAdapter.notifyDataSetChanged();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +88,13 @@ public class PasswordOverviewActivity extends AppCompatActivity implements Loade
 
     @Override
     public Loader<Password> onCreateLoader(int id, Bundle bundle) {
-        Loader<Password> loader = null;
+        AsyncPasswordLoader loader = null;
 
         switch (id) {
             case PASSWORD_LOADER_ID:
                 String userId = Integer.toString(UserProvider.getInstance(this).getId());
                 loader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, userId);
+                loader.setItemAddCallback(itemAddCallback);
                 break;
         }
 

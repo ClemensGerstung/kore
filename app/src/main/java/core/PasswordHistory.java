@@ -2,7 +2,7 @@ package core;
 
 import java.util.Date;
 
-class PasswordHistory {
+public class PasswordHistory {
     private int id;
     private String value;
     private Date changedDate;
