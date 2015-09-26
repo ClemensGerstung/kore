@@ -1,14 +1,11 @@
 package core;
 
-import android.text.style.TtsSpan;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class Password {
     private int id;
@@ -16,6 +13,7 @@ public class Password {
     private String username;
     private String program;
     private List<PasswordHistory> passwordHistory;
+
 
     public Password(int id, int position, String username, String program) {
         this.id = id;

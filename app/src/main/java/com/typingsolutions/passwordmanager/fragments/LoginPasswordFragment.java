@@ -24,6 +24,7 @@ import ui.OutlinedImageView;
 
 public class LoginPasswordFragment extends Fragment {
 
+
     private EditText password;
     private CheckBox safeLogin;
     private LinearLayout notUser;

@@ -5,12 +5,13 @@ import java.util.List;
 
 public class User {
 
+
+    private final List<Password> passwords;
     private int id;
     private String name;
     private String plainPassword;
     private String passwordHash;
     private String salt;
-    private final List<Password> passwords;
 
     public User(int id, String name, String plainPassword, String salt, String passwordHash) {
         this.id = id;
@@ -19,10 +20,6 @@ public class User {
         this.salt = salt;
         this.passwordHash = passwordHash;
         this.passwords = new ArrayList<Password>();
-    }
-
-    public void setPlainPassword(String plainPassword) {
-        this.plainPassword = plainPassword;
     }
 
     public String getName() {
@@ -35,6 +32,10 @@ public class User {
 
     public String getPlainPassword() {
         return plainPassword;
+    }
+
+    public void setPlainPassword(String plainPassword) {
+        this.plainPassword = plainPassword;
     }
 
     public String getPasswordHash() {

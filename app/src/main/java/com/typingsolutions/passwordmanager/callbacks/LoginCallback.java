@@ -20,6 +20,7 @@ public class LoginCallback extends BaseCallback {
     private LoginActivity loginActivity;
     private String password;
 
+
     public LoginCallback(Context context, LoginActivity activity) {
         super(context);
         this.loginActivity = activity;

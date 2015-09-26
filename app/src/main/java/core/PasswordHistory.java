@@ -5,6 +5,7 @@ import java.util.Date;
 public class PasswordHistory {
     private int id;
     private String value;
+
     private Date changedDate;
 
     public PasswordHistory(int id, String value, Date changedDate) {

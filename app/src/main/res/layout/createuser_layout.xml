@@ -13,6 +13,7 @@
                                        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                                        app:title="Create User">
     </android.support.v7.widget.Toolbar>
+
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_below="@+id/passworddetail_toolbar"
                     android:layout_height="4dp"

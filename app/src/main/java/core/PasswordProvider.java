@@ -10,23 +10,24 @@ import java.util.List;
 public class PasswordProvider {
     private static PasswordProvider INSTANCE;
 
+
     private Context context;
     private int userId;
     private List<Password> passwords;
 
     private OnPasswordAddedToDatabase onPasswordAddedToDatabase;
 
+    public PasswordProvider(Context context, int userId) {
+        this.context = context;
+        this.userId = userId;
+        this.passwords = new ArrayList<>();
+    }
+
     public static PasswordProvider getInstance(Context context, int userId) {
         if (INSTANCE == null) {
             INSTANCE = new PasswordProvider(context, userId);
         }
         return INSTANCE;
-    }
-
-    public PasswordProvider(Context context, int userId) {
-        this.context = context;
-        this.userId = userId;
-        this.passwords = new ArrayList<>();
     }
 
     public int insertIntoDatabase(String program, String username, String password) throws PasswordProviderException {
