@@ -6,17 +6,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class OutlinedImageView extends ImageView {
+
     private static final Paint BLUE_ANTI_ALIASED;
     private static final Paint GREY_ANTI_ALIASED;
-
-    private RectF bound;
-    private boolean blocked;
-    private int maxBlockTime;
-    private int remainingBlockTime;
 
     static {
         BLUE_ANTI_ALIASED = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -25,6 +20,11 @@ public class OutlinedImageView extends ImageView {
         GREY_ANTI_ALIASED = new Paint(Paint.ANTI_ALIAS_FLAG);
         GREY_ANTI_ALIASED.setColor(0xffe0e0e0);
     }
+
+    private RectF bound;
+    private boolean blocked;
+    private int maxBlockTime;
+    private int remainingBlockTime;
 
     public OutlinedImageView(Context context) {
         super(context);

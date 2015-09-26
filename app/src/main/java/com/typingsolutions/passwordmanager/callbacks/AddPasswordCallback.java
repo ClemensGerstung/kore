@@ -1,13 +1,12 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Context;
-import android.view.View;
 import android.content.Intent;
+import android.view.View;
 import com.typingsolutions.passwordmanager.activities.CreatePasswordActivity;
 
 
 public class AddPasswordCallback extends BaseCallback {
-
     public AddPasswordCallback(Context context) {
         super(context);
     }

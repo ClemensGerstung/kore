@@ -3,8 +3,8 @@ package com.typingsolutions.passwordmanager.callbacks.textwatcher;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 
@@ -14,6 +14,7 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
     private Context context;
     private LoginActivity loginActivity;
     private BaseCallback commitCallback;
+
 
     public SimpleSwitchTextWatcher(Context context, LoginActivity loginActivity, Class<? extends BaseCallback> commitCallbackClass) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         this.context = context;

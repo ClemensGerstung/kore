@@ -28,6 +28,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class CreateUserActivity extends AppCompatActivity {
 
+
     private Toolbar toolbar = null;
     private EditText usernameEditText = null;
     private EditText passwordEditText = null;

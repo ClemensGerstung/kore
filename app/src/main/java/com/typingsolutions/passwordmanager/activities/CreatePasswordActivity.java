@@ -18,6 +18,7 @@ import core.exceptions.PasswordProviderException;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
+
     private Toolbar toolbar;
     private EditText username;
     private EditText program;

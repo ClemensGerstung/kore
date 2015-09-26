@@ -12,21 +12,22 @@ import java.security.NoSuchAlgorithmException;
 public class UserProvider {
     private static UserProvider INSTANCE;
 
+
     private Context context;
     private User currentUser;
     private String username;
     private int id;
+
+    private UserProvider(Context context) {
+        this.context = context;
+        this.currentUser = null;
+    }
 
     public static UserProvider getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = new UserProvider(context);
         }
         return INSTANCE;
-    }
-
-    private UserProvider(Context context) {
-        this.context = context;
-        this.currentUser = null;
     }
 
     public User login(ILoginServiceRemote remote, String password) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {

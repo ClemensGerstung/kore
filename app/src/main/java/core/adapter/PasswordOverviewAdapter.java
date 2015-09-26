@@ -1,14 +1,10 @@
 package core.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import core.Password;
@@ -16,10 +12,8 @@ import core.PasswordHistory;
 import core.PasswordProvider;
 import core.UserProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewAdapter.ViewHolder> {
+
 
     private Context context;
     private LayoutInflater inflater;

@@ -1,6 +1,5 @@
 package core;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -11,6 +10,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
     private Context context;
 
     private ItemAddCallback callback;
+
 
     public AsyncPasswordLoader(Context context, String query, String... args) {
         super();

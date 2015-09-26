@@ -3,7 +3,6 @@ package com.typingsolutions.passwordmanager.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.internal.widget.ListViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +17,7 @@ import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
+
 
     private RecyclerView passwordRecyclerView;
     private Toolbar toolbar;

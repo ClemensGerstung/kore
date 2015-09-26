@@ -1,8 +1,6 @@
 package com.typingsolutions.passwordmanager.callbacks.service;
 
-import android.content.Context;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import core.IServiceCallback;
 import ui.OutlinedImageView;

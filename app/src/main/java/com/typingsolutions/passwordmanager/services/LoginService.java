@@ -16,6 +16,7 @@ import java.util.List;
 
 public class LoginService extends Service {
 
+
     public static final String INTENT_ACTION = "com.typingsolutions.passwordmanager.service.LoginService.UPDATE_BLOCKING";
     public static final String INTENT_RESET_FLAG = "com.typingsolutions.passwordmanager.service.LoginService.RESET";
 
@@ -34,12 +35,6 @@ public class LoginService extends Service {
     private final RemoteCallbackList<IServiceCallback> callbacks = new RemoteCallbackList<>();
 
     private final BlockedUserList blockedUserList = new BlockedUserList();
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
     private final ILoginServiceRemote.Stub binder = new ILoginServiceRemote.Stub() {
 
         @Override
@@ -96,10 +91,61 @@ public class LoginService extends Service {
         }
     };
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
     private class BlockedUserList implements Iterable<BlockedUserList.BlockedUser> {
+        private List<BlockedUser> blockedUserList;
+
+        public BlockedUserList() {
+            blockedUserList = new ArrayList<>();
+        }
+
         @Override
         public Iterator<BlockedUser> iterator() {
             return blockedUserList.iterator();
+        }
+
+        public void add(int id) {
+            BlockedUser user = null;
+
+            for (BlockedUser blockedUser : blockedUserList) {
+                if (blockedUser.id == id) {
+                    user = blockedUser;
+                    break;
+                }
+            }
+
+            if (user != null) {
+                user.increaseTries();
+            } else {
+                user = new BlockedUser();
+                user.id = id;
+                user.increaseTries();
+                blockedUserList.add(user);
+            }
+        }
+
+        public void remove(int id) {
+            for (BlockedUser blockedUser : blockedUserList) {
+                if (blockedUser.id == id) {
+                    if (!blockedUser.isBlocked()) {
+                        blockedUserList.remove(blockedUser);
+                    }
+                    break;
+                }
+            }
+        }
+
+        BlockedUser getUserById(int id) {
+            for (BlockedUser blockedUser : blockedUserList) {
+                if (blockedUser.id == id) {
+                    return blockedUser;
+                }
+            }
+            return null;
         }
 
         class BlockedUser {
@@ -107,7 +153,7 @@ public class LoginService extends Service {
             int timeRemaining = 0;
             int completeTime = 0;
             int tries = 0;
-
+            private Thread lockThread;
             Runnable lockRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -129,8 +175,6 @@ public class LoginService extends Service {
                     lockThread = null;
                 }
             };
-
-            private Thread lockThread;
 
             boolean isBlocked() {
                 return timeRemaining > 0;
@@ -180,52 +224,6 @@ public class LoginService extends Service {
                 result = 31 * result + tries;
                 return result;
             }
-        }
-
-        private List<BlockedUser> blockedUserList;
-
-        public BlockedUserList() {
-            blockedUserList = new ArrayList<>();
-        }
-
-        public void add(int id) {
-            BlockedUser user = null;
-
-            for (BlockedUser blockedUser : blockedUserList) {
-                if (blockedUser.id == id) {
-                    user = blockedUser;
-                    break;
-                }
-            }
-
-            if (user != null) {
-                user.increaseTries();
-            } else {
-                user = new BlockedUser();
-                user.id = id;
-                user.increaseTries();
-                blockedUserList.add(user);
-            }
-        }
-
-        public void remove(int id) {
-            for (BlockedUser blockedUser : blockedUserList) {
-                if (blockedUser.id == id) {
-                    if (!blockedUser.isBlocked()) {
-                        blockedUserList.remove(blockedUser);
-                    }
-                    break;
-                }
-            }
-        }
-
-        BlockedUser getUserById(int id) {
-            for (BlockedUser blockedUser : blockedUserList) {
-                if (blockedUser.id == id) {
-                    return blockedUser;
-                }
-            }
-            return null;
         }
     }
 }

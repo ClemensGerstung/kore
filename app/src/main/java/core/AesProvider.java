@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class AesProvider {
+
     public static String decrypt(String data, String password) throws Exception {
         byte[] decodedFrom64 = Base64.decode(data, Base64.DEFAULT);
 
