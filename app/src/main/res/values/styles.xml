@@ -4,8 +4,8 @@
         <item name="colorPrimaryDark">#1976D2</item>
         <item name="android:textColorPrimary">#fff</item>
         <item name="android:textCursorDrawable">@null</item>
-        <item name="colorControlNormal">#1976D2</item>
-        <item name="colorControlActivated">#2196F3</item>
+        <item name="colorControlNormal">#2196F3</item>
+        <item name="colorControlActivated">#68a4d5</item>
         <item name="colorControlHighlight">#BBDEFB</item>
         <item name="android:itemTextAppearance">@style/customMenu</item>
     </style>
