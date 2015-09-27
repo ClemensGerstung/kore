@@ -24,7 +24,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
         Cursor cursor = DatabaseProvider.getConnection(context).query(query, args);
 
         Password passwordToAdd = null;
-        Password tmpPassword = null;
+        Password tmpPassword;
         while (cursor.moveToNext()) {
 
             int passwordId = cursor.getInt(0);
@@ -53,7 +53,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
             }
         }
 
-        if (callback != null) {
+        if (callback != null && passwordToAdd != null) {
             callback.itemAdded(passwordToAdd);
         }
 
