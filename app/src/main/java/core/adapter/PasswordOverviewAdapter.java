@@ -1,28 +1,23 @@
 package core.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import core.Password;
 import core.PasswordHistory;
 import core.PasswordProvider;
 import core.UserProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewAdapter.ViewHolder> {
 
@@ -65,28 +60,13 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView program;
         final TextView username;
         final TextView password;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            // TODO: set DrawableCompat RippleColor
-
-
-            GradientDrawable touchFeedbackShape = new GradientDrawable();
-            touchFeedbackShape.setShape(GradientDrawable.OVAL);
-            // TODO: get color from attributes
-            touchFeedbackShape.setColor(0xffe0e0e0);
-
-            Drawable rippleDrawable = DrawableCompat.wrap(touchFeedbackShape);
-
-
-
-            LayerDrawable layerDrawable = new LayerDrawable(null);
-
-            itemView.setBackground(layerDrawable);
 
             program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
             username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
