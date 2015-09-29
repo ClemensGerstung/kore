@@ -64,7 +64,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         // get userId
         UserProvider userProvider = UserProvider.getInstance(this);
         int userId = userProvider.getId();
-        hideNoPassword(userId);
 
         // init and set adapter
         passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -80,6 +79,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
+                            noPasswordsTextView.setVisibility(View.INVISIBLE);
+                        }
+
                         passwordOverviewAdapter.notifyDataSetChanged();
                     }
                 });
@@ -91,19 +94,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
         passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
-    }
-
-    private void hideNoPassword(int userId) {
-        Cursor c = DatabaseProvider.getConnection(this).query(DatabaseProvider.COUNT_PASSWORDS_BY_USERID, Integer.toString(userId));
-
-        int count = 0;
-        if(c.moveToNext()) {
-            count = c.getInt(0);
-        }
-
-        if (count != 0 && noPasswordsTextView.getVisibility() == View.VISIBLE) {
-            noPasswordsTextView.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
