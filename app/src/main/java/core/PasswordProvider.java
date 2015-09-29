@@ -58,6 +58,11 @@ public class PasswordProvider {
 
     public void add(Password password) {
         passwords.add(password);
+
+        if (onPasswordAddedToDatabase != null) {
+            PasswordHistory history = password.getPasswordHistory().get(0);
+            onPasswordAddedToDatabase.onPasswordAdded(password.getId(), history.getId());
+        }
     }
 
     public int insertPasswordHistoryItem(String value, int passwordId) throws PasswordProviderException {
