@@ -77,7 +77,13 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         provider.setOnPasswordAddedToDatabase(new PasswordProvider.OnPasswordAddedToDatabase() {
             @Override
             public void onPasswordAdded(int passwordId, int historyId) {
-                passwordOverviewAdapter.notifyDataSetChanged();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        passwordOverviewAdapter.notifyDataSetChanged();
+                    }
+                });
+
             }
         });
 
