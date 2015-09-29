@@ -93,7 +93,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
 
                 try {
                     provider.insertIntoDatabase(program, username, password);
-                } catch (PasswordProviderException e) {
+                } catch (Exception e) {
                     Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
 
