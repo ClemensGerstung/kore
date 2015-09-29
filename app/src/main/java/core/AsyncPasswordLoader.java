@@ -64,7 +64,6 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
         this.callback = callback;
     }
 
-
     public interface ItemAddCallback {
         void itemAdded(Password password);
     }
