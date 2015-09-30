@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         add = (FloatingActionButton) findViewById(R.id.mainlayout_floatingactionbutton_add);
         add.setOnClickListener(new CreateUserCallback(this));
 
+        // TODO: yeah...
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.layout_to_replace, loginUsernameFragment)
