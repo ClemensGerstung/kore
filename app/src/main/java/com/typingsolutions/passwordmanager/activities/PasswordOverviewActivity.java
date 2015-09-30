@@ -99,7 +99,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        passwordOverviewAdapter.notifyDataSetChanged();
     }
 
     @Override
