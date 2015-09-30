@@ -22,33 +22,56 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
     @Override
     protected Password doInBackground(String... params) {
         Cursor cursor = DatabaseProvider.getConnection(context).query(query, args);
+        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
 
         Password passwordToAdd = null;
         Password tmpPassword;
+
+        int passwordId;
+        int position;
+        String program;
+        String username;
+        int historyId;
+        String value;
+        String dateChanged;
+        String programDecrypted;
+        String usernameDecrypted;
+        String valueDecrypted;
+        String dateChangedDecrypted;
+
         while (cursor.moveToNext()) {
 
-            int passwordId = cursor.getInt(0);
-            int position = cursor.getInt(1);
-            String program = cursor.getString(2);
-            String username = cursor.getString(3);
-            int historyId = cursor.getInt(4);
-            String value = cursor.getString(5);
-            String dateChanged = cursor.getString(6);
+            passwordId = cursor.getInt(0);
+            position = cursor.getInt(1);
+            program = cursor.getString(2);
+            username = cursor.getString(3);
+            historyId = cursor.getInt(4);
+            value = cursor.getString(5);
+            dateChanged = cursor.getString(6);
+
+            try {
+                programDecrypted = AesProvider.decrypt(program, userMasterPassword);
+                usernameDecrypted = AesProvider.decrypt(username, userMasterPassword);
+                valueDecrypted = AesProvider.decrypt(value, userMasterPassword);
+                dateChangedDecrypted = AesProvider.decrypt(dateChanged, userMasterPassword);
+            } catch (Exception e) {
+                return null;
+            }
 
             if (passwordToAdd == null) {
-                passwordToAdd = new Password(passwordId, position, username, program);
-                passwordToAdd.addHistoryItem(historyId, value, dateChanged);
+                passwordToAdd = new Password(passwordId, position, usernameDecrypted, programDecrypted);
+                passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
             } else {
-                tmpPassword = new Password(passwordId, position, username, program);
+                tmpPassword = new Password(passwordId, position, usernameDecrypted, programDecrypted);
                 if (passwordToAdd.equals(tmpPassword)) {
-                    passwordToAdd.addHistoryItem(historyId, value, dateChanged);
+                    passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
                 } else {
                     if (callback != null) {
                         callback.itemAdded(passwordToAdd);
                     }
 
-                    passwordToAdd = new Password(passwordId, position, username, program);
-                    passwordToAdd.addHistoryItem(historyId, value, dateChanged);
+                    passwordToAdd = new Password(passwordId, position, usernameDecrypted, programDecrypted);
+                    passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
                 }
             }
         }
