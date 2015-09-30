@@ -34,11 +34,12 @@ public class PasswordProvider {
         int position = 0;
         int passwordId = -1;
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
+        String date = Utils.getDate();
         String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
         String encryptedProgram = AesProvider.encrypt(program, userMasterPassword);
         String encryptedUsername = AesProvider.encrypt(username, userMasterPassword);
         String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
-        String encryptedDate = AesProvider.encrypt(Utils.getDate(), userMasterPassword);
+        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
 
         String userIdString = Integer.toString(userId);
         Cursor cursor = connection.query(DatabaseProvider.GET_MAX_POSITION, userIdString);
@@ -58,6 +59,10 @@ public class PasswordProvider {
             onPasswordAddedToDatabase.onPasswordAdded(passwordId, historyId);
         }
 
+        Password passwordObj = new Password(passwordId, position, username, program);
+        passwordObj.addHistoryItem(historyId, password, date);
+        passwords.add(passwordObj);
+
         return passwordId;
     }
 
@@ -70,7 +75,7 @@ public class PasswordProvider {
         }
     }
 
-    public int insertPasswordHistoryItem(String value, String date, int passwordId) throws PasswordProviderException {
+    private int insertPasswordHistoryItem(String value, String date, int passwordId) throws PasswordProviderException {
         int historyId = -1;
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
 
@@ -82,6 +87,8 @@ public class PasswordProvider {
 
         return historyId;
     }
+
+
 
     public int size() {
         return passwords.size();
