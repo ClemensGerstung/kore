@@ -58,13 +58,4 @@ public class User {
         return id;
     }
 
-    public int addPassword(String program, String username, String password) {
-        int position = -1;
-        int passwordId = -1;
-        int historyId = -1;
-
-
-
-        return 0;
-    }
 }
