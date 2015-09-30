@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
@@ -94,6 +95,7 @@ public class CreateUserActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        final boolean[] createUser = {true};
         if (id == R.id.createusermenu_item_done) {
             final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
@@ -115,7 +117,6 @@ public class CreateUserActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                createUser();
                             }
                         })
                         .setNegativeButton("NOPE", new DialogInterface.OnClickListener() {
@@ -125,16 +126,23 @@ public class CreateUserActivity extends AppCompatActivity {
                                 passwordEditText.requestFocus();
                                 passwordEditText.setText("");
                                 repeatEditText.setText("");
+                                createUser[0] = false;
 
                             }
                         })
                         .create()
                         .show();
-                return true;
             }
 
             // create user if everything is okay
-            createUser();
+            if (createUser[0]) {
+                createUser();
+
+                if(autoLoginSwitch.isChecked()) {
+                    Intent intent = new Intent(this, PasswordOverviewActivity.class);
+                    this.startActivity(intent);
+                }
+            }
 
             return true;
         }
