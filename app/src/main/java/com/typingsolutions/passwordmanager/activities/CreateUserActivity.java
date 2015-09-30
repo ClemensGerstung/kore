@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -95,7 +97,6 @@ public class CreateUserActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        final boolean[] createUser = {true};
         if (id == R.id.createusermenu_item_done) {
             final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
@@ -110,13 +111,14 @@ public class CreateUserActivity extends AppCompatActivity {
 
             // check password for safety
             if (!Utils.isSafe(password)) {
-                new AlertDialog.Builder(this)
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
                         .setTitle("Your password doesn't seem to be safe")
                         .setMessage("We recommend to use lower and upper letters, digits, some special characters and at least 8 characters. Do you want to keep it anyway?")
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                createUser();
                             }
                         })
                         .setNegativeButton("NOPE", new DialogInterface.OnClickListener() {
@@ -126,23 +128,16 @@ public class CreateUserActivity extends AppCompatActivity {
                                 passwordEditText.requestFocus();
                                 passwordEditText.setText("");
                                 repeatEditText.setText("");
-                                createUser[0] = false;
-
                             }
                         })
-                        .create()
-                        .show();
+                        .create();
+
+                alertDialog.show();
+                return true;
             }
 
             // create user if everything is okay
-            if (createUser[0]) {
-                createUser();
-
-                if(autoLoginSwitch.isChecked()) {
-                    Intent intent = new Intent(this, PasswordOverviewActivity.class);
-                    this.startActivity(intent);
-                }
-            }
+            createUser();
 
             return true;
         }
@@ -155,7 +150,13 @@ public class CreateUserActivity extends AppCompatActivity {
         try {
             userProvider.createUser(usernameEditText.getText().toString(), passwordEditText.getText().toString(), Utils.getSalt(), autoLoginSwitch.isChecked());
             Snackbar.make(rootView, "Created user " + usernameEditText.getText().toString(), Snackbar.LENGTH_LONG).show();
-            onBackPressed();
+
+            if(autoLoginSwitch.isChecked()) {
+                Intent intent = new Intent(this, PasswordOverviewActivity.class);
+                startActivity(intent);
+            } else {
+                onBackPressed();
+            }
         } catch (UserProviderException | RemoteException | NoSuchAlgorithmException | LoginException e) {
             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
             usernameEditText.requestFocus();
