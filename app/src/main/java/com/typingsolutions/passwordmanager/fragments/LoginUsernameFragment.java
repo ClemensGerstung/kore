@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -19,10 +20,29 @@ import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTex
 
 public class LoginUsernameFragment extends Fragment {
 
+    final static String REMEMBERED_USERNAME = "REMEMBERED_USERNAME";
+    final static String REMEMBER = "REMEMBER";
+
     private ImageView background;
     private EditText username;
     private TextInputLayout usernameWrapper;
     private CheckBox remember;
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            final SharedPreferences.Editor editor = preferences.edit();
+
+            editor.putBoolean(REMEMBER, isChecked);
+            if (isChecked) {
+                editor.putString(REMEMBERED_USERNAME, username.getText().toString());
+            } else {
+                editor.putString(REMEMBERED_USERNAME, "");
+            }
+
+            editor.apply();
+        }
+    };
 
 
     @Override
@@ -31,6 +51,7 @@ public class LoginUsernameFragment extends Fragment {
         Context context = getActivity();
         LoginActivity loginActivity = (LoginActivity) getActivity();
 
+        remember.setOnCheckedChangeListener(checkedChangeListener);
         try {
             username.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, ShowEnterPasswordCallback.class));
         } catch (Exception e) {
