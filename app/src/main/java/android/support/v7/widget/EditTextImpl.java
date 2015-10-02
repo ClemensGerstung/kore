@@ -15,8 +15,7 @@ import android.widget.*;
 
 public class EditTextImpl {
 
-
-    public void initStatic() {
+    public void initShadow() {
         RoundRectDrawableWithShadow.sRoundRectHelper
                 = new RoundRectDrawableWithShadow.RoundRectHelper() {
             @Override

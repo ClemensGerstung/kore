@@ -9,20 +9,16 @@ import com.typingsolutions.passwordmanager.R;
 
 public class EditText extends android.widget.EditText {
 
-    // TODO: hide() and show()
+    private EditTextImpl editText;
 
-    private static EditTextImpl editText;
-
-    static {
-        editText = new EditTextImpl();
-        editText.initStatic();
-    }
+    private boolean hiding;
 
     private final Rect shadowPadding;
 
     public EditText(Context context) {
         super(context);
         shadowPadding = new Rect();
+        hiding = false;
 
         initEditText(context, null, 0);
     }
@@ -50,14 +46,32 @@ public class EditText extends android.widget.EditText {
 
         a.recycle();
 
+        editText = new EditTextImpl();
+        editText.initShadow();
         editText.init(this, context, Color.WHITE, 8.f, elevation, elevation + translationZ);
-
-
     }
 
     public void setShadowPadding(int left, int top, int right, int bottom) {
         shadowPadding.set(left, top, right, bottom);
         super.setPadding(left + getPaddingLeft(), top + getPaddingTop(),
                 right + getPaddingRight(), bottom + getPaddingBottom());
+    }
+
+    public void hide() {
+        if(hiding) {
+            return;
+        }
+
+
+
+        hiding = true;
+    }
+
+    public void show() {
+        if(!hiding){
+            return;
+        }
+
+        hiding = false;
     }
 }
