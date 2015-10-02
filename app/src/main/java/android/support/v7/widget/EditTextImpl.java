@@ -50,7 +50,7 @@ public class EditTextImpl {
         return getShadowBackground(view).getMinHeight();
     }
 
-    private RoundRectDrawableWithShadow getShadowBackground(View view) {
+    RoundRectDrawableWithShadow getShadowBackground(View view) {
         return ((RoundRectDrawableWithShadow) view.getBackground());
     }
 }
