@@ -19,6 +19,7 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
     public SimpleSwitchTextWatcher(Context context, LoginActivity loginActivity, Class<? extends BaseCallback> commitCallbackClass) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         this.context = context;
         this.loginActivity = loginActivity;
+        // What if 'getDeclaredConstructors()[0]' returns null? Exception? Should handle this
         this.commitCallback = (BaseCallback) commitCallbackClass.getDeclaredConstructors()[0].newInstance(context, loginActivity);
     }
 
