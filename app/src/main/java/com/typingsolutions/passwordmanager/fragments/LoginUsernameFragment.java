@@ -20,13 +20,15 @@ import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTex
 
 public class LoginUsernameFragment extends Fragment {
 
-    final static String REMEMBERED_USERNAME = "REMEMBERED_USERNAME";
-    final static String REMEMBER = "REMEMBER";
+    public final static String REMEMBERED_USERNAME = "REMEMBERED_USERNAME";
+    public final static String REMEMBER = "REMEMBER";
 
     private ImageView background;
     private EditText username;
     private TextInputLayout usernameWrapper;
     private CheckBox remember;
+
+
     private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -51,12 +53,17 @@ public class LoginUsernameFragment extends Fragment {
         Context context = getActivity();
         LoginActivity loginActivity = (LoginActivity) getActivity();
 
+        final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        final boolean checked = preferences.getBoolean(REMEMBER, false);
+        final String rememberedName = preferences.getString(REMEMBERED_USERNAME, "");
+
+        remember.setChecked(checked);
         remember.setOnCheckedChangeListener(checkedChangeListener);
+
+        username.setText(rememberedName);
         try {
             username.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, ShowEnterPasswordCallback.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) { }
     }
 
     @Nullable
