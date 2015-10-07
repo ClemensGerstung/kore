@@ -10,6 +10,7 @@ import android.support.v7.widget.EditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.*;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import ui.OutlinedImageView;
 public class LoginPasswordFragment extends Fragment {
 
 
+    public static final long FAST_ANIMATION_DURATION = 150;
     private EditText password;
     private CheckBox safeLogin;
     private LinearLayout notUser;
@@ -39,7 +41,7 @@ public class LoginPasswordFragment extends Fragment {
         Context context = getActivity();
         Activity activity = getActivity();
 
-        if(activity instanceof LoginActivity) {
+        if (activity instanceof LoginActivity) {
             loginActivity = (LoginActivity) activity;
         }
 
@@ -76,14 +78,16 @@ public class LoginPasswordFragment extends Fragment {
         super.onResume();
         try {
             loginActivity.getLoginServiceRemote().registerCallback(serviceCallback);
-        } catch (RemoteException ignored) {}
+        } catch (RemoteException ignored) {
+        }
     }
 
     @Override
     public void onPause() {
         try {
             loginActivity.getLoginServiceRemote().unregisterCallback(serviceCallback);
-        } catch (RemoteException ignored) {}
+        } catch (RemoteException ignored) {
+        }
         super.onPause();
     }
 
@@ -100,5 +104,38 @@ public class LoginPasswordFragment extends Fragment {
 
     public OutlinedImageView getBackground() {
         return background;
+    }
+
+    public synchronized void showHide(final View view) {
+        if (view.getVisibility() != View.VISIBLE) {
+            view.clearAnimation();
+            view.setVisibility(View.VISIBLE);
+            Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), R.anim.checkbox_show);
+            anim.setDuration(FAST_ANIMATION_DURATION);
+            anim.setInterpolator(new DecelerateInterpolator());
+
+            view.startAnimation(anim);
+            return;
+        }
+
+        Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), R.anim.checkbox_hide);
+        anim.setInterpolator(new AccelerateInterpolator());
+        anim.setDuration(FAST_ANIMATION_DURATION);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.GONE);
+            }
+        });
+        view.startAnimation(anim);
     }
 }
