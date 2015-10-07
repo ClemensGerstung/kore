@@ -49,8 +49,8 @@ public class CreatePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password_detail_layout);
 
-        View button = findViewById(R.id.passworddetail_appcompatbutton_delete);
-        button.setVisibility(View.INVISIBLE);
+//        View button = findViewById(R.id.passworddetail_appcompatbutton_delete);
+//        button.setVisibility(View.INVISIBLE);
 
         toolbar = (Toolbar)findViewById(R.id.passworddetail_toolbar);
         setSupportActionBar(toolbar);
@@ -61,13 +61,13 @@ public class CreatePasswordActivity extends AppCompatActivity {
             }
         });
 
-        username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
-        program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
-        password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
-
-        username.addTextChangedListener(switchTextWatcher);
-        program.addTextChangedListener(switchTextWatcher);
-        password.addTextChangedListener(switchTextWatcher);
+//        username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
+//        program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
+//        password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
+//
+//        username.addTextChangedListener(switchTextWatcher);
+//        program.addTextChangedListener(switchTextWatcher);
+//        password.addTextChangedListener(switchTextWatcher);
     }
 
     @Override

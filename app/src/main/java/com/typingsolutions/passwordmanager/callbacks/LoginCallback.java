@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
+import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.User;
@@ -32,7 +33,7 @@ public class LoginCallback extends BaseCallback {
         try {
             user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
 
-            Intent intent = new Intent(context, PasswordOverviewActivity.class);
+            Intent intent = new Intent(context, PasswordDetailActivity.class);
             context.startActivity(intent);
         } catch (UserProviderException | NoSuchAlgorithmException | RemoteException e) {
             Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
