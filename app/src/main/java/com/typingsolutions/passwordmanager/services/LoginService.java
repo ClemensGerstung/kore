@@ -96,6 +96,11 @@ public class LoginService extends Service {
         return binder;
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
+
     private class BlockedUserList implements Iterable<BlockedUserList.BlockedUser> {
         private List<BlockedUser> blockedUserList;
 
