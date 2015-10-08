@@ -2,10 +2,8 @@ package com.typingsolutions.passwordmanager.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.IBinder;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
-import android.os.SystemClock;
+import android.os.*;
+import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
 
@@ -101,6 +99,18 @@ public class LoginService extends Service {
         return START_STICKY;
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(getClass().getSimpleName(), "onUnbind");
+        return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(getClass().getSimpleName(), "onDestroy");
+    }
+
     private class BlockedUserList implements Iterable<BlockedUserList.BlockedUser> {
         private List<BlockedUser> blockedUserList;
 
@@ -158,7 +168,7 @@ public class LoginService extends Service {
             int timeRemaining = 0;
             int completeTime = 0;
             int tries = 0;
-            private Thread lockThread;
+
             Runnable lockRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -170,14 +180,12 @@ public class LoginService extends Service {
                         int subtract = (int) (currentSystemTime - lastSystemTime);
                         lastSystemTime = currentSystemTime;
                         timeRemaining = timeRemaining - subtract;
+                        Log.d(getClass().getSimpleName(), Integer.toString(timeRemaining));
 
                         getApplicationContext().sendBroadcast(intent);
 
                         SystemClock.sleep(1000);
                     } while (timeRemaining > 0);
-
-
-                    lockThread = null;
                 }
             };
 
@@ -206,8 +214,10 @@ public class LoginService extends Service {
                     start = true;
                 }
                 if (start) {
-                    lockThread = new Thread(lockRunnable);
-                    lockThread.start();
+                    HandlerThread handlerThread = new HandlerThread(Integer.toHexString(id));
+                    handlerThread.start();
+                    Handler h = new Handler(handlerThread.getLooper());
+                    h.post(lockRunnable);
                 }
             }
 

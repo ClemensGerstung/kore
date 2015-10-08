@@ -6,7 +6,12 @@ import android.os.IBinder;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -35,8 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         add = (FloatingActionButton) findViewById(R.id.mainlayout_floatingactionbutton_add);
         add.setOnClickListener(new CreateUserCallback(this));
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.layout_to_replace, loginUsernameFragment)
-                .commit();
-
     }
 
     @Override
@@ -57,12 +55,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = new Intent(this, LoginService.class);
+        startService(intent);
         bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         loginReceiver = new LoginReceiver(this);
 
         getApplicationContext().registerReceiver(loginReceiver, intentFilter);
+
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = supportFragmentManager.beginTransaction();
+        transaction.replace(R.id.layout_to_replace, loginUsernameFragment)
+                .commit();
     }
 
     @Override
