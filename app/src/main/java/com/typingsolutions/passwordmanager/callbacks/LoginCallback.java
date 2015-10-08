@@ -33,7 +33,7 @@ public class LoginCallback extends BaseCallback {
         try {
             user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
 
-            Intent intent = new Intent(context, PasswordDetailActivity.class);
+            Intent intent = new Intent(context, PasswordOverviewActivity.class);
             context.startActivity(intent);
         } catch (UserProviderException | NoSuchAlgorithmException | RemoteException e) {
             Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();

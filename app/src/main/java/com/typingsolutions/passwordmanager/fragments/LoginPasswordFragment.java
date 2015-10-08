@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.AnimRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.EditText;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.view.animation.*;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
@@ -34,6 +37,7 @@ public class LoginPasswordFragment extends Fragment {
     private LoginActivity loginActivity;
 
     private GetLockTimeServiceCallback serviceCallback;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -78,6 +82,15 @@ public class LoginPasswordFragment extends Fragment {
         super.onResume();
         try {
             loginActivity.getLoginServiceRemote().registerCallback(serviceCallback);
+
+            int userId = UserProvider.getInstance(loginActivity).getId();
+            boolean isBlocked = loginActivity.getLoginServiceRemote().isUserBlocked(userId);
+
+            if(isBlocked)
+            {
+                hide(safeLogin, R.anim.checkbox_hide);
+                password.hide();
+            }
         } catch (RemoteException ignored) {
         }
     }
@@ -106,25 +119,25 @@ public class LoginPasswordFragment extends Fragment {
         return background;
     }
 
-    public synchronized void showHide(final View view) {
+    public synchronized void show(final View view, @AnimRes int animation) {
         if (view.getVisibility() != View.VISIBLE) {
             view.clearAnimation();
             view.setVisibility(View.VISIBLE);
-            Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), R.anim.checkbox_show);
+            Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), animation);
             anim.setDuration(FAST_ANIMATION_DURATION);
             anim.setInterpolator(new DecelerateInterpolator());
 
             view.startAnimation(anim);
-            return;
         }
+    }
 
-        Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), R.anim.checkbox_hide);
+    public synchronized void hide(final View view, @AnimRes int animation) {
+        Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), animation);
         anim.setInterpolator(new AccelerateInterpolator());
         anim.setDuration(FAST_ANIMATION_DURATION);
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
 
             @Override
