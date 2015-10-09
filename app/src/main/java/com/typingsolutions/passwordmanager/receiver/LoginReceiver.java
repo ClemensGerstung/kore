@@ -23,9 +23,9 @@ public class LoginReceiver extends BroadcastReceiver {
 
         try {
             loginActivity.getLoginServiceRemote().getBlockedTimeAsync(id);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } finally {
+
+            if(!loginActivity.getLoginServiceRemote().isUserBlocked(id)) return;
+
             Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
 
             LoginPasswordFragment loginPasswordFragment = null;
@@ -34,6 +34,8 @@ public class LoginReceiver extends BroadcastReceiver {
                 loginPasswordFragment = (LoginPasswordFragment) fragment;
                 loginPasswordFragment.getBackground().invalidate();
             }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

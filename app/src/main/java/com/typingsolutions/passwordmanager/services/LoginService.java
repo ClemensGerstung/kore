@@ -3,7 +3,6 @@ package com.typingsolutions.passwordmanager.services;
 import android.app.Service;
 import android.content.Intent;
 import android.os.*;
-import android.os.Process;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
@@ -39,6 +38,7 @@ public class LoginService extends Service {
 
         @Override
         public boolean login(int id, String passwordHash, String dbPasswordHash) throws RemoteException {
+
             if (!passwordHash.equals(dbPasswordHash)) {
                 blockedUserList.add(id);
                 return false;
@@ -171,6 +171,8 @@ public class LoginService extends Service {
             int completeTime = 0;
             int tries = 0;
 
+            private HandlerThread handlerThread;
+            private Handler handler;
             Runnable lockRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -182,14 +184,16 @@ public class LoginService extends Service {
                         int subtract = (int) (currentSystemTime - lastSystemTime);
                         lastSystemTime = currentSystemTime;
                         timeRemaining = timeRemaining - subtract;
-//                        Log.d(getClass().getSimpleName(), Integer.toString(timeRemaining));
+                        Log.d(getClass().getSimpleName(), Integer.toString(timeRemaining));
                         getApplicationContext().sendBroadcast(intent);
 
                         SystemClock.sleep(SLEEP_TIME);
                     } while (timeRemaining > 0);
 
+                    handlerThread.quit();
                 }
             };
+
 
             boolean isBlocked() {
                 return timeRemaining > 0;
@@ -216,10 +220,10 @@ public class LoginService extends Service {
                     start = true;
                 }
                 if (start) {
-                    HandlerThread handlerThread = new HandlerThread(Integer.toHexString(id), HandlerThread.MAX_PRIORITY);
+                    handlerThread = new HandlerThread(Integer.toHexString(id), HandlerThread.MAX_PRIORITY);
                     handlerThread.start();
-                    Handler h = new Handler(LoginService.this.getMainLooper());
-                    h.post(lockRunnable);
+                    handler = new Handler(LoginService.this.getMainLooper());
+                    handler.post(lockRunnable);
                 }
             }
 
