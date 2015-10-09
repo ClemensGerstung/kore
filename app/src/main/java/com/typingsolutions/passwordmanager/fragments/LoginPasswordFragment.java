@@ -87,8 +87,6 @@ public class LoginPasswordFragment extends Fragment {
             int userId = UserProvider.getInstance(loginActivity).getId();
             boolean isBlocked = loginActivity.getLoginServiceRemote().isUserBlocked(userId);
 
-
-
             if(isBlocked)
             {
                 hideAllInputs();
