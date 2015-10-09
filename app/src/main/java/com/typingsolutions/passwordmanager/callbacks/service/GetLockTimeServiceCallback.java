@@ -17,7 +17,6 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
 
     @Override
     public void getLockTime(int time, int completeTime) throws RemoteException {
-//        view.update(time, completeTime);
         OutlinedImageView background = loginPasswordFragment.getBackground();
         background.update(time, completeTime);
 
