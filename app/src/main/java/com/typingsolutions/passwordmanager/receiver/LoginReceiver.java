@@ -24,7 +24,8 @@ public class LoginReceiver extends BroadcastReceiver {
         try {
             loginActivity.getLoginServiceRemote().getBlockedTimeAsync(id);
 
-            if(!loginActivity.getLoginServiceRemote().isUserBlocked(id)) return;
+            boolean blocked = loginActivity.getLoginServiceRemote().isUserBlocked(id);
+            if(!blocked) return;
 
             Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
 
