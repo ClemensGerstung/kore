@@ -20,7 +20,8 @@ public class BlockedUser {
 
     public BlockedUser(BlockedUserList blockedUsers) {
         this.blockedUsers = blockedUsers;
-        handlerThread = new HandlerThread(Integer.toHexString(id), HandlerThread.MAX_PRIORITY);
+        handlerThread = new HandlerThread(Integer.toHexString(id), HandlerThread.NORM_PRIORITY);
+
         handlerThread.start();
         looper = handlerThread.getLooper();
 
@@ -53,6 +54,7 @@ public class BlockedUser {
         }
         if (start) {
             handler.sendEmptyMessage(0);
+
         }
     }
 
