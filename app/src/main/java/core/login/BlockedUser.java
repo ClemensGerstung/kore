@@ -24,7 +24,6 @@ public class BlockedUser {
 
         handlerThread.start();
         looper = handlerThread.getLooper();
-
         handler = new LoginBlockHandler(blockedUsers.loginService, this, looper);
     }
 
@@ -54,7 +53,6 @@ public class BlockedUser {
         }
         if (start) {
             handler.sendEmptyMessage(0);
-
         }
     }
 

@@ -2,18 +2,23 @@ package com.typingsolutions.passwordmanager.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
 import core.login.BlockedUser;
 import core.login.BlockedUserList;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class LoginService extends Service {
 
-
     public static final String INTENT_ACTION = "com.typingsolutions.passwordmanager.service.LoginService.UPDATE_BLOCKING";
+    public static final String INTENT_BLOCK = "com.typingsolutions.passwordmanager.service.LoginService.BLOCK";
 
     public static final int SLEEP_TIME = 1000;
 
@@ -30,7 +35,6 @@ public class LoginService extends Service {
     public static int FINAL_BLOCK_TIME = 300000;   // 5 minutes
 
     private final RemoteCallbackList<IServiceCallback> callbacks = new RemoteCallbackList<>();
-
     private final BlockedUserList blockedUserList = new BlockedUserList(this);
 
     private final ILoginServiceRemote.Stub binder = new ILoginServiceRemote.Stub() {
@@ -91,20 +95,7 @@ public class LoginService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(getClass().getSimpleName(), "onBind");
-        int i = 0;
-        for (BlockedUser user : blockedUserList) {
-            Log.d(getClass().getSimpleName(), user.toString());
-            i++;
-        }
-        Log.d(getClass().getSimpleName(), Integer.toString(i));
-
         return binder;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
     }
 
     @Override
@@ -114,20 +105,10 @@ public class LoginService extends Service {
     }
 
     @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-
-        Log.d(getClass().getSimpleName(), "onRebind");
-        int i = 0;
-        for (BlockedUser user : blockedUserList) {
-            Log.d(getClass().getSimpleName(), user.toString());
-            i++;
-        }
-        Log.d(getClass().getSimpleName(), Integer.toString(i));
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(getClass().getSimpleName(), "asdf");
+        return START_STICKY;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+
 }
