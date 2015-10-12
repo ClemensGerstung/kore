@@ -1,11 +1,12 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FloatingActionButton addPasswordFloatingActionButton;
     private TextView noPasswordsTextView;
+    private SearchView searchView;
 
     private PasswordOverviewAdapter passwordOverviewAdapter;
     private AsyncPasswordLoader passwordLoader;
@@ -41,6 +43,37 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
     };
 
+    private PasswordProvider.OnPasswordAddedToDatabase onPasswordAddedToDatabase = new PasswordProvider.OnPasswordAddedToDatabase() {
+        @Override
+        public void onPasswordAdded(int passwordId, int historyId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
+                        noPasswordsTextView.setVisibility(View.INVISIBLE);
+                    }
+
+                    passwordOverviewAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+    };
+
+    private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
+        @Override
+        public boolean onMenuItemActionCollapse(MenuItem item) {
+            // Do something when collapsed
+            return true;
+        }
+
+        @Override
+        public boolean onMenuItemActionExpand(MenuItem item) {
+
+            return true;
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +85,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
         addPasswordFloatingActionButton = (FloatingActionButton) findViewById(R.id.passwordlistlayout_floatingactionbutton_add);
         noPasswordsTextView = (TextView) findViewById(R.id.passwordlistlayout_textview_nopasswords);
-
-
 
         // set onClick-event to add new passwords
         addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
@@ -73,22 +104,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // init passwordProvider
         PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-        provider.setOnPasswordAddedToDatabase(new PasswordProvider.OnPasswordAddedToDatabase() {
-            @Override
-            public void onPasswordAdded(int passwordId, int historyId) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
-                            noPasswordsTextView.setVisibility(View.INVISIBLE);
-                        }
 
-                        passwordOverviewAdapter.notifyDataSetChanged();
-                    }
-                });
-
-            }
-        });
+        provider.setOnPasswordAddedToDatabase(onPasswordAddedToDatabase);
 
         // load passwords in background
         passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
@@ -100,6 +117,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.password_list_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.passwordlistmenu_item_search);
+        searchView = (SearchView) searchItem.getActionView();
+        MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
+
         return true;
     }
 
