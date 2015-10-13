@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -8,18 +9,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.util.Log;
+import android.view.*;
+import android.animation.Animator;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.ViewUtils;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
-
 
     private RecyclerView passwordRecyclerView;
     private Toolbar toolbar;
@@ -60,10 +60,20 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
     };
 
+    private SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
+        @Override
+        public boolean onClose() {
+            passwordOverviewAdapter.resetFilter();
+            // do not override default behaviour
+            return false;
+        }
+    };
+
     private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
         @Override
         public boolean onMenuItemActionCollapse(MenuItem item) {
-            // Do something when collapsed
+
+
             return true;
         }
 
@@ -74,6 +84,18 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
     };
 
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            passwordOverviewAdapter.filter(newText);
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +139,11 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.password_list_menu, menu);
+
+        // init searchview
         MenuItem searchItem = menu.findItem(R.id.passwordlistmenu_item_search);
         searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(onQueryTextListener);
         MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
 
         return true;
@@ -129,6 +154,4 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         return true;
     }
-
-
 }
