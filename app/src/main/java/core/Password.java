@@ -87,4 +87,17 @@ public class Password {
     public List<PasswordHistory> getPasswordHistory() {
         return passwordHistory;
     }
+
+    public PasswordHistory getFirstItem() {
+        return passwordHistory.get(0);
+    }
+
+    @Override
+    public String toString() {
+        return "Password{" +
+                "username='" + username + '\'' +
+                "password='" + getFirstItem().getValue() + '\'' +
+                ", program='" + program + '\'' +
+                '}';
+    }
 }
