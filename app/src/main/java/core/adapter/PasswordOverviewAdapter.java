@@ -142,4 +142,6 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
         }
     }
+
+
 }

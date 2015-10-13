@@ -5,6 +5,8 @@ import android.database.Cursor;
 import core.exceptions.PasswordProviderException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PasswordProvider {
@@ -26,6 +28,13 @@ public class PasswordProvider {
     public static PasswordProvider getInstance(Context context, int userId) {
         if (INSTANCE == null) {
             INSTANCE = new PasswordProvider(context, userId);
+        }
+        return INSTANCE;
+    }
+
+    public static PasswordProvider getInstance() {
+        if (INSTANCE == null) {
+            throw new NullPointerException("you have to call getInstance(Context, int) first");
         }
         return INSTANCE;
     }
@@ -88,8 +97,6 @@ public class PasswordProvider {
         return historyId;
     }
 
-
-
     public int size() {
         return passwords.size();
     }
@@ -108,5 +115,51 @@ public class PasswordProvider {
 
     public interface OnPasswordAddedToDatabase {
         void onPasswordAdded(int passwordId, int historyId);
+    }
+
+    public void order(int which) {
+        if (which == 0) {   // order by username ascending
+            Collections.sort(passwords, new Comparator<Password>() {
+                @Override
+                public int compare(Password lhs, Password rhs) {
+                    return lhs.getUsername().compareTo(rhs.getUsername());
+                }
+            });
+        } else if (which == 1) {    // order by username descending
+            Collections.sort(passwords, new Comparator<Password>() {
+                @Override
+                public int compare(Password lhs, Password rhs) {
+                    return ~lhs.getUsername().compareTo(rhs.getUsername());
+                }
+            });
+        } else if (which == 2) {   // order by password ascending
+            Collections.sort(passwords, new Comparator<Password>() {
+                @Override
+                public int compare(Password lhs, Password rhs) {
+                    return lhs.getFirstItem().getValue().compareTo(rhs.getFirstItem().getValue());
+                }
+            });
+        } else if (which == 3) {    // order by password descending
+            Collections.sort(passwords, new Comparator<Password>() {
+                @Override
+                public int compare(Password lhs, Password rhs) {
+                    return ~lhs.getFirstItem().getValue().compareTo(rhs.getFirstItem().getValue());
+                }
+            });
+        } else if (which == 4) {   // order by program ascending
+            Collections.sort(passwords, new Comparator<Password>() {
+                @Override
+                public int compare(Password lhs, Password rhs) {
+                    return lhs.getProgram().compareTo(rhs.getProgram());
+                }
+            });
+        } else if (which == 5) {    // order by program descending
+            Collections.sort(passwords, new Comparator<Password>() {
+                @Override
+                public int compare(Password lhs, Password rhs) {
+                    return ~lhs.getProgram().compareTo(rhs.getProgram());
+                }
+            });
+        }
     }
 }

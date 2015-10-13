@@ -20,6 +20,9 @@ import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class PasswordOverviewActivity extends AppCompatActivity {
 
     private RecyclerView passwordRecyclerView;
@@ -101,8 +104,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private DialogInterface.OnClickListener orderItemClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            PasswordOverviewActivity.this.order(which);
+            PasswordProvider.getInstance().order(which);
             dialog.dismiss();
+            passwordOverviewAdapter.notifyDataSetChanged();
         }
     };
 
@@ -164,7 +168,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.passwordlistmenu_item_order:
-                // TODO: extract to strings.xml
                 String[] orderOptions = getResources().getStringArray(R.array.order_options);
 
                 AlertDialog alertDialog = new AlertDialog.Builder(this)
@@ -173,14 +176,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                         .create();
 
                 alertDialog.show();
-
                 break;
         }
 
         return true;
-    }
-
-    private void order(int which) {
-
     }
 }
