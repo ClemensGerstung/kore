@@ -33,7 +33,7 @@ public class Password {
     }
 
     void addHistoryItem(int id, String value, String date) {
-        DateFormat dateFormat = new SimpleDateFormat();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(date);
