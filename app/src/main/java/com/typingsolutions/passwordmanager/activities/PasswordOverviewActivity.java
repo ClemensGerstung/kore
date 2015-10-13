@@ -1,20 +1,21 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.AnimRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.*;
-import android.animation.Animator;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.ViewUtils;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
@@ -97,6 +98,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
     };
 
+    private DialogInterface.OnClickListener orderItemClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            PasswordOverviewActivity.this.order(which);
+            dialog.dismiss();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +160,27 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.passwordlistmenu_item_order:
+                // TODO: extract to strings.xml
+                String[] orderOptions = getResources().getStringArray(R.array.order_options);
+
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("Order passwords by...")
+                        .setItems(orderOptions, orderItemClickListener)
+                        .create();
+
+                alertDialog.show();
+
+                break;
+        }
 
         return true;
+    }
+
+    private void order(int which) {
+
     }
 }
