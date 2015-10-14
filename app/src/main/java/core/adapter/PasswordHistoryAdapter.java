@@ -40,7 +40,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
     public void onBindViewHolder(ViewHolder holder, int position) {
         PasswordProvider provider = PasswordProvider.getInstance();
         Password password = provider.get(passwordIndex);
-        PasswordHistory history = password.getPasswordHistory().get(position);
+        PasswordHistory history = password.getPasswordHistory().get(position + 1);
 
         DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
         String date = dateFormat.format(history.getChangedDate());
@@ -51,7 +51,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
     @Override
     public int getItemCount() {
-        return PasswordProvider.getInstance().size();
+        return PasswordProvider.getInstance().size() - 1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
