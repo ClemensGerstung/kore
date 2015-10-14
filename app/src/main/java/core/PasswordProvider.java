@@ -105,6 +105,15 @@ public class PasswordProvider {
         return passwords.get(index);
     }
 
+    public Password getById(int id){
+        for (Password password : passwords){
+            if(password.getId() == id) {
+                return password;
+            }
+        }
+        return null;
+    }
+
     public boolean contains(Password p) {
         return passwords.contains(p);
     }

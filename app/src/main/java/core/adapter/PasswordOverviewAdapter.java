@@ -3,7 +3,6 @@ package core.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,8 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(view, position);
+        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
+        ViewHolder viewHolder = new ViewHolder(view, password.getId());
 
         return viewHolder;
     }
@@ -135,23 +135,25 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         final TextView program;
         final TextView username;
         final TextView password;
-        final int position;
+        final int id;
 
-        public ViewHolder(View itemView, int position) {
+        public ViewHolder(View itemView, int id) {
             super(itemView);
 
             program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
             username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
             password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
 
-            this.position = position;
+            this.id = id;
+
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             Context context = PasswordOverviewAdapter.this.context;
             Intent intent = new Intent(context, PasswordDetailActivity.class);
-            intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, position);
+            intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
             context.startActivity(intent);
         }
     }

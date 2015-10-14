@@ -104,8 +104,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private DialogInterface.OnClickListener orderItemClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            PasswordProvider.getInstance().order(which);
             dialog.dismiss();
+            PasswordProvider.getInstance().order(which);
             passwordOverviewAdapter.notifyDataSetChanged();
         }
     };
@@ -139,7 +139,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // init passwordProvider
         PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-
         provider.setOnPasswordAddedToDatabase(onPasswordAddedToDatabase);
 
         // load passwords in background
