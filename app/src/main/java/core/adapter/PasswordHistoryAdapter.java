@@ -20,6 +20,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
     private Context context;
     private LayoutInflater inflater;
     private int passwordIndex;
+    private OnItemAddedCallback onItemAddedCallback;
 
     public PasswordHistoryAdapter(Context context, int passwordIndex) {
         super();
@@ -47,11 +48,21 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
         holder.editText.setText(history.getValue());
         holder.editText.setHint(date);
+
+        onItemAddedCallback.onItemAdded(holder, position);
     }
 
     @Override
     public int getItemCount() {
         return PasswordProvider.getInstance().size() - 1;
+    }
+
+    public void setOnItemAddedCallback(OnItemAddedCallback onItemAddedCallback) {
+        this.onItemAddedCallback = onItemAddedCallback;
+    }
+
+    public interface OnItemAddedCallback {
+        void onItemAdded(PasswordHistoryAdapter.ViewHolder viewHolder, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,6 +71,8 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
         public ViewHolder(View itemView) {
             super(itemView);
             editText = (EditText) itemView.findViewById(R.id.passwordhistoryitemlayout_edittext_item);
+
         }
+
     }
 }
