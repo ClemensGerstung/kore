@@ -8,6 +8,7 @@ import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class SimpleSwitchTextWatcher implements TextWatcher {
@@ -20,7 +21,9 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
         this.context = context;
         this.loginActivity = loginActivity;
         // What if 'getDeclaredConstructors()[0]' returns null? Exception? Should handle this
-        this.commitCallback = (BaseCallback) commitCallbackClass.getDeclaredConstructors()[0].newInstance(context, loginActivity);
+        Constructor<?> constructor = commitCallbackClass.getDeclaredConstructors()[0];
+        if(constructor == null) return;
+        this.commitCallback = (BaseCallback) constructor.newInstance(context, loginActivity);
     }
 
     @Override
