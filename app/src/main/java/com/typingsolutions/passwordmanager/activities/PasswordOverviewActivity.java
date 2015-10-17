@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private AsyncPasswordLoader passwordLoader;
     private RecyclerView.LayoutManager layoutManager;
 
+    private int userId;
+
     private AsyncPasswordLoader.ItemAddCallback itemAddCallback = new AsyncPasswordLoader.ItemAddCallback() {
         @Override
         public void itemAdded(Password password) {
@@ -42,6 +45,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
 
             if (!provider.contains(password)) {
+                Log.i(getClass().getSimpleName(), password.toString());
                 provider.add(password);
             }
         }
@@ -54,6 +58,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
+                        Log.i(getClass().getSimpleName(), "make invisible");
                         noPasswordsTextView.setVisibility(View.INVISIBLE);
                     }
 
@@ -100,7 +105,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             return false;
         }
     };
-
     private DialogInterface.OnClickListener orderItemClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -129,7 +133,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // get userId
         UserProvider userProvider = UserProvider.getInstance(this);
-        int userId = userProvider.getId();
+        userId = userProvider.getId();
 
         // init and set adapter
         passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -140,11 +144,22 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         // init passwordProvider
         PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
         provider.setOnPasswordAddedToDatabase(onPasswordAddedToDatabase);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         // load passwords in background
         passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
         passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
+    }
+
+    @Override
+    protected void onPause() {
+        PasswordProvider.logout();
+        UserProvider.logout();
+        super.onPause();
     }
 
     @Override
