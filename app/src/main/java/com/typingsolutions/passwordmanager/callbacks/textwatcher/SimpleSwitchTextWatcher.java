@@ -20,7 +20,7 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
     public SimpleSwitchTextWatcher(Context context, LoginActivity loginActivity, Class<? extends BaseCallback> commitCallbackClass) throws IllegalAccessException, InstantiationException, InvocationTargetException {
         this.context = context;
         this.loginActivity = loginActivity;
-        // What if 'getDeclaredConstructors()[0]' returns null? Exception? Should handle this
+
         Constructor<?> constructor = commitCallbackClass.getDeclaredConstructors()[0];
         if(constructor == null) return;
         this.commitCallback = (BaseCallback) constructor.newInstance(context, loginActivity);
@@ -33,7 +33,7 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (count == 0) {
+        if (s.length() == 0) {
             loginActivity.switchStateOfFloatingActionButton(R.drawable.add, new CreateUserCallback(context));
         } else {
             commitCallback.setValues(s.toString());

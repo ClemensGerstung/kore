@@ -67,8 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-        transaction.replace(R.id.layout_to_replace, loginUsernameFragment)
-                .commit();
+        transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
     }
 
     @Override
