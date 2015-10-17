@@ -1,13 +1,14 @@
 package core.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import core.Password;
 import core.PasswordHistory;
 import core.PasswordProvider;
@@ -49,6 +50,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
+        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
@@ -62,6 +64,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         viewHolder.password.setText(history.getValue());
         viewHolder.username.setText(password.getUsername());
         viewHolder.program.setText(password.getProgram());
+        viewHolder.id = password.getId();
     }
 
     @Override
@@ -129,10 +132,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         localPasswords.clear();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         final TextView program;
         final TextView username;
         final TextView password;
+        int id;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -140,6 +144,19 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
             username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
             password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            Context context = PasswordOverviewAdapter.this.context;
+            Intent intent = new Intent(context, PasswordDetailActivity.class);
+            intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
+            context.startActivity(intent);
+        }
+
     }
+
+
 }

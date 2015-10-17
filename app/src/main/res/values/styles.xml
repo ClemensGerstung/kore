@@ -18,4 +18,12 @@
     <style name="passwordOverviewItem" parent="@android:style/Widget.ListView">
         <item name="android:color">#000</item>
     </style>
+
+    <style name="standardEditText" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">#2196F3</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textColorHint">#424242</item>
+        <item name="colorControlActivated">#0D47A1</item>
+    </style>
 </resources>

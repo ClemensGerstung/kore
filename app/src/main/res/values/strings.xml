@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">Password.Manager</string>
     <string name="hidden">hidden</string>
+    <array name="order_options">
+        <item>username ascending</item>
+        <item>username descending</item>
+        <item>password ascending</item>
+        <item>password descending</item>
+        <item>program ascending</item>
+        <item>program descending</item>
+    </array>
 
+    <string name="servicedescription">Loginservice of this app</string>
 </resources>
