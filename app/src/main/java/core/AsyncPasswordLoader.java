@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import java.util.Collections;
+
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
     private String query;
     private String[] args;
@@ -67,6 +69,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
                     passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
                 } else {
                     if (callback != null) {
+                        Collections.reverse(passwordToAdd.getPasswordHistory());
                         callback.itemAdded(passwordToAdd);
                     }
 
@@ -77,6 +80,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
         }
 
         if (callback != null && passwordToAdd != null) {
+            Collections.reverse(passwordToAdd.getPasswordHistory());
             callback.itemAdded(passwordToAdd);
         }
 

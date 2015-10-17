@@ -1,11 +1,12 @@
 package core.adapter;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import core.Password;
 import core.PasswordHistory;
@@ -40,39 +41,47 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         PasswordProvider provider = PasswordProvider.getInstance();
-        Password password = provider.get(passwordIndex);
+        Password password = provider.getById(passwordIndex);
         PasswordHistory history = password.getPasswordHistory().get(position + 1);
 
         DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
         String date = dateFormat.format(history.getChangedDate());
 
-        holder.editText.setText(history.getValue());
-        holder.editText.setHint(date);
+        holder.password.setText(history.getValue());
+        holder.date.setText(date);
 
-        onItemAddedCallback.onItemAdded(holder, position);
+        if(onItemAddedCallback != null) {
+            onItemAddedCallback.onItemAdded(holder, position);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return PasswordProvider.getInstance().size() - 1;
+        PasswordProvider provider = PasswordProvider.getInstance();
+        Password password = provider.getById(passwordIndex);
+
+        return password.getPasswordHistory().size() - 1;
     }
 
     public void setOnItemAddedCallback(OnItemAddedCallback onItemAddedCallback) {
         this.onItemAddedCallback = onItemAddedCallback;
     }
 
+
     public interface OnItemAddedCallback {
         void onItemAdded(PasswordHistoryAdapter.ViewHolder viewHolder, int position);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        final EditText editText;
+    public class ViewHolder extends RecyclerView.ViewHolder  {
+        final TextView password;
+        final TextView date;
+        private boolean first;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            editText = (EditText) itemView.findViewById(R.id.passwordhistoryitemlayout_edittext_item);
-
+            password = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_password);
+            date = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_date);
+            first = true;
         }
-
     }
 }
