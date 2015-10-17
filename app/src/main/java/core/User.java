@@ -5,8 +5,6 @@ import java.util.List;
 
 public class User {
 
-
-    private final List<Password> passwords;
     private int id;
     private String name;
     private String plainPassword;
@@ -19,7 +17,6 @@ public class User {
         this.plainPassword = plainPassword;
         this.salt = salt;
         this.passwordHash = passwordHash;
-        this.passwords = new ArrayList<Password>();
     }
 
     public String getName() {
@@ -56,5 +53,13 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public void logout() {
+        id = -1;
+        name = null;
+        plainPassword = null;
+        salt = null;
+        passwordHash = null;
     }
 }
