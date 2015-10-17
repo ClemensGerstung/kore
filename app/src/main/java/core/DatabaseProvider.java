@@ -55,6 +55,12 @@ public class DatabaseProvider extends SQLiteOpenHelper {
                     "JOIN history ON history.passwordId = passwords.id " +
                     "WHERE users.id = ?;";
 
+    public static final String UPDATE_USERNAME_AND_PASSWORD = "UPDATE passwords SET username=?, program=? WHERE id=?;";
+
+    public static final String UPDATE_USERNAME = "UPDATE passwords SET username=?, WHERE id=?;";
+
+    public static final String UPDATE_PROGRAM = "UPDATE passwords SET program=? WHERE id=?;";
+
     private static DatabaseProvider INSTANCE;
 
     private Cursor lastCursor;
