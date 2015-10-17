@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            loginServiceRemote = null;
         }
     };
 
@@ -57,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, LoginService.class);
 //        startService(intent);
-        getApplicationContext().bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         loginReceiver = new LoginReceiver(this);
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        getApplicationContext().unbindService(loginServiceConnection);
+        unbindService(loginServiceConnection);
         getApplicationContext().unregisterReceiver(loginReceiver);
 
         super.onPause();

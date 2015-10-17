@@ -51,7 +51,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
         Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
-        ViewHolder viewHolder = new ViewHolder(view, password.getId());
+        ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;
     }
@@ -64,6 +64,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         viewHolder.password.setText(history.getValue());
         viewHolder.username.setText(password.getUsername());
         viewHolder.program.setText(password.getProgram());
+        viewHolder.id = password.getId();
     }
 
     @Override
@@ -135,16 +136,14 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         final TextView program;
         final TextView username;
         final TextView password;
-        final int id;
+        int id;
 
-        public ViewHolder(View itemView, int id) {
+        public ViewHolder(View itemView) {
             super(itemView);
 
             program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
             username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
             password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
-
-            this.id = id;
 
             itemView.setOnClickListener(this);
         }
@@ -156,6 +155,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
             context.startActivity(intent);
         }
+
     }
 
 

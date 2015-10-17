@@ -1,6 +1,5 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.app.ActionBar;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,8 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.*;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
@@ -50,7 +47,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
             if (first) {
                 first = false;
-                if(bottom > windowHeight) return;
+                if (bottom > windowHeight) return;
 
                 Rect passwordHistory = new Rect();
                 Rect password = new Rect();
@@ -61,7 +58,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) passwordHistoryCard.getLayoutParams();
 
                 int toolbarHeight = Build.VERSION.SDK_INT >= 21 ? toolbar.getMeasuredHeight() : 0;
-                int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 - margin.bottomMargin) : 0;
+                int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
 
                 int newDeletePos = windowHeight - delete.getMeasuredHeight();
                 int height = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
@@ -95,13 +92,13 @@ public class PasswordDetailActivity extends AppCompatActivity {
         passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
         passwordCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_password);
 
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        setSupportActionBar(toolbar);
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
@@ -137,6 +134,31 @@ public class PasswordDetailActivity extends AppCompatActivity {
         inflater.inflate(R.menu.create_user_menu, menu);
         switchMenuState(false);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() != R.id.createusermenu_item_done) return false;
+
+        String newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
+        String newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
+        String newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
+
+        try {
+            if (newPassword != null) {
+                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
+            }
+
+            if (newUsername != null || newProgram != null) {
+                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
+            }
+        } catch (Exception e) {
+            // ignored
+        }
+
+        onBackPressed();
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void switchMenuState(boolean state) {

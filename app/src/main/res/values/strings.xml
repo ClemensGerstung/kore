@@ -9,4 +9,6 @@
         <item>program ascending</item>
         <item>program descending</item>
     </array>
+
+    <string name="servicedescription">Loginservice of this app</string>
 </resources>

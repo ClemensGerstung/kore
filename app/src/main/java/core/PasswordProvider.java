@@ -2,6 +2,7 @@ package core;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import core.exceptions.PasswordProviderException;
 
 import java.util.ArrayList;
@@ -105,13 +106,44 @@ public class PasswordProvider {
         return passwords.get(index);
     }
 
-    public Password getById(int id){
-        for (Password password : passwords){
-            if(password.getId() == id) {
+    public Password getById(int id) {
+        for (Password password : passwords) {
+            if (password.getId() == id) {
                 return password;
             }
         }
         return null;
+    }
+
+    public void update(int id, @Nullable String username, @Nullable String program) throws PasswordProviderException {
+        DatabaseProvider provider = DatabaseProvider.getConnection(context);
+        int returnedValue = -1;
+        if (username != null && program != null) {
+            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME_AND_PASSWORD, username, program, Integer.toString(id));
+        } else if (username != null && program == null) {
+            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME, username, Integer.toString(id));
+        } else if (program != null && username == null) {
+            returnedValue = provider.update(DatabaseProvider.UPDATE_PROGRAM, program, Integer.toString(id));
+        } else {
+            throw new PasswordProviderException("Not supported operation: either username or password has to be something");
+        }
+
+        if (returnedValue == -1) {
+            throw new PasswordProviderException("There was an error by updating this password");
+        }
+
+        provider.close();
+    }
+
+    public void addPasswordHistoryItem(int id, String password) throws Exception {
+        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
+        String date = Utils.getDate();
+        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
+        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
+
+        DatabaseProvider provider = DatabaseProvider.getConnection(context);
+
+        insertPasswordHistoryItem(encryptedPassword, encryptedDate, id);
     }
 
     public boolean contains(Password p) {
