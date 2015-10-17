@@ -141,4 +141,8 @@ public class UserProvider {
     public int getId() {
         return id;
     }
+
+    public void logout() {
+        currentUser.logout();
+    }
 }

@@ -15,6 +15,7 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import core.Password;
 import core.PasswordProvider;
+import core.UserProvider;
 import core.adapter.PasswordHistoryAdapter;
 
 public class PasswordDetailActivity extends AppCompatActivity {
@@ -130,6 +131,13 @@ public class PasswordDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+    }
+
+    @Override
+    protected void onPause() {
+        PasswordProvider.getInstance().logout();
+        UserProvider.getInstance(this).logout();
+        super.onPause();
     }
 
     @Override

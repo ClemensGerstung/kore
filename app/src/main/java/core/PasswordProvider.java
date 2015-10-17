@@ -150,6 +150,13 @@ public class PasswordProvider {
         return passwords.contains(p);
     }
 
+    public void logout() {
+        for (Password p : passwords) {
+            p.logout();
+        }
+        passwords.clear();
+    }
+
     public void setOnPasswordAddedToDatabase(OnPasswordAddedToDatabase onPasswordAddedToDatabase) {
         this.onPasswordAddedToDatabase = onPasswordAddedToDatabase;
     }
