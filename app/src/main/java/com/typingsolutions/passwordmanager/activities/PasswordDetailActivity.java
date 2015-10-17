@@ -135,8 +135,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        PasswordProvider.getInstance().logout();
-        UserProvider.getInstance(this).logout();
+        // TODO: notify new pw
         super.onPause();
     }
 

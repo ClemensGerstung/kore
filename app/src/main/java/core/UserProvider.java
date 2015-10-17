@@ -142,7 +142,15 @@ public class UserProvider {
         return id;
     }
 
-    public void logout() {
+    private void logoutComplete() {
         currentUser.logout();
+        currentUser = null;
+        username = null;
+        id = -1;
+    }
+
+    public static void logout(){
+        INSTANCE.logoutComplete();
+        INSTANCE = null;
     }
 }
