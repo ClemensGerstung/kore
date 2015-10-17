@@ -9,6 +9,7 @@ public class AddPasswordTextWatcher implements TextWatcher {
 
     private PasswordDetailActivity passwordDetailActivity;
     private String preValue;
+    private boolean update;
 
     public AddPasswordTextWatcher(PasswordDetailActivity passwordDetailActivity, @Nullable String preValue) {
         this.passwordDetailActivity = passwordDetailActivity;
@@ -22,8 +23,10 @@ public class AddPasswordTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (!s.toString().equals(preValue)) {
+        update = !s.toString().equals(preValue);
+        if (update) {
             passwordDetailActivity.switchMenuState(s.length() > 0);
+            update = update & s.length() > 0;
         } else {
             passwordDetailActivity.switchMenuState(false);
         }
@@ -32,5 +35,9 @@ public class AddPasswordTextWatcher implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    public boolean needUpdate() {
+        return update;
     }
 }
