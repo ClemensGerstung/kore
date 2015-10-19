@@ -1,9 +1,11 @@
 package core;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.RemoteException;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
+import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
@@ -81,6 +83,9 @@ public class UserProvider {
 
         if (currentUser == null) {
             currentUser = new User(id, username, password, salt, passwordHash);
+            final SharedPreferences preferences = context.getSharedPreferences("activities.LoginActivity.xml", Context.MODE_PRIVATE);
+            final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
+            currentUser.isSafeLogin(checked);
         }
 
         cursor.close();
