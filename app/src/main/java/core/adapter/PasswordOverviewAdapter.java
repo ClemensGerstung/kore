@@ -1,6 +1,7 @@
 package core.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
@@ -146,7 +147,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         localPasswords.clear();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, DialogInterface.OnClickListener {
         final TextView program;
         final TextView username;
         final TextView password;
@@ -176,7 +177,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
                 AlertDialog dialog = new AlertDialog.Builder(context)
                         .setTitle("Reenter your password")
                         .setView(R.layout.reenter_password_layout)
-                        .setPositiveButton("OK", null)
+                        .setPositiveButton("OK", this)
                         .create();
                 dialog.show();
             } else {
@@ -187,6 +188,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             }
         }
 
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            AlertDialog alert = (AlertDialog) dialog;
+
+        }
     }
 
 
