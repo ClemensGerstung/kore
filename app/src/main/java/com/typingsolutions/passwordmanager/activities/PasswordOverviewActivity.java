@@ -156,10 +156,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onBackPressed() {
         PasswordProvider.logout();
         UserProvider.logout();
-        super.onPause();
+        super.onBackPressed();
     }
 
     @Override

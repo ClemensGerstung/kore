@@ -83,7 +83,7 @@ public class UserProvider {
 
         if (currentUser == null) {
             currentUser = new User(id, username, password, salt, passwordHash);
-            final SharedPreferences preferences = context.getSharedPreferences("activities.LoginActivity.xml", Context.MODE_PRIVATE);
+            final SharedPreferences preferences = context.getSharedPreferences("activities.LoginActivity", Context.MODE_PRIVATE);
             final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
             currentUser.isSafeLogin(checked);
         }
@@ -152,6 +152,10 @@ public class UserProvider {
         currentUser = null;
         username = null;
         id = -1;
+    }
+
+    public boolean isSafe() {
+        return currentUser.isSafeLogin();
     }
 
     public static void logout(){
