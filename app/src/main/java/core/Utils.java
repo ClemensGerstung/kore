@@ -1,5 +1,7 @@
 package core;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 
 import java.io.UnsupportedEncodingException;
@@ -69,4 +71,5 @@ public class Utils {
         Date date = new Date();
         return dateFormat.format(date);
     }
+
 }
