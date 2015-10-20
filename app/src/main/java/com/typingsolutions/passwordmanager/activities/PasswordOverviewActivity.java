@@ -52,7 +52,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
 
             if (!provider.contains(password)) {
-                Log.i(getClass().getSimpleName(), password.toString());
                 provider.add(password);
             }
         }
