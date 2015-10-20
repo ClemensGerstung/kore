@@ -1,8 +1,10 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
+import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
+
+    public static final String WRONGPASSWORD = "com.typingsolutions.passwordmanager.activitiesPasswordOverviewActivity.WRONGPASSWORD";
 
     private RecyclerView passwordRecyclerView;
     private Toolbar toolbar;
@@ -35,6 +40,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private PasswordOverviewAdapter passwordOverviewAdapter;
     private AsyncPasswordLoader passwordLoader;
     private RecyclerView.LayoutManager layoutManager;
+
+    private WrongPasswordReceiver wrongPasswordReceiver;
 
     private int userId;
 
@@ -153,6 +160,16 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
         passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
+
+        wrongPasswordReceiver = new WrongPasswordReceiver(this);
+        IntentFilter filter = new IntentFilter(WRONGPASSWORD);
+        getApplicationContext().registerReceiver(wrongPasswordReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
+        super.onPause();
     }
 
     @Override
@@ -194,5 +211,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void makeSnackBar() {
+        Snackbar.make(addPasswordFloatingActionButton, "Your passwords do not match", Snackbar.LENGTH_LONG).show();
     }
 }

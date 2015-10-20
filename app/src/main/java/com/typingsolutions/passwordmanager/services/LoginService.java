@@ -2,17 +2,12 @@ package com.typingsolutions.passwordmanager.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.IBinder;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
+import android.os.*;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
 import core.login.BlockedUser;
 import core.login.BlockedUserList;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class LoginService extends Service {
@@ -106,9 +101,12 @@ public class LoginService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(getClass().getSimpleName(), "asdf");
         return START_STICKY;
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
 }
