@@ -1,13 +1,19 @@
 package com.typingsolutions.passwordmanager.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.*;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
+import core.Utils;
 import core.login.BlockedUser;
 import core.login.BlockedUserList;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 
 public class LoginService extends Service {
@@ -90,11 +96,35 @@ public class LoginService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(getClass().getSimpleName(), "onBind");
+
         return binder;
     }
 
     @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+        Log.d(getClass().getSimpleName(), "onRebind");
+    }
+
+    @Override
     public boolean onUnbind(Intent intent) {
+        Log.d(getClass().getSimpleName(), "onUnbind");
+        SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        try {
+            String json = blockedUserList.toJson();
+            String hash = Utils.getHashedString(json);
+
+            editor.putString("json", json);
+            editor.putString("hash", hash);
+
+            editor.apply();
+        } catch (IOException | NoSuchAlgorithmException e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        }
+
 
         return true;
     }
@@ -105,8 +135,7 @@ public class LoginService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+    public void onTaskRemoved(Intent rootIntent) {
 
+    }
 }
