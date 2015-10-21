@@ -53,7 +53,7 @@ public class LoginBlockHandler extends Handler {
             user.reduceTimeRemaining(subtract);
             context.getApplicationContext().sendBroadcast(intent);
 
-            Log.d(getClass().getSimpleName(), Integer.toString(user.getTimeRemaining()));
+//            Log.d(getClass().getSimpleName(), Integer.toString(user.getTimeRemaining()));
 
             SystemClock.sleep(LoginService.SLEEP_TIME);
         } while (user.getTimeRemaining() > 0);

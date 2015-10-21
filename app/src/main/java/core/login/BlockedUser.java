@@ -52,8 +52,12 @@ public class BlockedUser {
             start = true;
         }
         if (start) {
-            handler.sendEmptyMessage(0);
+            startBlocking();
         }
+    }
+
+    void startBlocking() {
+        handler.sendEmptyMessage(0);
     }
 
     @Override
