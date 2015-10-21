@@ -40,8 +40,6 @@ public class LoginPasswordFragment extends Fragment {
     private OutlinedImageView background;
     private LoginActivity loginActivity;
 
-    private GetLockTimeServiceCallback serviceCallback;
-
     private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -72,8 +70,6 @@ public class LoginPasswordFragment extends Fragment {
 
         try {
             password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
-
-            loginActivity.getLoginServiceRemote().registerCallback(serviceCallback);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getMessage());
         }
@@ -91,8 +87,6 @@ public class LoginPasswordFragment extends Fragment {
 
         safeLogin.setTag(R.string.hidden, false);
 
-        serviceCallback = new GetLockTimeServiceCallback(this);
-
         final TextView username = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_bonjourname);
         final TextView notUserName = (TextView) notUser.findViewById(R.id.loginpasswordlayout_textview_notuser);
         replaceTemplate(username);
@@ -105,7 +99,7 @@ public class LoginPasswordFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.i(getClass().getSimpleName(), "hideAllInput -> RunOnUiThread");
+//                Log.i(getClass().getSimpleName(), "hideAllInput -> RunOnUiThread");
                 hide(safeLogin, R.anim.checkbox_hide);
                 password.hide();
                 background.invalidate();
@@ -117,23 +111,13 @@ public class LoginPasswordFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.i(getClass().getSimpleName(), "showAllInput -> RunOnUiThread");
+//                Log.i(getClass().getSimpleName(), "showAllInput -> RunOnUiThread");
                 show(safeLogin, R.anim.checkbox_show);
                 password.show();
                 background.invalidate();
             }
         });
 
-    }
-
-
-    @Override
-    public void onPause() {
-        try {
-            loginActivity.getLoginServiceRemote().unregisterCallback(serviceCallback);
-        } catch (RemoteException ignored) {
-        }
-        super.onPause();
     }
 
     private void replaceTemplate(TextView textView) {
