@@ -13,8 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.*;
-import android.widget.*;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
@@ -67,7 +72,11 @@ public class LoginPasswordFragment extends Fragment {
 
         try {
             password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
-        } catch (Exception e) {}
+
+            loginActivity.getLoginServiceRemote().registerCallback(serviceCallback);
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        }
     }
 
     @Nullable
@@ -92,39 +101,23 @@ public class LoginPasswordFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            loginActivity.getLoginServiceRemote().registerCallback(serviceCallback);
-
-            int userId = UserProvider.getInstance(loginActivity).getId();
-            boolean isBlocked = loginActivity.getLoginServiceRemote().isUserBlocked(userId);
-
-            if(isBlocked)
-            {
-                hideAllInputs();
-            }
-        } catch (RemoteException ignored) {
-        }
-    }
-
     public void hideAllInputs() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                Log.i(getClass().getSimpleName(), "hideAllInput -> RunOnUiThread");
                 hide(safeLogin, R.anim.checkbox_hide);
                 password.hide();
                 background.invalidate();
             }
         });
-
     }
 
     public void showAllInputs() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                Log.i(getClass().getSimpleName(), "showAllInput -> RunOnUiThread");
                 show(safeLogin, R.anim.checkbox_show);
                 password.show();
                 background.invalidate();
@@ -132,7 +125,6 @@ public class LoginPasswordFragment extends Fragment {
         });
 
     }
-
 
 
     @Override
@@ -174,7 +166,7 @@ public class LoginPasswordFragment extends Fragment {
 
     public synchronized void hide(final View view, @AnimRes int animation) {
         boolean hiding = (boolean) view.getTag(R.string.hidden);
-        if(hiding || view.getVisibility() != View.VISIBLE) return;
+        if (hiding || view.getVisibility() != View.VISIBLE) return;
 
         Animation anim = android.view.animation.AnimationUtils.loadAnimation(getActivity(), animation);
         anim.setInterpolator(new AccelerateInterpolator());

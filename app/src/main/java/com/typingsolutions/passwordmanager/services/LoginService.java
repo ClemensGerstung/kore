@@ -56,6 +56,8 @@ public class LoginService extends Service {
         public void getBlockedTimeAsync(int id) throws RemoteException {
             final int size = callbacks.beginBroadcast();
 
+//            Log.d(getClass().getSimpleName(), String.format("Get block time async for user %s for %s callbacks", id, size));
+
             for (int i = 0; i < size; i++) {
                 BlockedUser user = blockedUserList.getUserById(id);
                 if (user == null) continue;
@@ -67,12 +69,14 @@ public class LoginService extends Service {
         }
 
         @Override
+        @Deprecated
         public boolean isUserBlocked(int id) throws RemoteException {
             BlockedUser user = blockedUserList.getUserById(id);
             return user != null && user.isBlocked();
         }
 
         @Override
+        @Deprecated
         public int getMaxBlockTime(int id) throws RemoteException {
             BlockedUser user = blockedUserList.getUserById(id);
             if (user == null) return -1;
@@ -119,7 +123,7 @@ public class LoginService extends Service {
 
             editor.apply();
         } catch (IOException | NoSuchAlgorithmException e) {
-            Log.e(getClass().getSimpleName(), e.getMessage());
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
 
         return true;
@@ -127,6 +131,7 @@ public class LoginService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        readSerializedData();
         return START_STICKY;
     }
 
@@ -139,7 +144,7 @@ public class LoginService extends Service {
             String computedHash = Utils.getHashedString(json);
             blockedUserList.fromJson(json, hash.equals(computedHash));
         } catch (NoSuchAlgorithmException | IOException e) {
-            Log.e(getClass().getSimpleName(), e.getMessage());
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         } finally {
             preferences.edit().clear().apply();
         }
