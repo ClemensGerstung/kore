@@ -60,10 +60,12 @@ public class LoginUsernameFragment extends Fragment {
         remember.setChecked(checked);
         remember.setOnCheckedChangeListener(checkedChangeListener);
 
-        username.setText(rememberedName);
+
         try {
             username.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, ShowEnterPasswordCallback.class));
         } catch (Exception ignored) { }
+
+        username.setText(rememberedName);
     }
 
     @Nullable

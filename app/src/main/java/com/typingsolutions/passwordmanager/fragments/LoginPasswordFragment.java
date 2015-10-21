@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.AnimRes;
@@ -13,10 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.*;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
@@ -28,8 +26,9 @@ import ui.OutlinedImageView;
 
 public class LoginPasswordFragment extends Fragment {
 
-
     public static final long FAST_ANIMATION_DURATION = 150;
+    public static final String SAFELOGIN = "com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment.SAFELOGIN";
+
     private EditText password;
     private CheckBox safeLogin;
     private LinearLayout notUser;
@@ -38,6 +37,17 @@ public class LoginPasswordFragment extends Fragment {
 
     private GetLockTimeServiceCallback serviceCallback;
 
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            final SharedPreferences.Editor editor = preferences.edit();
+
+            editor.putBoolean(SAFELOGIN, isChecked);
+
+            editor.apply();
+        }
+    };
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -49,11 +59,15 @@ public class LoginPasswordFragment extends Fragment {
             loginActivity = (LoginActivity) activity;
         }
 
+        final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        final boolean checked = preferences.getBoolean(SAFELOGIN, false);
+
+        safeLogin.setChecked(checked);
+        safeLogin.setOnCheckedChangeListener(checkedChangeListener);
+
         try {
             password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
     }
 
     @Nullable

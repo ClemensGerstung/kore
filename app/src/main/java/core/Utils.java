@@ -1,5 +1,7 @@
 package core;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 
 import java.io.UnsupportedEncodingException;
@@ -39,7 +41,7 @@ public class Utils {
         return getHashedString(hostName);
     }
 
-    static String getHashedString(String data) throws NoSuchAlgorithmException {
+    public static String getHashedString(String data) throws NoSuchAlgorithmException {
         byte[] key = data.getBytes();
         MessageDigest sha = MessageDigest.getInstance("sha1");
         byte[] hash = sha.digest(key);
@@ -69,4 +71,5 @@ public class Utils {
         Date date = new Date();
         return dateFormat.format(date);
     }
+
 }

@@ -1,8 +1,5 @@
 package core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
 
     private int id;
@@ -10,6 +7,7 @@ public class User {
     private String plainPassword;
     private String passwordHash;
     private String salt;
+    boolean safeLogin;
 
     public User(int id, String name, String plainPassword, String salt, String passwordHash) {
         this.id = id;
@@ -55,11 +53,20 @@ public class User {
         return id;
     }
 
+    public void isSafeLogin(boolean safeLogin) {
+        this.safeLogin = safeLogin;
+    }
+
+    public boolean isSafeLogin() {
+        return safeLogin;
+    }
+
     public void logout() {
         id = -1;
         name = null;
         plainPassword = null;
         salt = null;
         passwordHash = null;
+        safeLogin = false;
     }
 }
