@@ -96,20 +96,17 @@ public class LoginService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(getClass().getSimpleName(), "onBind");
-
+        readSerializedData();
         return binder;
     }
 
     @Override
     public void onRebind(Intent intent) {
-        super.onRebind(intent);
-        Log.d(getClass().getSimpleName(), "onRebind");
+        readSerializedData();
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(getClass().getSimpleName(), "onUnbind");
         SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -125,7 +122,6 @@ public class LoginService extends Service {
             Log.e(getClass().getSimpleName(), e.getMessage());
         }
 
-
         return true;
     }
 
@@ -134,8 +130,18 @@ public class LoginService extends Service {
         return START_STICKY;
     }
 
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
+    private void readSerializedData() {
+        SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
+        String json = preferences.getString("json", "");
+        String hash = preferences.getString("hash", "");
 
+        try {
+            String computedHash = Utils.getHashedString(json);
+            blockedUserList.fromJson(json, hash.equals(computedHash));
+        } catch (NoSuchAlgorithmException | IOException e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        } finally {
+            preferences.edit().clear().apply();
+        }
     }
 }
