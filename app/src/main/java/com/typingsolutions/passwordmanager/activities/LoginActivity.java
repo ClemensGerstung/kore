@@ -57,8 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = new Intent(this, LoginService.class);
-//        startService(intent);
-        bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
+        startService(intent);
+        bindService(intent, loginServiceConnection, Context.BIND_ABOVE_CLIENT);
 
         IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         loginReceiver = new LoginReceiver(this);
@@ -67,8 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-        transaction.replace(R.id.layout_to_replace, loginUsernameFragment)
-                .commit();
+        transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
     }
 
     @Override

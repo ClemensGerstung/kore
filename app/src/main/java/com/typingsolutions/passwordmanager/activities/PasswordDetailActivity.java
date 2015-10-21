@@ -99,9 +99,12 @@ public class PasswordDetailActivity extends AppCompatActivity {
             }
         });
 
+        UserProvider userProvider = UserProvider.getInstance(this);
+        int id = userProvider.getId();
+
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        currentPassword = PasswordProvider.getInstance().getById(passwordId);
+        currentPassword = PasswordProvider.getInstance(this, id).getById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -135,8 +138,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        PasswordProvider.getInstance().logout();
-        UserProvider.getInstance(this).logout();
+        // TODO: notify new pw
         super.onPause();
     }
 

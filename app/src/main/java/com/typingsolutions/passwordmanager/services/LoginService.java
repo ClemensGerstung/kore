@@ -1,18 +1,19 @@
 package com.typingsolutions.passwordmanager.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
-import android.os.IBinder;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
+import android.content.SharedPreferences;
+import android.os.*;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
+import core.Utils;
 import core.login.BlockedUser;
 import core.login.BlockedUserList;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 
 public class LoginService extends Service {
@@ -95,20 +96,52 @@ public class LoginService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        readSerializedData();
         return binder;
     }
 
     @Override
+    public void onRebind(Intent intent) {
+        readSerializedData();
+    }
+
+    @Override
     public boolean onUnbind(Intent intent) {
+        SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        try {
+            String json = blockedUserList.toJson();
+            String hash = Utils.getHashedString(json);
+
+            editor.putString("json", json);
+            editor.putString("hash", hash);
+
+            editor.apply();
+        } catch (IOException | NoSuchAlgorithmException e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        }
 
         return true;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(getClass().getSimpleName(), "asdf");
         return START_STICKY;
     }
 
+    private void readSerializedData() {
+        SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
+        String json = preferences.getString("json", "");
+        String hash = preferences.getString("hash", "");
 
+        try {
+            String computedHash = Utils.getHashedString(json);
+            blockedUserList.fromJson(json, hash.equals(computedHash));
+        } catch (NoSuchAlgorithmException | IOException e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        } finally {
+            preferences.edit().clear().apply();
+        }
+    }
 }

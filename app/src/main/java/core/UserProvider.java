@@ -1,9 +1,11 @@
 package core;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.RemoteException;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
+import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
@@ -81,6 +83,9 @@ public class UserProvider {
 
         if (currentUser == null) {
             currentUser = new User(id, username, password, salt, passwordHash);
+            final SharedPreferences preferences = context.getSharedPreferences("activities.LoginActivity", Context.MODE_PRIVATE);
+            final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
+            currentUser.isSafeLogin(checked);
         }
 
         cursor.close();
@@ -142,7 +147,19 @@ public class UserProvider {
         return id;
     }
 
-    public void logout() {
+    private void logoutComplete() {
         currentUser.logout();
+        currentUser = null;
+        username = null;
+        id = -1;
+    }
+
+    public boolean isSafe() {
+        return currentUser.isSafeLogin();
+    }
+
+    public static void logout(){
+        INSTANCE.logoutComplete();
+        INSTANCE = null;
     }
 }

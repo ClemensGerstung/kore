@@ -1,8 +1,10 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
+import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
 
@@ -24,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
+
+    public static final String WRONGPASSWORD = "com.typingsolutions.passwordmanager.activitiesPasswordOverviewActivity.WRONGPASSWORD";
 
     private RecyclerView passwordRecyclerView;
     private Toolbar toolbar;
@@ -34,6 +40,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private PasswordOverviewAdapter passwordOverviewAdapter;
     private AsyncPasswordLoader passwordLoader;
     private RecyclerView.LayoutManager layoutManager;
+
+    private WrongPasswordReceiver wrongPasswordReceiver;
+
+    private int userId;
 
     private AsyncPasswordLoader.ItemAddCallback itemAddCallback = new AsyncPasswordLoader.ItemAddCallback() {
         @Override
@@ -54,6 +64,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
+                        Log.i(getClass().getSimpleName(), "make invisible");
                         noPasswordsTextView.setVisibility(View.INVISIBLE);
                     }
 
@@ -100,7 +111,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             return false;
         }
     };
-
     private DialogInterface.OnClickListener orderItemClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -129,7 +139,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // get userId
         UserProvider userProvider = UserProvider.getInstance(this);
-        int userId = userProvider.getId();
+        userId = userProvider.getId();
 
         // init and set adapter
         passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -140,11 +150,32 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         // init passwordProvider
         PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
         provider.setOnPasswordAddedToDatabase(onPasswordAddedToDatabase);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         // load passwords in background
         passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
         passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
+
+        wrongPasswordReceiver = new WrongPasswordReceiver(this);
+        IntentFilter filter = new IntentFilter(WRONGPASSWORD);
+        getApplicationContext().registerReceiver(wrongPasswordReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        PasswordProvider.logout();
+        UserProvider.logout();
+        super.onBackPressed();
     }
 
     @Override
@@ -179,5 +210,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void makeSnackBar() {
+        Snackbar.make(addPasswordFloatingActionButton, "Your passwords do not match", Snackbar.LENGTH_LONG).show();
     }
 }
