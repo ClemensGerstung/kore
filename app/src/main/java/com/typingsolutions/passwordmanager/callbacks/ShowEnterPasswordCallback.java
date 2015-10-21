@@ -41,12 +41,10 @@ public class ShowEnterPasswordCallback extends BaseCallback {
         if (rememberUser) {
             final SharedPreferences.Editor editor = preferences.edit();
             editor.putString(LoginUsernameFragment.REMEMBERED_USERNAME, username);
+            editor.apply();
         }
 
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.layout_to_replace, new LoginPasswordFragment())
-                .commit();
+        activity.switchToEnterPasswordCallback();
 
         floatingActionButton.setImageResource(R.drawable.add);
         floatingActionButton.setOnClickListener(new CreateUserCallback(context));

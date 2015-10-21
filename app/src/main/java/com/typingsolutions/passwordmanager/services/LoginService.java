@@ -57,11 +57,14 @@ public class LoginService extends Service {
             final int size = callbacks.beginBroadcast();
 
 //            Log.d(getClass().getSimpleName(), String.format("Get block time async for user %s for %s callbacks", id, size));
+            BlockedUser user = blockedUserList.getUserById(id);
+            if (user == null){
+                callbacks.finishBroadcast();
+                return;
+            }
 
+//            Log.d(getClass().getSimpleName(), user.toString());
             for (int i = 0; i < size; i++) {
-                BlockedUser user = blockedUserList.getUserById(id);
-                if (user == null) continue;
-//                if (!user.isBlocked()) continue;
                 callbacks.getBroadcastItem(i).getLockTime(user.getTimeRemaining(), user.getCompleteTime());
             }
 
