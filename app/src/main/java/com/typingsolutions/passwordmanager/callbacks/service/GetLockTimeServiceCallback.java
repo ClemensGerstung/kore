@@ -19,8 +19,6 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
         OutlinedImageView background = loginPasswordFragment.getBackground();
         background.update(time, completeTime);
 
-        Log.d(getClass().getSimpleName(), String.format("%s %s", time, completeTime));
-
         if (time <= 0) {
             loginPasswordFragment.showAllInputs();
         } else {

@@ -56,14 +56,13 @@ public class LoginService extends Service {
         public void getBlockedTimeAsync(int id) throws RemoteException {
             final int size = callbacks.beginBroadcast();
 
-//            Log.d(getClass().getSimpleName(), String.format("Get block time async for user %s for %s callbacks", id, size));
             BlockedUser user = blockedUserList.getUserById(id);
             if (user == null){
                 callbacks.finishBroadcast();
                 return;
             }
 
-//            Log.d(getClass().getSimpleName(), user.toString());
+//            Log.d(getClass().getSimpleName(), String.format("Get block time async for %s callbacks", size));
             for (int i = 0; i < size; i++) {
                 callbacks.getBroadcastItem(i).getLockTime(user.getTimeRemaining(), user.getCompleteTime());
             }

@@ -1,5 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.app.ActivityManager;
 import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -71,8 +72,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = new Intent(this, LoginService.class);
-        startService(intent);
-        bindService(intent, loginServiceConnection, Context.BIND_ABOVE_CLIENT);
+        if(!isServiceRunning(LoginService.class))
+            startService(intent);
+
+        bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         loginReceiver = new LoginReceiver(this);
@@ -105,5 +108,15 @@ public class LoginActivity extends AppCompatActivity {
 
     public ILoginServiceRemote getLoginServiceRemote() {
         return loginServiceRemote;
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
