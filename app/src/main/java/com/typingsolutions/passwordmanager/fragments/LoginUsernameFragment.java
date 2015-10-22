@@ -88,6 +88,7 @@ public class LoginUsernameFragment extends Fragment {
 
 
     public void clearEditText() {
+        if(username == null) return;
         username.setText("");
     }
 }
