@@ -119,8 +119,8 @@ public class BlockedUserList implements Iterable<BlockedUser> {
 
             if(!blockedUserList.contains(user)) {
                 blockedUserList.add(user);
-//                Log.d(getClass().getSimpleName(), user.toString());
-                if(user.isBlocked()) user.startBlocking();
+                if(user.isBlocked())
+                    user.startBlocking();
             }
         }
         reader.endArray();
