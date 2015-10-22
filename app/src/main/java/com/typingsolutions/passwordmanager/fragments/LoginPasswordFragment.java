@@ -36,7 +36,6 @@ public class LoginPasswordFragment extends Fragment {
 
     private EditText password;
     private CheckBox safeLogin;
-    private LinearLayout notUser;
     private OutlinedImageView background;
     private LoginActivity loginActivity;
 
@@ -51,6 +50,7 @@ public class LoginPasswordFragment extends Fragment {
             editor.apply();
         }
     };
+    private TextView notUser;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -81,16 +81,15 @@ public class LoginPasswordFragment extends Fragment {
         View view = inflater.inflate(R.layout.login_password_layout, container, false);
 
         background = (OutlinedImageView) view.findViewById(R.id.loginpasswordlayout_imageview_background);
-        notUser = (LinearLayout) view.findViewById(R.id.loginpasswordlayout_linearlayout_notuser);
         password = (EditText) view.findViewById(R.id.loginpasswordlayout_edittext_password);
         safeLogin = (CheckBox) view.findViewById(R.id.loginpasswordlayout_checkbox_safelogin);
 
         safeLogin.setTag(R.string.hidden, false);
 
         final TextView username = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_bonjourname);
-        final TextView notUserName = (TextView) notUser.findViewById(R.id.loginpasswordlayout_textview_notuser);
+        notUser = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_notuser);
         replaceTemplate(username);
-        replaceTemplate(notUserName);
+        replaceTemplate(notUser);
 
         return view;
     }

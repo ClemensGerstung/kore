@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = new Intent(this, LoginService.class);
-        if(!isServiceRunning(LoginService.class))
+        if (!isServiceRunning(LoginService.class))
             startService(intent);
 
         bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
@@ -82,6 +82,11 @@ public class LoginActivity extends AppCompatActivity {
 
         getApplicationContext().registerReceiver(loginReceiver, intentFilter);
 
+        switchToEnterUsernameFragment();
+    }
+
+    public void switchToEnterUsernameFragment() {
+        loginUsernameFragment.clearEditText();
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
@@ -100,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         add.setOnClickListener(callback);
     }
 
-    public void switchToEnterPasswordCallback() {
+    public void switchToEnterPasswordFragment() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.replace(R.id.layout_to_replace, loginPasswordFragment).commit();
