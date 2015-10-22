@@ -87,4 +87,7 @@ public class LoginUsernameFragment extends Fragment {
     }
 
 
+    public void clearEditText() {
+        username.setText("");
+    }
 }

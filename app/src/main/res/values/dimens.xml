@@ -5,5 +5,5 @@
 
     <dimen name="margin">16dp</dimen>
     <dimen name="edittext_width">275dp</dimen>
-    <dimen name="notuser_marginbottom">32dp</dimen>
+    <dimen name="notuser_marginbottom">26dp</dimen>
 </resources>
