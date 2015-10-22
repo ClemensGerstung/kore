@@ -8,6 +8,7 @@ import android.os.RemoteException;
 import android.support.annotation.AnimRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.EditText;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
+import com.typingsolutions.passwordmanager.callbacks.ShowEnterUsernameCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.SimpleSwitchTextWatcher;
 import core.UserProvider;
@@ -38,6 +40,7 @@ public class LoginPasswordFragment extends Fragment {
     private CheckBox safeLogin;
     private OutlinedImageView background;
     private LoginActivity loginActivity;
+    private CardView notUser;
 
     private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -50,7 +53,7 @@ public class LoginPasswordFragment extends Fragment {
             editor.apply();
         }
     };
-    private TextView notUser;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -60,6 +63,14 @@ public class LoginPasswordFragment extends Fragment {
 
         if (activity instanceof LoginActivity) {
             loginActivity = (LoginActivity) activity;
+
+            notUser.setOnClickListener(new ShowEnterUsernameCallback(context, loginActivity));
+
+            try {
+                password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
+            } catch (Exception e) {
+                Log.e(getClass().getSimpleName(), e.getMessage());
+            }
         }
 
         final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -67,12 +78,6 @@ public class LoginPasswordFragment extends Fragment {
 
         safeLogin.setChecked(checked);
         safeLogin.setOnCheckedChangeListener(checkedChangeListener);
-
-        try {
-            password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
-        } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), e.getMessage());
-        }
     }
 
     @Nullable
@@ -83,13 +88,14 @@ public class LoginPasswordFragment extends Fragment {
         background = (OutlinedImageView) view.findViewById(R.id.loginpasswordlayout_imageview_background);
         password = (EditText) view.findViewById(R.id.loginpasswordlayout_edittext_password);
         safeLogin = (CheckBox) view.findViewById(R.id.loginpasswordlayout_checkbox_safelogin);
+        notUser = (CardView) view.findViewById(R.id.loginpasswordlayout_cardview_notuser);
 
         safeLogin.setTag(R.string.hidden, false);
 
         final TextView username = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_bonjourname);
-        notUser = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_notuser);
+
         replaceTemplate(username);
-        replaceTemplate(notUser);
+//        replaceTemplate(notUser);
 
         return view;
     }
