@@ -86,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void switchToEnterUsernameFragment() {
-        loginUsernameFragment.clearEditText();
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
@@ -109,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.replace(R.id.layout_to_replace, loginPasswordFragment).commit();
+        loginUsernameFragment = new LoginUsernameFragment();
     }
 
     public ILoginServiceRemote getLoginServiceRemote() {
