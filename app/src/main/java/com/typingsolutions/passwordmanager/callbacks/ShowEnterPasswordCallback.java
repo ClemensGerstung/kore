@@ -4,12 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
-import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import com.typingsolutions.passwordmanager.fragments.LoginUsernameFragment;
 import core.UserProvider;
 
@@ -41,12 +38,10 @@ public class ShowEnterPasswordCallback extends BaseCallback {
         if (rememberUser) {
             final SharedPreferences.Editor editor = preferences.edit();
             editor.putString(LoginUsernameFragment.REMEMBERED_USERNAME, username);
+            editor.apply();
         }
 
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.layout_to_replace, new LoginPasswordFragment())
-                .commit();
+        activity.switchToEnterPasswordFragment();
 
         floatingActionButton.setImageResource(R.drawable.add);
         floatingActionButton.setOnClickListener(new CreateUserCallback(context));

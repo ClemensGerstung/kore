@@ -57,6 +57,7 @@ public class LoginBlockHandler extends Handler {
 
             SystemClock.sleep(LoginService.SLEEP_TIME);
         } while (user.getTimeRemaining() > 0);
-
     }
+
+
 }

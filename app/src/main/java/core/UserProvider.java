@@ -23,6 +23,8 @@ public class UserProvider {
     private UserProvider(Context context) {
         this.context = context;
         this.currentUser = null;
+        this.id = -1;
+        this.username = null;
     }
 
     public static UserProvider getInstance(Context context) {
@@ -141,6 +143,13 @@ public class UserProvider {
 
     public void setUsername(String username) {
         this.username = username;
+        DatabaseProvider connection = DatabaseProvider.getConnection(context);
+        Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
+        id = -1;
+
+        if (cursor.moveToNext()) {
+            id = cursor.getInt(0);
+        }
     }
 
     public int getId() {
