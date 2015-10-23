@@ -2,7 +2,6 @@ package com.typingsolutions.passwordmanager.callbacks.service;
 
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.IServiceCallback;
@@ -20,14 +19,9 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
         OutlinedImageView background = loginPasswordFragment.getBackground();
         background.update(time, completeTime);
 
-//        Log.d(getClass().getSimpleName(), String.format("%s %s", time, completeTime));
-
-        if(time < 0)
-        {
+        if (time <= 0) {
             loginPasswordFragment.showAllInputs();
-        }
-        if(time >= completeTime)
-        {
+        } else {
             loginPasswordFragment.hideAllInputs();
         }
     }

@@ -60,6 +60,7 @@ public class BlockedUserList implements Iterable<BlockedUser> {
     public BlockedUser getUserById(int id) {
         for (BlockedUser blockedUser : blockedUserList) {
             if (blockedUser.id == id) {
+//                Log.d(getClass().getSimpleName(), "getUserById: " + blockedUser.toString());
                 return blockedUser;
             }
         }
@@ -118,8 +119,8 @@ public class BlockedUserList implements Iterable<BlockedUser> {
 
             if(!blockedUserList.contains(user)) {
                 blockedUserList.add(user);
-                Log.d(getClass().getSimpleName(), user.toString());
-                user.startBlocking();
+                if(user.isBlocked())
+                    user.startBlocking();
             }
         }
         reader.endArray();
