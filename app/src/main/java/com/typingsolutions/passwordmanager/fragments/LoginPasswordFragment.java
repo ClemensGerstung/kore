@@ -17,10 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
@@ -40,7 +37,8 @@ public class LoginPasswordFragment extends Fragment {
     private CheckBox safeLogin;
     private OutlinedImageView background;
     private LoginActivity loginActivity;
-    private CardView notUser;
+    private TextView notUser;
+    private CardView notUserBackground;
 
     private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -64,7 +62,7 @@ public class LoginPasswordFragment extends Fragment {
         if (activity instanceof LoginActivity) {
             loginActivity = (LoginActivity) activity;
 
-            notUser.setOnClickListener(new ShowEnterUsernameCallback(context, loginActivity));
+            notUserBackground.setOnClickListener(new ShowEnterUsernameCallback(context, loginActivity));
 
             try {
                 password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
@@ -88,14 +86,15 @@ public class LoginPasswordFragment extends Fragment {
         background = (OutlinedImageView) view.findViewById(R.id.loginpasswordlayout_imageview_background);
         password = (EditText) view.findViewById(R.id.loginpasswordlayout_edittext_password);
         safeLogin = (CheckBox) view.findViewById(R.id.loginpasswordlayout_checkbox_safelogin);
-        notUser = (CardView) view.findViewById(R.id.loginpasswordlayout_cardview_notuser);
+        notUser = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_notuser);
+        notUserBackground = (CardView) view.findViewById(R.id.loginpasswordlayout_cardview_notuser);
 
         safeLogin.setTag(R.string.hidden, false);
 
         final TextView username = (TextView) view.findViewById(R.id.loginpasswordlayout_textview_bonjourname);
 
         replaceTemplate(username);
-//        replaceTemplate(notUser);
+        replaceTemplate(notUser);
 
         return view;
     }

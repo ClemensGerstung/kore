@@ -53,7 +53,7 @@ public class LoginUsernameFragment extends Fragment {
         Context context = getActivity();
         LoginActivity loginActivity = (LoginActivity) getActivity();
 
-        final SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        final SharedPreferences preferences = loginActivity.getPreferences(Context.MODE_PRIVATE);
         final boolean checked = preferences.getBoolean(REMEMBER, false);
         final String rememberedName = preferences.getString(REMEMBERED_USERNAME, "");
 
@@ -65,7 +65,7 @@ public class LoginUsernameFragment extends Fragment {
             username.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, ShowEnterPasswordCallback.class));
         } catch (Exception ignored) { }
 
-        username.setText(rememberedName);
+        username.setText(checked ? rememberedName : "");
     }
 
     @Nullable
@@ -82,13 +82,12 @@ public class LoginUsernameFragment extends Fragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
+    public void onResume() {
+        super.onResume();
     }
 
-
-    public void clearEditText() {
-        if(username == null) return;
-        username.setText("");
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
     }
 }
