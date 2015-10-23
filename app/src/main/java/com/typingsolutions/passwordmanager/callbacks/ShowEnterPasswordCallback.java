@@ -43,7 +43,7 @@ public class ShowEnterPasswordCallback extends BaseCallback {
 
         activity.switchToEnterPasswordFragment();
 
-        floatingActionButton.setImageResource(R.drawable.add);
+        floatingActionButton.setImageResource(R.mipmap.add);
         floatingActionButton.setOnClickListener(new CreateUserCallback(context));
     }
 
