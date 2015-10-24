@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Password {
     private int id;
@@ -33,7 +34,7 @@ public class Password {
     }
 
     void addHistoryItem(int id, String value, String date) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(date);
@@ -52,11 +53,7 @@ public class Password {
 
         Password password = (Password) o;
 
-        if (id != password.id) return false;
-        if (position != password.position) return false;
-        if (!username.equals(password.username)) return false;
-        return program.equals(password.program);
-
+        return id == password.id && position == password.position && username.equals(password.username) && program.equals(password.program);
     }
 
     @Override
@@ -100,4 +97,6 @@ public class Password {
                 ", program='" + program + '\'' +
                 '}';
     }
+
+
 }

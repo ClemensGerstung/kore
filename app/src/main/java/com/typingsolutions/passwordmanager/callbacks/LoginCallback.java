@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,9 @@ public class LoginCallback extends BaseCallback {
     public void onClick(View v) {
         User user = null;
         try {
-            user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password);
+            final SharedPreferences preferences = loginActivity.getPreferences(Context.MODE_PRIVATE);
+            final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
+            user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password, checked);
 
             Intent intent = new Intent(context, PasswordOverviewActivity.class);
             context.startActivity(intent);

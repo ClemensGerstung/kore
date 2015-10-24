@@ -1,7 +1,11 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
 
+    private List<Integer> passwordIds;
     private int id;
     private String name;
     private String plainPassword;
@@ -9,12 +13,13 @@ public class User {
     private String salt;
     boolean safeLogin;
 
-    public User(int id, String name, String plainPassword, String salt, String passwordHash) {
+    User(int id, String name, String plainPassword, String salt, String passwordHash) {
         this.id = id;
         this.name = name;
         this.plainPassword = plainPassword;
         this.salt = salt;
         this.passwordHash = passwordHash;
+        this.passwordIds = new ArrayList<>();
     }
 
     public String getName() {

@@ -34,7 +34,7 @@ public class UserProvider {
         return INSTANCE;
     }
 
-    public User login(ILoginServiceRemote remote, String password) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
+    public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
 
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
         Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
@@ -85,9 +85,8 @@ public class UserProvider {
 
         if (currentUser == null) {
             currentUser = new User(id, username, password, salt, passwordHash);
-            final SharedPreferences preferences = context.getSharedPreferences("activities.LoginActivity", Context.MODE_PRIVATE);
-            final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
-            currentUser.isSafeLogin(checked);
+
+            currentUser.isSafeLogin(safeLogin);
         }
 
         cursor.close();
@@ -123,7 +122,7 @@ public class UserProvider {
         long id = DatabaseProvider.getConnection(context).insert(DatabaseProvider.CREATE_USER, username, passwordHash, salt);
         if (autoLogin) {
             setUsername(username);
-            User user = login(null, password);
+            User user = login(null, password, false);
             return user;
         }
 

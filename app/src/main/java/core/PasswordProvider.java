@@ -43,57 +43,57 @@ public class PasswordProvider {
     public int insertIntoDatabase(String program, String username, String password) throws Exception {
         int position = 0;
         int passwordId = -1;
-        DatabaseProvider connection = DatabaseProvider.getConnection(context);
-        String date = Utils.getDate();
-        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
-        String encryptedProgram = AesProvider.encrypt(program, userMasterPassword);
-        String encryptedUsername = AesProvider.encrypt(username, userMasterPassword);
-        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
-        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
-
-        String userIdString = Integer.toString(userId);
-        Cursor cursor = connection.query(DatabaseProvider.GET_MAX_POSITION, userIdString);
-        if (cursor.moveToNext()) {
-            position = cursor.getInt(0);
-        }
-
-        passwordId = (int) connection.insert(DatabaseProvider.INSERT_PASSWORD, encryptedUsername, encryptedProgram, Integer.toString(position), userIdString);
-
-        if (passwordId == -1) {
-            throw new PasswordProviderException("Couldn't insert your password");
-        }
-
-        int historyId = insertPasswordHistoryItem(encryptedPassword, encryptedDate, passwordId);
-
-        if (onPasswordAddedToDatabase != null) {
-            onPasswordAddedToDatabase.onPasswordAdded(passwordId, historyId);
-        }
-
-        Password passwordObj = new Password(passwordId, position, username, program);
-        passwordObj.addHistoryItem(historyId, password, date);
-        passwords.add(passwordObj);
+//        DatabaseProvider connection = DatabaseProvider.getConnection(context);
+//        String date = Utils.getDate();
+//        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
+//        String encryptedProgram = AesProvider.encrypt(program, userMasterPassword);
+//        String encryptedUsername = AesProvider.encrypt(username, userMasterPassword);
+//        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
+//        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
+//
+//        String userIdString = Integer.toString(userId);
+//        Cursor cursor = connection.query(DatabaseProvider.GET_MAX_POSITION, userIdString);
+//        if (cursor.moveToNext()) {
+//            position = cursor.getInt(0);
+//        }
+//
+//        passwordId = (int) connection.insert(DatabaseProvider.INSERT_PASSWORD, encryptedUsername, encryptedProgram, Integer.toString(position), userIdString);
+//
+//        if (passwordId == -1) {
+//            throw new PasswordProviderException("Couldn't insert your password");
+//        }
+//
+//        int historyId = insertPasswordHistoryItem(encryptedPassword, encryptedDate, passwordId);
+//
+//        if (onPasswordAddedToDatabase != null) {
+//            onPasswordAddedToDatabase.onPasswordAdded(passwordId, historyId);
+//        }
+//
+//        Password passwordObj = new Password(passwordId, position, username, program);
+//        passwordObj.addHistoryItem(historyId, password, date);
+//        passwords.add(passwordObj);
 
         return passwordId;
     }
 
     public void add(Password password) {
-        passwords.add(password);
-
-        if (onPasswordAddedToDatabase != null) {
-            PasswordHistory history = password.getPasswordHistory().get(0);
-            onPasswordAddedToDatabase.onPasswordAdded(password.getId(), history.getId());
-        }
+//        passwords.add(password);
+//
+//        if (onPasswordAddedToDatabase != null) {
+//            PasswordHistory history = password.getPasswordHistory().get(0);
+//            onPasswordAddedToDatabase.onPasswordAdded(password.getId(), history.getId());
+//        }
     }
 
     private int insertPasswordHistoryItem(String value, String date, int passwordId) throws PasswordProviderException {
         int historyId = -1;
-        DatabaseProvider connection = DatabaseProvider.getConnection(context);
-
-        historyId = (int) connection.insert(DatabaseProvider.INSERT_HISTORY_FOR_PASSWORD, value, date, Integer.toString(passwordId));
-
-        if (historyId == -1) {
-            throw new PasswordProviderException("Couldn't insert your password");
-        }
+//        DatabaseProvider connection = DatabaseProvider.getConnection(context);
+//
+//        historyId = (int) connection.insert(DatabaseProvider.INSERT_HISTORY_FOR_PASSWORD, value, date, Integer.toString(passwordId));
+//
+//        if (historyId == -1) {
+//            throw new PasswordProviderException("Couldn't insert your password");
+//        }
 
         return historyId;
     }
