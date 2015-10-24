@@ -69,7 +69,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
 
                 ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
-                if(historyCardHeight > passwordHistoryCard.getMeasuredHeight()){
+                if (historyCardHeight > passwordHistoryCard.getMeasuredHeight()) {
                     params.height = historyCardHeight;
                 }
                 passwordHistoryCard.setLayoutParams(params);
@@ -170,7 +170,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
             // ignored
         }
 
-        onBackPressed();
+//        onBackPressed();
 
         return super.onOptionsItemSelected(item);
     }
@@ -178,10 +178,6 @@ public class PasswordDetailActivity extends AppCompatActivity {
     public void switchMenuState(boolean state) {
         MenuItem item = toolbar.getMenu().getItem(0);
         item.setEnabled(state);
-        if (state) {
-            item.getIcon().setAlpha(255);
-        } else {
-            item.getIcon().setAlpha(64);
-        }
+        item.getIcon().setAlpha(state ? 255 : 64);
     }
 }
