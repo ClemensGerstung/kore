@@ -72,4 +72,9 @@ public class Utils {
         return dateFormat.format(date);
     }
 
+    public static String getDateAsSimpleString(Date date) {
+        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault());
+        return dateFormat.format(date);
+    }
+
 }

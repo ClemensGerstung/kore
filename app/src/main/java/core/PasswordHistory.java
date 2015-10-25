@@ -1,5 +1,9 @@
 package core;
 
+import android.util.JsonWriter;
+
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Date;
 
 public class PasswordHistory {
@@ -7,7 +11,7 @@ public class PasswordHistory {
     private String value;
     private Date changedDate;
 
-    public PasswordHistory(int id, String value, Date changedDate) {
+    PasswordHistory(int id, String value, Date changedDate) {
         this.id = id;
         this.value = value;
         this.changedDate = changedDate;
@@ -43,6 +47,23 @@ public class PasswordHistory {
         int result = id;
         result = 31 * result + (value != null ? value.hashCode() : 0);
         result = 31 * result + (changedDate != null ? changedDate.hashCode() : 0);
+        return result;
+    }
+
+    public String getJson() throws IOException {
+        StringWriter writer = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(writer);
+
+        jsonWriter.beginObject();
+        jsonWriter.name("value");
+        jsonWriter.value(value);
+        jsonWriter.name("dateChanged");
+        jsonWriter.value(Utils.getDateAsSimpleString(changedDate));
+        jsonWriter.endObject();
+
+        String result = writer.toString();
+        writer.close();
+        jsonWriter.close();
         return result;
     }
 }
