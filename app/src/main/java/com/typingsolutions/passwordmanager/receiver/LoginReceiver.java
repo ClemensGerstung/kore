@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
-import core.UserProvider;
+import core.data.UserProvider;
 
 public class LoginReceiver extends BroadcastReceiver {
     private LoginActivity loginActivity;

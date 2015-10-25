@@ -1,15 +1,14 @@
-package core;
+package core.data;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.os.RemoteException;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
-import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
+import core.AesProvider;
+import core.DatabaseProvider;
+import core.Utils;
 import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class UserProvider {
@@ -36,7 +35,6 @@ public class UserProvider {
     }
 
     public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws Exception {
-
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
         Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
 
@@ -89,7 +87,7 @@ public class UserProvider {
             cursor = connection.query(DatabaseProvider.GET_PASSWORDIDS_FROM_USER, Integer.toString(id));
             if(cursor.moveToNext()) {
                 String ids = AesProvider.decrypt(cursor.getString(0), password);
-                currentUser.getPasswordsFromJson(ids);
+                currentUser.setPasswordIdsFromJson(ids);
             }
             currentUser.isSafeLogin(safeLogin);
         }
@@ -175,4 +173,11 @@ public class UserProvider {
         INSTANCE.logoutComplete();
         INSTANCE = null;
     }
+
+    public static String decrypt(String data) throws Exception {
+        if(INSTANCE == null || INSTANCE.currentUser == null)
+            throw new UserProviderException("Cannot decrypt because there was an error");
+        return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
+    }
+
 }

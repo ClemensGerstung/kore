@@ -3,8 +3,6 @@ package core.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +14,9 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
-import core.*;
+import core.data.Password;
+import core.data.User;
+import core.data.UserProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,17 +195,17 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             EditText editText = (EditText) alert.findViewById(R.id.reenterpasswordlayout_edittext_password);
             String password = editText.getText().toString();
             User user = UserProvider.getInstance(context).getCurrentUser();
-
-            if(password.equals(user.getPlainPassword())) {
-                Intent intent = new Intent(context, PasswordDetailActivity.class);
-                intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
-                context.startActivity(intent);
-            }
-            else {
-                alert.dismiss();
-                Intent intent = new Intent(PasswordOverviewActivity.WRONGPASSWORD);
-                context.getApplicationContext().sendBroadcast(intent);
-            }
+//          TODO:
+//            if(password.equals(user.getPlainPassword())) {
+//                Intent intent = new Intent(context, PasswordDetailActivity.class);
+//                intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
+//                context.startActivity(intent);
+//            }
+//            else {
+//                alert.dismiss();
+//                Intent intent = new Intent(PasswordOverviewActivity.WRONGPASSWORD);
+//                context.getApplicationContext().sendBroadcast(intent);
+//            }
         }
     }
 

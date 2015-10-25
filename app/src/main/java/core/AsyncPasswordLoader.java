@@ -3,8 +3,10 @@ package core;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
-
-import java.util.Collections;
+import android.util.Log;
+import core.data.Password;
+import core.data.User;
+import core.data.UserProvider;
 
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
     private String query;
@@ -23,8 +25,21 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
 
     @Override
     protected Password doInBackground(String... params) {
-//        Cursor cursor = DatabaseProvider.getConnection(context).query(query, args);
-//        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
+        User currentUser = UserProvider.getInstance(context).getCurrentUser();
+        try {
+            for(Integer i : currentUser.getPasswordIds()) {
+                Cursor passwordCursor = DatabaseProvider.getConnection(context).query(query, i.toString());
+                if(passwordCursor.moveToNext()) {
+                    String dbJson = passwordCursor.getString(0);
+                    String passwordJson = UserProvider.decrypt(dbJson);
+                    Password password = Password.getFromJson(passwordJson);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+        }
+
+
 //
 //        Password passwordToAdd = null;
 //        Password tmpPassword;
