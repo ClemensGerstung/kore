@@ -14,7 +14,6 @@ import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import core.Password;
-import core.PasswordProvider;
 import core.UserProvider;
 import core.adapter.PasswordHistoryAdapter;
 
@@ -104,7 +103,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        currentPassword = PasswordProvider.getInstance(this, id).getById(passwordId);
+//        TODO:
+//        currentPassword = PasswordProvider.getInstance(this, id).getById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -160,11 +160,11 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
         try {
             if (newPassword != null) {
-                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
+//                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
             }
 
             if (newUsername != null || newProgram != null) {
-                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
+//                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
             }
         } catch (Exception e) {
             // ignored

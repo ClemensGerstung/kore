@@ -9,6 +9,7 @@ import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class UserProvider {
@@ -34,7 +35,7 @@ public class UserProvider {
         return INSTANCE;
     }
 
-    public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
+    public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws Exception {
 
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
         Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
@@ -85,7 +86,11 @@ public class UserProvider {
 
         if (currentUser == null) {
             currentUser = new User(id, username, password, salt, passwordHash);
-
+            cursor = connection.query(DatabaseProvider.GET_PASSWORDIDS_FROM_USER, Integer.toString(id));
+            if(cursor.moveToNext()) {
+                String ids = AesProvider.decrypt(cursor.getString(0), password);
+                currentUser.getPasswordsFromJson(ids);
+            }
             currentUser.isSafeLogin(safeLogin);
         }
 
@@ -107,7 +112,7 @@ public class UserProvider {
         return i == 1;
     }
 
-    public User createUser(String username, String password, String salt, boolean autoLogin) throws UserProviderException, NoSuchAlgorithmException, RemoteException, LoginException {
+    public User createUser(String username, String password, String salt, boolean autoLogin) throws Exception {
         if (userExists(username)) {
             throw new UserProviderException("Your username already exists");
         }

@@ -3,20 +3,15 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
-import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
 import core.User;
 import core.UserProvider;
 import core.exceptions.LoginException;
-import core.exceptions.UserProviderException;
-
-import java.security.NoSuchAlgorithmException;
 
 public class LoginCallback extends BaseCallback {
     private LoginActivity loginActivity;
@@ -38,22 +33,24 @@ public class LoginCallback extends BaseCallback {
 
             Intent intent = new Intent(context, PasswordOverviewActivity.class);
             context.startActivity(intent);
-        } catch (UserProviderException | NoSuchAlgorithmException | RemoteException e) {
-            Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
-        } catch (LoginException e) {
-            Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
+        } catch (Exception e) {
+            if (e instanceof LoginException) {
+                LoginException exception = (LoginException) e;
 
-            Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
+                Snackbar.make(v, e.getMessage(), Snackbar.LENGTH_LONG).show();
 
-            if (fragment instanceof LoginPasswordFragment) {
-                LoginPasswordFragment loginPasswordFragment = (LoginPasswordFragment) fragment;
+                Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
 
-                if (e.getState() == LoginException.WRONG) {
-                    loginPasswordFragment.retypePassword();
+                if (fragment instanceof LoginPasswordFragment) {
+                    LoginPasswordFragment loginPasswordFragment = (LoginPasswordFragment) fragment;
+
+                    if (exception.getState() == LoginException.WRONG) {
+                        loginPasswordFragment.retypePassword();
+                    }
                 }
+            } else {
+                Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
             }
-
-
         }
     }
 

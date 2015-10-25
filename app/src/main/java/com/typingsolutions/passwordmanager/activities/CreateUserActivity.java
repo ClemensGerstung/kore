@@ -157,7 +157,7 @@ public class CreateUserActivity extends AppCompatActivity {
             } else {
                 onBackPressed();
             }
-        } catch (UserProviderException | RemoteException | NoSuchAlgorithmException | LoginException e) {
+        } catch (Exception e) {
             Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
             usernameEditText.requestFocus();
             switchMenuState(false);
