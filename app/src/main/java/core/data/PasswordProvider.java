@@ -1,8 +1,8 @@
-package core;
+package core.data;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.Nullable;
+import core.DatabaseProvider;
 import core.exceptions.PasswordProviderException;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ class PasswordProvider {
         int position = 0;
         int passwordId = -1;
 //        DatabaseProvider connection = DatabaseProvider.getConnection(context);
-//        String date = Utils.getDate();
+//        String date = Utils.getCurrentDate();
 //        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
 //        String encryptedProgram = AesProvider.encrypt(program, userMasterPassword);
 //        String encryptedUsername = AesProvider.encrypt(username, userMasterPassword);
@@ -136,14 +136,14 @@ class PasswordProvider {
     }
 
     public void addPasswordHistoryItem(int id, String password) throws Exception {
-        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
-        String date = Utils.getDate();
-        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
-        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
-
-        DatabaseProvider provider = DatabaseProvider.getConnection(context);
-
-        insertPasswordHistoryItem(encryptedPassword, encryptedDate, id);
+//        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
+//        String date = Utils.getCurrentDate();
+//        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
+//        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
+//
+//        DatabaseProvider provider = DatabaseProvider.getConnection(context);
+//
+//        insertPasswordHistoryItem(encryptedPassword, encryptedDate, id);
     }
 
     public boolean contains(Password p) {

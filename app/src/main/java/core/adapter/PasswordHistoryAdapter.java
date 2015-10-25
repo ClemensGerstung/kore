@@ -1,19 +1,12 @@
 package core.adapter;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
-import core.Password;
-import core.PasswordHistory;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistoryAdapter.ViewHolder> {
 

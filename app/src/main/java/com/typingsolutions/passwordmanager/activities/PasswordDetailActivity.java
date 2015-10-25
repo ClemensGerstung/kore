@@ -13,8 +13,8 @@ import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
-import core.Password;
-import core.UserProvider;
+import core.data.Password;
+import core.data.UserProvider;
 import core.adapter.PasswordHistoryAdapter;
 
 public class PasswordDetailActivity extends AppCompatActivity {

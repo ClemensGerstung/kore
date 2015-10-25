@@ -9,8 +9,8 @@ import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
-import core.User;
-import core.UserProvider;
+import core.data.User;
+import core.data.UserProvider;
 import core.exceptions.LoginException;
 
 public class LoginCallback extends BaseCallback {

@@ -8,7 +8,7 @@ import android.view.View;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.fragments.LoginUsernameFragment;
-import core.UserProvider;
+import core.data.UserProvider;
 
 public class ShowEnterPasswordCallback extends BaseCallback {
 

@@ -1,7 +1,8 @@
-package core;
+package core.data;
 
 import android.util.JsonReader;
 import android.util.JsonWriter;
+import core.Utils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -14,7 +15,7 @@ public class User {
     private List<Integer> passwordIds;
     private int id;
     private String name;
-    private String plainPassword;
+    String plainPassword;
     private String passwordHash;
     private String salt;
     boolean safeLogin;
@@ -36,20 +37,8 @@ public class User {
         this.name = name;
     }
 
-    public String getPlainPassword() {
-        return plainPassword;
-    }
-
-    public void setPlainPassword(String plainPassword) {
-        this.plainPassword = plainPassword;
-    }
-
     public String getPasswordHash() {
         return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
     public String getSalt() {
@@ -70,6 +59,10 @@ public class User {
 
     public boolean isSafeLogin() {
         return safeLogin;
+    }
+
+    public List<Integer> getPasswordIds() {
+        return passwordIds;
     }
 
     public String getPasswordsAsJson() throws IOException {
@@ -99,13 +92,13 @@ public class User {
         return data;
     }
 
-    public void getPasswordsFromJson(String data) throws IOException {
+    public void setPasswordIdsFromJson(String data) throws IOException {
         StringReader reader = new StringReader(data);
         JsonReader jsonReader = new JsonReader(reader);
 
         jsonReader.beginObject();
 
-        if (jsonReader.hasNext()) {
+        while (jsonReader.hasNext()) {
             String name = jsonReader.nextName();
             // salt is not necessary...
             if(name.equals("ids")) {

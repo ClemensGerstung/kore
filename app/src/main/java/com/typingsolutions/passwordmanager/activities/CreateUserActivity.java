@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,12 +19,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
-import core.UserProvider;
+import core.data.UserProvider;
 import core.Utils;
-import core.exceptions.LoginException;
-import core.exceptions.UserProviderException;
-
-import java.security.NoSuchAlgorithmException;
 
 public class CreateUserActivity extends AppCompatActivity {
 

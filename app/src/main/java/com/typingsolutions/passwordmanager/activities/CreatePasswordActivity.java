@@ -1,7 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -13,8 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
 
-import core.UserProvider;
-import core.exceptions.PasswordProviderException;
+import core.data.UserProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
