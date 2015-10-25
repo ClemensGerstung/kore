@@ -1,5 +1,9 @@
 package core;
 
+import android.util.JsonWriter;
+
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,7 +20,7 @@ public class Password {
     private List<PasswordHistory> passwordHistory;
 
 
-    public Password(int id, int position, String username, String program) {
+    Password(int id, int position, String username, String program) {
         this.id = id;
         this.position = position;
         this.username = username;
@@ -98,5 +102,15 @@ public class Password {
                 '}';
     }
 
+    public String getJson() throws IOException {
+        StringWriter writer = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(writer);
 
+
+
+        String result = writer.toString();
+        writer.close();
+        jsonWriter.close();
+        return result;
+    }
 }
