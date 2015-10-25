@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class PasswordProvider {
+class PasswordProvider {
     private static PasswordProvider INSTANCE;
 
 
@@ -118,15 +118,15 @@ public class PasswordProvider {
     public void update(int id, @Nullable String username, @Nullable String program) throws PasswordProviderException {
         DatabaseProvider provider = DatabaseProvider.getConnection(context);
         int returnedValue = -1;
-        if (username != null && program != null) {
-            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME_AND_PASSWORD, username, program, Integer.toString(id));
-        } else if (username != null && program == null) {
-            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME, username, Integer.toString(id));
-        } else if (program != null && username == null) {
-            returnedValue = provider.update(DatabaseProvider.UPDATE_PROGRAM, program, Integer.toString(id));
-        } else {
-            throw new PasswordProviderException("Not supported operation: either username or password has to be something");
-        }
+//        if (username != null && program != null) {
+//            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME_AND_PASSWORD, username, program, Integer.toString(id));
+//        } else if (username != null && program == null) {
+//            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME, username, Integer.toString(id));
+//        } else if (program != null && username == null) {
+//            returnedValue = provider.update(DatabaseProvider.UPDATE_PROGRAM, program, Integer.toString(id));
+//        } else {
+//            throw new PasswordProviderException("Not supported operation: either username or password has to be something");
+//        }
 
         if (returnedValue == -1) {
             throw new PasswordProviderException("There was an error by updating this password");

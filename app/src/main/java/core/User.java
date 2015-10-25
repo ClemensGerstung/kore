@@ -1,5 +1,11 @@
 package core;
 
+import android.util.JsonReader;
+import android.util.JsonWriter;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +72,70 @@ public class User {
         return safeLogin;
     }
 
+    public String getPasswordsAsJson() throws IOException {
+        StringWriter writer = new StringWriter();
+        JsonWriter jsonWriter = new JsonWriter(writer);
+
+        jsonWriter.beginObject();
+
+        jsonWriter.name("ids");
+        jsonWriter.beginArray();
+        for (Integer i : passwordIds) {
+            jsonWriter.beginObject();
+            jsonWriter.name("id");
+            jsonWriter.value(i);
+            jsonWriter.endObject();
+        }
+        jsonWriter.endArray();
+
+        jsonWriter.name("salt");
+        jsonWriter.value(Utils.getSalt());
+
+        jsonWriter.endObject();
+
+        String data = writer.toString();
+        writer.close();
+        jsonWriter.close();
+        return data;
+    }
+
+    public void getPasswordsFromJson(String data) throws IOException {
+        StringReader reader = new StringReader(data);
+        JsonReader jsonReader = new JsonReader(reader);
+
+        jsonReader.beginObject();
+
+        if (jsonReader.hasNext()) {
+            String name = jsonReader.nextName();
+            // salt is not necessary...
+            if(name.equals("ids")) {
+                jsonReader.beginArray();
+
+                while (jsonReader.hasNext()) {
+                    String idName = jsonReader.nextName();
+                    if(!idName.equals("id")) continue;
+
+                    jsonReader.beginObject();
+
+                    Integer id = jsonReader.nextInt();
+
+                    if(!passwordIds.contains(id)) {
+                        passwordIds.add(id);
+                    }
+
+                    jsonReader.endObject();
+                }
+
+                jsonReader.endArray();
+            }
+        }
+
+        jsonReader.endObject();
+
+        reader.close();
+        jsonReader.close();
+    }
+
     public void logout() {
         id = -1;
         name = null;
@@ -73,5 +143,7 @@ public class User {
         salt = null;
         passwordHash = null;
         safeLogin = false;
+        passwordIds.clear();
+        passwordIds = null;
     }
 }

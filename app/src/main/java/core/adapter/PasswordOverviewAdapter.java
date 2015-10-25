@@ -47,19 +47,19 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         useFiltered = false;
     }
 
-    private PasswordProvider getProvider() {
-        int userId = UserProvider.getInstance(context).getId();
-        PasswordProvider provider = PasswordProvider.getInstance(context, userId);
-        return provider;
-    }
+//    private PasswordProvider getProvider() {
+//        int userId = UserProvider.getInstance(context).getId();
+//        PasswordProvider provider = PasswordProvider.getInstance(context, userId);
+//        return provider;
+//    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
 
         safe = UserProvider.getInstance(context).isSafe();
-
-        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
+//      TODO:
+//        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
         ViewHolder viewHolder = new ViewHolder(view);
         if(safe) {
             viewHolder.makeSafe();
@@ -70,21 +70,23 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
-        PasswordHistory history = password.getPasswordHistory().get(0);
-
-
-        if (!safe) {
-            viewHolder.password.setText(history.getValue());
-        }
-        viewHolder.username.setText(password.getUsername());
-        viewHolder.program.setText(password.getProgram());
-        viewHolder.id = password.getId();
+//        TODO:
+//        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
+//        PasswordHistory history = password.getPasswordHistory().get(0);
+//
+//
+//        if (!safe) {
+//            viewHolder.password.setText(history.getValue());
+//        }
+//        viewHolder.username.setText(password.getUsername());
+//        viewHolder.program.setText(password.getProgram());
+//        viewHolder.id = password.getId();
     }
 
     @Override
     public int getItemCount() {
-        return useFiltered ? localPasswords.size() : getProvider().size();
+//        return useFiltered ? localPasswords.size() : getProvider().size();
+        return 0;
     }
 
     public synchronized void filter(String query) {
@@ -107,14 +109,15 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     }
 
     private void filter(String query, int flag) {
-        PasswordProvider provider = getProvider();
-        for (int i = 0; i < provider.size(); i++) {
-            Password password = provider.get(i);
-            if (matches(password, query, flag)) {
-                if (localPasswords.contains(password)) continue;
-                localPasswords.add(password);
-            }
-        }
+//        TODO:
+//        PasswordProvider provider = getProvider();
+//        for (int i = 0; i < provider.size(); i++) {
+//            Password password = provider.get(i);
+//            if (matches(password, query, flag)) {
+//                if (localPasswords.contains(password)) continue;
+//                localPasswords.add(password);
+//            }
+//        }
     }
 
     private boolean matches(Password password, String simpleQuery, int filterFlags) {
