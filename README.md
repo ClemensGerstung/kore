@@ -5,5 +5,5 @@
 
 ## The perhaps best app on Android to store your passwords.
 
-Developer of this nice app is @HumpaLumpa007. 
+Developer of this nice app is @Clemens. 
 So contact me if you want something in this app.
