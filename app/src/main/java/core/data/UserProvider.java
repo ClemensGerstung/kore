@@ -14,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 public class UserProvider {
     private static UserProvider INSTANCE;
 
-
+    private PasswordProvider passwordProvider;
     private Context context;
     private User currentUser;
     private String username;
@@ -35,23 +35,16 @@ public class UserProvider {
     }
 
     public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws Exception {
-        DatabaseProvider connection = DatabaseProvider.getConnection(context);
-        Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
+        if(username == null || id == -1)
+            throw new UserProviderException("No username or id set");
 
-        id = -1;
+        DatabaseProvider connection = DatabaseProvider.getConnection(context);
+
         String salt = null;
         String passwordHash = null;
         String dbPasswordHash = null;
 
-        if (cursor.moveToNext()) {
-            id = cursor.getInt(0);
-        }
-
-        if (id == -1) {
-            throw new UserProviderException("Couldn't find your username");
-        }
-
-        cursor = connection.query(DatabaseProvider.GET_SALT_AND_PASSWORDHASH_BY_ID, Integer.toString(id));
+        Cursor cursor = connection.query(DatabaseProvider.GET_SALT_AND_PASSWORDHASH_BY_ID, Integer.toString(id));
 
         if (cursor.moveToNext()) {
             salt = cursor.getString(0);
@@ -72,6 +65,7 @@ public class UserProvider {
             boolean blocked = remote.isUserBlocked(id);
 
             if (blocked) {
+                // at least you will never get in here because you're not able to click login
                 throw new LoginException("Sorry, but your user is blocked!", LoginException.BLOCKED);
             }
 
@@ -143,7 +137,7 @@ public class UserProvider {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(String username) throws UserProviderException {
         this.username = username;
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
         Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
@@ -152,6 +146,16 @@ public class UserProvider {
         if (cursor.moveToNext()) {
             id = cursor.getInt(0);
         }
+
+        if(id == -1) {
+            this.username = null;
+            throw new UserProviderException("Unknown username");
+        }
+
+        passwordProvider = new PasswordProvider(context, id);
+
+        cursor.close();
+        connection.close();
     }
 
     public int getId() {
@@ -159,6 +163,7 @@ public class UserProvider {
     }
 
     private void logoutComplete() {
+        passwordProvider.logoutComplete();
         currentUser.logout();
         currentUser = null;
         username = null;
@@ -179,5 +184,6 @@ public class UserProvider {
             throw new UserProviderException("Cannot decrypt because there was an error");
         return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
     }
+
 
 }
