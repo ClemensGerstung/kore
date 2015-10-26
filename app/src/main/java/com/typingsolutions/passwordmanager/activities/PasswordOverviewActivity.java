@@ -12,15 +12,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
 import core.*;
 import core.adapter.PasswordOverviewAdapter;
+import core.data.Password;
 import core.data.UserProvider;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
@@ -41,37 +44,23 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     private int userId;
 
-    // TODO:
-//    private AsyncPasswordLoader.ItemAddedListener itemAddCallback = new AsyncPasswordLoader.ItemAddedListener() {
-//        @Override
-//        public void itemAdded(Password password) {
-//            int userId = UserProvider.getInstance(PasswordOverviewActivity.this).getId();
-//            PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-//
-//            if (!provider.contains(password)) {
-//                provider.add(password);
-//            }
-//        }
-//    };
+    private AsyncPasswordLoader.ItemAddedListener itemAddCallback = new AsyncPasswordLoader.ItemAddedListener() {
+        @Override
+        public void itemAdded(Password password) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
+                        Log.i(getClass().getSimpleName(), "make invisible");
+                        noPasswordsTextView.setVisibility(View.INVISIBLE);
+                    }
 
-    // TODO:
-//    private PasswordProvider.OnPasswordAddedToDatabase onPasswordAddedToDatabase = new PasswordProvider.OnPasswordAddedToDatabase() {
-//        @Override
-//        public void onPasswordAdded(int passwordId, int historyId) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
-//                        Log.i(getClass().getSimpleName(), "make invisible");
-//                        noPasswordsTextView.setVisibility(View.INVISIBLE);
-//                    }
-//
-//                    passwordOverviewAdapter.notifyDataSetChanged();
-//                }
-//            });
-//
-//        }
-//    };
+                    passwordOverviewAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+    };
+
 
     private SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
         @Override
@@ -145,9 +134,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         passwordRecyclerView.setAdapter(passwordOverviewAdapter);
         passwordRecyclerView.setLayoutManager(layoutManager);
 
-        // init passwordProvider
-//        PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-//        provider.setOnPasswordAddedToDatabase(onPasswordAddedToDatabase);
     }
 
     @Override
@@ -155,7 +141,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         super.onResume();
         // load passwords in background
         passwordLoader = new AsyncPasswordLoader(this);
-//        passwordLoader.setItemAddCallback(itemAddCallback);
+        passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
 
         wrongPasswordReceiver = new WrongPasswordReceiver(this);

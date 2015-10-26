@@ -11,33 +11,15 @@ import java.util.Comparator;
 import java.util.List;
 
 class PasswordProvider {
-    private static PasswordProvider INSTANCE;
-
-
     private Context context;
     private int userId;
     private List<Password> passwords;
 
-    private OnPasswordAddedToDatabase onPasswordAddedToDatabase;
 
-    public PasswordProvider(Context context, int userId) {
+    PasswordProvider(Context context, int userId) {
         this.context = context;
         this.userId = userId;
         this.passwords = new ArrayList<>();
-    }
-
-    public static PasswordProvider getInstance(Context context, int userId) {
-        if (INSTANCE == null) {
-            INSTANCE = new PasswordProvider(context, userId);
-        }
-        return INSTANCE;
-    }
-
-    public static PasswordProvider getInstance() {
-        if (INSTANCE == null) {
-            throw new NullPointerException("you have to call getInstance(Context, int) first");
-        }
-        return INSTANCE;
     }
 
     public int insertIntoDatabase(String program, String username, String password) throws Exception {
@@ -77,12 +59,7 @@ class PasswordProvider {
     }
 
     public void add(Password password) {
-//        passwords.add(password);
-//
-//        if (onPasswordAddedToDatabase != null) {
-//            PasswordHistory history = password.getPasswordHistory().get(0);
-//            onPasswordAddedToDatabase.onPasswordAdded(password.getId(), history.getId());
-//        }
+        passwords.add(password);
     }
 
     private int insertPasswordHistoryItem(String value, String date, int passwordId) throws PasswordProviderException {
@@ -150,26 +127,13 @@ class PasswordProvider {
         return passwords.contains(p);
     }
 
-    private void logoutComplete() {
+    void logoutComplete() {
         for (Password p : passwords) {
             p.logout();
         }
         passwords.clear();
         context = null;
         userId = -1;
-    }
-
-    public static void logout() {
-        INSTANCE.logoutComplete();
-        INSTANCE = null;
-    }
-
-    public void setOnPasswordAddedToDatabase(OnPasswordAddedToDatabase onPasswordAddedToDatabase) {
-        this.onPasswordAddedToDatabase = onPasswordAddedToDatabase;
-    }
-
-    public interface OnPasswordAddedToDatabase {
-        void onPasswordAdded(int passwordId, int historyId);
     }
 
     public void order(int which) {
