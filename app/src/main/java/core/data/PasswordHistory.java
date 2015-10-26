@@ -13,6 +13,9 @@ public class PasswordHistory {
     private String value;
     private Date changedDate;
 
+    PasswordHistory() {
+    }
+
     PasswordHistory(String value, Date changedDate) {
         this.value = value;
         this.changedDate = changedDate;
@@ -80,4 +83,11 @@ public class PasswordHistory {
         reader.close();
         jsonReader.close();
     }
+
+    public static PasswordHistory getFromJson(String data) throws Exception {
+        PasswordHistory history = new PasswordHistory();
+        history.setFromJson(data);
+        return history;
+    }
+
 }

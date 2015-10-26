@@ -122,7 +122,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
         username.setText(usernameString);
         username.addTextChangedListener(usernameTextWatcher);
 
-        String passwordString = currentPassword.getFirstItem().getValue();
+        String passwordString = currentPassword.getFirstItem();
         passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString);
         password.setText(passwordString);
         password.addTextChangedListener(passwordTextWatcher);

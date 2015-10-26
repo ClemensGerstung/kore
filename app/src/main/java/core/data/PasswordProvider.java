@@ -191,14 +191,14 @@ class PasswordProvider {
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return lhs.getFirstItem().getValue().compareTo(rhs.getFirstItem().getValue());
+                    return lhs.getFirstItem().compareTo(rhs.getFirstItem());
                 }
             });
         } else if (which == 3) {    // order by password descending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return ~lhs.getFirstItem().getValue().compareTo(rhs.getFirstItem().getValue());
+                    return ~lhs.getFirstItem().compareTo(rhs.getFirstItem());
                 }
             });
         } else if (which == 4) {   // order by program ascending

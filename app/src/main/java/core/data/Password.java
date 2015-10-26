@@ -17,7 +17,7 @@ public class Password {
     private int position;
     private String username;
     private String program;
-    private HashMap<Integer, PasswordHistory> passwordHistory;
+    private NavigableMap<Integer, PasswordHistory> passwordHistory;
 
 
     Password(int id, int position, String username, String program) {
@@ -25,7 +25,7 @@ public class Password {
         this.position = position;
         this.username = username;
         this.program = program;
-        this.passwordHistory = new HashMap<>();
+        this.passwordHistory = new TreeMap<>();
     }
 
     public Password() {
@@ -88,19 +88,36 @@ public class Password {
         return program;
     }
 
-    public HashMap<Integer, PasswordHistory> getPasswordHistory() {
-        return passwordHistory;
+    public Set<Integer> getPasswordIds() {
+        return passwordHistory.keySet();
     }
 
-    public PasswordHistory getFirstItem() {
-        return passwordHistory.get(0);
+    public void setPasswordHistoryItem(Integer id, PasswordHistory item) {
+        passwordHistory.put(id, item);
+    }
+
+    public String getFirstItem() {
+        return passwordHistory.firstEntry().getValue().getValue();
+    }
+
+    public Integer getKeyAt(int position) {
+        Iterator<Integer> iterator = passwordHistory.keySet().iterator();
+        Integer integer = null;
+        for (int i = 0; i < position; i++) {
+            if (iterator.hasNext()) {
+                integer = iterator.next();
+            } else {
+                return null;
+            }
+        }
+        return integer;
     }
 
     @Override
     public String toString() {
         return "Password{" +
                 "username='" + username + '\'' +
-                "password='" + getFirstItem().getValue() + '\'' +
+                "password='" + getFirstItem() + '\'' +
                 ", program='" + program + '\'' +
                 '}';
     }
@@ -136,18 +153,18 @@ public class Password {
         JsonReader jsonReader = new JsonReader(reader);
 
         jsonReader.beginObject();
-        while(jsonReader.hasNext()) {
+        while (jsonReader.hasNext()) {
             String jsonName = jsonReader.nextName();
-            if(jsonName.equals("username")) {
+            if (jsonName.equals("username")) {
                 username = jsonReader.nextString();
-            } else if(jsonName.equals("program")) {
+            } else if (jsonName.equals("program")) {
                 program = jsonReader.nextString();
-            } else if(jsonName.equals("history")) {
+            } else if (jsonName.equals("history")) {
                 jsonReader.beginArray();
                 while (jsonReader.hasNext()) {
                     jsonReader.beginObject();
                     String idName = jsonReader.nextName();
-                    if(!idName.equals("id")) continue;
+                    if (!idName.equals("id")) continue;
                     passwordHistory.keySet().add(jsonReader.nextInt());
                     jsonReader.endObject();
                 }
@@ -161,8 +178,9 @@ public class Password {
         jsonReader.close();
     }
 
-    public static Password getFromJson(String data) throws IOException {
+    public static Password getFromJson(int id, String data) throws IOException {
         Password password = new Password();
+        password.id = id;
         password.setFromJson(data);
         return password;
     }

@@ -5,109 +5,67 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 import core.data.Password;
+import core.data.PasswordHistory;
 import core.data.User;
 import core.data.UserProvider;
 
-public class AsyncPasswordLoader extends AsyncTask<String, Void, Password> {
-    private String query;
-    private String[] args;
+public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     private Context context;
 
-    private ItemAddCallback callback;
+    private ItemAddedListener listener;
 
 
-    public AsyncPasswordLoader(Context context, String query, String... args) {
+    public AsyncPasswordLoader(Context context) {
         super();
-        this.query = query;
-        this.args = args;
         this.context = context;
     }
 
     @Override
-    protected Password doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
         User currentUser = UserProvider.getInstance(context).getCurrentUser();
         try {
-            for(Integer i : currentUser.getPasswordIds()) {
-                Cursor passwordCursor = DatabaseProvider.getConnection(context).query(query, i.toString());
-                if(passwordCursor.moveToNext()) {
-                    String dbJson = passwordCursor.getString(0);
-                    String passwordJson = UserProvider.decrypt(dbJson);
-                    Password password = Password.getFromJson(passwordJson);
+            DatabaseProvider connection = DatabaseProvider.getConnection(context);
+
+            for (Integer passwordId : currentUser.getPasswordIds()) {
+                Cursor cursor = connection.query(DatabaseProvider.GET_PASSWORD_BY_ID, passwordId.toString());
+
+                if (!cursor.moveToNext())
+                    continue;
+
+                int id = cursor.getInt(0);
+                String dbJson = cursor.getString(1);
+                String passwordJson = UserProvider.decrypt(dbJson);
+                Password password = Password.getFromJson(id, passwordJson);
+
+                for (int i = password.getPasswordIds().size() - 1; i >= 0; i--) {
+                    Integer passwordHistoryId = password.getKeyAt(i);
+
+                    cursor = connection.query(DatabaseProvider.GET_HISTORYITEM_BY_ID, passwordHistoryId.toString());
+                    if (!cursor.moveToNext())
+                        continue;
+
+                    dbJson = cursor.getString(0);
+                    String pwHistoryJson = UserProvider.decrypt(dbJson);
+                    PasswordHistory history = PasswordHistory.getFromJson(pwHistoryJson);
+                    password.setPasswordHistoryItem(passwordHistoryId, history);
+                }
+
+                if (listener != null) {
+                    listener.itemAdded(password);
                 }
             }
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
 
-
-//
-//        Password passwordToAdd = null;
-//        Password tmpPassword;
-//
-//        int passwordId;
-//        int position;
-//        String program;
-//        String username;
-//        int historyId;
-//        String value;
-//        String dateChanged;
-//        String programDecrypted;
-//        String usernameDecrypted;
-//        String valueDecrypted;
-//        String dateChangedDecrypted;
-//
-//        while (cursor.moveToNext()) {
-//
-//            passwordId = cursor.getInt(0);
-//            position = cursor.getInt(1);
-//            program = cursor.getString(2);
-//            username = cursor.getString(3);
-//            historyId = cursor.getInt(4);
-//            value = cursor.getString(5);
-//            dateChanged = cursor.getString(6);
-//
-//            try {
-//                programDecrypted = AesProvider.decrypt(program, userMasterPassword);
-//                usernameDecrypted = AesProvider.decrypt(username, userMasterPassword);
-//                valueDecrypted = AesProvider.decrypt(value, userMasterPassword);
-//                dateChangedDecrypted = AesProvider.decrypt(dateChanged, userMasterPassword);
-//            } catch (Exception e) {
-//                continue;
-//            }
-//
-//            if (passwordToAdd == null) {
-//                passwordToAdd = new Password(passwordId, position, usernameDecrypted, programDecrypted);
-//                passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
-//            } else {
-//                tmpPassword = new Password(passwordId, position, usernameDecrypted, programDecrypted);
-//                if (passwordToAdd.equals(tmpPassword)) {
-//                    passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
-//                } else {
-//                    if (callback != null) {
-//                        Collections.reverse(passwordToAdd.getPasswordHistory());
-//                        callback.itemAdded(passwordToAdd);
-//                    }
-//
-//                    passwordToAdd = new Password(passwordId, position, usernameDecrypted, programDecrypted);
-//                    passwordToAdd.addHistoryItem(historyId, valueDecrypted, dateChangedDecrypted);
-//                }
-//            }
-//        }
-//
-//        if (callback != null && passwordToAdd != null) {
-//            Collections.reverse(passwordToAdd.getPasswordHistory());
-//            callback.itemAdded(passwordToAdd);
-//        }
-//
-//        return passwordToAdd;
         return null;
     }
 
-    public void setItemAddCallback(ItemAddCallback callback) {
-        this.callback = callback;
+    public void setItemAddCallback(ItemAddedListener callback) {
+        this.listener = callback;
     }
 
-    public interface ItemAddCallback {
+    public interface ItemAddedListener {
         void itemAdded(Password password);
     }
 }

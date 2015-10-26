@@ -123,7 +123,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         boolean returnValue = false;
 
         String program = password.getProgram();
-        String passwordValue = password.getFirstItem().getValue();
+        String passwordValue = password.getFirstItem();
         String username = password.getUsername();
 
         switch (filterFlags) {

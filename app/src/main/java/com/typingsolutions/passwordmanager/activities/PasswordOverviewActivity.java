@@ -42,7 +42,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private int userId;
 
     // TODO:
-//    private AsyncPasswordLoader.ItemAddCallback itemAddCallback = new AsyncPasswordLoader.ItemAddCallback() {
+//    private AsyncPasswordLoader.ItemAddedListener itemAddCallback = new AsyncPasswordLoader.ItemAddedListener() {
 //        @Override
 //        public void itemAdded(Password password) {
 //            int userId = UserProvider.getInstance(PasswordOverviewActivity.this).getId();
@@ -154,7 +154,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // load passwords in background
-        passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_ID);
+        passwordLoader = new AsyncPasswordLoader(this);
 //        passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
 
