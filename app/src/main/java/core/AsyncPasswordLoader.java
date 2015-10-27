@@ -12,9 +12,6 @@ import core.data.UserProvider;
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     private Context context;
 
-    private ItemAddedListener listener;
-
-
     public AsyncPasswordLoader(Context context) {
         super();
         this.context = context;
@@ -22,7 +19,8 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... params) {
-        User currentUser = UserProvider.getInstance(context).getCurrentUser();
+        UserProvider provider = UserProvider.getInstance(context);
+        User currentUser = provider.getCurrentUser();
         try {
             DatabaseProvider connection = DatabaseProvider.getConnection(context);
 
@@ -50,22 +48,12 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
                     password.setPasswordHistoryItem(passwordHistoryId, history);
                 }
 
-                if (listener != null) {
-                    listener.itemAdded(password);
-                }
+                provider.addPassword(password);
             }
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
 
         return null;
-    }
-
-    public void setItemAddCallback(ItemAddedListener callback) {
-        this.listener = callback;
-    }
-
-    public interface ItemAddedListener {
-        void itemAdded(Password password);
     }
 }

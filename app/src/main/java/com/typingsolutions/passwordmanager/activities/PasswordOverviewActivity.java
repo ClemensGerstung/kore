@@ -44,22 +44,22 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     private int userId;
 
-    private AsyncPasswordLoader.ItemAddedListener itemAddCallback = new AsyncPasswordLoader.ItemAddedListener() {
-        @Override
-        public void itemAdded(Password password) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
-                        Log.i(getClass().getSimpleName(), "make invisible");
-                        noPasswordsTextView.setVisibility(View.INVISIBLE);
-                    }
-
-                    passwordOverviewAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-    };
+//    private AsyncPasswordLoader.ItemAddedListener itemAddCallback = new AsyncPasswordLoader.ItemAddedListener() {
+//        @Override
+//        public void itemAdded(Password password) {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
+//                        Log.i(getClass().getSimpleName(), "make invisible");
+//                        noPasswordsTextView.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                    passwordOverviewAdapter.notifyDataSetChanged();
+//                }
+//            });
+//        }
+//    };
 
 
     private SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
@@ -141,7 +141,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         super.onResume();
         // load passwords in background
         passwordLoader = new AsyncPasswordLoader(this);
-        passwordLoader.setItemAddCallback(itemAddCallback);
         passwordLoader.execute();
 
         wrongPasswordReceiver = new WrongPasswordReceiver(this);
