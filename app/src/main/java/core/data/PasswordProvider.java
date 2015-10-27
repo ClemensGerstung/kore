@@ -5,10 +5,7 @@ import android.support.annotation.Nullable;
 import core.DatabaseProvider;
 import core.exceptions.PasswordProviderException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 class PasswordProvider {
     private Context context;
@@ -22,43 +19,10 @@ class PasswordProvider {
         this.passwords = new ArrayList<>();
     }
 
-    public int insertIntoDatabase(String program, String username, String password) throws Exception {
-        int position = 0;
-        int passwordId = -1;
-//        DatabaseProvider connection = DatabaseProvider.getConnection(context);
-//        String date = Utils.getCurrentDate();
-//        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
-//        String encryptedProgram = AesProvider.encrypt(program, userMasterPassword);
-//        String encryptedUsername = AesProvider.encrypt(username, userMasterPassword);
-//        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
-//        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
-//
-//        String userIdString = Integer.toString(userId);
-//        Cursor cursor = connection.query(DatabaseProvider.GET_MAX_POSITION, userIdString);
-//        if (cursor.moveToNext()) {
-//            position = cursor.getInt(0);
-//        }
-//
-//        passwordId = (int) connection.insert(DatabaseProvider.INSERT_PASSWORD, encryptedUsername, encryptedProgram, Integer.toString(position), userIdString);
-//
-//        if (passwordId == -1) {
-//            throw new PasswordProviderException("Couldn't insert your password");
-//        }
-//
-//        int historyId = insertPasswordHistoryItem(encryptedPassword, encryptedDate, passwordId);
-//
-//        if (onPasswordAddedToDatabase != null) {
-//            onPasswordAddedToDatabase.onPasswordAdded(passwordId, historyId);
-//        }
-//
-//        Password passwordObj = new Password(passwordId, position, username, program);
-//        passwordObj.addHistoryItem(historyId, password, date);
-//        passwords.add(passwordObj);
-
-        return passwordId;
-    }
-
     public void add(Password password) {
+        if(password.getPosition() == Integer.MIN_VALUE)
+            password.setPosition(passwords.size());
+
         passwords.add(password);
     }
 
@@ -110,17 +74,6 @@ class PasswordProvider {
         }
 
         provider.close();
-    }
-
-    public void addPasswordHistoryItem(int id, String password) throws Exception {
-//        String userMasterPassword = UserProvider.getInstance(context).getCurrentUser().getPlainPassword();
-//        String date = Utils.getCurrentDate();
-//        String encryptedPassword = AesProvider.encrypt(password, userMasterPassword);
-//        String encryptedDate = AesProvider.encrypt(date, userMasterPassword);
-//
-//        DatabaseProvider provider = DatabaseProvider.getConnection(context);
-//
-//        insertPasswordHistoryItem(encryptedPassword, encryptedDate, id);
     }
 
     public boolean contains(Password p) {

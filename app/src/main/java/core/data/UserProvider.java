@@ -9,6 +9,7 @@ import core.Utils;
 import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class UserProvider {
@@ -19,6 +20,9 @@ public class UserProvider {
     private User currentUser;
     private String username;
     private int id;
+
+    private UserProviderPasswordActionListener passwordActionListener;
+    private UserProviderActionListener userProviderActionListener;
 
     private UserProvider(Context context) {
         this.context = context;
@@ -35,7 +39,7 @@ public class UserProvider {
     }
 
     public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws Exception {
-        if(username == null || id == -1)
+        if (username == null || id == -1)
             throw new UserProviderException("No username or id set");
 
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
@@ -61,7 +65,7 @@ public class UserProvider {
             throw new UserProviderException("Something went wrong");
         }
 
-        if(remote != null) {
+        if (remote != null) {
             boolean blocked = remote.isUserBlocked(id);
 
             if (blocked) {
@@ -79,11 +83,14 @@ public class UserProvider {
         if (currentUser == null) {
             currentUser = new User(id, username, password, salt, passwordHash);
             cursor = connection.query(DatabaseProvider.GET_PASSWORDIDS_FROM_USER, Integer.toString(id));
-            if(cursor.moveToNext()) {
+            if (cursor.moveToNext()) {
                 String ids = AesProvider.decrypt(cursor.getString(0), password);
                 currentUser.setPasswordIdsFromJson(ids);
             }
             currentUser.isSafeLogin(safeLogin);
+
+            if (userProviderActionListener != null)
+                userProviderActionListener.onLogin();
         }
 
         cursor.close();
@@ -117,6 +124,10 @@ public class UserProvider {
         }
 
         long id = DatabaseProvider.getConnection(context).insert(DatabaseProvider.CREATE_USER, username, passwordHash, salt);
+
+        if (userProviderActionListener != null)
+            userProviderActionListener.onUserCreated(id);
+
         if (autoLogin) {
             setUsername(username);
             User user = login(null, password, false);
@@ -147,7 +158,7 @@ public class UserProvider {
             id = cursor.getInt(0);
         }
 
-        if(id == -1) {
+        if (id == -1) {
             this.username = null;
             throw new UserProviderException("Unknown username");
         }
@@ -156,6 +167,9 @@ public class UserProvider {
 
         cursor.close();
         connection.close();
+
+        if (userProviderActionListener != null)
+            userProviderActionListener.onUsernameSet();
     }
 
     public int getId() {
@@ -168,22 +182,75 @@ public class UserProvider {
         currentUser = null;
         username = null;
         id = -1;
+
+        if (userProviderActionListener != null)
+            userProviderActionListener.onLogout();
     }
 
     public boolean isSafe() {
         return currentUser.isSafeLogin();
     }
 
-    public static void logout(){
+    public void addPassword(String program, String username, String password) throws Exception {
+        DatabaseProvider provider = DatabaseProvider.getConnection(context);
+
+
+
+        Password passwordObject = Password.createSimplePassword(program, username);
+        String json = passwordObject.getJson();
+        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
+        long id = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, encryptedJson);
+
+        if(id == -1)
+            throw new UserProviderException("Couldn't insert your password!");
+
+        passwordObject.setId((int)id);
+        addPassword(passwordObject);
+    }
+
+    public void addPassword(Password password) throws Exception {
+        if (!password.hasId())
+            return;
+
+        passwordProvider.add(password);
+        if (passwordActionListener != null)
+            passwordActionListener.onPasswordAdded(password);
+    }
+
+    public void setPasswordActionListener(UserProviderPasswordActionListener passwordActionListener) {
+        this.passwordActionListener = passwordActionListener;
+    }
+
+    public void setUserProviderActionListener(UserProviderActionListener userProviderActionListener) {
+        this.userProviderActionListener = userProviderActionListener;
+    }
+
+    public static void logout() {
         INSTANCE.logoutComplete();
         INSTANCE = null;
     }
 
     public static String decrypt(String data) throws Exception {
-        if(INSTANCE == null || INSTANCE.currentUser == null)
+        if (INSTANCE == null || INSTANCE.currentUser == null)
             throw new UserProviderException("Cannot decrypt because there was an error");
         return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
     }
 
+    public interface UserProviderPasswordActionListener {
+        void onPasswordAdded(Password password);
 
+        void onPasswordRemoved(Password password);
+
+        void onPasswordEdited(Password password, int historyId, PasswordHistory history);
+    }
+
+    public interface UserProviderActionListener {
+        void onLogin();
+
+        void onLogout();
+
+        void onUsernameSet();
+
+        void onUserCreated(long id);
+    }
 }

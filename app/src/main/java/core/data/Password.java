@@ -29,6 +29,7 @@ public class Password {
     }
 
     public Password() {
+        this(Integer.MIN_VALUE, Integer.MIN_VALUE, null, null);
     }
 
     public void logout() {
@@ -92,6 +93,10 @@ public class Password {
         return passwordHistory.keySet();
     }
 
+    public List<PasswordHistory> getPasswordHistory() {
+        return new ArrayList<>(passwordHistory.values());
+    }
+
     public void setPasswordHistoryItem(Integer id, PasswordHistory item) {
         passwordHistory.put(id, item);
     }
@@ -113,6 +118,18 @@ public class Password {
         return integer;
     }
 
+    public boolean hasId() {
+        return id != -1;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     @Override
     public String toString() {
         return "Password{" +
@@ -129,6 +146,7 @@ public class Password {
         jsonWriter.beginObject();
         jsonWriter.name("username").value(username);
         jsonWriter.name("program").value(program);
+        jsonWriter.name("position").value(position);
         jsonWriter.name("history");
         jsonWriter.beginArray();
         for (Integer i : passwordHistory.keySet()) {
@@ -169,8 +187,9 @@ public class Password {
                     jsonReader.endObject();
                 }
                 jsonReader.endArray();
+            } else if(jsonName.equals("position")) {
+                position = jsonReader.nextInt();
             }
-
         }
         jsonReader.close();
 
@@ -182,6 +201,14 @@ public class Password {
         Password password = new Password();
         password.id = id;
         password.setFromJson(data);
+        return password;
+    }
+
+    public static Password createSimplePassword(String program, String username) {
+        Password password = new Password();
+        password.username = username;
+        password.program = program;
+        password.position = Integer.MIN_VALUE;
         return password;
     }
 }

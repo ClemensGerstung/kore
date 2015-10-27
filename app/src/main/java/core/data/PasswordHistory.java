@@ -90,4 +90,10 @@ public class PasswordHistory {
         return history;
     }
 
+    public static PasswordHistory createItem(String value) {
+        PasswordHistory history = new PasswordHistory();
+        history.value = value;
+        history.changedDate = new Date();
+        return history;
+    }
 }
