@@ -86,7 +86,7 @@ public class UserProvider {
             cursor = connection.query(DatabaseProvider.GET_PASSWORDIDS_FROM_USER, Integer.toString(id));
             if (cursor.moveToNext()) {
                 String dbIds = cursor.getString(0);
-                if(dbIds != null) {
+                if (dbIds != null) {
                     String ids = AesProvider.decrypt(dbIds, password);
                     currentUser.setPasswordIdsFromJson(ids);
                 }
@@ -223,6 +223,15 @@ public class UserProvider {
             return;
 
         passwordProvider.add(password);
+
+        currentUser.addPasswordById(password.getId());
+
+        String json = currentUser.getPasswordsAsJson();
+        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
+
+        long effectedRows = DatabaseProvider.getConnection(context)
+                .update(DatabaseProvider.UPDATE_PASSWORDIDS_FOR_USER, encryptedJson, Integer.toString(currentUser.getId()));
+
         if (passwordActionListener != null)
             passwordActionListener.onPasswordAdded(password);
     }
@@ -277,6 +286,10 @@ public class UserProvider {
 
     public void setUserProviderActionListener(UserProviderActionListener userProviderActionListener) {
         this.userProviderActionListener = userProviderActionListener;
+    }
+
+    public boolean hasPassword() {
+        return passwordProvider.size() > 0;
     }
 
     public static void logout() {

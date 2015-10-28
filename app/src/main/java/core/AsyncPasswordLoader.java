@@ -48,6 +48,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
                     password.setPasswordHistoryItem(passwordHistoryId, history);
                 }
 
+                Log.d(getClass().getSimpleName(), password.toString());
                 provider.addPassword(password);
             }
         } catch (Exception e) {

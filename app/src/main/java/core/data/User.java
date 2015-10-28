@@ -71,7 +71,6 @@ public class User {
 
         jsonWriter.beginObject();
 
-        jsonWriter.name("ids");
         jsonWriter.beginArray();
         for (Integer i : passwordIds) {
             jsonWriter.beginObject();
@@ -99,34 +98,35 @@ public class User {
         jsonReader.beginObject();
 
         while (jsonReader.hasNext()) {
-            String name = jsonReader.nextName();
-            // salt is not necessary...
-            if(name.equals("ids")) {
-                jsonReader.beginArray();
 
-                while (jsonReader.hasNext()) {
-                    String idName = jsonReader.nextName();
-                    if(!idName.equals("id")) continue;
+            jsonReader.beginArray();
 
-                    jsonReader.beginObject();
+            while (jsonReader.hasNext()) {
+                jsonReader.beginObject();
+                String idName = jsonReader.nextName();
+                if (!idName.equals("id")) continue;
 
-                    Integer id = jsonReader.nextInt();
+                Integer id = jsonReader.nextInt();
 
-                    if(!passwordIds.contains(id)) {
-                        passwordIds.add(id);
-                    }
-
-                    jsonReader.endObject();
+                if (!passwordIds.contains(id)) {
+                    passwordIds.add(id);
                 }
 
-                jsonReader.endArray();
+                jsonReader.endObject();
             }
+
+            jsonReader.endArray();
+
         }
 
         jsonReader.endObject();
 
         reader.close();
         jsonReader.close();
+    }
+
+    public void addPasswordById(int id) {
+        passwordIds.add(id);
     }
 
     public void logout() {
