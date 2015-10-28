@@ -14,11 +14,11 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     public static final int VERSION = 0x02;
 
     private static final String INSTALL_USERS =
-            "CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT UNIQUE, passwordHash TEXT, salt TEXT);";
+            "CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT UNIQUE, passwordHash TEXT, salt TEXT, passwords TEXT);";
     private static final String INSTALL_PASSWORDS =
-            "CREATE TABLE passwords(id INTEGER PRIMARY KEY, username TEXT, program TEXT, position INTEGER, userId INTEGER, FOREIGN KEY(userId) REFERENCES users(id));";
+            "CREATE TABLE passwords(id INTEGER PRIMARY KEY, data TEXT);";
     private static final String INSTALL_HISTORY =
-            "CREATE TABLE history(id INTEGER PRIMARY KEY, value TEXT, dateChanged DATE, passwordId INTEGER, FOREIGN KEY(passwordId) REFERENCES passwords(id));";
+            "CREATE TABLE history(id INTEGER PRIMARY KEY, data TEXT);";
 
     public static final String DOES_USER_EXISTS = "SELECT COUNT(*) = 1 FROM users WHERE name=?;";
 
@@ -28,38 +28,16 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String GET_SALT_AND_PASSWORDHASH_BY_ID = "SELECT salt, passwordHash FROM users WHERE id=?;";
 
-    public static final String GET_ALL_PASSWORDS_BY_USER_ID =
-            "SELECT passwords.id AS _id, " +
-                    "passwords.position, " +
-                    "passwords.program, " +
-                    "passwords.username, " +
-                    "history.id, " +
-                    "history.value, " +
-                    "history.dateChanged " +
-                    "FROM users " +
-                    "JOIN passwords ON passwords.userId = users.id " +
-                    "JOIN history ON history.passwordId = passwords.id " +
-                    "WHERE users.id = ? " +
-                    "ORDER BY passwords.position;";
+    public static final String GET_PASSWORDIDS_FROM_USER = "SELECT passwords FROM users WHERE id = ?;";
 
-    public static final String INSERT_PASSWORD = "INSERT INTO passwords(username, program, position, userId) VALUES(?,?,?,?);";
+    public static final String GET_PASSWORD_BY_ID = "SELECT id, data, FROM passwords WHERE id = ?;";
 
-    public static final String GET_MAX_POSITION = "SELECT MAX(passwords.position) FROM passwords JOIN users ON users.id=passwords.userId WHERE users.id=?;";
+    public static final String GET_HISTORYITEM_BY_ID = "SELECT id, data FROM history WHERE id = ?;";
 
-    public static final String INSERT_HISTORY_FOR_PASSWORD = "INSERT INTO history(value, dateChanged, passwordId) VALUES (?,?,?)";
+    public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(data) VALUES(?);";
 
-    public static final String COUNT_PASSWORDS_BY_USERID =
-            "SELECT COUNT(passwords.id) " +
-                    "FROM users " +
-                    "JOIN passwords ON passwords.userId = users.id " +
-                    "JOIN history ON history.passwordId = passwords.id " +
-                    "WHERE users.id = ?;";
+    public static final String INSERT_NEW_HISTORY_ITEM = "INSERT INTO history VALUES(?);";
 
-    public static final String UPDATE_USERNAME_AND_PASSWORD = "UPDATE passwords SET username=?, program=? WHERE id=?;";
-
-    public static final String UPDATE_USERNAME = "UPDATE passwords SET username=?, WHERE id=?;";
-
-    public static final String UPDATE_PROGRAM = "UPDATE passwords SET program=? WHERE id=?;";
 
     private static DatabaseProvider INSTANCE;
 

@@ -13,10 +13,9 @@ import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
-import core.Password;
-import core.PasswordProvider;
-import core.UserProvider;
 import core.adapter.PasswordHistoryAdapter;
+import core.data.Password;
+import core.data.UserProvider;
 
 public class PasswordDetailActivity extends AppCompatActivity {
 
@@ -69,7 +68,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
 
                 ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
-                if(historyCardHeight > passwordHistoryCard.getMeasuredHeight()){
+                if (historyCardHeight > passwordHistoryCard.getMeasuredHeight()) {
                     params.height = historyCardHeight;
                 }
                 passwordHistoryCard.setLayoutParams(params);
@@ -100,11 +99,10 @@ public class PasswordDetailActivity extends AppCompatActivity {
         });
 
         UserProvider userProvider = UserProvider.getInstance(this);
-        int id = userProvider.getId();
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        currentPassword = PasswordProvider.getInstance(this, id).getById(passwordId);
+        currentPassword = userProvider.getPasswordById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -122,7 +120,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
         username.setText(usernameString);
         username.addTextChangedListener(usernameTextWatcher);
 
-        String passwordString = currentPassword.getFirstItem().getValue();
+        String passwordString = currentPassword.getFirstItem();
         passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString);
         password.setText(passwordString);
         password.addTextChangedListener(passwordTextWatcher);
@@ -157,20 +155,20 @@ public class PasswordDetailActivity extends AppCompatActivity {
         String newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
         String newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
         String newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
-
+//      TODO:
         try {
             if (newPassword != null) {
-                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
+//                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
             }
 
             if (newUsername != null || newProgram != null) {
-                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
+//                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
             }
         } catch (Exception e) {
             // ignored
         }
 
-        onBackPressed();
+//        onBackPressed();
 
         return super.onOptionsItemSelected(item);
     }
@@ -178,10 +176,6 @@ public class PasswordDetailActivity extends AppCompatActivity {
     public void switchMenuState(boolean state) {
         MenuItem item = toolbar.getMenu().getItem(0);
         item.setEnabled(state);
-        if (state) {
-            item.getIcon().setAlpha(255);
-        } else {
-            item.getIcon().setAlpha(64);
-        }
+        item.getIcon().setAlpha(state ? 255 : 64);
     }
 }

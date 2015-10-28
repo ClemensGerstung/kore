@@ -34,10 +34,10 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() == 0) {
-            loginActivity.switchStateOfFloatingActionButton(R.drawable.add, new CreateUserCallback(context));
+            loginActivity.switchStateOfFloatingActionButton(R.mipmap.add, new CreateUserCallback(context));
         } else {
             commitCallback.setValues(s.toString());
-            loginActivity.switchStateOfFloatingActionButton(R.drawable.send, commitCallback);
+            loginActivity.switchStateOfFloatingActionButton(R.mipmap.send, commitCallback);
         }
     }
 
