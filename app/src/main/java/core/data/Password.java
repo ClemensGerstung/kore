@@ -1,5 +1,6 @@
 package core.data;
 
+import android.support.annotation.Nullable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import core.Utils;
@@ -124,6 +125,16 @@ public class Password {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public void setUsername(@Nullable String username) {
+        if(username == null) return;
+        this.username = username;
+    }
+
+    public void setProgram(@Nullable String program) {
+        if(program == null) return;
+        this.program = program;
     }
 
     @Override
