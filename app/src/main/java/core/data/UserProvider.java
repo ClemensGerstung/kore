@@ -28,6 +28,7 @@ public class UserProvider {
         this.currentUser = null;
         this.id = -1;
         this.username = null;
+        this.passwordProvider = new PasswordProvider(context);
     }
 
     public static UserProvider getInstance(Context context) {
@@ -162,8 +163,6 @@ public class UserProvider {
             throw new UserProviderException("Unknown username");
         }
 
-        passwordProvider = new PasswordProvider(context, id);
-
         cursor.close();
         connection.close();
 
@@ -199,7 +198,7 @@ public class UserProvider {
 
         long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY_ITEM, encryptedJson);
 
-        if(historyId == -1)
+        if (historyId == -1)
             throw new UserProviderException("Couldn't insert your password history item!");
 
         Password passwordObject = Password.createSimplePassword(program, username);
@@ -208,10 +207,10 @@ public class UserProvider {
         encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
         long id = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, encryptedJson);
 
-        if(id == -1)
+        if (id == -1)
             throw new UserProviderException("Couldn't insert your password!");
 
-        passwordObject.setId((int)id);
+        passwordObject.setId((int) id);
         addPassword(passwordObject);
     }
 
@@ -222,6 +221,46 @@ public class UserProvider {
         passwordProvider.add(password);
         if (passwordActionListener != null)
             passwordActionListener.onPasswordAdded(password);
+    }
+
+    public void editPassword(int id, String newPassword) throws Exception {
+        DatabaseProvider provider = DatabaseProvider.getConnection(context);
+
+        PasswordHistory history = PasswordHistory.createItem(newPassword);
+        String json = history.getJson();
+        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
+
+        long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY_ITEM, encryptedJson);
+
+        if (historyId == -1)
+            throw new UserProviderException("Couldn't insert your password history item!");
+
+        Password password = passwordProvider.getById(id);
+        password.addPasswordHistoryItem((int) historyId, history);
+
+        editPassword(password);
+    }
+
+    public void editPassword(int id, String program, String username) {
+
+    }
+
+    public void editPassword(Password password) {
+        passwordProvider.set(password);
+
+        if (passwordActionListener != null)
+            passwordActionListener.onPasswordEdited(password, password.getFirstHistoryItem());
+    }
+
+    public void removePassword(Password password) {
+        passwordProvider.remove(password);
+
+        if (passwordActionListener != null)
+            passwordActionListener.onPasswordRemoved(password);
+    }
+
+    public Password getPasswordById(int id) {
+        return passwordProvider.getById(id);
     }
 
     public void setPasswordActionListener(UserProviderPasswordActionListener passwordActionListener) {
@@ -248,7 +287,7 @@ public class UserProvider {
 
         void onPasswordRemoved(Password password);
 
-        void onPasswordEdited(Password password, int historyId, PasswordHistory history);
+        void onPasswordEdited(Password password, PasswordHistory history);
     }
 
     public interface UserProviderActionListener {
