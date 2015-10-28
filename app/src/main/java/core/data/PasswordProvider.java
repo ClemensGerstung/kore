@@ -9,34 +9,28 @@ import java.util.*;
 
 class PasswordProvider {
     private Context context;
-    private int userId;
     private List<Password> passwords;
 
 
-    PasswordProvider(Context context, int userId) {
+    PasswordProvider(Context context) {
         this.context = context;
-        this.userId = userId;
         this.passwords = new ArrayList<>();
     }
 
     public void add(Password password) {
         if(password.getPosition() == Integer.MIN_VALUE)
-            password.setPosition(passwords.size());
+            password.setPosition(passwords.size() + 1);
 
         passwords.add(password);
     }
 
-    private int insertPasswordHistoryItem(String value, String date, int passwordId) throws PasswordProviderException {
-        int historyId = -1;
-//        DatabaseProvider connection = DatabaseProvider.getConnection(context);
-//
-//        historyId = (int) connection.insert(DatabaseProvider.INSERT_HISTORY_FOR_PASSWORD, value, date, Integer.toString(passwordId));
-//
-//        if (historyId == -1) {
-//            throw new PasswordProviderException("Couldn't insert your password");
-//        }
+    public void set(Password password) {
+        int index = passwords.indexOf(password);
+        passwords.set(index, password);
+    }
 
-        return historyId;
+    public void remove(Password password) {
+        passwords.remove(password);
     }
 
     public int size() {
@@ -56,26 +50,6 @@ class PasswordProvider {
         return null;
     }
 
-    public void update(int id, @Nullable String username, @Nullable String program) throws PasswordProviderException {
-        DatabaseProvider provider = DatabaseProvider.getConnection(context);
-        int returnedValue = -1;
-//        if (username != null && program != null) {
-//            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME_AND_PASSWORD, username, program, Integer.toString(id));
-//        } else if (username != null && program == null) {
-//            returnedValue = provider.update(DatabaseProvider.UPDATE_USERNAME, username, Integer.toString(id));
-//        } else if (program != null && username == null) {
-//            returnedValue = provider.update(DatabaseProvider.UPDATE_PROGRAM, program, Integer.toString(id));
-//        } else {
-//            throw new PasswordProviderException("Not supported operation: either username or password has to be something");
-//        }
-
-        if (returnedValue == -1) {
-            throw new PasswordProviderException("There was an error by updating this password");
-        }
-
-        provider.close();
-    }
-
     public boolean contains(Password p) {
         return passwords.contains(p);
     }
@@ -86,7 +60,6 @@ class PasswordProvider {
         }
         passwords.clear();
         context = null;
-        userId = -1;
     }
 
     public void order(int which) {

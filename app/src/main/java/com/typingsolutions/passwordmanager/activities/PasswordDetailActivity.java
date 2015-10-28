@@ -13,9 +13,9 @@ import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
+import core.adapter.PasswordHistoryAdapter;
 import core.data.Password;
 import core.data.UserProvider;
-import core.adapter.PasswordHistoryAdapter;
 
 public class PasswordDetailActivity extends AppCompatActivity {
 
@@ -99,12 +99,10 @@ public class PasswordDetailActivity extends AppCompatActivity {
         });
 
         UserProvider userProvider = UserProvider.getInstance(this);
-        int id = userProvider.getId();
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-//        TODO:
-//        currentPassword = PasswordProvider.getInstance(this, id).getById(passwordId);
+        currentPassword = userProvider.getPasswordById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);

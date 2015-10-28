@@ -7,9 +7,6 @@ import core.Utils;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Password {
@@ -90,6 +87,18 @@ public class Password {
 
     public String getFirstItem() {
         return passwordHistory.firstEntry().getValue().getValue();
+    }
+
+    public PasswordHistory getFirstHistoryItem() {
+        return passwordHistory.firstEntry().getValue();
+    }
+
+    public void addPasswordHistoryItem(Integer id, PasswordHistory item) {
+        TreeMap<Integer, PasswordHistory> tmp = new TreeMap<>(passwordHistory);
+        passwordHistory.clear();
+        passwordHistory.put(id, item);
+        passwordHistory.putAll(tmp);
+        tmp.clear();
     }
 
     public Integer getKeyAt(int position) {
