@@ -57,13 +57,13 @@ public class UserProvider {
         }
 
         if (salt == null || dbPasswordHash == null) {
-            throw new UserProviderException("Something went wrong");
+            throw new UserProviderException("Something went wrong (salt or passwordhash)");
         }
 
         passwordHash = Utils.getHashedString(password + Utils.getHashedString(salt));
 
         if (passwordHash == null) {
-            throw new UserProviderException("Something went wrong");
+            throw new UserProviderException("Something went wrong (passwordhash)");
         }
 
         if (remote != null) {
@@ -85,8 +85,11 @@ public class UserProvider {
             currentUser = new User(id, username, password, salt, passwordHash);
             cursor = connection.query(DatabaseProvider.GET_PASSWORDIDS_FROM_USER, Integer.toString(id));
             if (cursor.moveToNext()) {
-                String ids = AesProvider.decrypt(cursor.getString(0), password);
-                currentUser.setPasswordIdsFromJson(ids);
+                String dbIds = cursor.getString(0);
+                if(dbIds != null) {
+                    String ids = AesProvider.decrypt(dbIds, password);
+                    currentUser.setPasswordIdsFromJson(ids);
+                }
             }
             currentUser.isSafeLogin(safeLogin);
 
