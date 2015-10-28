@@ -1,20 +1,12 @@
 package core.adapter;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
-import core.Password;
-import core.PasswordHistory;
-import core.PasswordProvider;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistoryAdapter.ViewHolder> {
 
@@ -40,27 +32,29 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        PasswordProvider provider = PasswordProvider.getInstance();
-        Password password = provider.getById(passwordIndex);
-        PasswordHistory history = password.getPasswordHistory().get(position + 1);
-
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
-        String date = dateFormat.format(history.getChangedDate());
-
-        holder.password.setText(history.getValue());
-        holder.date.setText(date);
-
-        if(onItemAddedCallback != null) {
-            onItemAddedCallback.onItemAdded(holder, position);
-        }
+//        TODO
+//        PasswordProvider provider = PasswordProvider.getInstance();
+//        Password password = provider.getById(passwordIndex);
+//        PasswordHistory history = password.getPasswordHistory().get(position + 1);
+//
+//        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
+//        String date = dateFormat.format(history.getChangedDate());
+//
+//        holder.password.setText(history.getValue());
+//        holder.date.setText(date);
+//
+//        if(onItemAddedCallback != null) {
+//            onItemAddedCallback.onItemAdded(holder, position);
+//        }
     }
 
     @Override
     public int getItemCount() {
-        PasswordProvider provider = PasswordProvider.getInstance();
-        Password password = provider.getById(passwordIndex);
-
-        return password.getPasswordHistory().size() - 1;
+//        PasswordProvider provider = PasswordProvider.getInstance();
+//        Password password = provider.getById(passwordIndex);
+//
+//        return password.getPasswordHistory().size() - 1;
+        return 0;
     }
 
     public void setOnItemAddedCallback(OnItemAddedCallback onItemAddedCallback) {

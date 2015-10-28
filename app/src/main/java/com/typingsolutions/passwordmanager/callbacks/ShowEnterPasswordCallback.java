@@ -4,11 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.fragments.LoginUsernameFragment;
-import core.UserProvider;
+import core.data.UserProvider;
 
 public class ShowEnterPasswordCallback extends BaseCallback {
 
@@ -30,7 +31,11 @@ public class ShowEnterPasswordCallback extends BaseCallback {
             return;
         }
 
-        UserProvider.getInstance(context).setUsername(username);
+        try {
+            UserProvider.getInstance(context).setUsername(username);
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+        }
 
         final SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
         boolean rememberUser = preferences.getBoolean(LoginUsernameFragment.REMEMBER, false);
@@ -43,7 +48,7 @@ public class ShowEnterPasswordCallback extends BaseCallback {
 
         activity.switchToEnterPasswordFragment();
 
-        floatingActionButton.setImageResource(R.drawable.add);
+        floatingActionButton.setImageResource(R.mipmap.add);
         floatingActionButton.setOnClickListener(new CreateUserCallback(context));
     }
 

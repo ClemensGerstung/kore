@@ -1,7 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -12,9 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
-import core.PasswordProvider;
-import core.UserProvider;
-import core.exceptions.PasswordProviderException;
+
+import core.data.UserProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
@@ -85,17 +83,18 @@ public class CreatePasswordActivity extends AppCompatActivity {
         switch(id) {
             case R.id.createusermenu_item_done:
                 int userId = UserProvider.getInstance(this).getId();
-                PasswordProvider provider = PasswordProvider.getInstance(this, userId);
-
-                String program  = this.program.getText().toString();
-                String username = this.username.getText().toString();
-                String password = this.password.getText().toString();
-
-                try {
-                    provider.insertIntoDatabase(program, username, password);
-                } catch (Exception e) {
-                    Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }
+//                TODO:
+//                PasswordProvider provider = PasswordProvider.getInstance(this, userId);
+//
+//                String program  = this.program.getText().toString();
+//                String username = this.username.getText().toString();
+//                String password = this.password.getText().toString();
+//
+//                try {
+//                    provider.insertIntoDatabase(program, username, password);
+//                } catch (Exception e) {
+//                    Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
+//                }
 
                 onBackPressed();
 
