@@ -1,7 +1,9 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,15 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
-
 import core.data.UserProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
 
     private Toolbar toolbar;
-    private EditText username;
     private EditText program;
+    private EditText username;
     private EditText password;
 
     private TextWatcher switchTextWatcher = new TextWatcher() {
@@ -47,25 +48,27 @@ public class CreatePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password_detail_layout);
 
-//        View button = findViewById(R.id.passworddetail_appcompatbutton_delete);
-//        button.setVisibility(View.INVISIBLE);
+        toolbar = (Toolbar) findViewById(R.id.passworddetail_toolbar);
+        program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
+        username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
+        password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
+        CardView delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
+        CardView passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
 
-        toolbar = (Toolbar)findViewById(R.id.passworddetail_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
 
-//        username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
-//        program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
-//        password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
-//
-//        username.addTextChangedListener(switchTextWatcher);
-//        program.addTextChangedListener(switchTextWatcher);
-//        password.addTextChangedListener(switchTextWatcher);
+        username.addTextChangedListener(switchTextWatcher);
+        program.addTextChangedListener(switchTextWatcher);
+        password.addTextChangedListener(switchTextWatcher);
+
+        delete.setVisibility(View.GONE);
+        passwordHistoryCard.setVisibility(View.GONE);
     }
 
     @Override
@@ -80,26 +83,19 @@ public class CreatePasswordActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch(id) {
-            case R.id.createusermenu_item_done:
-                int userId = UserProvider.getInstance(this).getId();
-//                TODO:
-//                PasswordProvider provider = PasswordProvider.getInstance(this, userId);
-//
-//                String program  = this.program.getText().toString();
-//                String username = this.username.getText().toString();
-//                String password = this.password.getText().toString();
-//
-//                try {
-//                    provider.insertIntoDatabase(program, username, password);
-//                } catch (Exception e) {
-//                    Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
-//                }
+        if (id != R.id.createusermenu_item_done) return false;
 
-                onBackPressed();
+        String program = this.program.getText().toString();
+        String username = this.username.getText().toString();
+        String password = this.password.getText().toString();
 
-                break;
+        try {
+            UserProvider.getInstance(this).addPassword(program, username, password);
+        } catch (Exception e) {
+            Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
         }
+
+        onBackPressed();
 
         return true;
     }
