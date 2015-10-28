@@ -2,6 +2,7 @@ package core.data;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.AesProvider;
 import core.DatabaseProvider;
@@ -241,8 +242,12 @@ public class UserProvider {
         editPassword(password);
     }
 
-    public void editPassword(int id, String program, String username) {
+    public void editPassword(int id, @Nullable String program, @Nullable String username) {
+        Password password = passwordProvider.getById(id);
+        password.setUsername(username);
+        password.setProgram(program);
 
+        editPassword(password);
     }
 
     public void editPassword(Password password) {
