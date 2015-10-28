@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -92,7 +93,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         try {
             UserProvider.getInstance(this).addPassword(program, username, password);
         } catch (Exception e) {
-            Snackbar.make(null, e.getMessage(), Snackbar.LENGTH_LONG).show();
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
 
         onBackPressed();

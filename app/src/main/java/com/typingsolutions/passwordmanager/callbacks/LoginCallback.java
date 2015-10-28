@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
@@ -33,6 +34,7 @@ public class LoginCallback extends BaseCallback {
 
             Intent intent = new Intent(context, PasswordOverviewActivity.class);
             context.startActivity(intent);
+            loginActivity.finish();
         } catch (Exception e) {
             if (e instanceof LoginException) {
                 LoginException exception = (LoginException) e;
@@ -49,6 +51,8 @@ public class LoginCallback extends BaseCallback {
                     }
                 }
             } else {
+                Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+                e.printStackTrace();
                 Snackbar.make(v, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
             }
         }
