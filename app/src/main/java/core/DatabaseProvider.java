@@ -36,6 +36,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(data) VALUES(?);";
 
+    public static final String INSERT_NEW_HISTORY_ITEM = "INSERT INTO history VALUES(?);";
+
     private static DatabaseProvider INSTANCE;
 
     private Cursor lastCursor;

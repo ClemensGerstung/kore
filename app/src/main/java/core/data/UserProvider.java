@@ -9,7 +9,6 @@ import core.Utils;
 import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class UserProvider {
@@ -194,11 +193,19 @@ public class UserProvider {
     public void addPassword(String program, String username, String password) throws Exception {
         DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
+        PasswordHistory history = PasswordHistory.createItem(password);
+        String json = history.getJson();
+        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
 
+        long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY_ITEM, encryptedJson);
+
+        if(historyId == -1)
+            throw new UserProviderException("Couldn't insert your password history item!");
 
         Password passwordObject = Password.createSimplePassword(program, username);
-        String json = passwordObject.getJson();
-        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
+        passwordObject.setPasswordHistoryItem((int) historyId, history);
+        json = passwordObject.getJson();
+        encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
         long id = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, encryptedJson);
 
         if(id == -1)

@@ -41,19 +41,6 @@ public class Password {
         passwordHistory = null;
     }
 
-    void addHistoryItem(int id, String value, String date) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Date convertedDate = new Date();
-        try {
-            convertedDate = dateFormat.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-//        PasswordHistory history = new PasswordHistory(id, value, convertedDate);
-//        passwordHistory.add(history);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
