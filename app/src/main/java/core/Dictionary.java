@@ -5,55 +5,55 @@ import java.util.Iterator;
 // because Java sucks...
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
 
-    public class Element<T extends K, U extends V> {
-        private T key;
-        private U value;
-        private Element<T, U> next;
-        private Element<T, U> prev;
+    public class Element<K, V> {
+        private K key;
+        private V value;
+        private Element<K, V> next;
+        private Element<K, V> prev;
 
-        Element(T key, U value) {
+        Element(K key, V value) {
             this.key = key;
             this.value = value;
             this.next = null;
             this.prev = null;
         }
 
-        Element(Element<T, U> other) {
+        Element(Element<K, V> other) {
             key = other.key;
             value = other.value;
             next = other.next;
             prev = other.prev;
         }
 
-        public T getKey() {
+        public K getKey() {
             return key;
         }
 
-        public void setKey(T key) {
+        public void setKey(K key) {
             this.key = key;
         }
 
-        public U getValue() {
+        public V getValue() {
             return value;
         }
 
-        public void setValue(U value) {
+        public void setValue(V value) {
             this.value = value;
         }
 
-        Element<T, U> getNext() {
+        Element<K, V> getNext() {
             return next;
         }
 
-        void setNext(Element<T, U> next) {
+        void setNext(Element<K, V> next) {
             this.next = next;
         }
 
-        Element<T, U> getPrevious() {
+        Element<K, V> getPrevious() {
             return prev;
         }
 
-        void setPrevious(Element<T, U> prev) {
+        void setPrevious(Element<K, V> prev) {
             this.prev = prev;
         }
 
@@ -70,7 +70,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
             if (this == o) return true;
             if (!(o instanceof Element)) return false;
 
-            Element<T, U> element = (Element<T, U>) o;
+            Element<K, V> element = (Element<K, V>) o;
 
             if (key != null ? !key.equals(element.key) : element.key != null) return false;
             return !(value != null ? !value.equals(element.value) : element.value != null);
@@ -84,12 +84,18 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
             return result;
         }
 
+        @Override
+        public String toString() {
+            return "Element{" +
+                    "key=" + key +
+                    ", value=" + value +
+                    '}';
+        }
     }
 
     private Element<K, V> first;
     private Element<K, V> last;
     private Element<K, V> current;
-
 
     public Dictionary() {
         first = null;
@@ -97,61 +103,154 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
         current = null;
     }
 
-    public <T extends K, U extends V> Dictionary(Dictionary<T, U> other) {
+    public Dictionary(Dictionary<K, V> other) {
         this();
-
+        addAll(other, InsertOption.After, IterationOption.Forwards);
     }
 
     public void addLast(K key, V value) {
-        if(first == null) {
+        if (containsKey(key, IterationOption.Backwards))
+            throw new IllegalArgumentException("Already contains key " + key.toString() + "!");
+
+        if (first == null) {
             first = new Element<>(key, value);
+            last = first;
         } else {
-            Element<K, V> element = first;
-            while (element.hasNext()){
-                element = element.getNext();
-            }
+            Element<K, V> element = last;
             last = new Element<>(key, value);
+            last.setPrevious(element);
             element.setNext(last);
         }
     }
 
     public void addFirst(K key, V value) {
-        if(last == null) {
+        if (containsKey(key, IterationOption.Forwards))
+            throw new IllegalArgumentException("Already contains key " + key.toString() + "!");
+
+        if (last == null) {
             last = new Element<>(key, value);
+            first = last;
         } else {
-            Element<K, V> element = last;
-            while (element.hasPrevious()){
-                element = element.getPrevious();
-            }
+            Element<K, V> element = first;
             first = new Element<>(key, value);
+            first.setNext(element);
             element.setPrevious(first);
         }
     }
 
+    public void addAll(Dictionary<K, V> other, InsertOption insertOption, IterationOption option) {
+        Element<K, V> iterator = (option == IterationOption.Forwards ? other.getFirstIterator() : other.getLastIterator());
+        while (other.hasNext()) {
+            if (containsKey(iterator.key, option))
+                continue;
 
+            if (insertOption == InsertOption.After)
+                addLast(iterator.key, iterator.value);
+            else
+                addFirst(iterator.key, iterator.value);
 
-    public Element getFirstIterator() {
-        current = new Element<K, V>(first);
+            iterator = option == IterationOption.Forwards ? other.next() : other.previous();
+        }
+    }
+
+    public void setForKey(K key, V value, IterationOption option) {
+        Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+
+        boolean setValue = false;
+        while (iterator != null) {
+            if (iterator.getKey().equals(key)) {
+                iterator.setValue(value);
+                setValue = true;
+                break;
+            }
+
+            iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+        }
+
+        if (!setValue) {
+            if (option == IterationOption.Backwards)
+                addFirst(key, value);
+            else
+                addLast(key, value);
+        }
+    }
+
+    public void insertKey(K search, K key, V value, InsertOption insertOption, IterationOption option) {
+        if (!containsKey(search, option))
+            throw new IllegalArgumentException("Doesn't contain key " + search.toString() + "!");
+
+        if (containsKey(key, option))
+            throw new IllegalArgumentException("Already contains key " + key.toString() + "!");
+
+        Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+
+        while (iterator != null) {
+            if (iterator.getKey().equals(search)) {
+                Element<K, V> element = new Element<K, V>(key, value);
+                if (insertOption == InsertOption.Before) {
+                    Element<K, V> tmp = iterator.prev;
+                    tmp.setNext(element);
+                    element.setPrevious(tmp);
+                    element.setNext(iterator);
+                    iterator.setPrevious(element);
+                } else if (insertOption == InsertOption.After) {
+                    Element<K, V> tmp = iterator.next;
+                    tmp.setPrevious(element);
+                    element.setNext(tmp);
+                    element.setPrevious(iterator);
+                    iterator.setNext(element);
+                }
+                break;
+            }
+
+            iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+        }
+    }
+
+    public boolean containsKey(K key, IterationOption option) {
+        boolean result = false;
+        Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+
+        while (iterator != null) {
+            if (iterator.getKey().equals(key)) {
+                result = true;
+                break;
+            }
+
+            iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+        }
+        return result;
+    }
+
+    public Element<K, V> getFirstIterator() {
+        current = first;
         return current;
     }
 
-    public Element getLastIterator() {
-        current = new Element<K, V>(last);
+    public Element<K, V> getLastIterator() {
+        current = last;
         return current;
+    }
+
+    @SuppressWarnings("CloneDoesntCallSuperClone")
+    @Override
+    public Dictionary<K, V> clone() {
+        return new Dictionary<>(this);
     }
 
     @Override
     public Iterator<Element> iterator() {
+        current = first;
         return this;
     }
 
     @Override
     public boolean hasNext() {
-        return current.hasNext();
+        return current != null;
     }
 
     public boolean hasPrevious() {
-        return current.hasPrevious();
+        return hasNext();
     }
 
     @Override
@@ -159,11 +258,12 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
         if (current == null)
             throw new UnsupportedOperationException("No next element");
 
+        Element<K, V> retElement = current;
         current = current.getNext();
-        return current;
+        return retElement;
     }
 
-    public Element previuos() {
+    public Element previous() {
         if (current == null)
             throw new UnsupportedOperationException("no previous element");
 
@@ -174,5 +274,15 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
+    }
+
+    public enum IterationOption {
+        Forwards,
+        Backwards
+    }
+
+    public enum InsertOption {
+        Before,
+        After
     }
 }
