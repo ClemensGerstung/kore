@@ -1,6 +1,9 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 // because Java sucks...
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
@@ -222,6 +225,69 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
         return result;
     }
 
+    public boolean containsValue(V value, IterationOption option) {
+        boolean result = false;
+        Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+
+        while (iterator != null) {
+            if (iterator.getValue().equals(value)) {
+                result = true;
+                break;
+            }
+
+            iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+        }
+        return result;
+    }
+
+    public void clear() {
+
+    }
+
+    public K getKeyAt(int position) {
+        Element<K, V> element = getFirstIterator();
+        for (int i = 0; i < position; i++) {
+            element = element.getNext();
+        }
+        return element.getKey();
+    }
+
+    public V getValueAt(int position) {
+        Element<K, V> element = getFirstIterator();
+        for (int i = 0; i < position; i++) {
+            element = element.getNext();
+        }
+        return element.getValue();
+    }
+
+    public V getByKey(K search, IterationOption option) {
+        if (!containsKey(search, option))
+            throw new IllegalArgumentException("Doesn't contain key " + search.toString() + "!");
+
+        Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+
+        while (iterator != null) {
+            if (iterator.getKey().equals(search)) {
+                return iterator.getValue();
+            }
+            iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+        }
+
+        return null;
+    }
+
+    public int size() {
+        Element element = getFirstIterator();
+        int result = 0;
+
+        while (element != null) {
+            result++;
+            element = element.next;
+        }
+
+        return result;
+    }
+
     public Element<K, V> getFirstIterator() {
         current = first;
         return current;
@@ -230,6 +296,26 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     public Element<K, V> getLastIterator() {
         current = last;
         return current;
+    }
+
+    public Collection<K> keys() {
+        Collection<K> list = new ArrayList<>();
+
+        for (Element<K, V> element : this) {
+            list.add(element.key);
+        }
+
+        return list;
+    }
+
+    public Collection<V> values() {
+        Collection<V> list = new ArrayList<>();
+
+        for (Element<K, V> element : this) {
+            list.add(element.value);
+        }
+
+        return list;
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")
