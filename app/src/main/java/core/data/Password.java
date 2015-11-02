@@ -3,7 +3,8 @@ package core.data;
 import android.support.annotation.Nullable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
-import core.Utils;
+import core.*;
+import core.Dictionary;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -15,7 +16,7 @@ public class Password {
     private int position;
     private String username;
     private String program;
-    private NavigableMap<Integer, PasswordHistory> passwordHistory;
+    private core.Dictionary<Integer, PasswordHistory> passwordHistory;
 
 
     Password(int id, int position, String username, String program) {
@@ -23,7 +24,7 @@ public class Password {
         this.position = position;
         this.username = username;
         this.program = program;
-        this.passwordHistory = new TreeMap<>();
+        this.passwordHistory = new Dictionary<>();
     }
 
     public Password() {
@@ -74,45 +75,28 @@ public class Password {
         return program;
     }
 
-    public Set<Integer> getPasswordIds() {
-        return passwordHistory.keySet();
-    }
-
-    public List<PasswordHistory> getPasswordHistory() {
-        return new ArrayList<>(passwordHistory.values());
-    }
-
     public void setPasswordHistoryItem(Integer id, PasswordHistory item) {
-        passwordHistory.put(id, item);
+        passwordHistory.setForKey(id, item, Dictionary.IterationOption.Forwards);
     }
 
     public String getFirstItem() {
-        return passwordHistory.firstEntry().getValue().getValue();
+        return getFirstHistoryItem().getValue();
     }
 
     public PasswordHistory getFirstHistoryItem() {
-        return passwordHistory.firstEntry().getValue();
+        return passwordHistory.getFirstIterator().getValue();
     }
 
     public void addPasswordHistoryItem(Integer id, PasswordHistory item) {
-        TreeMap<Integer, PasswordHistory> tmp = new TreeMap<>(passwordHistory);
-        passwordHistory.clear();
-        passwordHistory.put(id, item);
-        passwordHistory.putAll(tmp);
-        tmp.clear();
+        passwordHistory.addFirst(id, item);
     }
 
     public Integer getKeyAt(int position) {
-        Iterator<Integer> iterator = passwordHistory.keySet().iterator();
-        Integer integer = null;
-        for (int i = 0; i < position; i++) {
-            if (iterator.hasNext()) {
-                integer = iterator.next();
-            } else {
-                return null;
-            }
-        }
-        return integer;
+        return passwordHistory.getKeyAt(position);
+    }
+
+    public Collection<Integer> getPasswordIds() {
+        return passwordHistory.keys();
     }
 
     public boolean hasId() {
@@ -156,7 +140,7 @@ public class Password {
         jsonWriter.name("position").value(position);
         jsonWriter.name("history");
         jsonWriter.beginArray();
-        for (Integer i : passwordHistory.keySet()) {
+        for (Integer i : passwordHistory.keys()) {
             jsonWriter.beginObject();
             jsonWriter.name("id").value(i);
             jsonWriter.endObject();
@@ -190,7 +174,7 @@ public class Password {
                     jsonReader.beginObject();
                     String idName = jsonReader.nextName();
                     if (!idName.equals("id")) continue;
-                    passwordHistory.keySet().add(jsonReader.nextInt());
+                    passwordHistory.addLast(jsonReader.nextInt(), null);
                     jsonReader.endObject();
                 }
                 jsonReader.endArray();

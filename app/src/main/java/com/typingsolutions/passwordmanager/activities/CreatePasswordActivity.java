@@ -32,8 +32,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            boolean result = username.getText().length() > 0
-                    && program.getText().length() > 0
+            boolean result = program.getText().length() > 0
                     && password.getText().length() > 0;
             switchMenuState(result);
         }
@@ -94,10 +93,9 @@ public class CreatePasswordActivity extends AppCompatActivity {
             UserProvider.getInstance(this).addPassword(program, username, password);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+        } finally {
+//            onBackPressed();
         }
-
-        onBackPressed();
-
         return true;
     }
 

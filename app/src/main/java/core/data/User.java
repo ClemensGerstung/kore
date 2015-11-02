@@ -74,8 +74,7 @@ public class User {
         jsonWriter.beginArray();
         for (Integer i : passwordIds) {
             jsonWriter.beginObject();
-            jsonWriter.name("id");
-            jsonWriter.value(i);
+            jsonWriter.name("id").value(i);
             jsonWriter.endObject();
         }
         jsonWriter.endArray();
