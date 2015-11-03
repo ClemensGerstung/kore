@@ -50,7 +50,7 @@
 
         <activity android:name=".activities.CreatePasswordActivity"
                   android:theme="@style/Base.AppTheme"
-                  android:label="@string/app_name"/>
+                  android:label=""/>
 
         <activity android:name=".activities.PasswordDetailActivity"
                   android:theme="@style/Base.AppTheme"

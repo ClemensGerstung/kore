@@ -57,13 +57,13 @@ public class UserProvider {
         }
 
         if (salt == null || dbPasswordHash == null) {
-            throw new UserProviderException("Something went wrong");
+            throw new UserProviderException("Something went wrong (salt or passwordhash)");
         }
 
         passwordHash = Utils.getHashedString(password + Utils.getHashedString(salt));
 
         if (passwordHash == null) {
-            throw new UserProviderException("Something went wrong");
+            throw new UserProviderException("Something went wrong (passwordhash)");
         }
 
         if (remote != null) {
@@ -85,8 +85,11 @@ public class UserProvider {
             currentUser = new User(id, username, password, salt, passwordHash);
             cursor = connection.query(DatabaseProvider.GET_PASSWORDIDS_FROM_USER, Integer.toString(id));
             if (cursor.moveToNext()) {
-                String ids = AesProvider.decrypt(cursor.getString(0), password);
-                currentUser.setPasswordIdsFromJson(ids);
+                String dbIds = cursor.getString(0);
+                if (dbIds != null) {
+                    String ids = AesProvider.decrypt(dbIds, password);
+                    currentUser.setPasswordIdsFromJson(ids);
+                }
             }
             currentUser.isSafeLogin(safeLogin);
 
@@ -216,10 +219,21 @@ public class UserProvider {
     }
 
     public void addPassword(Password password) throws Exception {
-        if (!password.hasId())
-            return;
 
-        passwordProvider.add(password);
+        if (!passwordProvider.contains(password))
+            passwordProvider.add(password);
+
+        if (password.hasId() && !currentUser.hasPassword(password.getId())) {
+
+            currentUser.addPasswordById(password.getId());
+
+            String json = currentUser.getPasswordsAsJson();
+            String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
+
+            long effectedRows = DatabaseProvider.getConnection(context)
+                    .update(DatabaseProvider.UPDATE_PASSWORDIDS_FOR_USER, encryptedJson, Integer.toString(currentUser.getId()));
+        }
+
         if (passwordActionListener != null)
             passwordActionListener.onPasswordAdded(password);
     }
@@ -268,12 +282,24 @@ public class UserProvider {
         return passwordProvider.getById(id);
     }
 
+    public Password getPasswordAt(int position) {
+        return passwordProvider.get(position);
+    }
+
+    public int getPasswordCount() {
+        return passwordProvider.size();
+    }
+
     public void setPasswordActionListener(UserProviderPasswordActionListener passwordActionListener) {
         this.passwordActionListener = passwordActionListener;
     }
 
     public void setUserProviderActionListener(UserProviderActionListener userProviderActionListener) {
         this.userProviderActionListener = userProviderActionListener;
+    }
+
+    public boolean hasPassword() {
+        return passwordProvider.size() > 0;
     }
 
     public static void logout() {
@@ -285,6 +311,18 @@ public class UserProvider {
         if (INSTANCE == null || INSTANCE.currentUser == null)
             throw new UserProviderException("Cannot decrypt because there was an error");
         return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
+    }
+
+    public static boolean checkPassword(String password) {
+        return INSTANCE.currentUser.plainPassword.equals(password);
+    }
+
+    public static void order(int which) {
+        INSTANCE.passwordProvider.order(which);
+    }
+
+    public void clearPasswords() {
+        passwordProvider.simpleLogout();
     }
 
     public interface UserProviderPasswordActionListener {

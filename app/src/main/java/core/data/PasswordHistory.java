@@ -72,10 +72,16 @@ public class PasswordHistory {
         jsonReader.beginObject();
         while(jsonReader.hasNext()) {
             String jsonName = jsonReader.nextName();
-            if(jsonName.equals("value")) {
-                value = jsonReader.nextString();
-            } else if (jsonName.equals("dateChanged")) {
-                changedDate = Utils.getDateFromString(jsonReader.nextString());
+            switch (jsonName) {
+                case "value":
+                    value = jsonReader.nextString();
+                    break;
+                case "dateChanged":
+                    changedDate = Utils.getDateFromString(jsonReader.nextString());
+                    break;
+                default:
+                    jsonReader.nextString();
+                    break;
             }
         }
         jsonReader.endObject();

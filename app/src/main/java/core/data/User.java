@@ -68,15 +68,14 @@ public class User {
     public String getPasswordsAsJson() throws IOException {
         StringWriter writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
+        jsonWriter.setIndent(" ");
 
         jsonWriter.beginObject();
 
-        jsonWriter.name("ids");
-        jsonWriter.beginArray();
+        jsonWriter.name("ids").beginArray();
         for (Integer i : passwordIds) {
             jsonWriter.beginObject();
-            jsonWriter.name("id");
-            jsonWriter.value(i);
+            jsonWriter.name("id").value(i);
             jsonWriter.endObject();
         }
         jsonWriter.endArray();
@@ -100,19 +99,18 @@ public class User {
 
         while (jsonReader.hasNext()) {
             String name = jsonReader.nextName();
-            // salt is not necessary...
+
             if(name.equals("ids")) {
                 jsonReader.beginArray();
 
                 while (jsonReader.hasNext()) {
-                    String idName = jsonReader.nextName();
-                    if(!idName.equals("id")) continue;
-
                     jsonReader.beginObject();
+                    String idName = jsonReader.nextName();
+                    if (!idName.equals("id")) continue;
 
                     Integer id = jsonReader.nextInt();
 
-                    if(!passwordIds.contains(id)) {
+                    if (!passwordIds.contains(id)) {
                         passwordIds.add(id);
                     }
 
@@ -120,6 +118,8 @@ public class User {
                 }
 
                 jsonReader.endArray();
+            } else if(name.equals("salt")) {
+                jsonReader.nextString();    // ignore
             }
         }
 
@@ -127,6 +127,10 @@ public class User {
 
         reader.close();
         jsonReader.close();
+    }
+
+    public void addPasswordById(int id) {
+        passwordIds.add(id);
     }
 
     public void logout() {
@@ -138,5 +142,9 @@ public class User {
         safeLogin = false;
         passwordIds.clear();
         passwordIds = null;
+    }
+
+    public boolean hasPassword(int id) {
+        return passwordIds.contains(id);
     }
 }
