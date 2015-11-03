@@ -38,10 +38,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
     private AddPasswordTextWatcher passwordTextWatcher;
 
     private int passwordId;
-    private Password currentPassword;
 
     private boolean first = true;
-    private int historyCardHeight;
 
     private View.OnLayoutChangeListener deleteLayoutChanged = new View.OnLayoutChangeListener() {
         @Override
@@ -64,7 +62,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
 
                 int newDeletePos = windowHeight - delete.getMeasuredHeight();
-                historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
+                int historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
                 Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
 
                 ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
@@ -102,7 +100,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        currentPassword = userProvider.getPasswordById(passwordId);
+        Password currentPassword = userProvider.getPasswordById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);

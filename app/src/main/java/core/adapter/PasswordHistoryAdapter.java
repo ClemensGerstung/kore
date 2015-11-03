@@ -7,19 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import core.data.Password;
+import core.data.PasswordHistory;
+import core.data.UserProvider;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistoryAdapter.ViewHolder> {
 
     private Context context;
     private LayoutInflater inflater;
-    private int passwordIndex;
-    private OnItemAddedCallback onItemAddedCallback;
+    private int passwordId;
 
     public PasswordHistoryAdapter(Context context, int passwordIndex) {
         super();
         this.context = context;
         this.inflater = LayoutInflater.from(context);
-        this.passwordIndex = passwordIndex;
+        this.passwordId = passwordIndex;
     }
 
     @Override
@@ -32,50 +38,31 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-//        TODO
-//        PasswordProvider provider = PasswordProvider.getInstance();
-//        Password password = provider.getById(passwordIndex);
-//        PasswordHistory history = password.getPasswordHistory().get(position + 1);
-//
-//        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
-//        String date = dateFormat.format(history.getChangedDate());
-//
-//        holder.password.setText(history.getValue());
-//        holder.date.setText(date);
-//
-//        if(onItemAddedCallback != null) {
-//            onItemAddedCallback.onItemAdded(holder, position);
-//        }
+        Password password = UserProvider.getInstance(context).getPasswordById(passwordId);
+        PasswordHistory history = password.getItemAt(position + 1);
+
+        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
+        String date = dateFormat.format(history.getChangedDate());
+
+        holder.password.setText(history.getValue());
+        holder.date.setText(date);
     }
 
     @Override
     public int getItemCount() {
-//        PasswordProvider provider = PasswordProvider.getInstance();
-//        Password password = provider.getById(passwordIndex);
-//
-//        return password.getPasswordHistory().size() - 1;
-        return 0;
+        Password password = UserProvider.getInstance(context).getPasswordById(passwordId);
+        return password.getHistoryCount();
     }
 
-    public void setOnItemAddedCallback(OnItemAddedCallback onItemAddedCallback) {
-        this.onItemAddedCallback = onItemAddedCallback;
-    }
-
-
-    public interface OnItemAddedCallback {
-        void onItemAdded(PasswordHistoryAdapter.ViewHolder viewHolder, int position);
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
         final TextView password;
         final TextView date;
-        private boolean first;
 
         public ViewHolder(View itemView) {
             super(itemView);
             password = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_password);
             date = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_date);
-            first = true;
         }
     }
 }
