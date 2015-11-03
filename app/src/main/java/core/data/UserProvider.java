@@ -313,6 +313,14 @@ public class UserProvider {
         return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
     }
 
+    public static boolean checkPassword(String password) {
+        return INSTANCE.currentUser.plainPassword.equals(password);
+    }
+
+    public static void order(int which) {
+        INSTANCE.passwordProvider.order(which);
+    }
+
     public void clearPasswords() {
         passwordProvider.simpleLogout();
     }

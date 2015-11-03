@@ -143,20 +143,20 @@ public class PasswordDetailActivity extends AppCompatActivity {
         String newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
         String newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
         String newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
-//      TODO:
+
         try {
             if (newPassword != null) {
-//                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
+                UserProvider.getInstance(this).editPassword(passwordId, newPassword);
             }
 
             if (newUsername != null || newProgram != null) {
-//                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
+                UserProvider.getInstance(this).editPassword(passwordId, newUsername, newProgram);
             }
         } catch (Exception e) {
             // ignored
         }
 
-//        onBackPressed();
+        onBackPressed();
 
         return super.onOptionsItemSelected(item);
     }
