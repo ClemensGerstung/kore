@@ -55,11 +55,15 @@ class PasswordProvider {
     }
 
     void logoutComplete() {
+        simpleLogout();
+        context = null;
+    }
+
+    void simpleLogout() {
         for (Password p : passwords) {
             p.logout();
         }
         passwords.clear();
-        context = null;
     }
 
     public void order(int which) {

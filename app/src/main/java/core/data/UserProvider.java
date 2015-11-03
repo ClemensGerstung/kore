@@ -220,7 +220,8 @@ public class UserProvider {
 
     public void addPassword(Password password) throws Exception {
 
-        passwordProvider.add(password);
+        if (!passwordProvider.contains(password))
+            passwordProvider.add(password);
 
         if (!password.hasId() || currentUser.hasPassword(password.getId()))
             return;
@@ -281,6 +282,14 @@ public class UserProvider {
         return passwordProvider.getById(id);
     }
 
+    public Password getPasswordAt(int position) {
+        return passwordProvider.get(position);
+    }
+
+    public int getPasswordCount() {
+        return passwordProvider.size();
+    }
+
     public void setPasswordActionListener(UserProviderPasswordActionListener passwordActionListener) {
         this.passwordActionListener = passwordActionListener;
     }
@@ -302,6 +311,10 @@ public class UserProvider {
         if (INSTANCE == null || INSTANCE.currentUser == null)
             throw new UserProviderException("Cannot decrypt because there was an error");
         return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
+    }
+
+    public void clearPasswords() {
+        passwordProvider.simpleLogout();
     }
 
     public interface UserProviderPasswordActionListener {

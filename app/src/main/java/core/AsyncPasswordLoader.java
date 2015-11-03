@@ -20,6 +20,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
         UserProvider provider = UserProvider.getInstance(context);
+        provider.clearPasswords();
         User currentUser = provider.getCurrentUser();
         try {
             DatabaseProvider connection = DatabaseProvider.getConnection(context);
