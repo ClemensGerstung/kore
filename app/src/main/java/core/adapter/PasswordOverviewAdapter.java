@@ -46,12 +46,6 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         useFiltered = false;
     }
 
-//    private PasswordProvider getProvider() {
-//        int userId = UserProvider.getInstance(context).getId();
-//        PasswordProvider provider = PasswordProvider.getInstance(context, userId);
-//        return provider;
-//    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
@@ -104,15 +98,15 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     }
 
     private void filter(String query, int flag) {
-//        TODO:
-//        PasswordProvider provider = getProvider();
-//        for (int i = 0; i < provider.size(); i++) {
-//            Password password = provider.get(i);
-//            if (matches(password, query, flag)) {
-//                if (localPasswords.contains(password)) continue;
-//                localPasswords.add(password);
-//            }
-//        }
+
+        UserProvider provider = UserProvider.getInstance(context);
+        for (int i = 0; i < provider.getPasswordCount(); i++) {
+            Password password = provider.getPasswordAt(i);
+            if (matches(password, query, flag)) {
+                if (localPasswords.contains(password)) continue;
+                localPasswords.add(password);
+            }
+        }
     }
 
     private boolean matches(Password password, String simpleQuery, int filterFlags) {
