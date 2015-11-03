@@ -13,8 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
-import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.data.Password;
+import core.data.PasswordHistory;
 import core.data.User;
 import core.data.UserProvider;
 
@@ -57,10 +57,9 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
 
         safe = UserProvider.getInstance(context).isSafe();
-//      TODO:
-//        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
+
         ViewHolder viewHolder = new ViewHolder(view);
-        if(safe) {
+        if (safe) {
             viewHolder.makeSafe();
         }
 
@@ -69,23 +68,20 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-//        TODO:
-//        Password password = useFiltered ? localPasswords.get(position) : getProvider().get(position);
-//        PasswordHistory history = password.getPasswordHistory().get(0);
-//
-//
-//        if (!safe) {
-//            viewHolder.password.setText(history.getValue());
-//        }
-//        viewHolder.username.setText(password.getUsername());
-//        viewHolder.program.setText(password.getProgram());
-//        viewHolder.id = password.getId();
+        Password password = useFiltered ? localPasswords.get(position) : UserProvider.getInstance(context).getPasswordAt(position);
+        PasswordHistory history = password.getFirstHistoryItem();
+
+        if (!safe) {
+            viewHolder.password.setText(history.getValue());
+        }
+        viewHolder.username.setText(password.getUsername());
+        viewHolder.program.setText(password.getProgram());
+        viewHolder.id = password.getId();
     }
 
     @Override
     public int getItemCount() {
-//        return useFiltered ? localPasswords.size() : getProvider().size();
-        return 0;
+        return useFiltered ? localPasswords.size() : UserProvider.getInstance(context).getPasswordCount();
     }
 
     public synchronized void filter(String query) {
@@ -175,7 +171,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
         @Override
         public void onClick(View v) {
-            if(safe) {
+            if (safe) {
                 AlertDialog dialog = new AlertDialog.Builder(context)
                         .setTitle("Reenter your password")
                         .setView(R.layout.reenter_password_layout)
