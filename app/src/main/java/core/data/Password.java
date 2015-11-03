@@ -121,6 +121,14 @@ public class Password {
         this.program = program;
     }
 
+    public int getHistoryCount() {
+        return passwordHistory.size();
+    }
+
+    public PasswordHistory getItemAt(int index) {
+        return passwordHistory.getValueAt(index);
+    }
+
     @Override
     public String toString() {
         return "Password{" +
