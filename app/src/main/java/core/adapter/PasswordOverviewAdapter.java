@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
+import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.User;
@@ -184,18 +185,17 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             AlertDialog alert = (AlertDialog) dialog;
             EditText editText = (EditText) alert.findViewById(R.id.reenterpasswordlayout_edittext_password);
             String password = editText.getText().toString();
-            User user = UserProvider.getInstance(context).getCurrentUser();
-//          TODO:
-//            if(password.equals(user.getPlainPassword())) {
-//                Intent intent = new Intent(context, PasswordDetailActivity.class);
-//                intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
-//                context.startActivity(intent);
-//            }
-//            else {
-//                alert.dismiss();
-//                Intent intent = new Intent(PasswordOverviewActivity.WRONGPASSWORD);
-//                context.getApplicationContext().sendBroadcast(intent);
-//            }
+
+            if(UserProvider.checkPassword(password)) {
+                Intent intent = new Intent(context, PasswordDetailActivity.class);
+                intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
+                context.startActivity(intent);
+            }
+            else {
+                alert.dismiss();
+                Intent intent = new Intent(PasswordOverviewActivity.WRONGPASSWORD);
+                context.getApplicationContext().sendBroadcast(intent);
+            }
         }
     }
 

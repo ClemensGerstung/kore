@@ -61,13 +61,18 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
                 return;
 
-//            if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
-//                noPasswordsTextView.setVisibility(View.VISIBLE);
+            if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
+                noPasswordsTextView.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onPasswordEdited(Password password, PasswordHistory history) {
-
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    passwordOverviewAdapter.notifyDataSetChanged();
+                }
+            });
         }
     };
 
@@ -112,7 +117,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
-//            PasswordProvider.getInstance().order(which);
+            UserProvider.order(which);
             passwordOverviewAdapter.notifyDataSetChanged();
         }
     };
