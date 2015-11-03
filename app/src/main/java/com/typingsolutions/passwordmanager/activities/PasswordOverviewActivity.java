@@ -76,27 +76,15 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
     };
 
-
-    private SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
-        @Override
-        public boolean onClose() {
-            passwordOverviewAdapter.resetFilter();
-            // do not override default behaviour
-            return false;
-        }
-    };
-
     private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
         @Override
         public boolean onMenuItemActionCollapse(MenuItem item) {
-
-
+            passwordOverviewAdapter.resetFilter();
             return true;
         }
 
         @Override
         public boolean onMenuItemActionExpand(MenuItem item) {
-
             return true;
         }
     };
