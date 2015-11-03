@@ -38,10 +38,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
     private AddPasswordTextWatcher passwordTextWatcher;
 
     private int passwordId;
-    private Password currentPassword;
 
     private boolean first = true;
-    private int historyCardHeight;
 
     private View.OnLayoutChangeListener deleteLayoutChanged = new View.OnLayoutChangeListener() {
         @Override
@@ -64,7 +62,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
 
                 int newDeletePos = windowHeight - delete.getMeasuredHeight();
-                historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
+                int historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
                 Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
 
                 ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
@@ -102,7 +100,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        currentPassword = userProvider.getPasswordById(passwordId);
+        Password currentPassword = userProvider.getPasswordById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -129,18 +127,6 @@ public class PasswordDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        // TODO: notify new pw
-        super.onPause();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.create_user_menu, menu);
@@ -155,20 +141,20 @@ public class PasswordDetailActivity extends AppCompatActivity {
         String newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
         String newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
         String newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
-//      TODO:
+
         try {
             if (newPassword != null) {
-//                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
+                UserProvider.getInstance(this).editPassword(passwordId, newPassword);
             }
 
             if (newUsername != null || newProgram != null) {
-//                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
+                UserProvider.getInstance(this).editPassword(passwordId, newUsername, newProgram);
             }
         } catch (Exception e) {
             // ignored
         }
 
-//        onBackPressed();
+        onBackPressed();
 
         return super.onOptionsItemSelected(item);
     }

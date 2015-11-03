@@ -11,6 +11,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -151,7 +152,7 @@ public class CreateUserActivity extends AppCompatActivity {
                 onBackPressed();
             }
         } catch (Exception e) {
-            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, "Something went wrong", Snackbar.LENGTH_LONG).show();
             usernameEditText.requestFocus();
             switchMenuState(false);
         }
@@ -160,10 +161,6 @@ public class CreateUserActivity extends AppCompatActivity {
     private void switchMenuState(boolean state) {
         MenuItem item = toolbar.getMenu().getItem(0);
         item.setEnabled(state);
-        if (state) {
-            item.getIcon().setAlpha(255);
-        } else {
-            item.getIcon().setAlpha(64);
-        }
+        item.getIcon().setAlpha(state ? 255 : 64);
     }
 }

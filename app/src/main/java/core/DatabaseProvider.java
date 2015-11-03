@@ -30,14 +30,15 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String GET_PASSWORDIDS_FROM_USER = "SELECT passwords FROM users WHERE id = ?;";
 
-    public static final String GET_PASSWORD_BY_ID = "SELECT id, data, FROM passwords WHERE id = ?;";
+    public static final String GET_PASSWORD_BY_ID = "SELECT id, data FROM passwords WHERE id = ?;";
 
-    public static final String GET_HISTORYITEM_BY_ID = "SELECT id, data FROM history WHERE id = ?;";
+    public static final String GET_HISTORYITEM_BY_ID = "SELECT data FROM history WHERE id = ?;";
 
     public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(data) VALUES(?);";
 
-    public static final String INSERT_NEW_HISTORY_ITEM = "INSERT INTO history VALUES(?);";
+    public static final String INSERT_NEW_HISTORY_ITEM = "INSERT INTO history(data) VALUES(?);";
 
+    public static final String UPDATE_PASSWORDIDS_FOR_USER = "UPDATE users SET passwords=? WHERE id=?;";
 
     private static DatabaseProvider INSTANCE;
 

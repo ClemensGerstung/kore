@@ -9,6 +9,8 @@ import core.data.PasswordHistory;
 import core.data.User;
 import core.data.UserProvider;
 
+import java.util.List;
+
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     private Context context;
 
@@ -20,11 +22,17 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... params) {
         UserProvider provider = UserProvider.getInstance(context);
+        provider.clearPasswords();
         User currentUser = provider.getCurrentUser();
         try {
             DatabaseProvider connection = DatabaseProvider.getConnection(context);
+            List<Integer> passwordIds = null;
 
-            for (Integer passwordId : currentUser.getPasswordIds()) {
+            synchronized (this) {
+                passwordIds = currentUser.getPasswordIds();
+            }
+
+            for (Integer passwordId : passwordIds) {
                 Cursor cursor = connection.query(DatabaseProvider.GET_PASSWORD_BY_ID, passwordId.toString());
 
                 if (!cursor.moveToNext())
