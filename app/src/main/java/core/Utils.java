@@ -79,7 +79,7 @@ public class Utils {
     }
 
     public static Date getDateFromString(String date) throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault());
         return dateFormat.parse(date);
     }
 }

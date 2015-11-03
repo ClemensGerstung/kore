@@ -32,7 +32,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String GET_PASSWORD_BY_ID = "SELECT id, data FROM passwords WHERE id = ?;";
 
-    public static final String GET_HISTORYITEM_BY_ID = "SELECT id, data FROM history WHERE id = ?;";
+    public static final String GET_HISTORYITEM_BY_ID = "SELECT data FROM history WHERE id = ?;";
 
     public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(data) VALUES(?);";
 

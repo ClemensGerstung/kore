@@ -219,10 +219,11 @@ public class UserProvider {
     }
 
     public void addPassword(Password password) throws Exception {
-        if (!password.hasId())
-            return;
 
         passwordProvider.add(password);
+
+        if (!password.hasId() || currentUser.hasPassword(password.getId()))
+            return;
 
         currentUser.addPasswordById(password.getId());
 
