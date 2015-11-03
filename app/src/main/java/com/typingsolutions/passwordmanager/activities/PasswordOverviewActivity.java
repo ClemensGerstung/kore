@@ -49,7 +49,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (noPasswordsTextView.getVisibility() == View.VISIBLE)
-                        noPasswordsTextView.setVisibility(View.GONE);
+                        noPasswordsTextView.setVisibility(View.INVISIBLE);
 
                     passwordOverviewAdapter.notifyDataSetChanged();
                 }
@@ -61,8 +61,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
                 return;
 
-            if (noPasswordsTextView.getVisibility() == View.GONE)
-                noPasswordsTextView.setVisibility(View.VISIBLE);
+//            if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
+//                noPasswordsTextView.setVisibility(View.VISIBLE);
         }
 
         @Override

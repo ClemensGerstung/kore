@@ -223,16 +223,16 @@ public class UserProvider {
         if (!passwordProvider.contains(password))
             passwordProvider.add(password);
 
-        if (!password.hasId() || currentUser.hasPassword(password.getId()))
-            return;
+        if (password.hasId() && !currentUser.hasPassword(password.getId())) {
 
-        currentUser.addPasswordById(password.getId());
+            currentUser.addPasswordById(password.getId());
 
-        String json = currentUser.getPasswordsAsJson();
-        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
+            String json = currentUser.getPasswordsAsJson();
+            String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
 
-        long effectedRows = DatabaseProvider.getConnection(context)
-                .update(DatabaseProvider.UPDATE_PASSWORDIDS_FOR_USER, encryptedJson, Integer.toString(currentUser.getId()));
+            long effectedRows = DatabaseProvider.getConnection(context)
+                    .update(DatabaseProvider.UPDATE_PASSWORDIDS_FOR_USER, encryptedJson, Integer.toString(currentUser.getId()));
+        }
 
         if (passwordActionListener != null)
             passwordActionListener.onPasswordAdded(password);
