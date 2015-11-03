@@ -94,7 +94,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         } finally {
-//            onBackPressed();
+            onBackPressed();
         }
         return true;
     }

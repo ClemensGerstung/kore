@@ -164,22 +164,30 @@ public class Password {
         jsonReader.beginObject();
         while (jsonReader.hasNext()) {
             String jsonName = jsonReader.nextName();
-            if (jsonName.equals("username")) {
-                username = jsonReader.nextString();
-            } else if (jsonName.equals("program")) {
-                program = jsonReader.nextString();
-            } else if (jsonName.equals("history")) {
-                jsonReader.beginArray();
-                while (jsonReader.hasNext()) {
-                    jsonReader.beginObject();
-                    String idName = jsonReader.nextName();
-                    if (!idName.equals("id")) continue;
-                    passwordHistory.addLast(jsonReader.nextInt(), null);
-                    jsonReader.endObject();
-                }
-                jsonReader.endArray();
-            } else if(jsonName.equals("position")) {
-                position = jsonReader.nextInt();
+            switch (jsonName) {
+                case "username":
+                    username = jsonReader.nextString();
+                    break;
+                case "program":
+                    program = jsonReader.nextString();
+                    break;
+                case "history":
+                    jsonReader.beginArray();
+                    while (jsonReader.hasNext()) {
+                        jsonReader.beginObject();
+                        String idName = jsonReader.nextName();
+                        if (!idName.equals("id")) continue;
+                        passwordHistory.addLast(jsonReader.nextInt(), null);
+                        jsonReader.endObject();
+                    }
+                    jsonReader.endArray();
+                    break;
+                case "position":
+                    position = jsonReader.nextInt();
+                    break;
+                default:
+                    jsonReader.nextString();
+                    break;
             }
         }
         jsonReader.close();
