@@ -3,6 +3,7 @@ package core.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.AesProvider;
 import core.DatabaseProvider;
@@ -11,6 +12,9 @@ import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class UserProvider {
     private static UserProvider INSTANCE;
@@ -256,7 +260,7 @@ public class UserProvider {
         editPassword(password);
     }
 
-    public void editPassword(int id, @Nullable String program, @Nullable String username) {
+    public void editPassword(int id, @Nullable String program, @Nullable String username) throws Exception {
         Password password = passwordProvider.getById(id);
         password.setUsername(username);
         password.setProgram(program);
@@ -264,11 +268,17 @@ public class UserProvider {
         editPassword(password);
     }
 
-    public void editPassword(Password password) {
+    public void editPassword(Password password) throws Exception {
         passwordProvider.set(password);
+
+        String json = password.getJson();
+        String encrypted = AesProvider.encrypt(json, currentUser.plainPassword);
+
+        DatabaseProvider.getConnection(context).update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, encrypted, Integer.toString(password.getId()));
 
         if (passwordActionListener != null)
             passwordActionListener.onPasswordEdited(password, password.getFirstHistoryItem());
+
     }
 
     public void removePassword(Password password) {
@@ -323,6 +333,25 @@ public class UserProvider {
 
     public void clearPasswords() {
         passwordProvider.simpleLogout();
+    }
+
+    public void savePasswords() {
+        for (Password password : passwordProvider.getPasswords()) {
+            try {
+                editPassword(password);
+            } catch (Exception e) {
+                Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+            }
+        }
+    }
+
+    public void orderByPosition() {
+        Collections.sort(passwordProvider.getPasswords(), new Comparator<Password>() {
+            @Override
+            public int compare(Password lhs, Password rhs) {
+                return Integer.compare(lhs.getPosition(), rhs.getPosition());
+            }
+        });
     }
 
     public interface UserProviderPasswordActionListener {

@@ -40,6 +40,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String UPDATE_PASSWORDIDS_FOR_USER = "UPDATE users SET passwords=? WHERE id=?;";
 
+    public static final String UPDATE_PASSWORD_BY_ID = "UPDATE passwords SET data = ? WHERE id = ?;";
+
     private static DatabaseProvider INSTANCE;
 
     private Cursor lastCursor;

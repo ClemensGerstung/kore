@@ -99,6 +99,12 @@ public class CreatePasswordActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     private void switchMenuState(boolean state) {
         MenuItem item = toolbar.getMenu().getItem(0);
         item.setEnabled(state);
