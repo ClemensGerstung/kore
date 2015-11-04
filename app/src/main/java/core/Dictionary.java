@@ -245,6 +245,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     }
 
     public K getKeyAt(int position) {
+        if(position >= size())
+            throw new IllegalArgumentException("Position is larger than the actual size");
+
         Element<K, V> element = getFirstIterator();
         for (int i = 0; i < position; i++) {
             element = element.getNext();
@@ -253,6 +256,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     }
 
     public V getValueAt(int position) {
+        if(position >= size())
+            throw new IllegalArgumentException("Position is larger than the actual size");
+
         Element<K, V> element = getFirstIterator();
         for (int i = 0; i < position; i++) {
             element = element.getNext();

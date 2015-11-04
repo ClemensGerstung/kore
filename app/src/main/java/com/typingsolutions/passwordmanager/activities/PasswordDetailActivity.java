@@ -109,17 +109,17 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
 
         String programString = currentPassword.getProgram();
-        programTextWatcher = new AddPasswordTextWatcher(this, programString);
+        programTextWatcher = new AddPasswordTextWatcher(this, programString, true);
         program.setText(programString);
         program.addTextChangedListener(programTextWatcher);
 
         String usernameString = currentPassword.getUsername();
-        usernameTextWatcher = new AddPasswordTextWatcher(this, usernameString);
+        usernameTextWatcher = new AddPasswordTextWatcher(this, usernameString, false);
         username.setText(usernameString);
         username.addTextChangedListener(usernameTextWatcher);
 
         String passwordString = currentPassword.getFirstItem();
-        passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString);
+        passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString, true);
         password.setText(passwordString);
         password.addTextChangedListener(passwordTextWatcher);
 
@@ -138,9 +138,16 @@ public class PasswordDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() != R.id.createusermenu_item_done) return false;
 
-        String newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
-        String newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
-        String newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
+        String newUsername = null;
+        String newProgram = null;
+        String newPassword = null;
+        try {
+            newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
+            newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
+            newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             if (newPassword != null) {
@@ -151,7 +158,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 UserProvider.getInstance(this).editPassword(passwordId, newUsername, newProgram);
             }
         } catch (Exception e) {
-            // ignored
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
 
         onBackPressed();
