@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,20 +13,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
-import core.*;
+import core.AsyncPasswordLoader;
 import core.adapter.PasswordOverviewAdapter;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import core.data.Password;
+import core.data.PasswordHistory;
+import core.data.UserProvider;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
 
@@ -43,58 +40,49 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     private WrongPasswordReceiver wrongPasswordReceiver;
 
-    private int userId;
-
-    private AsyncPasswordLoader.ItemAddCallback itemAddCallback = new AsyncPasswordLoader.ItemAddCallback() {
+    private UserProvider.UserProviderPasswordActionListener passwordActionListener = new UserProvider.UserProviderPasswordActionListener() {
         @Override
-        public void itemAdded(Password password) {
-            int userId = UserProvider.getInstance(PasswordOverviewActivity.this).getId();
-            PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-
-            if (!provider.contains(password)) {
-                provider.add(password);
-            }
-        }
-    };
-
-    private PasswordProvider.OnPasswordAddedToDatabase onPasswordAddedToDatabase = new PasswordProvider.OnPasswordAddedToDatabase() {
-        @Override
-        public void onPasswordAdded(int passwordId, int historyId) {
+        public void onPasswordAdded(Password password) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (noPasswordsTextView.getVisibility() == View.VISIBLE) {
-                        Log.i(getClass().getSimpleName(), "make invisible");
+                    if (noPasswordsTextView.getVisibility() == View.VISIBLE)
                         noPasswordsTextView.setVisibility(View.INVISIBLE);
-                    }
 
                     passwordOverviewAdapter.notifyDataSetChanged();
                 }
             });
-
         }
-    };
 
-    private SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
         @Override
-        public boolean onClose() {
-            passwordOverviewAdapter.resetFilter();
-            // do not override default behaviour
-            return false;
+        public void onPasswordRemoved(Password password) {
+            if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
+                return;
+
+            if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
+                noPasswordsTextView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onPasswordEdited(Password password, PasswordHistory history) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    passwordOverviewAdapter.notifyDataSetChanged();
+                }
+            });
         }
     };
 
     private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
         @Override
         public boolean onMenuItemActionCollapse(MenuItem item) {
-
-
+            passwordOverviewAdapter.resetFilter();
             return true;
         }
 
         @Override
         public boolean onMenuItemActionExpand(MenuItem item) {
-
             return true;
         }
     };
@@ -115,7 +103,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
-            PasswordProvider.getInstance().order(which);
+            UserProvider.order(which);
             passwordOverviewAdapter.notifyDataSetChanged();
         }
     };
@@ -139,7 +127,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // get userId
         UserProvider userProvider = UserProvider.getInstance(this);
-        userId = userProvider.getId();
+        userProvider.setPasswordActionListener(passwordActionListener);
 
         // init and set adapter
         passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -147,17 +135,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         passwordRecyclerView.setAdapter(passwordOverviewAdapter);
         passwordRecyclerView.setLayoutManager(layoutManager);
 
-        // init passwordProvider
-        PasswordProvider provider = PasswordProvider.getInstance(PasswordOverviewActivity.this, userId);
-        provider.setOnPasswordAddedToDatabase(onPasswordAddedToDatabase);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         // load passwords in background
-        passwordLoader = new AsyncPasswordLoader(this, DatabaseProvider.GET_ALL_PASSWORDS_BY_USER_ID, Integer.toHexString(userId));
-        passwordLoader.setItemAddCallback(itemAddCallback);
+        passwordLoader = new AsyncPasswordLoader(this);
         passwordLoader.execute();
 
         wrongPasswordReceiver = new WrongPasswordReceiver(this);
@@ -167,14 +152,18 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+//        UserProvider.getInstance(PasswordOverviewActivity.this).savePasswords();
+        UserProvider.logout();
         getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
         super.onPause();
+        finish();
     }
 
     @Override
     public void onBackPressed() {
-        PasswordProvider.logout();
-        UserProvider.logout();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+
         super.onBackPressed();
     }
 

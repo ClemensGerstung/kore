@@ -13,10 +13,9 @@ import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
-import core.Password;
-import core.PasswordProvider;
-import core.UserProvider;
 import core.adapter.PasswordHistoryAdapter;
+import core.data.Password;
+import core.data.UserProvider;
 
 public class PasswordDetailActivity extends AppCompatActivity {
 
@@ -39,10 +38,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
     private AddPasswordTextWatcher passwordTextWatcher;
 
     private int passwordId;
-    private Password currentPassword;
 
     private boolean first = true;
-    private int historyCardHeight;
 
     private View.OnLayoutChangeListener deleteLayoutChanged = new View.OnLayoutChangeListener() {
         @Override
@@ -65,7 +62,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
                 int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
 
                 int newDeletePos = windowHeight - delete.getMeasuredHeight();
-                historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
+                int historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
                 Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
 
                 ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
@@ -100,11 +97,10 @@ public class PasswordDetailActivity extends AppCompatActivity {
         });
 
         UserProvider userProvider = UserProvider.getInstance(this);
-        int id = userProvider.getId();
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        currentPassword = PasswordProvider.getInstance(this, id).getById(passwordId);
+        Password currentPassword = userProvider.getPasswordById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -113,17 +109,17 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
 
         String programString = currentPassword.getProgram();
-        programTextWatcher = new AddPasswordTextWatcher(this, programString);
+        programTextWatcher = new AddPasswordTextWatcher(this, programString, true);
         program.setText(programString);
         program.addTextChangedListener(programTextWatcher);
 
         String usernameString = currentPassword.getUsername();
-        usernameTextWatcher = new AddPasswordTextWatcher(this, usernameString);
+        usernameTextWatcher = new AddPasswordTextWatcher(this, usernameString, false);
         username.setText(usernameString);
         username.addTextChangedListener(usernameTextWatcher);
 
-        String passwordString = currentPassword.getFirstItem().getValue();
-        passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString);
+        String passwordString = currentPassword.getFirstItem();
+        passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString, true);
         password.setText(passwordString);
         password.addTextChangedListener(passwordTextWatcher);
 
@@ -131,15 +127,10 @@ public class PasswordDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     protected void onPause() {
-        // TODO: notify new pw
         super.onPause();
+
+        finish();
     }
 
     @Override
@@ -154,23 +145,30 @@ public class PasswordDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() != R.id.createusermenu_item_done) return false;
 
-        String newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
-        String newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
-        String newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
+        String newUsername = null;
+        String newProgram = null;
+        String newPassword = null;
+        try {
+            newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
+            newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
+            newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             if (newPassword != null) {
-                PasswordProvider.getInstance().addPasswordHistoryItem(passwordId, newPassword);
+                UserProvider.getInstance(this).editPassword(passwordId, newPassword);
             }
 
             if (newUsername != null || newProgram != null) {
-                PasswordProvider.getInstance().update(passwordId, newUsername, newProgram);
+                UserProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
             }
         } catch (Exception e) {
-            // ignored
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
 
-//        onBackPressed();
+        onBackPressed();
 
         return super.onOptionsItemSelected(item);
     }

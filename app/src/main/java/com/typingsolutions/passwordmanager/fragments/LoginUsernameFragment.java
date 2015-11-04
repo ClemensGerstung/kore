@@ -36,11 +36,7 @@ public class LoginUsernameFragment extends Fragment {
             final SharedPreferences.Editor editor = preferences.edit();
 
             editor.putBoolean(REMEMBER, isChecked);
-            if (isChecked) {
-                editor.putString(REMEMBERED_USERNAME, username.getText().toString());
-            } else {
-                editor.putString(REMEMBERED_USERNAME, "");
-            }
+            editor.putString(REMEMBERED_USERNAME, isChecked ? username.getText().toString() : "");
 
             editor.apply();
         }
