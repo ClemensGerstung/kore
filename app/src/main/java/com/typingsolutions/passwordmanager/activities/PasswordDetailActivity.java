@@ -155,7 +155,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
             }
 
             if (newUsername != null || newProgram != null) {
-                UserProvider.getInstance(this).editPassword(passwordId, newUsername, newProgram);
+                UserProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
             }
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));

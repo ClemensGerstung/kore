@@ -28,8 +28,12 @@ public class AddPasswordTextWatcher implements TextWatcher {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         update = !s.toString().equals(preValue);
         if (update) {
-            passwordDetailActivity.switchMenuState((s.length() > 0 & !checkHasText));
-            update = update & (s.length() > 0 & !checkHasText);
+            if(checkHasText) {
+                passwordDetailActivity.switchMenuState(s.length() > 0);
+                update = update & s.length() > 0;
+            } else {
+                passwordDetailActivity.switchMenuState(true);
+            }
         } else {
             passwordDetailActivity.switchMenuState(false);
         }
