@@ -256,7 +256,7 @@ public class UserProvider {
         editPassword(password);
     }
 
-    public void editPassword(int id, @Nullable String program, @Nullable String username) {
+    public void editPassword(int id, @Nullable String program, @Nullable String username) throws Exception {
         Password password = passwordProvider.getById(id);
         password.setUsername(username);
         password.setProgram(program);
@@ -264,11 +264,17 @@ public class UserProvider {
         editPassword(password);
     }
 
-    public void editPassword(Password password) {
+    public void editPassword(Password password) throws Exception {
         passwordProvider.set(password);
+
+        String json = password.getJson();
+        String encrypted = AesProvider.encrypt(json, currentUser.plainPassword);
+
+        DatabaseProvider.getConnection(context).update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, encrypted, Integer.toString(password.getId()));
 
         if (passwordActionListener != null)
             passwordActionListener.onPasswordEdited(password, password.getFirstHistoryItem());
+
     }
 
     public void removePassword(Password password) {

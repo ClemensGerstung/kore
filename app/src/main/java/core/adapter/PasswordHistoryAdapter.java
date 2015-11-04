@@ -31,9 +31,8 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = inflater.inflate(R.layout.password_history_item_layout, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(view);
 
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
     @Override
     public int getItemCount() {
         Password password = UserProvider.getInstance(context).getPasswordById(passwordId);
-        return password.getHistoryCount();
+        return password.getHistoryCount() - 1;
     }
 
 

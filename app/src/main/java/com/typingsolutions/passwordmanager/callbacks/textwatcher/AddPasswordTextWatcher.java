@@ -10,10 +10,13 @@ public class AddPasswordTextWatcher implements TextWatcher {
     private PasswordDetailActivity passwordDetailActivity;
     private String preValue;
     private boolean update;
+    private boolean checkHasText;
 
-    public AddPasswordTextWatcher(PasswordDetailActivity passwordDetailActivity, @Nullable String preValue) {
+
+    public AddPasswordTextWatcher(PasswordDetailActivity passwordDetailActivity, @Nullable String preValue, boolean checkHasText) {
         this.passwordDetailActivity = passwordDetailActivity;
         this.preValue = preValue;
+        this.checkHasText = checkHasText;
     }
 
     @Override
@@ -25,8 +28,8 @@ public class AddPasswordTextWatcher implements TextWatcher {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         update = !s.toString().equals(preValue);
         if (update) {
-            passwordDetailActivity.switchMenuState(s.length() > 0);
-            update = update & s.length() > 0;
+            passwordDetailActivity.switchMenuState((s.length() > 0 & !checkHasText));
+            update = update & (s.length() > 0 & !checkHasText);
         } else {
             passwordDetailActivity.switchMenuState(false);
         }
