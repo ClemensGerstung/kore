@@ -218,4 +218,10 @@ public class Password {
         password.position = Integer.MIN_VALUE;
         return password;
     }
+
+    public void swapPositionWith(Password password) {
+        int tmp = position;
+        position = password.getPosition();
+        password.setPosition(position);
+    }
 }

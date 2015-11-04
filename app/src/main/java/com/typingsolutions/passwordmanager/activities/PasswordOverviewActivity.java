@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,10 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
@@ -137,6 +135,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         passwordRecyclerView.setAdapter(passwordOverviewAdapter);
         passwordRecyclerView.setLayoutManager(layoutManager);
 
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     }
 
     @Override
@@ -153,13 +152,18 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+//        UserProvider.getInstance(PasswordOverviewActivity.this).savePasswords();
+        UserProvider.logout();
         getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
         super.onPause();
+        finish();
     }
 
     @Override
     public void onBackPressed() {
-        UserProvider.logout();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+
         super.onBackPressed();
     }
 
