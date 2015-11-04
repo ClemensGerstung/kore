@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +11,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,12 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
-import core.UserProvider;
+import core.data.UserProvider;
 import core.Utils;
-import core.exceptions.LoginException;
-import core.exceptions.UserProviderException;
-
-import java.security.NoSuchAlgorithmException;
 
 public class CreateUserActivity extends AppCompatActivity {
 
@@ -95,6 +89,12 @@ public class CreateUserActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.createusermenu_item_done) {
@@ -157,8 +157,8 @@ public class CreateUserActivity extends AppCompatActivity {
             } else {
                 onBackPressed();
             }
-        } catch (UserProviderException | RemoteException | NoSuchAlgorithmException | LoginException e) {
-            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Snackbar.make(rootView, "Something went wrong", Snackbar.LENGTH_LONG).show();
             usernameEditText.requestFocus();
             switchMenuState(false);
         }
@@ -167,10 +167,6 @@ public class CreateUserActivity extends AppCompatActivity {
     private void switchMenuState(boolean state) {
         MenuItem item = toolbar.getMenu().getItem(0);
         item.setEnabled(state);
-        if (state) {
-            item.getIcon().setAlpha(255);
-        } else {
-            item.getIcon().setAlpha(64);
-        }
+        item.getIcon().setAlpha(state ? 255 : 64);
     }
 }
