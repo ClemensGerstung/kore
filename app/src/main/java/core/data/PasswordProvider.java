@@ -66,49 +66,79 @@ class PasswordProvider {
         passwords.clear();
     }
 
+    List<Password> getPasswords() {
+        return passwords;
+    }
+
     public void order(int which) {
         if (which == 0) {   // order by username ascending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return lhs.getUsername().compareTo(rhs.getUsername());
+                    int compareTo = lhs.getUsername().compareTo(rhs.getUsername());
+                    if(compareTo != 0)
+                        lhs.swapPositionWith(rhs);
+
+                    return compareTo;
                 }
             });
         } else if (which == 1) {    // order by username descending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return ~lhs.getUsername().compareTo(rhs.getUsername());
+                    int compareTo = ~lhs.getUsername().compareTo(rhs.getUsername());
+                    if(compareTo != 0)
+                        lhs.swapPositionWith(rhs);
+
+                    return compareTo;
                 }
             });
         } else if (which == 2) {   // order by password ascending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return lhs.getFirstItem().compareTo(rhs.getFirstItem());
+                    int compareTo = lhs.getFirstItem().compareTo(rhs.getFirstItem());
+                    if(compareTo != 0)
+                        lhs.swapPositionWith(rhs);
+
+                    return compareTo;
                 }
             });
         } else if (which == 3) {    // order by password descending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return ~lhs.getFirstItem().compareTo(rhs.getFirstItem());
+                    int compareTo = ~lhs.getFirstItem().compareTo(rhs.getFirstItem());
+                    if(compareTo != 0)
+                        lhs.swapPositionWith(rhs);
+
+                    return compareTo;
                 }
             });
         } else if (which == 4) {   // order by program ascending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return lhs.getProgram().compareTo(rhs.getProgram());
+                    int compareTo = lhs.getProgram().compareTo(rhs.getProgram());
+                    if(compareTo != 0)
+                        lhs.swapPositionWith(rhs);
+
+                    return compareTo;
                 }
             });
         } else if (which == 5) {    // order by program descending
             Collections.sort(passwords, new Comparator<Password>() {
                 @Override
                 public int compare(Password lhs, Password rhs) {
-                    return ~lhs.getProgram().compareTo(rhs.getProgram());
+                    int compareTo = ~lhs.getProgram().compareTo(rhs.getProgram());
+                    if(compareTo != 0)
+                        lhs.swapPositionWith(rhs);
+
+                    return compareTo;
                 }
             });
         }
+
+
     }
 }

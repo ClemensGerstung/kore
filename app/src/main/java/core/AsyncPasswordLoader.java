@@ -58,6 +58,8 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
 
                 provider.addPassword(password);
             }
+
+            provider.orderByPosition();
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }
