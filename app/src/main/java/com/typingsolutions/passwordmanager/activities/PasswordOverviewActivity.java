@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -160,6 +161,11 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         UserProvider.logout();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+
+        finish();
         super.onBackPressed();
     }
 
