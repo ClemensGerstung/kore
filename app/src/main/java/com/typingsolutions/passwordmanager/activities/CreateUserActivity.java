@@ -158,7 +158,7 @@ public class CreateUserActivity extends AppCompatActivity {
                 onBackPressed();
             }
         } catch (Exception e) {
-            Snackbar.make(rootView, "Something went wrong", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(rootView, e.getMessage(), Snackbar.LENGTH_LONG).show();
             usernameEditText.requestFocus();
             switchMenuState(false);
         }
