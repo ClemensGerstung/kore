@@ -154,7 +154,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     protected void onPause() {
         getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
         super.onPause();
-        finish();
+
     }
 
     @Override
@@ -165,6 +165,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         startActivity(intent);
 
         super.onBackPressed();
+        finish();
     }
 
     @Override
