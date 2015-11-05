@@ -152,8 +152,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-//        UserProvider.getInstance(PasswordOverviewActivity.this).savePasswords();
-        UserProvider.logout();
         getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
         super.onPause();
         finish();
@@ -161,6 +159,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        UserProvider.logout();
+
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
@@ -174,7 +174,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // init searchview
         MenuItem searchItem = menu.findItem(R.id.passwordlistmenu_item_search);
-        searchView = (SearchView) searchItem.getActionView();
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(onQueryTextListener);
         MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
 
