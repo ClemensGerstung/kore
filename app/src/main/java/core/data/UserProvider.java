@@ -349,7 +349,7 @@ public class UserProvider {
         Collections.sort(passwordProvider.getPasswords(), new Comparator<Password>() {
             @Override
             public int compare(Password lhs, Password rhs) {
-                return Integer.compare(lhs.getPosition(), rhs.getPosition());
+                return lhs.getPosition() - rhs.getPosition();
             }
         });
     }
