@@ -68,7 +68,7 @@ public class EditText extends android.widget.EditText {
             return;
         }
 
-        Animation anim = android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.fab_out);
+        Animation anim = android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.design_fab_out);
         anim.setInterpolator(new AccelerateInterpolator());
         anim.setDuration(FAST_ANIMATION_DURATION);
         anim.setAnimationListener(new Animation.AnimationListener() {
@@ -97,7 +97,7 @@ public class EditText extends android.widget.EditText {
         if (getVisibility() != View.VISIBLE || hiding) {
             clearAnimation();
             setVisibility(View.VISIBLE);
-            Animation anim = android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.fab_in);
+            Animation anim = android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.design_fab_in);
             anim.setDuration(FAST_ANIMATION_DURATION);
             anim.setInterpolator(new BounceInterpolator());
 
