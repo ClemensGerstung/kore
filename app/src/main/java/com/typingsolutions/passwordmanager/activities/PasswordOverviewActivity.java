@@ -192,6 +192,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 })
                 .create();
 
+//        on show save passwords in background
+//        alertDialog.setOnShowListener();
         alertDialog.show();
     }
 
@@ -223,6 +225,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                         .create();
 
                 alertDialog.show();
+                break;
+            case R.id.passwordlistmenu_item_logout:
+                onBackPressed();
                 break;
         }
 
