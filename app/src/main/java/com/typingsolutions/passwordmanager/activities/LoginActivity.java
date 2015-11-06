@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void switchToEnterUsernameFragment() {
+        loginPasswordFragment.clearEditText();
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
