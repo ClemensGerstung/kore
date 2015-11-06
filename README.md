@@ -1,4 +1,9 @@
-best app to store your password on Android
+![Logo](https://gitlab.hopul.net/uploads/project/avatar/6/typingsolutions.passwordmanager.logo.png)
+# Password.Manager
+###### Or another name if you know a better one :wink:
+---
 
-if you have any wishes you can create a milestone with enddate 31st december 2015.
-perhaps I'm going yo develop them
+## The perhaps best app on Android to store your passwords.
+
+Developer of this nice app is @Clemens. 
+So contact me if you want something in this app.
