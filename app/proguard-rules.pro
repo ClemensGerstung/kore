@@ -22,6 +22,10 @@
     public void set*(...);
 }
 
+-keep public class * extends com.typingsolutions.passwordmanager.callbacks.BaseCallback {
+    public <init>(android.content.Context, com.typingsolutions.passwordmanager.activities.LoginActivity);
+}
+
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet);
 }

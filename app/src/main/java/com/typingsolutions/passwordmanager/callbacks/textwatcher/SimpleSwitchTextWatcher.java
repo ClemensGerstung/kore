@@ -23,10 +23,7 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
         this.loginActivity = loginActivity;
 
         Constructor<?> constructor = commitCallbackClass.getDeclaredConstructors()[0];
-        if(constructor == null){
-            Log.e(getClass().getSimpleName(), "constructor is null");
-            return;
-        }
+        if(constructor == null) return;
         this.commitCallback = (BaseCallback) constructor.newInstance(context, loginActivity);
     }
 
