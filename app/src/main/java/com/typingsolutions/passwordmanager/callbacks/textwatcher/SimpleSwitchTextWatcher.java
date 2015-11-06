@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks.textwatcher;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -22,7 +23,10 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
         this.loginActivity = loginActivity;
 
         Constructor<?> constructor = commitCallbackClass.getDeclaredConstructors()[0];
-        if(constructor == null) return;
+        if(constructor == null){
+            Log.e(getClass().getSimpleName(), "constructor is null");
+            return;
+        }
         this.commitCallback = (BaseCallback) constructor.newInstance(context, loginActivity);
     }
 
