@@ -175,12 +175,24 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        UserProvider.logout();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure to logout?")
+                .setNegativeButton("Nope", null)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        UserProvider.logout();
+                        Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+                        startActivity(intent);
 
-        super.onBackPressed();
-        finish();
+                        PasswordOverviewActivity.super.onBackPressed();
+                        PasswordOverviewActivity.this.finish();
+                    }
+                })
+                .create();
+
+        alertDialog.show();
     }
 
     @Override
