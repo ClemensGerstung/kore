@@ -129,8 +129,13 @@ public class LoginPasswordFragment extends Fragment {
     }
 
     public void retypePassword() {
-        password.setText("");
+        clearEditText();
         password.requestFocus();
+    }
+
+    public void clearEditText() {
+        if(password == null) return;
+        password.setText("");
     }
 
     public OutlinedImageView getBackground() {
