@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.EditText;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,9 @@ public class LoginUsernameFragment extends Fragment {
 
         try {
             username.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, ShowEnterPasswordCallback.class));
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+        }
 
         username.setText(checked ? rememberedName : "");
     }
