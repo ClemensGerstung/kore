@@ -3,6 +3,7 @@
           package="com.typingsolutions.passwordmanager">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
             android:allowBackup="true"
@@ -23,7 +24,9 @@
         <!--</intent-filter>-->
         <!--</receiver>-->
 
-        <receiver android:name=".receiver.BootReceiver">
+        <receiver android:name=".receiver.BootReceiver"
+                  android:enabled="true"
+                  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
@@ -48,7 +51,7 @@
                   android:theme="@style/Base.AppTheme"
                   android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
+                <action android:name="android.intent.action.SCREEN_OFF"/>
             </intent-filter>
         </activity>
 
