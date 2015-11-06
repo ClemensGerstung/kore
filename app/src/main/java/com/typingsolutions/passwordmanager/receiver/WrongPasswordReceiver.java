@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 
 public class WrongPasswordReceiver extends BroadcastReceiver {

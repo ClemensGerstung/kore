@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
@@ -40,11 +39,12 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
 
     private WrongPasswordReceiver wrongPasswordReceiver;
-    private final BroadcastReceiver searchReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(getClass().getSimpleName(), intent.getAction());
-            searchItem.expandActionView();
+            UserProvider.logout();
+            Intent loginIntent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
         }
     };
 
@@ -81,7 +81,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             });
         }
     };
-
     private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
         @Override
         public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -143,35 +142,40 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         passwordRecyclerView.setLayoutManager(layoutManager);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+        wrongPasswordReceiver = new WrongPasswordReceiver(this);
+        IntentFilter filter = new IntentFilter(WRONGPASSWORD);
+        registerReceiver(wrongPasswordReceiver, filter);
+
+        registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         // load passwords in background
         passwordLoader = new AsyncPasswordLoader(this);
         passwordLoader.execute();
-
-        wrongPasswordReceiver = new WrongPasswordReceiver(this);
-        IntentFilter filter = new IntentFilter(WRONGPASSWORD);
-        getApplicationContext().registerReceiver(wrongPasswordReceiver, filter);
-
-        IntentFilter searchFilter = new IntentFilter("android.intent.action.SEARCH");
-        getApplicationContext().registerReceiver(searchReceiver, searchFilter);
     }
 
     @Override
     protected void onPause() {
-        getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
-        getApplicationContext().unregisterReceiver(searchReceiver);
+
         super.onPause();
 
     }
 
     @Override
+    protected void onDestroy() {
+        unregisterReceiver(wrongPasswordReceiver);
+        unregisterReceiver(screenOffReceiver);
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
         UserProvider.logout();
-
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
