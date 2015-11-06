@@ -1,8 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
@@ -32,13 +31,22 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FloatingActionButton addPasswordFloatingActionButton;
     private TextView noPasswordsTextView;
-    private SearchView searchView;
+    private MenuItem searchItem;
 
+    private SearchView searchView;
     private PasswordOverviewAdapter passwordOverviewAdapter;
     private AsyncPasswordLoader passwordLoader;
+
     private RecyclerView.LayoutManager layoutManager;
 
     private WrongPasswordReceiver wrongPasswordReceiver;
+    private final BroadcastReceiver searchReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(getClass().getSimpleName(), intent.getAction());
+            searchItem.expandActionView();
+        }
+    };
 
     private UserProvider.UserProviderPasswordActionListener passwordActionListener = new UserProvider.UserProviderPasswordActionListener() {
         @Override
@@ -86,7 +94,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             return true;
         }
     };
-
     private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -148,11 +155,15 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         wrongPasswordReceiver = new WrongPasswordReceiver(this);
         IntentFilter filter = new IntentFilter(WRONGPASSWORD);
         getApplicationContext().registerReceiver(wrongPasswordReceiver, filter);
+
+        IntentFilter searchFilter = new IntentFilter("android.intent.action.SEARCH");
+        getApplicationContext().registerReceiver(searchReceiver, searchFilter);
     }
 
     @Override
     protected void onPause() {
         getApplicationContext().unregisterReceiver(wrongPasswordReceiver);
+        getApplicationContext().unregisterReceiver(searchReceiver);
         super.onPause();
 
     }
@@ -174,7 +185,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         inflater.inflate(R.menu.password_list_menu, menu);
 
         // init searchview
-        MenuItem searchItem = menu.findItem(R.id.passwordlistmenu_item_search);
+        searchItem = menu.findItem(R.id.passwordlistmenu_item_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(onQueryTextListener);
         MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
@@ -191,7 +202,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 String[] orderOptions = getResources().getStringArray(R.array.order_options);
 
                 AlertDialog alertDialog = new AlertDialog.Builder(this)
-                        .setTitle("Order passwords by...")
+                        .setTitle("Order passwords by")
                         .setItems(orderOptions, orderItemClickListener)
                         .create();
 
