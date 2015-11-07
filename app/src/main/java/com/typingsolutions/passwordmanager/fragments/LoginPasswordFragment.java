@@ -57,6 +57,7 @@ public class LoginPasswordFragment extends Fragment {
             background.invalidate();
         }
     };
+    protected SimpleSwitchTextWatcher watcher;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -70,7 +71,8 @@ public class LoginPasswordFragment extends Fragment {
             notUserBackground.setOnClickListener(new ShowEnterUsernameCallback(context, loginActivity));
 
             try {
-                password.addTextChangedListener(new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class));
+                watcher = new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class);
+                password.addTextChangedListener(watcher);
             } catch (Exception e) {
                 Log.e(getClass().getSimpleName(), e.getMessage());
             }

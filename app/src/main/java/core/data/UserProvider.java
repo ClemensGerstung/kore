@@ -59,15 +59,15 @@ public class UserProvider {
             dbPasswordHash = cursor.getString(1);
         }
 
-        if (salt == null || dbPasswordHash == null) {
+        if (salt == null || dbPasswordHash == null)
             throw new UserProviderException("Something went wrong (salt or passwordhash)");
-        }
+
 
         passwordHash = Utils.getHashedString(password + Utils.getHashedString(salt));
 
-        if (passwordHash == null) {
+        if (passwordHash == null)
             throw new UserProviderException("Something went wrong (passwordhash)");
-        }
+
 
         if (remote != null) {
             boolean blocked = remote.isUserBlocked(id);
@@ -103,6 +103,21 @@ public class UserProvider {
         cursor.close();
         DatabaseProvider.dismiss();
         return currentUser;
+    }
+
+    public void fakeLogin(ILoginServiceRemote remote, int id) throws Exception {
+        boolean blocked = remote.isUserBlocked(id);
+
+        if (blocked) {
+            // at least you will never get in here because you're not able to click login
+            throw new LoginException("Sorry, but your user is blocked!", LoginException.BLOCKED);
+        }
+
+        boolean result = remote.login(id, " ", "a");
+
+        if (!result) {
+            throw new LoginException("Your login credentials are wrong!", LoginException.WRONG);
+        }
     }
 
     public boolean userExists(String username) throws NoSuchAlgorithmException {
