@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.fragments;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -50,6 +51,12 @@ public class LoginPasswordFragment extends Fragment {
         }
     };
 
+    private final Runnable invalidateBackgroundRunnable = new Runnable() {
+        @Override
+        public void run() {
+            background.invalidate();
+        }
+    };
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -138,6 +145,10 @@ public class LoginPasswordFragment extends Fragment {
 
     public OutlinedImageView getBackground() {
         return background;
+    }
+
+    public void redrawBlockedbackground() {
+        loginActivity.runOnUiThread(invalidateBackgroundRunnable);
     }
 
     public synchronized void show(final View view, @AnimRes int animation) {

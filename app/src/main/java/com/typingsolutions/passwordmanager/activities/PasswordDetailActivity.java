@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.callbacks.DeletePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import core.adapter.PasswordHistoryAdapter;
 import core.data.Password;
@@ -126,6 +127,9 @@ public class PasswordDetailActivity extends AppCompatActivity {
         password.addTextChangedListener(passwordTextWatcher);
 
         delete.addOnLayoutChangeListener(deleteLayoutChanged);
+        DeletePasswordCallback onClickListener = new DeletePasswordCallback(this);
+        onClickListener.setValues(currentPassword);
+        delete.setOnClickListener(onClickListener);
 
         passwordHistoryCard.requestFocus();
     }

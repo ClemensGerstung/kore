@@ -12,7 +12,6 @@ import core.exceptions.LoginException;
 import core.exceptions.UserProviderException;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -285,6 +284,16 @@ public class UserProvider {
     }
 
     public void removePassword(Password password) {
+        DatabaseProvider provider = DatabaseProvider.getConnection(context);
+
+        for (Integer i : password.getPasswordIds()) {
+            provider.remove(DatabaseProvider.DELETE_PASSWORDHISTORY_BY_ID, i.toString());
+        }
+
+        provider.remove(DatabaseProvider.DELETE_PASSWORD_BY_ID, Integer.toString(password.getId()));
+
+        DatabaseProvider.dismiss();
+
         passwordProvider.remove(password);
 
         if (passwordActionListener != null)
