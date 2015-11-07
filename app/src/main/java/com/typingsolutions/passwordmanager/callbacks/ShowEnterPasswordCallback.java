@@ -24,14 +24,15 @@ public class ShowEnterPasswordCallback extends BaseCallback {
     @Override
     public void onClick(View v) {
         FloatingActionButton floatingActionButton = (FloatingActionButton) v;
-        if (!UserProvider.getInstance(context).userExists(username)) {
-            Snackbar.make(v, "Sorry, your name doesn't exist", Snackbar.LENGTH_LONG)
-                    .setAction("CREATE", new CreateUserCallback(context, username))
-                    .show();
-            return;
-        }
 
         try {
+            if (!UserProvider.getInstance(context).userExists(username)) {
+                Snackbar.make(v, "Sorry, your name doesn't exist", Snackbar.LENGTH_LONG)
+                        .setAction("CREATE", new CreateUserCallback(context, username))
+                        .show();
+                return;
+            }
+
             UserProvider.getInstance(context).setUsername(username);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
