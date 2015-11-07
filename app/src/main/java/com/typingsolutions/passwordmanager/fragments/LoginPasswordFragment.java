@@ -32,10 +32,10 @@ public class LoginPasswordFragment extends Fragment {
     public static final long FAST_ANIMATION_DURATION = 150;
     public static final String SAFELOGIN = "com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment.SAFELOGIN";
 
-    private EditText password;
+    protected EditText password;
     private CheckBox safeLogin;
     private OutlinedImageView background;
-    private LoginActivity loginActivity;
+    protected LoginActivity loginActivity;
     private TextView notUser;
     private CardView notUserBackground;
 
@@ -62,16 +62,15 @@ public class LoginPasswordFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Context context = getActivity();
         Activity activity = getActivity();
 
         if (activity instanceof LoginActivity) {
             loginActivity = (LoginActivity) activity;
 
-            notUserBackground.setOnClickListener(new ShowEnterUsernameCallback(context, loginActivity));
+            notUserBackground.setOnClickListener(new ShowEnterUsernameCallback(activity, loginActivity));
 
             try {
-                watcher = new SimpleSwitchTextWatcher(context, loginActivity, LoginCallback.class);
+                watcher = new SimpleSwitchTextWatcher(activity, loginActivity, LoginCallback.class);
                 password.addTextChangedListener(watcher);
             } catch (Exception e) {
                 Log.e(getClass().getSimpleName(), e.getMessage());
