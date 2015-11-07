@@ -4,89 +4,98 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:theme="@style/Base.AppTheme">
-    <android.support.v7.widget.Toolbar android:id="@+id/passworddetail_toolbar"
-                                       android:clickable="true"
-                                       android:layout_height="?attr/actionBarSize"
-                                       android:layout_width="match_parent"
-                                       android:background="?attr/colorPrimary"
-                                       app:navigationIcon="@mipmap/arrow_back"
-                                       app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                                       app:title="Create User">
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/passworddetail_toolbar"
+            android:clickable="true"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="@mipmap/arrow_back"
+            app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:title="Create User">
     </android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="2dp"
+            android:layout_marginTop="6dp"
+            app:cardCornerRadius="4dp"
+            android:layout_below="@+id/passworddetail_toolbar">
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/createuserlayout_textinputlayout_usernamewrapper"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
+                <EditText
+                        android:id="@+id/createuserlayout_edittext_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:textColor="#000"
+                        android:textColorHint="#9E9E9E"
+                        android:hint="Your name"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/createuserlayout_textinputlayout_passwordwrapper"
+                    android:layout_below="@+id/createuserlayout_textinputlayout_usernamewrapper"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
+                <EditText
+                        android:id="@+id/createuserlayout_edittext_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="#000"
+                        android:textColorHint="#9E9E9E"
+                        android:hint="Your password"
+                        android:inputType="textPassword"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/createuserlayout_textinputlayout_passwordrepeatwrapper"
+                    android:layout_below="@+id/createuserlayout_textinputlayout_passwordwrapper"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
+                <EditText
+                        android:id="@+id/createuserlayout_edittext_repeatpassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="#000"
+                        android:textColorHint="#9E9E9E"
+                        android:inputType="textPassword"
+                        android:hint="Repeat your password"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.SwitchCompat android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content"
+                                                    app:showText="false"
+                                                    android:checked="true"
+                                                    android:layout_margin="12dp"
+                                                    android:textColor="#000"
+                                                    android:layout_below="@+id/createuserlayout_textinputlayout_passwordrepeatwrapper"
+                                                    android:id="@+id/createuserlayout_switchcompat_autologin"
+                                                    android:text="Login after creating?"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_below="@+id/passworddetail_toolbar"
                     android:layout_height="4dp"
                     android:background="@drawable/shadow"/>
-
-    <android.support.design.widget.TextInputLayout
-            android:id="@+id/createuserlayout_textinputlayout_usernamewrapper"
-            android:layout_below="@+id/passworddetail_toolbar"
-            android:layout_width="match_parent"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-        <EditText
-                android:id="@+id/createuserlayout_edittext_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="#000"
-                android:textColorHint="#9E9E9E"
-                android:hint="Your name"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-            android:id="@+id/createuserlayout_textinputlayout_passwordwrapper"
-            android:layout_below="@+id/createuserlayout_textinputlayout_usernamewrapper"
-            android:layout_width="match_parent"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="6dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-        <EditText
-                android:id="@+id/createuserlayout_edittext_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textColor="#000"
-                android:textColorHint="#9E9E9E"
-                android:hint="Your password"
-                android:inputType="textPassword"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-            android:id="@+id/createuserlayout_textinputlayout_passwordrepeatwrapper"
-            android:layout_below="@+id/createuserlayout_textinputlayout_passwordwrapper"
-            android:layout_width="match_parent"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="6dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-        <EditText
-                android:id="@+id/createuserlayout_edittext_repeatpassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textColor="#000"
-                android:textColorHint="#9E9E9E"
-                android:inputType="textPassword"
-                android:hint="Repeat your password"/>
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.v7.widget.SwitchCompat android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            app:showText="false"
-                                            android:checked="true"
-                                            android:layout_marginEnd="6dp"
-                                            android:layout_marginStart="6dp"
-                                            android:layout_marginTop="6dp"
-                                            android:textColor="#000"
-                                            android:layout_below="@+id/createuserlayout_textinputlayout_passwordrepeatwrapper"
-                                            android:id="@+id/createuserlayout_switchcompat_autologin"
-                                            android:text="Login after creating?"/>
 </RelativeLayout>
