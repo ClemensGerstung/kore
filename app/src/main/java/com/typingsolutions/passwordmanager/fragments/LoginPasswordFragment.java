@@ -101,7 +101,6 @@ public class LoginPasswordFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//                Log.i(getClass().getSimpleName(), "hideAllInput -> RunOnUiThread");
                 hide(safeLogin, R.anim.checkbox_hide);
                 password.hide();
                 background.invalidate();
@@ -113,7 +112,6 @@ public class LoginPasswordFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//                Log.i(getClass().getSimpleName(), "showAllInput -> RunOnUiThread");
                 show(safeLogin, R.anim.checkbox_show);
                 password.show();
                 background.invalidate();

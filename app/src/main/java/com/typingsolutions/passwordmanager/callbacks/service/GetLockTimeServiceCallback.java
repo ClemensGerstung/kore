@@ -18,6 +18,9 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
     public void getLockTime(int time, int completeTime) throws RemoteException {
         OutlinedImageView background = loginPasswordFragment.getBackground();
         background.update(time, completeTime);
+//        background.invalidate();
+
+        Log.d(getClass().getSimpleName(), String.format("Update: %s", time));
 
         if (time <= 0) {
             loginPasswordFragment.showAllInputs();

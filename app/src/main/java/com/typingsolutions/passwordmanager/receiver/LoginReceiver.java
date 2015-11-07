@@ -27,15 +27,6 @@ public class LoginReceiver extends BroadcastReceiver {
 
 //            boolean blocked = loginActivity.getLoginServiceRemote().isUserBlocked(id);
 //            if(!blocked) return;
-
-            Fragment fragment = loginActivity.getSupportFragmentManager().getFragments().get(0);
-
-            LoginPasswordFragment loginPasswordFragment = null;
-
-            if (fragment instanceof LoginPasswordFragment) {
-                loginPasswordFragment = (LoginPasswordFragment) fragment;
-                loginPasswordFragment.getBackground().invalidate();
-            }
         } catch (RemoteException e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         }

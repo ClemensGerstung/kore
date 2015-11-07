@@ -50,11 +50,12 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             try {
+                Log.d(getClass().getSimpleName(), "Service disconnect");
                 loginServiceRemote.unregisterCallback(serviceCallback);
+                loginServiceRemote = null;
             } catch (RemoteException e) {
                 Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
             }
-            loginServiceRemote = null;
         }
     };
 
@@ -77,12 +78,24 @@ public class LoginActivity extends AppCompatActivity {
 
         bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
 
-        IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         loginReceiver = new LoginReceiver(this);
-
+        IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         getApplicationContext().registerReceiver(loginReceiver, intentFilter);
 
         switchToEnterUsernameFragment();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(getClass().getSimpleName(), "onStop");
+        unbindService(loginServiceConnection);
+        getApplicationContext().unregisterReceiver(loginReceiver);
+        super.onStop();
+    }
+
+    public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {
+        add.setImageResource(id);
+        add.setOnClickListener(callback);
     }
 
     public void switchToEnterUsernameFragment() {
@@ -92,24 +105,11 @@ public class LoginActivity extends AppCompatActivity {
         transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
     }
 
-    @Override
-    protected void onPause() {
-        unbindService(loginServiceConnection);
-        getApplicationContext().unregisterReceiver(loginReceiver);
-
-        super.onPause();
-    }
-
-    public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {
-        add.setImageResource(id);
-        add.setOnClickListener(callback);
-    }
-
     public void switchToEnterPasswordFragment() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.replace(R.id.layout_to_replace, loginPasswordFragment).commit();
-        loginUsernameFragment = new LoginUsernameFragment();
+//        loginUsernameFragment = new LoginUsernameFragment();
     }
 
     public ILoginServiceRemote getLoginServiceRemote() {
