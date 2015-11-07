@@ -127,8 +127,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
         password.addTextChangedListener(passwordTextWatcher);
 
         delete.addOnLayoutChangeListener(deleteLayoutChanged);
-        DeletePasswordCallback onClickListener = new DeletePasswordCallback(this);
-        onClickListener.setValues(currentPassword);
+        DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
         delete.setOnClickListener(onClickListener);
 
         passwordHistoryCard.requestFocus();
