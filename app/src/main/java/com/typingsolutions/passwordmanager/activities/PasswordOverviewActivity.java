@@ -64,6 +64,13 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         @Override
         public void onPasswordRemoved(Password password) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    passwordOverviewAdapter.notifyDataSetChanged();
+                }
+            });
+
             if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
                 return;
 
