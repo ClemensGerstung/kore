@@ -106,8 +106,8 @@ public class UserProvider {
         return currentUser;
     }
 
-    public boolean userExists(String username) {
-        Cursor cursor = DatabaseProvider.getConnection(context).query(DatabaseProvider.DOES_USER_EXISTS, username);
+    public boolean userExists(String username) throws NoSuchAlgorithmException {
+        Cursor cursor = DatabaseProvider.getConnection(context).query(DatabaseProvider.DOES_USER_EXISTS, Utils.getHashedString(username));
 
         int i = 0;
         if (cursor.moveToNext()) {
@@ -125,13 +125,15 @@ public class UserProvider {
         }
 
         String passwordHash = null;
+        String usernameHash = null;
         try {
             passwordHash = Utils.getHashedString(password + Utils.getHashedString(salt));
+            usernameHash = Utils.getHashedString(username);
         } catch (NoSuchAlgorithmException e) {
             throw new UserProviderException("Something went wrong by creating the user!");
         }
 
-        long id = DatabaseProvider.getConnection(context).insert(DatabaseProvider.CREATE_USER, username, passwordHash, salt);
+        long id = DatabaseProvider.getConnection(context).insert(DatabaseProvider.CREATE_USER, usernameHash, passwordHash, salt);
 
         if (userProviderActionListener != null)
             userProviderActionListener.onUserCreated(id);
@@ -156,20 +158,21 @@ public class UserProvider {
         return username;
     }
 
-    public void setUsername(String username) throws UserProviderException {
-        this.username = username;
+    public void setUsername(String username) throws Exception {
         DatabaseProvider connection = DatabaseProvider.getConnection(context);
-        Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, username);
+        Cursor cursor = connection.query(DatabaseProvider.GET_USER_ID, Utils.getHashedString(username));
         id = -1;
 
-        if (cursor.moveToNext()) {
+        if (cursor.moveToNext())
             id = cursor.getInt(0);
-        }
+
 
         if (id == -1) {
             this.username = null;
             throw new UserProviderException("Unknown username");
         }
+
+        this.username = username;
 
         cursor.close();
         connection.close();

@@ -147,6 +147,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(WRONGPASSWORD);
         registerReceiver(wrongPasswordReceiver, filter);
 
+        // load passwords in background
+        passwordLoader = new AsyncPasswordLoader(this);
+        passwordLoader.execute();
+
         registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
     }
 
@@ -154,9 +158,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // load passwords in background
-        passwordLoader = new AsyncPasswordLoader(this);
-        passwordLoader.execute();
     }
 
     @Override
@@ -192,7 +193,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 })
                 .create();
 
-//        on show save passwords in background
+//        TODO: on show save passwords in background
 //        alertDialog.setOnShowListener();
         alertDialog.show();
     }
