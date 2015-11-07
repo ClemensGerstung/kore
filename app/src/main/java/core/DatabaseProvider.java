@@ -42,6 +42,9 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
     public static final String UPDATE_PASSWORD_BY_ID = "UPDATE passwords SET data = ? WHERE id = ?;";
 
+    public static final String DELETE_PASSWORDHISTORY_BY_ID = "DELETE FROM history WHERE id = ?;";
+    public static final String DELETE_PASSWORD_BY_ID = "DELETE FROM passwords WHERE id = ?;";
+
     private static DatabaseProvider INSTANCE;
 
     private Cursor lastCursor;

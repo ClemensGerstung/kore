@@ -184,6 +184,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         UserProvider.logout();
+
                         Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
                         startActivity(intent);
 
