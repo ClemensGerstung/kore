@@ -120,6 +120,8 @@ public class LoginService extends Service {
             String json = blockedUserList.toJson();
             String hash = Utils.getHashedString(json);
 
+//            Log.d(getClass().getSimpleName(), json);
+
             editor.putString("json", json);
             editor.putString("hash", hash);
 
