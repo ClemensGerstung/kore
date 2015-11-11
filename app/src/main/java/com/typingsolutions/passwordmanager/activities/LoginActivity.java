@@ -8,14 +8,12 @@ import android.os.RemoteException;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
-import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
 import com.typingsolutions.passwordmanager.services.LoginService;
@@ -24,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private GetLockTimeServiceCallback serviceCallback = new GetLockTimeServiceCallback(this);
 
-    private FloatingActionButton add;
+    private FloatingActionButton floatingActionButton_login;
 
     private ILoginServiceRemote loginServiceRemote;
     private LoginReceiver loginReceiver;
@@ -58,8 +56,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-//        add = (FloatingActionButton) findViewById(R.id.mainlayout_floatingactionbutton_add);
-//        add.setOnClickListener(new CreateUserCallback(this));
+        floatingActionButton_login = (FloatingActionButton) findViewById(R.id.loginlayout_floatingactionbutton_login);
+        floatingActionButton_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginActivity.this.startActivity(new Intent(LoginActivity.this, PasswordDetailActivity.class));
+            }
+        });
     }
 
     @Override
@@ -85,8 +88,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {
-        add.setImageResource(id);
-        add.setOnClickListener(callback);
+        floatingActionButton_login.setImageResource(id);
+        floatingActionButton_login.setOnClickListener(callback);
     }
 
     public ILoginServiceRemote getLoginServiceRemote() {
