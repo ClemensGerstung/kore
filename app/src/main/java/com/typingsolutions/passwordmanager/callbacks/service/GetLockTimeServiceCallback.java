@@ -2,30 +2,28 @@ package com.typingsolutions.passwordmanager.callbacks.service;
 
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import core.IServiceCallback;
-import ui.OutlinedImageView;
 
 public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
-    private LoginPasswordFragment loginPasswordFragment;
+    private LoginActivity loginActivity;
 
-    public GetLockTimeServiceCallback(@NonNull LoginPasswordFragment loginPasswordFragment) {
-        this.loginPasswordFragment = loginPasswordFragment;
+    public GetLockTimeServiceCallback(@NonNull LoginActivity loginActivity) {
+        this.loginActivity = loginActivity;
     }
 
     @Override
     public void getLockTime(int time, int completeTime) throws RemoteException {
-        OutlinedImageView background = loginPasswordFragment.getBackground();
-        background.update(time, completeTime);
-        loginPasswordFragment.redrawBlockedbackground();
-
-        Log.d(getClass().getSimpleName(), String.format("Update: %s", time));
-
-        if (time <= 0) {
-            loginPasswordFragment.showAllInputs();
-        } else {
-            loginPasswordFragment.hideAllInputs();
-        }
+//        OutlinedImageView background = loginActivity.getBackground();
+//        background.update(time, completeTime);
+//        loginActivity.redrawBlockedbackground();
+//
+//        Log.d(getClass().getSimpleName(), String.format("Update: %s", time));
+//
+//        if (time <= 0) {
+//            loginActivity.showAllInputs();
+//        } else {
+//            loginActivity.hideAllInputs();
+//        }
     }
 }
