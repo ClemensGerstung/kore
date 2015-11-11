@@ -17,18 +17,12 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
-import com.typingsolutions.passwordmanager.fragments.LoginPasswordFragment;
-import com.typingsolutions.passwordmanager.fragments.LoginUsernameFragment;
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
 import com.typingsolutions.passwordmanager.services.LoginService;
 
 public class LoginActivity extends AppCompatActivity {
 
-
-    private LoginUsernameFragment loginUsernameFragment = new LoginUsernameFragment();
-    private LoginPasswordFragment loginPasswordFragment = new LoginPasswordFragment();
-
-    private GetLockTimeServiceCallback serviceCallback = new GetLockTimeServiceCallback(loginPasswordFragment);
+    private GetLockTimeServiceCallback serviceCallback = new GetLockTimeServiceCallback(this);
 
     private FloatingActionButton add;
 
@@ -64,8 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        add = (FloatingActionButton) findViewById(R.id.mainlayout_floatingactionbutton_add);
-        add.setOnClickListener(new CreateUserCallback(this));
+//        add = (FloatingActionButton) findViewById(R.id.mainlayout_floatingactionbutton_add);
+//        add.setOnClickListener(new CreateUserCallback(this));
     }
 
     @Override
@@ -81,8 +75,6 @@ public class LoginActivity extends AppCompatActivity {
         loginReceiver = new LoginReceiver(this);
         IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
         getApplicationContext().registerReceiver(loginReceiver, intentFilter);
-
-        switchToEnterUsernameFragment();
     }
 
     @Override
@@ -95,20 +87,6 @@ public class LoginActivity extends AppCompatActivity {
     public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {
         add.setImageResource(id);
         add.setOnClickListener(callback);
-    }
-
-    public void switchToEnterUsernameFragment() {
-        loginPasswordFragment.clearEditText();
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-        transaction.replace(R.id.layout_to_replace, loginUsernameFragment).commit();
-    }
-
-    public void switchToEnterPasswordFragment() {
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = supportFragmentManager.beginTransaction();
-        transaction.replace(R.id.layout_to_replace, loginPasswordFragment).commit();
-        loginUsernameFragment = new LoginUsernameFragment();
     }
 
     public ILoginServiceRemote getLoginServiceRemote() {
