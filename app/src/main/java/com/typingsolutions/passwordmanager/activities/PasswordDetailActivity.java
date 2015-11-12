@@ -131,6 +131,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
         delete.setOnClickListener(onClickListener);
 
         passwordHistoryCard.requestFocus();
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     }
 
 
