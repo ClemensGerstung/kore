@@ -9,8 +9,10 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.EditText;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+import android.widget.CheckBox;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -22,7 +24,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private GetLockTimeServiceCallback serviceCallback = new GetLockTimeServiceCallback(this);
 
+    private Toolbar toolbar;
     private FloatingActionButton floatingActionButton_login;
+    private EditText editText_password;
+    private CheckBox checkBox_safeLogin;
 
     private ILoginServiceRemote loginServiceRemote;
     private LoginReceiver loginReceiver;
@@ -56,13 +61,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
+        toolbar = (Toolbar) findViewById(R.id.loginlayout_toolbar_actionbar);
+        setSupportActionBar(toolbar);
+
         floatingActionButton_login = (FloatingActionButton) findViewById(R.id.loginlayout_floatingactionbutton_login);
-        floatingActionButton_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginActivity.this.startActivity(new Intent(LoginActivity.this, PasswordDetailActivity.class));
-            }
-        });
+        editText_password = (EditText) findViewById(R.id.loginlayout_edittext_password);
+        checkBox_safeLogin = (CheckBox) findViewById(R.id.loginlayout_checkbox_safelogin);
     }
 
     @Override

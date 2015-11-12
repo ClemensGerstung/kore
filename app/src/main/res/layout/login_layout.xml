@@ -59,7 +59,7 @@
 
         <CheckBox android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:id="@+id/loginpasswordlayout_checkbox_safelogin"
+                  android:id="@+id/loginlayout_checkbox_safelogin"
                   android:layout_below="@+id/loginlayout_linearlayout_wrapper"
                   android:layout_alignStart="@+id/loginlayout_linearlayout_wrapper"
                   android:layout_marginStart="@dimen/margin"
