@@ -3,11 +3,9 @@ package com.typingsolutions.passwordmanager.callbacks.textwatcher;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
-import com.typingsolutions.passwordmanager.callbacks.CreateUserCallback;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +33,7 @@ public class SimpleSwitchTextWatcher implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() == 0) {
-            loginActivity.switchStateOfFloatingActionButton(R.mipmap.add, new CreateUserCallback(context));
+
         } else {
             commitCallback.setValues(s.toString());
             loginActivity.switchStateOfFloatingActionButton(R.mipmap.send, commitCallback);
