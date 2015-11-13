@@ -19,6 +19,7 @@ import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
 import com.typingsolutions.passwordmanager.services.LoginService;
+import ui.OutlinedImageView;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButton_login;
     private EditText editText_password;
     private CheckBox checkBox_safeLogin;
+    private OutlinedImageView outlinedImageView_background;
 
     private ILoginServiceRemote loginServiceRemote;
     private LoginReceiver loginReceiver;
@@ -67,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         floatingActionButton_login = (FloatingActionButton) findViewById(R.id.loginlayout_floatingactionbutton_login);
         editText_password = (EditText) findViewById(R.id.loginlayout_edittext_password);
         checkBox_safeLogin = (CheckBox) findViewById(R.id.loginlayout_checkbox_safelogin);
+        outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
     }
 
     @Override

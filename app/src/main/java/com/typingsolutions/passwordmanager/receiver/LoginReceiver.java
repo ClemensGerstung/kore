@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import core.data.UserProvider;

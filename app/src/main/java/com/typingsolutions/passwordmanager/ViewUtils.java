@@ -3,27 +3,34 @@ package com.typingsolutions.passwordmanager;
 import android.content.Context;
 import android.support.annotation.AnimRes;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 
 public final class ViewUtils {
 
-    public synchronized static void show(Context context, View view, @AnimRes final int animation) {
-        Object tag = view.getTag(R.string.hidden);
-        boolean hiding = tag != null && (boolean) tag;
+    public static final long FAST_ANIMATION_DURATION = 250;
+
+    public static synchronized void show(final Context context, final View view, @AnimRes int animation) {
+        boolean hiding = (boolean) view.getTag(R.string.hidden);
         if (hiding || view.getVisibility() != View.VISIBLE) {
             view.clearAnimation();
             view.setVisibility(View.VISIBLE);
             Animation anim = android.view.animation.AnimationUtils.loadAnimation(context, animation);
+            anim.setDuration(FAST_ANIMATION_DURATION);
+            anim.setInterpolator(new DecelerateInterpolator());
 
             view.startAnimation(anim);
         }
     }
 
-    public synchronized void hide(Context context, final View view, @AnimRes int animation) {
+    public static synchronized void hide(final Context context, final View view, @AnimRes int animation) {
         boolean hiding = (boolean) view.getTag(R.string.hidden);
         if (hiding || view.getVisibility() != View.VISIBLE) return;
 
         Animation anim = android.view.animation.AnimationUtils.loadAnimation(context, animation);
+        anim.setInterpolator(new AccelerateInterpolator());
+        anim.setDuration(FAST_ANIMATION_DURATION);
         anim.setAnimationListener(new LocalAnimationListener(view));
         view.startAnimation(anim);
     }
