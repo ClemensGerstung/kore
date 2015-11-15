@@ -27,6 +27,7 @@ public class Utils {
      * @param defValue the value to be returned if the hostname could
      *                 not be resolved
      */
+    @Deprecated
     static String getHostName(String defValue) {
         try {
             Method getString = Build.class.getDeclaredMethod("getString", String.class);
@@ -37,6 +38,7 @@ public class Utils {
         }
     }
 
+    @Deprecated
     public static String getHashedHostName() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String hostName = getHostName("android-1234567890");
         return getHashedString(hostName);
