@@ -1,7 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +47,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password_detail_layout);
 
-        toolbar = (Toolbar) findViewById(R.id.passworddetail_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.installlayout_toolbar);
         program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
         username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
         password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);

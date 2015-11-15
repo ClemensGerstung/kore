@@ -2,14 +2,14 @@ package core;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
-
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
+import net.sqlcipher.DatabaseUtils;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+import net.sqlcipher.database.SQLiteStatement;
 
 public class DatabaseProvider extends SQLiteOpenHelper {
+
+    private static final String DATABASE_NAME = "database.db";
 
     public static final int VERSION = 0x02;
 
@@ -48,19 +48,18 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     private static DatabaseProvider INSTANCE;
 
     private Cursor lastCursor;
+    private String password;
 
-    public DatabaseProvider(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    private DatabaseProvider(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
         lastCursor = null;
     }
 
-    public static DatabaseProvider getConnection(Context context) {
+    public static DatabaseProvider getConnection(Context context, String password) {
         if (INSTANCE == null) {
-            try {
-                INSTANCE = new DatabaseProvider(context, Utils.getHashedHostName(), null, VERSION);
-            } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
+            SQLiteDatabase.loadLibs(context);
+            INSTANCE = new DatabaseProvider(context);
+            INSTANCE.password = password;
         }
 
         return INSTANCE;
@@ -80,8 +79,11 @@ public class DatabaseProvider extends SQLiteOpenHelper {
         db.beginTransaction();
         long id = -1;
         try {
+
+
             SQLiteStatement compiled = db.compileStatement(query);
             compiled.bindAllArgsAsStrings(args);
+
             id = compiled.executeInsert();
 
             db.setTransactionSuccessful();
@@ -95,11 +97,13 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     public int update(String query, String... args) {
         SQLiteDatabase db = getWritableDatabase();
 
+
         db.beginTransaction();
-        int affectedRows = -1;
+        long affectedRows = -1;
         try {
             SQLiteStatement compiled = db.compileStatement(query);
             compiled.bindAllArgsAsStrings(args);
+
             affectedRows = compiled.executeUpdateDelete();
 
             db.setTransactionSuccessful();
@@ -107,7 +111,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
             db.endTransaction();
         }
 
-        return affectedRows;
+        return (int) affectedRows;
     }
 
     public int remove(String query, String... args) {

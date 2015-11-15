@@ -1,6 +1,5 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
@@ -82,7 +80,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password_detail_layout);
 
-        toolbar = (Toolbar) findViewById(R.id.passworddetail_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.installlayout_toolbar);
         program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
         username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
         password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
