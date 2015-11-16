@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+@Deprecated
 public class AesProvider {
 
     public static String decrypt(String data, String password) throws Exception {
