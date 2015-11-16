@@ -68,6 +68,13 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
             return prev != null;
         }
 
+        void delete() {
+            key = null;
+            value = null;
+            next = null;
+            prev = null;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -240,8 +247,15 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
         return result;
     }
 
+    // TODO: check
     public void clear() {
-
+        Element element = first;
+        Element next = first.getNext();
+        while (element.hasNext()){
+            element.delete();
+            element = next;
+            next = next.getNext();
+        }
     }
 
     public K getKeyAt(int position) {
