@@ -255,6 +255,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
             element.delete();
             element = next;
             next = next.getNext();
+
         }
     }
 
