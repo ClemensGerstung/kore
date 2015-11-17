@@ -7,7 +7,9 @@ import core.exceptions.PasswordProviderException;
 
 import java.util.*;
 
-class PasswordProvider {
+public class PasswordProvider {
+    private static PasswordProvider Instance;
+
     private Context context;
     private List<Password> passwords;
 
@@ -15,6 +17,12 @@ class PasswordProvider {
     PasswordProvider(Context context) {
         this.context = context;
         this.passwords = new ArrayList<>();
+    }
+
+    public static PasswordProvider getInstance(Context context) {
+        if(Instance == null)
+            Instance = new PasswordProvider(context);
+        return Instance;
     }
 
     public void add(Password password) {
