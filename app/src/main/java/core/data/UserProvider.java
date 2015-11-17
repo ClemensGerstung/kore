@@ -15,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
 
+@Deprecated
 public class UserProvider {
     private static UserProvider INSTANCE;
 
@@ -35,6 +36,7 @@ public class UserProvider {
         this.passwordProvider = new PasswordProvider(context);
     }
 
+    @Deprecated
     public static UserProvider getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = new UserProvider(context);
@@ -42,6 +44,7 @@ public class UserProvider {
         return INSTANCE;
     }
 
+    @Deprecated
     public User login(ILoginServiceRemote remote, String password, boolean safeLogin) throws Exception {
         if (username == null || id == -1)
             throw new UserProviderException("No username or id set");
@@ -105,21 +108,7 @@ public class UserProvider {
         return currentUser;
     }
 
-    public void fakeLogin(ILoginServiceRemote remote, int id) throws Exception {
-        boolean blocked = remote.isUserBlocked(id);
-
-        if (blocked) {
-            // at least you will never get in here because you're not able to click login
-            throw new LoginException("Sorry, but your user is blocked!", LoginException.BLOCKED);
-        }
-
-        boolean result = remote.login(id, " ", "a");
-
-        if (!result) {
-            throw new LoginException("Your login credentials are wrong!", LoginException.WRONG);
-        }
-    }
-
+    @Deprecated
     public boolean userExists(String username) throws NoSuchAlgorithmException {
         Cursor cursor = DatabaseProvider.getConnection(context).query(DatabaseProvider.DOES_USER_EXISTS, Utils.getHashedString(username));
 
@@ -133,6 +122,7 @@ public class UserProvider {
         return i == 1;
     }
 
+    @Deprecated
     public User createUser(String username, String password, String salt, boolean autoLogin) throws Exception {
         if (userExists(username)) {
             throw new UserProviderException("Your username already exists");
@@ -344,12 +334,20 @@ public class UserProvider {
         INSTANCE = null;
     }
 
+    /**
+     * @param data
+     * @return decrypted value
+     * @throws Exception
+     * @hide
+     */
+    @Deprecated
     public static String decrypt(String data) throws Exception {
         if (INSTANCE == null || INSTANCE.currentUser == null)
             throw new UserProviderException("Cannot decrypt because there was an error");
         return AesProvider.decrypt(data, INSTANCE.currentUser.plainPassword);
     }
 
+    @Deprecated
     public static boolean checkPassword(String password) {
         return INSTANCE.currentUser.plainPassword.equals(password);
     }

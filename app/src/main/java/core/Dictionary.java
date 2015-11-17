@@ -3,7 +3,6 @@ package core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 // because Java sucks...
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
@@ -249,13 +248,15 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
     // TODO: check
     public void clear() {
-        Element element = first;
-        Element next = first.getNext();
+        if(first == null)
+            throw new IllegalArgumentException("List is already cleared!");
+
+        Element<K, V> element = first;
+        Element<K, V> next = first.getNext();
         while (element.hasNext()){
             element.delete();
             element = next;
             next = next.getNext();
-
         }
     }
 
@@ -281,6 +282,23 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
         return element.getValue();
     }
 
+    public Element<K, V> removeByKey(K key) {
+        if (!containsKey(key, IterationOption.Forwards))
+            throw new IllegalArgumentException("Doesn't contain key " + key.toString() + "!");
+
+        for (Element element : this) {
+            if(element.key.equals(key)){
+                Element prev = element.prev;
+                Element next = element.next;
+                prev.setNext(next);
+                next.setPrevious(prev);
+                return element;
+            }
+        }
+
+        return null;
+    }
+
     public V getByKey(K search, IterationOption option) {
         if (!containsKey(search, option))
             throw new IllegalArgumentException("Doesn't contain key " + search.toString() + "!");
@@ -298,7 +316,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     }
 
     public int size() {
-        Element element = getFirstIterator();
+        Element<K, V> element = getFirstIterator();
         int result = 0;
 
         while (element != null) {

@@ -1,9 +1,10 @@
-package core;
+package core.async;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
+import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.User;

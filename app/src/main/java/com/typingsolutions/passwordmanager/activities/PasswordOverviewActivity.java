@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
-import core.AsyncPasswordLoader;
+import core.async.AsyncPasswordLoader;
 import core.adapter.PasswordOverviewAdapter;
 import core.data.Password;
 import core.data.PasswordHistory;
