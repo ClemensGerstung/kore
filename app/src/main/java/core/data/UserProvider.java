@@ -203,7 +203,7 @@ public class UserProvider {
     public boolean isSafe() {
         return currentUser.isSafeLogin();
     }
-
+/*
     public void addPassword(String program, String username, String password) throws Exception {
         DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
@@ -311,7 +311,7 @@ public class UserProvider {
 
     public Password getPasswordAt(int position) {
         return passwordProvider.get(position);
-    }
+    }*/
 
     public int getPasswordCount() {
         return passwordProvider.size();

@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class User {
 
     private List<Integer> passwordIds;

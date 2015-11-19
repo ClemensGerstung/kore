@@ -7,55 +7,55 @@ import java.util.Iterator;
 // because Java sucks...
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
 
-    public class Element<K, V> {
-        private K key;
-        private V value;
-        private Element<K, V> next;
-        private Element<K, V> prev;
+    public class Element<T, U> {
+        private T key;
+        private U value;
+        private Element<T, U> next;
+        private Element<T, U> prev;
 
-        Element(K key, V value) {
+        Element(T key, U value) {
             this.key = key;
             this.value = value;
             this.next = null;
             this.prev = null;
         }
 
-        Element(Element<K, V> other) {
+        Element(Element<T, U> other) {
             key = other.key;
             value = other.value;
             next = other.next;
             prev = other.prev;
         }
 
-        public K getKey() {
+        public T getKey() {
             return key;
         }
 
-        public void setKey(K key) {
+        public void setKey(T key) {
             this.key = key;
         }
 
-        public V getValue() {
+        public U getValue() {
             return value;
         }
 
-        public void setValue(V value) {
+        public void setValue(U value) {
             this.value = value;
         }
 
-        Element<K, V> getNext() {
+        Element<T, U> getNext() {
             return next;
         }
 
-        void setNext(Element<K, V> next) {
+        void setNext(Element<T, U> next) {
             this.next = next;
         }
 
-        Element<K, V> getPrevious() {
+        Element<T, U> getPrevious() {
             return prev;
         }
 
-        void setPrevious(Element<K, V> prev) {
+        void setPrevious(Element<T, U> prev) {
             this.prev = prev;
         }
 
@@ -79,7 +79,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
             if (this == o) return true;
             if (!(o instanceof Element)) return false;
 
-            Element<K, V> element = (Element<K, V>) o;
+            Element<T, U> element = (Element<T, U>) o;
 
             if (key != null ? !key.equals(element.key) : element.key != null) return false;
             return !(value != null ? !value.equals(element.value) : element.value != null);

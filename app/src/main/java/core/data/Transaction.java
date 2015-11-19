@@ -1,5 +1,6 @@
 package core.data;
 
+import android.database.DatabaseUtils;
 import core.Dictionary;
 
 public class Transaction {
@@ -13,8 +14,14 @@ public class Transaction {
 
     public String getTranslatedQuery() {
         String q = query;
-        q = q.replaceAll()
-
-        return null;
+        Dictionary<String, String> tmp = new Dictionary<>(parameters);
+        for (Dictionary.Element element : tmp) {
+            if (!q.contains(element.getKey().toString())) continue;
+            String value = (String) element.getValue();
+            value = DatabaseUtils.sqlEscapeString(value);
+            q = q.replaceAll((String) element.getKey(), value);
+            tmp.removeByKey((String) element.getKey());
+        }
+        return q;
     }
 }

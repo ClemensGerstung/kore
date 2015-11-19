@@ -118,7 +118,6 @@ public class DatabaseProvider extends SQLiteOpenHelper {
         return update(query, args);
     }
 
-    @Deprecated
     public DatabaseProvider rawQuery(String query) {
         SQLiteDatabase db = getReadableDatabase();
         db.execSQL(query);
