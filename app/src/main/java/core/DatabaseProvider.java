@@ -71,60 +71,15 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     }
 
     public Cursor query(String query, String... args) {
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase(password);
 
         lastCursor = db.rawQuery(query, args);
 
         return lastCursor;
     }
 
-    public long insert(String query, String... args) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        db.beginTransaction();
-        long id = -1;
-        try {
-
-
-            SQLiteStatement compiled = db.compileStatement(query);
-            compiled.bindAllArgsAsStrings(args);
-
-            id = compiled.executeInsert();
-
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
-
-        return id;
-    }
-
-    public int update(String query, String... args) {
-        SQLiteDatabase db = getWritableDatabase();
-
-
-        db.beginTransaction();
-        long affectedRows = -1;
-        try {
-            SQLiteStatement compiled = db.compileStatement(query);
-            compiled.bindAllArgsAsStrings(args);
-
-            affectedRows = compiled.executeUpdateDelete();
-
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
-
-        return (int) affectedRows;
-    }
-
-    public int remove(String query, String... args) {
-        return update(query, args);
-    }
-
     public DatabaseProvider rawQuery(String query) {
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase(password);
         db.execSQL(query);
         return this;
     }

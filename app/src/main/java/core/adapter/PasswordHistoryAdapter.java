@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import core.data.Password;
 import core.data.PasswordHistory;
+import core.data.PasswordProvider;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,7 +37,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Password password = UserProvider.getInstance(context).getPasswordById(passwordId);
+        Password password = PasswordProvider.getInstance(context).getById(passwordId);
         PasswordHistory history = password.getItemAt(position + 1);
 
         DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
@@ -48,7 +49,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
     @Override
     public int getItemCount() {
-        Password password = UserProvider.getInstance(context).getPasswordById(passwordId);
+        Password password = PasswordProvider.getInstance(context).getById(passwordId);
         return password.getHistoryCount() - 1;
     }
 

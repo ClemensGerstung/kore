@@ -16,6 +16,7 @@ import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.data.Password;
 import core.data.PasswordHistory;
+import core.data.PasswordProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
         View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
 
-        safe = UserProvider.getInstance(context).isSafe();
+        safe = PasswordProvider.getInstance(context).isSafe();
 
         ViewHolder viewHolder = new ViewHolder(view);
         if (safe) {
@@ -61,7 +62,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Password password = useFiltered ? localPasswords.get(position) : UserProvider.getInstance(context).getPasswordAt(position);
+        Password password = useFiltered ? localPasswords.get(position) : PasswordProvider.getInstance(context).get(position);
         PasswordHistory history = password.getFirstHistoryItem();
 
         if (!safe) {
@@ -74,7 +75,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     @Override
     public int getItemCount() {
-        return useFiltered ? localPasswords.size() : UserProvider.getInstance(context).getPasswordCount();
+        return useFiltered ? localPasswords.size() : PasswordProvider.getInstance(context).size();
     }
 
     public synchronized void filter(String query) {
@@ -98,9 +99,9 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     private void filter(String query, int flag) {
 
-        UserProvider provider = UserProvider.getInstance(context);
-        for (int i = 0; i < provider.getPasswordCount(); i++) {
-            Password password = provider.getPasswordAt(i);
+        PasswordProvider provider = PasswordProvider.getInstance(context);
+        for (int i = 0; i < provider.size(); i++) {
+            Password password = provider.get(i);
             if (matches(password, query, flag)) {
                 if (localPasswords.contains(password)) continue;
                 localPasswords.add(password);
@@ -184,16 +185,16 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
             EditText editText = (EditText) alert.findViewById(R.id.reenterpasswordlayout_edittext_password);
             String password = editText.getText().toString();
 
-            if(UserProvider.checkPassword(password)) {
+            //if(UserProvider.checkPassword(password)) {
                 Intent intent = new Intent(context, PasswordDetailActivity.class);
                 intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
                 context.startActivity(intent);
-            }
+            /*}
             else {
                 alert.dismiss();
                 Intent intent = new Intent(PasswordOverviewActivity.WRONGPASSWORD);
                 context.getApplicationContext().sendBroadcast(intent);
-            }
+            }*/
         }
     }
 
