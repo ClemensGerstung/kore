@@ -26,7 +26,7 @@ public class Transactions {
         return transaction;
     }
 
-    public int commitAllTransactions(Context context) {
+    public int commitAllTransactions(Context context, String password) {
         StringBuilder builder = new StringBuilder();
 
         for (Transaction trans : transactions) {
@@ -38,12 +38,17 @@ public class Transactions {
                 builder.append(";");
         }
 
-        DatabaseProvider.getConnection(context, "").rawQuery(builder.toString());
+        DatabaseProvider.getConnection(context, password).rawQuery(builder.toString());
 
-        return 0;
+        return transactions.size();
     }
 
     public Transaction redoLastTransaction() {
         return transactions.remove(transactions.size() - 1);
+    }
+
+    public void logout() {
+        transactions.clear();
+        transactions = null;
     }
 }

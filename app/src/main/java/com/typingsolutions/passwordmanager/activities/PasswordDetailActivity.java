@@ -16,7 +16,6 @@ import com.typingsolutions.passwordmanager.callbacks.DeletePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import core.adapter.PasswordHistoryAdapter;
 import core.data.Password;
-import core.data.UserProvider;
 
 public class PasswordDetailActivity extends AppCompatActivity {
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
-import core.data.UserProvider;
 
 public class LoginReceiver extends BroadcastReceiver {
     private LoginActivity loginActivity;

@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
-import core.data.UserProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
