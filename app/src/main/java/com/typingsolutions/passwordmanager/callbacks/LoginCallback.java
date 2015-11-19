@@ -2,15 +2,10 @@ package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import core.data.User;
-import core.data.UserProvider;
 import core.exceptions.LoginException;
 
 public class LoginCallback extends BaseCallback {

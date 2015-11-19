@@ -16,8 +16,6 @@ import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.data.Password;
 import core.data.PasswordHistory;
-import core.data.User;
-import core.data.UserProvider;
 
 import java.util.ArrayList;
 import java.util.List;

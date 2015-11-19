@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import core.data.Password;
-import core.data.UserProvider;
 
 public class DeletePasswordCallback extends BaseCallback {
     private Password currentPassword;

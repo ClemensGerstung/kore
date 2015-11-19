@@ -2,9 +2,7 @@ package core.data;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import core.AesProvider;
 import core.DatabaseProvider;
-import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
 
 import java.util.*;
@@ -14,21 +12,27 @@ public class PasswordProvider {
 
     private Context context;
     private List<Password> passwords;
-
+    private Transactions transactions;
+    private int lastPasswordId;
+    private int lastPasswordHistoryId;
+    private PasswordActionListener passwordActionListener;
 
     PasswordProvider(Context context) {
         this.context = context;
         this.passwords = new ArrayList<>();
+        this.transactions = new Transactions();
+        this.lastPasswordId = -1;
+        this.lastPasswordHistoryId = -1;
     }
 
     public static PasswordProvider getInstance(Context context) {
-        if(Instance == null)
+        if (Instance == null)
             Instance = new PasswordProvider(context);
         return Instance;
     }
 
     public void add(Password password) {
-        if(password.getPosition() == Integer.MIN_VALUE)
+        if (password.getPosition() == Integer.MIN_VALUE)
             password.setPosition(passwords.size() + 1);
 
         passwords.add(password);
@@ -86,7 +90,7 @@ public class PasswordProvider {
                 @Override
                 public int compare(Password lhs, Password rhs) {
                     int compareTo = lhs.getUsername().compareTo(rhs.getUsername());
-                    if(compareTo != 0)
+                    if (compareTo != 0)
                         lhs.swapPositionWith(rhs);
 
                     return compareTo;
@@ -97,7 +101,7 @@ public class PasswordProvider {
                 @Override
                 public int compare(Password lhs, Password rhs) {
                     int compareTo = ~lhs.getUsername().compareTo(rhs.getUsername());
-                    if(compareTo != 0)
+                    if (compareTo != 0)
                         lhs.swapPositionWith(rhs);
 
                     return compareTo;
@@ -108,7 +112,7 @@ public class PasswordProvider {
                 @Override
                 public int compare(Password lhs, Password rhs) {
                     int compareTo = lhs.getFirstItem().compareTo(rhs.getFirstItem());
-                    if(compareTo != 0)
+                    if (compareTo != 0)
                         lhs.swapPositionWith(rhs);
 
                     return compareTo;
@@ -119,7 +123,7 @@ public class PasswordProvider {
                 @Override
                 public int compare(Password lhs, Password rhs) {
                     int compareTo = ~lhs.getFirstItem().compareTo(rhs.getFirstItem());
-                    if(compareTo != 0)
+                    if (compareTo != 0)
                         lhs.swapPositionWith(rhs);
 
                     return compareTo;
@@ -130,7 +134,7 @@ public class PasswordProvider {
                 @Override
                 public int compare(Password lhs, Password rhs) {
                     int compareTo = lhs.getProgram().compareTo(rhs.getProgram());
-                    if(compareTo != 0)
+                    if (compareTo != 0)
                         lhs.swapPositionWith(rhs);
 
                     return compareTo;
@@ -141,7 +145,7 @@ public class PasswordProvider {
                 @Override
                 public int compare(Password lhs, Password rhs) {
                     int compareTo = ~lhs.getProgram().compareTo(rhs.getProgram());
-                    if(compareTo != 0)
+                    if (compareTo != 0)
                         lhs.swapPositionWith(rhs);
 
                     return compareTo;
@@ -179,8 +183,13 @@ public class PasswordProvider {
 
     public void addPassword(Password password) throws Exception {
 
-        if (!passwordProvider.contains(password))
-            passwordProvider.add(password);
+        if (!contains(password))
+            add(password);
+
+        if (password.hasId()) {
+            if (lastPasswordId < password.getId())
+                lastPasswordId = password.getId();
+        }
 
         if (password.hasId() && !currentUser.hasPassword(password.getId())) {
 
@@ -253,5 +262,15 @@ public class PasswordProvider {
             passwordActionListener.onPasswordRemoved(password);
     }
 
+    public void setPasswordActionListener(PasswordActionListener passwordActionListener) {
+        this.passwordActionListener = passwordActionListener;
+    }
 
+    public interface PasswordActionListener {
+        void onPasswordAdded(Password password);
+
+        void onPasswordRemoved(Password password);
+
+        void onPasswordEdited(Password password, PasswordHistory history);
+    }
 }

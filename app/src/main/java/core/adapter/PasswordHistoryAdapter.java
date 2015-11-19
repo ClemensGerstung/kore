@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import core.data.Password;
 import core.data.PasswordHistory;
-import core.data.UserProvider;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
