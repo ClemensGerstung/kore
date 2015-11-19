@@ -266,6 +266,10 @@ public class PasswordProvider {
         this.passwordActionListener = passwordActionListener;
     }
 
+    public boolean isSafe() {
+        return false;
+    }
+
     public interface PasswordActionListener {
         void onPasswordAdded(Password password);
 
