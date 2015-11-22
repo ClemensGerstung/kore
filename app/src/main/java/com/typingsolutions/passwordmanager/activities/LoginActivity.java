@@ -7,7 +7,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.EditText;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +18,7 @@ import android.widget.CheckBox;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.callbacks.SetupCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
 import com.typingsolutions.passwordmanager.services.LoginService;
@@ -29,11 +32,14 @@ public class LoginActivity extends AppCompatActivity {
   private Toolbar toolbar;
   private FloatingActionButton floatingActionButton_login;
   private EditText editText_password;
+  private EditText editText_repeatPassword; // for setuplayout
   private CheckBox checkBox_safeLogin;
   private OutlinedImageView outlinedImageView_background;
+  private CoordinatorLayout coordinatorLayout_root;
 
   private ILoginServiceRemote loginServiceRemote;
   private LoginReceiver loginReceiver;
+  private DatabaseProvider databaseProvider;
 
   private ServiceConnection loginServiceConnection = new ServiceConnection() {
     @Override
@@ -63,15 +69,24 @@ public class LoginActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    DatabaseProvider databaseProvider = DatabaseProvider.getConnection(this);
-    if(databaseProvider.needSetup()) {
+    databaseProvider = DatabaseProvider.getConnection(this);
+    if (databaseProvider.needSetup()) {
       setContentView(R.layout.setup_layout);
 
+      toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
+      setSupportActionBar(toolbar);
+
+      floatingActionButton_login = (FloatingActionButton) findViewById(R.id.setuplayout_floatingactionbutton_login);
+      editText_password = (EditText) findViewById(R.id.setuplayout_edittext_password);
+      editText_repeatPassword = (EditText) findViewById(R.id.setuplayout_edittext_repeatpassword);
+      coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.setuplayout_coordinatorlayout_root);
+
+      floatingActionButton_login.setOnClickListener(new SetupCallback(this, this));
 
       return;
     }
 
-    // no setup
+    // no setup -> login
     setContentView(R.layout.login_layout);
 
     toolbar = (Toolbar) findViewById(R.id.loginlayout_toolbar_actionbar);
@@ -105,6 +120,31 @@ public class LoginActivity extends AppCompatActivity {
     super.onStop();
   }
 
+  public boolean setupDatabase() {
+    databaseProvider.setOnSetupListener(new DatabaseProvider.OnSetupListener() {
+      @Override
+      public String onSetup() {
+        return editText_password.getText().toString();
+      }
+    });
+    String password = editText_password.getText().toString();
+    String repeated = editText_repeatPassword.getText().toString();
+
+    if (password.equals(repeated)) {
+      if (!databaseProvider.setup()) {
+        Snackbar.make(coordinatorLayout_root, "Soory, something went wrong", Snackbar.LENGTH_LONG).show();
+      } else {
+        return true;
+      }
+    } else {
+      Snackbar.make(coordinatorLayout_root, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG).show();
+      editText_repeatPassword.setText("");
+      editText_repeatPassword.requestFocus();
+    }
+    return false;
+  }
+
+  @Deprecated
   public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {
     floatingActionButton_login.setImageResource(id);
     floatingActionButton_login.setOnClickListener(callback);
