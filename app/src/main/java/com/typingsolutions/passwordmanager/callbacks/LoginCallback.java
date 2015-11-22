@@ -20,11 +20,10 @@ public class LoginCallback extends BaseCallback {
 
     @Override
     public void onClick(View v) {
-        User user = null;
         try {
 //            final SharedPreferences preferences = loginActivity.getPreferences(Context.MODE_PRIVATE);
 //            final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
-            user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password, false);
+//            user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password, false);
 
             Intent intent = new Intent(context, PasswordOverviewActivity.class);
             context.startActivity(intent);
