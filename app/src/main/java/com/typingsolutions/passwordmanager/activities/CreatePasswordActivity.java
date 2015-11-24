@@ -88,7 +88,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         String password = this.password.getText().toString();
 
         try {
-            UserProvider.getInstance(this).addPassword(program, username, password);
+            //UserProvider.getInstance(this).addPassword(program, username, password);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         } finally {

@@ -20,6 +20,7 @@ import core.async.AsyncPasswordLoader;
 import core.adapter.PasswordOverviewAdapter;
 import core.data.Password;
 import core.data.PasswordHistory;
+import core.data.PasswordProvider;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
 
@@ -41,13 +42,13 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            UserProvider.logout();
+            //UserProvider.logout();
             Intent loginIntent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
             startActivity(loginIntent);
         }
     };
 
-    private UserProvider.UserProviderPasswordActionListener passwordActionListener = new UserProvider.UserProviderPasswordActionListener() {
+    private PasswordProvider.PasswordActionListener passwordActionListener = new PasswordProvider.PasswordActionListener() {
         @Override
         public void onPasswordAdded(Password password) {
             runOnUiThread(new Runnable() {
@@ -70,8 +71,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 }
             });
 
-            if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
-                return;
+            //if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
+            //    return;
 
             if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
                 noPasswordsTextView.setVisibility(View.VISIBLE);
@@ -115,7 +116,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             dialog.dismiss();
-            UserProvider.order(which);
+            //UserProvider.order(which);
             passwordOverviewAdapter.notifyDataSetChanged();
         }
     };
@@ -136,10 +137,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
         // ...
         setSupportActionBar(toolbar);
-
-        // get userId
-        UserProvider userProvider = UserProvider.getInstance(this);
-        userProvider.setPasswordActionListener(passwordActionListener);
 
         // init and set adapter
         passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -189,7 +186,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        UserProvider.logout();
+                        //UserProvider.logout();
 
                         Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
                         startActivity(intent);

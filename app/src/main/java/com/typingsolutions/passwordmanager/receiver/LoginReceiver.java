@@ -17,7 +17,7 @@ public class LoginReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        int id = UserProvider.getInstance(loginActivity).getId();
+        /*int id = UserProvider.getInstance(loginActivity).getId();
 
         try {
             loginActivity.getLoginServiceRemote().getBlockedTimeAsync(id);
@@ -26,6 +26,6 @@ public class LoginReceiver extends BroadcastReceiver {
 //            if(!blocked) return;
         } catch (RemoteException e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-        }
+        }*/
     }
 }

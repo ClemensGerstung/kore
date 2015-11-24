@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
     if (password.equals(repeated)) {
       if (!databaseProvider.setup()) {
-        Snackbar.make(coordinatorLayout_root, "Soory, something went wrong", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(coordinatorLayout_root, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
       } else {
         return true;
       }

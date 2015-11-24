@@ -96,11 +96,11 @@ public class PasswordDetailActivity extends AppCompatActivity {
             }
         });
 
-        UserProvider userProvider = UserProvider.getInstance(this);
+        //UserProvider userProvider = UserProvider.getInstance(this);
 
         passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
         if (passwordId == -1) return;
-        Password currentPassword = userProvider.getPasswordById(passwordId);
+        Password currentPassword = null;//userProvider.getPasswordById(passwordId);
 
         layoutManager = new LinearLayoutManager(this);
         passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -164,11 +164,11 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
         try {
             if (newPassword != null) {
-                UserProvider.getInstance(this).editPassword(passwordId, newPassword);
+                //UserProvider.getInstance(this).editPassword(passwordId, newPassword);
             }
 
             if (newUsername != null || newProgram != null) {
-                UserProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
+                //UserProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
             }
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
