@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.callbacks.RetypePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.SetupCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
@@ -163,16 +164,23 @@ public class LoginActivity extends AppCompatActivity {
 
     if (password.equals(repeated)) {
       if (!databaseProvider.setup()) {
-        Snackbar.make(floatingActionButton_login, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(coordinatorLayout_root, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
       } else {
         return true;
       }
     } else {
-      Snackbar.make(floatingActionButton_login, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG).show();
-      editText_setupRepeated.setText("");
-      editText_setupRepeated.requestFocus();
+      Snackbar
+          .make(coordinatorLayout_root, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG)
+          .setAction("RETYPE", new RetypePasswordCallback(this, this))
+          .show();
     }
     return false;
+  }
+
+  public void retypePassword() {
+    editText_setupPassword.setText("");
+    editText_setupRepeated.setText("");
+    editText_setupPassword.requestFocus();
   }
 
   @Deprecated
