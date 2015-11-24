@@ -13,6 +13,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.EditText;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.CheckBox;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
@@ -32,7 +34,8 @@ public class LoginActivity extends AppCompatActivity {
   private Toolbar toolbar;
   private FloatingActionButton floatingActionButton_login;
   private EditText editText_password;
-  private EditText editText_repeatPassword; // for setuplayout
+  private android.widget.EditText editText_setupRepeated; // for setuplayout
+  private android.widget.EditText editText_setupPassword; // for setuplayout
   private CheckBox checkBox_safeLogin;
   private OutlinedImageView outlinedImageView_background;
   private CoordinatorLayout coordinatorLayout_root;
@@ -65,6 +68,27 @@ public class LoginActivity extends AppCompatActivity {
     }
   };
 
+  private TextWatcher setupTextWatcher = new TextWatcher() {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+      boolean hasPassword = editText_setupPassword.getText().length() > 0;
+      boolean hasRepeated = editText_setupRepeated.getText().length() > 0;
+
+      if(hasPassword & hasRepeated) floatingActionButton_login.show();
+      else floatingActionButton_login.hide();
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+  };
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -77,11 +101,15 @@ public class LoginActivity extends AppCompatActivity {
       setSupportActionBar(toolbar);
 
       floatingActionButton_login = (FloatingActionButton) findViewById(R.id.setuplayout_floatingactionbutton_login);
-      editText_password = (EditText) findViewById(R.id.setuplayout_edittext_password);
-      editText_repeatPassword = (EditText) findViewById(R.id.setuplayout_edittext_repeatpassword);
+      editText_setupPassword = (android.widget.EditText) findViewById(R.id.setuplayout_edittext_password);
+      editText_setupRepeated = (android.widget.EditText) findViewById(R.id.setuplayout_edittext_repeatpassword);
       coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.setuplayout_coordinatorlayout_root);
 
+      editText_setupPassword.addTextChangedListener(setupTextWatcher);
+      editText_setupRepeated.addTextChangedListener(setupTextWatcher);
+
       floatingActionButton_login.setOnClickListener(new SetupCallback(this, this));
+      floatingActionButton_login.hide();
 
       return;
     }
@@ -96,6 +124,9 @@ public class LoginActivity extends AppCompatActivity {
     editText_password = (EditText) findViewById(R.id.loginlayout_edittext_password);
     checkBox_safeLogin = (CheckBox) findViewById(R.id.loginlayout_checkbox_safelogin);
     outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
+
+    floatingActionButton_login.hide();
+
   }
 
   @Override
@@ -124,22 +155,22 @@ public class LoginActivity extends AppCompatActivity {
     databaseProvider.setOnSetupListener(new DatabaseProvider.OnSetupListener() {
       @Override
       public String onSetup() {
-        return editText_password.getText().toString();
+        return editText_setupPassword.getText().toString();
       }
     });
-    String password = editText_password.getText().toString();
-    String repeated = editText_repeatPassword.getText().toString();
+    String password = editText_setupPassword.getText().toString();
+    String repeated = editText_setupRepeated.getText().toString();
 
     if (password.equals(repeated)) {
       if (!databaseProvider.setup()) {
-        Snackbar.make(coordinatorLayout_root, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(floatingActionButton_login, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
       } else {
         return true;
       }
     } else {
-      Snackbar.make(coordinatorLayout_root, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG).show();
-      editText_repeatPassword.setText("");
-      editText_repeatPassword.requestFocus();
+      Snackbar.make(floatingActionButton_login, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG).show();
+      editText_setupRepeated.setText("");
+      editText_setupRepeated.requestFocus();
     }
     return false;
   }
