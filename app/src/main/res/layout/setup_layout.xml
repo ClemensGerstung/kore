@@ -71,20 +71,19 @@
                     android:layout_below="@+id/setuplayout_toolbar"
                     android:layout_height="4dp"
                     android:background="@drawable/shadow"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/setuplayout_floatingactionbutton_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:layout_margin="@dimen/margin"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        app:backgroundTint="#2196F3"
-        app:rippleColor="#1976D2"
-        app:elevation="@dimen/margin"
-        android:clickable="true"
-        app:pressedTranslationZ="@dimen/margin"
-        android:src="@mipmap/done"/>
   </RelativeLayout>
+
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/setuplayout_floatingactionbutton_login"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:fabSize="normal"
+      android:layout_margin="@dimen/margin"
+      android:layout_gravity="end|bottom"
+      app:backgroundTint="#2196F3"
+      app:rippleColor="#1976D2"
+      app:elevation="@dimen/margin"
+      android:clickable="true"
+      app:pressedTranslationZ="@dimen/margin"
+      android:src="@mipmap/done"/>
 </android.support.design.widget.CoordinatorLayout>
