@@ -12,13 +12,11 @@
                   android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
         android:id="@+id/setuplayout_toolbar"
-        android:clickable="true"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="?attr/colorPrimary"
-        app:navigationIcon="@mipmap/arrow_back"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:title="Create User">
+        app:title="Setup your password">
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.CardView
@@ -87,6 +85,6 @@
         app:elevation="@dimen/margin"
         android:clickable="true"
         app:pressedTranslationZ="@dimen/margin"
-        android:src="@mipmap/send"/>
+        android:src="@mipmap/done"/>
   </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
