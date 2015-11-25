@@ -1,17 +1,15 @@
 package com.typingsolutions.passwordmanager.services;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.*;
+import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
 import core.Utils;
-import core.login.BlockedUser;
-import core.login.BlockedUserList;
-import org.jetbrains.annotations.Contract;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -37,8 +35,6 @@ public class LoginService extends Service {
   public static final int FINAL_BLOCK_TIME = 300000;   // 5 minutes
 
   private final RemoteCallbackList<IServiceCallback> callbacks = new RemoteCallbackList<>();
-  @Deprecated
-  private final BlockedUserList blockedUserList = new BlockedUserList(this);
 
   private int tries;
   private int currentLockTime;
@@ -47,12 +43,44 @@ public class LoginService extends Service {
   private final ILoginServiceRemote.Stub binder = new ILoginServiceRemote.Stub() {
     @Override
     public void increaseTries() throws RemoteException {
+      tries++;
+      boolean start = false;
+      if (tries == TRIES_FOR_SMALL_BLOCK) {
+        currentMaxLockTime = SMALL_BLOCK_TIME;
+        currentLockTime = currentMaxLockTime;
+        start = true;
+      } else if (tries == TRIES_FOR_MEDIUM_BLOCK) {
+        currentMaxLockTime = MEDIUM_BLOCK_TIME;
+        currentLockTime = currentMaxLockTime;
+        start = true;
+      } else if (tries == TRIES_FOR_LARGE_BLOCK) {
+        currentMaxLockTime = LARGE_BLOCK_TIME;
+        currentLockTime = currentMaxLockTime;
+        start = true;
+      } else if (tries == TRIES_FOR_FINAL_BLOCK) {
+        currentMaxLockTime = FINAL_BLOCK_TIME;
+        currentLockTime = currentMaxLockTime;
+        start = true;
+      } else if (tries > TRIES_FOR_FINAL_BLOCK && tries % TRIES_FOR_SMALL_BLOCK == 0) {
+        currentMaxLockTime = FINAL_BLOCK_TIME;
+        currentLockTime = currentMaxLockTime;
+        start = true;
+      }
 
+      if (start) {
+
+      }
     }
 
     @Override
     public void getBlockedTimeAsync() throws RemoteException {
+      final int size = callbacks.beginBroadcast();
 
+      for (int i = 0; i < size; i++) {
+        callbacks.getBroadcastItem(i).getLockTime(currentLockTime, currentMaxLockTime);
+      }
+
+      callbacks.finishBroadcast();
     }
 
     @Override
@@ -96,7 +124,7 @@ public class LoginService extends Service {
     SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
     SharedPreferences.Editor editor = preferences.edit();
 
-    try {
+   /* try {
       String json = blockedUserList.toJson();
       String hash = Utils.getHashedString(json);
 
@@ -108,7 +136,7 @@ public class LoginService extends Service {
       editor.apply();
     } catch (IOException | NoSuchAlgorithmException e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-    }
+    }*/
 
     return true;
   }
@@ -119,21 +147,24 @@ public class LoginService extends Service {
     return START_STICKY;
   }
 
+  @Override
+  public void onDestroy() {
 
+  }
 
   private void readSerializedData() {
     SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
     String json = preferences.getString("json", "");
     String hash = preferences.getString("hash", "");
 
-    try {
+    /*try {
       String computedHash = Utils.getHashedString(json);
       blockedUserList.fromJson(json, hash.equals(computedHash));
     } catch (NoSuchAlgorithmException | IOException e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     } finally {
       preferences.edit().clear().apply();
-    }
+    }*/
   }
 
 
