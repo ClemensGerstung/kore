@@ -90,6 +90,27 @@ public class LoginActivity extends AppCompatActivity {
     }
   };
 
+  private TextWatcher loginTextWatcher = new TextWatcher() {
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+      if(s.length() == 0) {
+        floatingActionButton_login.hide();
+      } else {
+        floatingActionButton_login.show();
+      }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+  };
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -127,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
     outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
 
     floatingActionButton_login.hide();
+    editText_password.addTextChangedListener(loginTextWatcher);
 
   }
 
@@ -181,16 +203,6 @@ public class LoginActivity extends AppCompatActivity {
     editText_setupPassword.setText("");
     editText_setupRepeated.setText("");
     editText_setupPassword.requestFocus();
-  }
-
-  @Deprecated
-  public void switchStateOfFloatingActionButton(@DrawableRes int id, final @NonNull BaseCallback callback) {
-    floatingActionButton_login.setImageResource(id);
-    floatingActionButton_login.setOnClickListener(callback);
-  }
-
-  public ILoginServiceRemote getLoginServiceRemote() {
-    return loginServiceRemote;
   }
 
   private boolean isServiceRunning(Class<?> serviceClass) {

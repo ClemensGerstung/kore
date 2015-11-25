@@ -11,6 +11,7 @@ import core.IServiceCallback;
 import core.Utils;
 import core.login.BlockedUser;
 import core.login.BlockedUserList;
+import org.jetbrains.annotations.Contract;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -24,23 +25,26 @@ public class LoginService extends Service {
   public static final int SLEEP_TIME = 1000;
 
   // tries until block
-  public static int TRIES_FOR_SMALL_BLOCK = 3;
-  public static int TRIES_FOR_MEDIUM_BLOCK = 6;
-  public static int TRIES_FOR_LARGE_BLOCK = 9;
-  public static int TRIES_FOR_FINAL_BLOCK = 12;
+  public static final int TRIES_FOR_SMALL_BLOCK = 3;
+  public static final int TRIES_FOR_MEDIUM_BLOCK = 6;
+  public static final int TRIES_FOR_LARGE_BLOCK = 9;
+  public static final int TRIES_FOR_FINAL_BLOCK = 12;
 
   // block times in ms
-  public static int SMALL_BLOCK_TIME = 30000;    // 0.5 minutes
-  public static int MEDIUM_BLOCK_TIME = 60000;   // 1 minute
-  public static int LARGE_BLOCK_TIME = 150000;   // 2.5 minutes
-  public static int FINAL_BLOCK_TIME = 300000;   // 5 minutes
+  public static final int SMALL_BLOCK_TIME = 30000;    // 0.5 minutes
+  public static final int MEDIUM_BLOCK_TIME = 60000;   // 1 minute
+  public static final int LARGE_BLOCK_TIME = 150000;   // 2.5 minutes
+  public static final int FINAL_BLOCK_TIME = 300000;   // 5 minutes
 
   private final RemoteCallbackList<IServiceCallback> callbacks = new RemoteCallbackList<>();
+  @Deprecated
   private final BlockedUserList blockedUserList = new BlockedUserList(this);
 
+  private int tries;
+  private int currentLockTime;
+  private int currentMaxLockTime;
+
   private final ILoginServiceRemote.Stub binder = new ILoginServiceRemote.Stub() {
-
-
     @Override
     public void increaseTries() throws RemoteException {
 
@@ -53,12 +57,12 @@ public class LoginService extends Service {
 
     @Override
     public boolean isUserBlocked() throws RemoteException {
-      return false;
+      return currentLockTime > 0;
     }
 
     @Override
     public int getMaxBlockTime() throws RemoteException {
-      return 0;
+      return currentMaxLockTime;
     }
 
     @Override
@@ -115,6 +119,8 @@ public class LoginService extends Service {
     return START_STICKY;
   }
 
+
+
   private void readSerializedData() {
     SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
     String json = preferences.getString("json", "");
@@ -129,4 +135,6 @@ public class LoginService extends Service {
       preferences.edit().clear().apply();
     }
   }
+
+
 }
