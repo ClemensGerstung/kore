@@ -97,6 +97,18 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return isOpen;
   }
 
+  public boolean tryOpen(String password) {
+    try {
+      SQLiteDatabase database = getReadableDatabase(password);
+      boolean result = database != null;
+      if(result)
+        this.password = password;
+      return result;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   public Cursor query(String query, String... args) {
     SQLiteDatabase db = getReadableDatabase(password);
 

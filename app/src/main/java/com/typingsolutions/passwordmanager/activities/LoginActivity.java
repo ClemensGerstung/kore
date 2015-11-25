@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.RetypePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.SetupCallback;
 import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
   private ILoginServiceRemote loginServiceRemote;
   private LoginReceiver loginReceiver;
   private DatabaseProvider databaseProvider;
+  private LoginCallback loginCallback = new LoginCallback(this, this);
 
   private ServiceConnection loginServiceConnection = new ServiceConnection() {
     @Override
@@ -100,8 +102,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
       if(s.length() == 0) {
         floatingActionButton_login.hide();
+        loginCallback.setValues("");
       } else {
         floatingActionButton_login.show();
+        loginCallback.setValues(s.toString());
       }
     }
 
@@ -110,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
   };
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +153,7 @@ public class LoginActivity extends AppCompatActivity {
     outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
 
     floatingActionButton_login.hide();
+    floatingActionButton_login.setOnClickListener(loginCallback);
     editText_password.addTextChangedListener(loginTextWatcher);
 
   }
@@ -203,6 +209,10 @@ public class LoginActivity extends AppCompatActivity {
     editText_setupPassword.setText("");
     editText_setupRepeated.setText("");
     editText_setupPassword.requestFocus();
+  }
+
+  public ILoginServiceRemote getLoginServiceRemote() {
+    return loginServiceRemote;
   }
 
   private boolean isServiceRunning(Class<?> serviceClass) {
