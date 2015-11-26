@@ -13,7 +13,7 @@ import core.exceptions.LoginException;
 public class LoginCallback extends BaseCallback {
   private LoginActivity loginActivity;
   private String password;
-
+  private boolean safeLogin;
 
   public LoginCallback(Context context, LoginActivity activity) {
     super(context);
@@ -23,9 +23,6 @@ public class LoginCallback extends BaseCallback {
   @Override
   public void onClick(View v) {
     try {
-      final SharedPreferences preferences = loginActivity.getPreferences(Context.MODE_PRIVATE);
-      final boolean checked = preferences.getBoolean(LoginActivity.SAFELOGIN, false);
-
       DatabaseProvider provider = DatabaseProvider.getConnection(context);
       if (!provider.tryOpen(password)) {
         Snackbar.make(v, "Your password is wrong!", Snackbar.LENGTH_LONG).show();
@@ -34,6 +31,7 @@ public class LoginCallback extends BaseCallback {
       }
 
       Intent intent = new Intent(context, PasswordOverviewActivity.class);
+      intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
       context.startActivity(intent);
       loginActivity.finish();
     } catch (Exception e) {
@@ -43,8 +41,13 @@ public class LoginCallback extends BaseCallback {
 
   @Override
   public void setValues(Object... values) {
+    if(values.length == 0) return;
     if (values[0] instanceof String) {
       password = (String) values[0];
+    }
+    if(values.length == 1) return;
+    if (values[1] instanceof Boolean) {
+      safeLogin = (boolean) values[1];
     }
   }
 }

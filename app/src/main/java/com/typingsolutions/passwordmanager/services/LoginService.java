@@ -139,6 +139,7 @@ public class LoginService extends Service {
     readSerializedData();
   }
 
+  // TODO: onStop write time, maxtime and tries to file
   @Override
   public boolean onUnbind(Intent intent) {
     SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
@@ -172,6 +173,7 @@ public class LoginService extends Service {
 
   }
 
+  // TODO: read from file maxtime, time and tries
   private void readSerializedData() {
     SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
     String json = preferences.getString("json", "");

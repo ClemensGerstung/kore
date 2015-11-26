@@ -16,7 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -48,8 +52,9 @@ public class LoginActivity extends AppCompatActivity {
   private LoginReceiver loginReceiver;
   private DatabaseProvider databaseProvider;
   private LoginCallback loginCallback = new LoginCallback(this, this);
+  private SetupCallback setupCallback = new SetupCallback(this, this);
 
-  private ServiceConnection loginServiceConnection = new ServiceConnection() {
+  private final ServiceConnection loginServiceConnection = new ServiceConnection() {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       loginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
@@ -73,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     }
   };
 
-  private TextWatcher setupTextWatcher = new TextWatcher() {
+  private final TextWatcher setupTextWatcher = new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -94,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
     }
   };
 
-  private TextWatcher loginTextWatcher = new TextWatcher() {
+  private final TextWatcher loginTextWatcher = new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -104,10 +109,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
       if(s.length() == 0) {
         floatingActionButton_login.hide();
-        loginCallback.setValues("");
+        loginCallback.setValues("", checkBox_safeLogin.isChecked());
       } else {
         floatingActionButton_login.show();
-        loginCallback.setValues(s.toString());
+        loginCallback.setValues(s.toString(), checkBox_safeLogin.isChecked());
       }
     }
 
@@ -117,6 +122,22 @@ public class LoginActivity extends AppCompatActivity {
     }
   };
 
+  private final CompoundButton.OnCheckedChangeListener safeLoginCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+      final SharedPreferences preferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+      preferences.edit().putBoolean(LoginActivity.SAFELOGIN, isChecked).apply();
+    }
+  };
+
+  private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+      if (actionId != EditorInfo.IME_ACTION_DONE) return false;
+      setupCallback.onClick(null);
+      return true;
+    }
+  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +158,10 @@ public class LoginActivity extends AppCompatActivity {
       editText_setupPassword.addTextChangedListener(setupTextWatcher);
       editText_setupRepeated.addTextChangedListener(setupTextWatcher);
 
-      floatingActionButton_login.setOnClickListener(new SetupCallback(this, this));
-      floatingActionButton_login.hide();
+      editText_setupRepeated.setOnEditorActionListener(setupKeyBoardActionListener);
 
+      floatingActionButton_login.setOnClickListener(setupCallback);
+      floatingActionButton_login.hide();
       return;
     }
 
@@ -157,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
     editText_password.addTextChangedListener(loginTextWatcher);
-
+    checkBox_safeLogin.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
   }
 
   @Override
