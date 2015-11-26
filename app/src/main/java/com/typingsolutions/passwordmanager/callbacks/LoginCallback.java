@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
@@ -22,11 +23,11 @@ public class LoginCallback extends BaseCallback {
   @Override
   public void onClick(View v) {
     try {
-//            final SharedPreferences preferences = loginActivity.getPreferences(Context.MODE_PRIVATE);
-//            final boolean checked = preferences.getBoolean(LoginPasswordFragment.SAFELOGIN, false);
-//            user = UserProvider.getInstance(context).login(loginActivity.getLoginServiceRemote(), password, false);
+      final SharedPreferences preferences = loginActivity.getPreferences(Context.MODE_PRIVATE);
+      final boolean checked = preferences.getBoolean(LoginActivity.SAFELOGIN, false);
+
       DatabaseProvider provider = DatabaseProvider.getConnection(context);
-      if(!provider.tryOpen(password)) {
+      if (!provider.tryOpen(password)) {
         Snackbar.make(v, "Your password is wrong!", Snackbar.LENGTH_LONG).show();
         loginActivity.getLoginServiceRemote().increaseTries();
         return;

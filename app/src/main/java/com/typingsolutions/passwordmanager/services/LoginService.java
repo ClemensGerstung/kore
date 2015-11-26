@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.os.SystemClock;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
@@ -40,6 +41,25 @@ public class LoginService extends Service {
   private int currentLockTime;
   private int currentMaxLockTime;
 
+
+  private final Runnable blockRunnable = new Runnable() {
+    @Override
+    public void run() {
+      long lastTime = SystemClock.elapsedRealtime();
+      Intent intent = new Intent(INTENT_ACTION);
+
+      do {
+        long time = SystemClock.elapsedRealtime();
+        long diff = time - lastTime;
+
+        currentLockTime -= diff;
+        getApplicationContext().sendBroadcast(intent);
+
+        SystemClock.sleep(SLEEP_TIME);
+      } while (currentLockTime > 0);
+    }
+  };
+
   private final ILoginServiceRemote.Stub binder = new ILoginServiceRemote.Stub() {
     @Override
     public void increaseTries() throws RemoteException {
@@ -68,7 +88,7 @@ public class LoginService extends Service {
       }
 
       if (start) {
-
+        new Thread(blockRunnable).start();
       }
     }
 

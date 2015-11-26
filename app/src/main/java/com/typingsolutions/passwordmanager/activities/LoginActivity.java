@@ -27,10 +27,12 @@ import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceC
 import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
 import com.typingsolutions.passwordmanager.services.LoginService;
 import core.DatabaseProvider;
+import core.Utils;
 import ui.OutlinedImageView;
 
 public class LoginActivity extends AppCompatActivity {
-
+  
+  public static final String SAFELOGIN = "safelogin";
   private GetLockTimeServiceCallback serviceCallback = new GetLockTimeServiceCallback(this);
 
   private Toolbar toolbar;
@@ -203,6 +205,11 @@ public class LoginActivity extends AppCompatActivity {
           .show();
     }
     return false;
+  }
+
+  public boolean isPasswordSafe() {
+    String password = editText_setupPassword.getText().toString();
+    return Utils.isSafe(password);
   }
 
   public void retypePassword() {
