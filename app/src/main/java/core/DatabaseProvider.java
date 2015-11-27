@@ -14,38 +14,15 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   public static final int VERSION = 0x02;
 
   private static final String INSTALL_PASSWORDS =
-      "CREATE TABLE passwords(id INTEGER PRIMARY KEY, data TEXT);";
+      "CREATE TABLE passwords(id INTEGER PRIMARY KEY, username TEXT, program TEXT, position INT);";
   private static final String INSTALL_HISTORY =
-      "CREATE TABLE history(id INTEGER PRIMARY KEY, data TEXT);";
+      "CREATE TABLE history(id INTEGER PRIMARY KEY, password TEXT, changed DATE, passwordId INT, FOREIGN KEY(passwordId) REFERENCES passwords(id));";
 
-  @Deprecated
-  public static final String DOES_USER_EXISTS = "SELECT COUNT(*) = 1 FROM users WHERE name=?;";
+  public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(username, program, position) VALUES (@username, @program, @position);";
 
-  @Deprecated
-  public static final String GET_USER_ID = "SELECT id FROM users WHERE name=?;";
+  public static final String INSERT_NEW_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (@password, DATE('now'), @passwordId);";
 
-  @Deprecated
-  public static final String CREATE_USER = "INSERT INTO users(name, passwordHash, salt) VALUES (?,?,?);";
-
-  @Deprecated
-  public static final String GET_SALT_AND_PASSWORDHASH_BY_ID = "SELECT salt, passwordHash FROM users WHERE id=?;";
-
-  public static final String GET_PASSWORDIDS_FROM_USER = "SELECT passwords FROM users WHERE id = ?;";
-
-  public static final String GET_PASSWORD_BY_ID = "SELECT id, data FROM passwords WHERE id = ?;";
-
-  public static final String GET_HISTORYITEM_BY_ID = "SELECT data FROM history WHERE id = ?;";
-
-  public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(data) VALUES(?);";
-
-  public static final String INSERT_NEW_HISTORY_ITEM = "INSERT INTO history(data) VALUES(?);";
-
-  public static final String UPDATE_PASSWORDIDS_FOR_USER = "UPDATE users SET passwords=? WHERE id=?;";
-
-  public static final String UPDATE_PASSWORD_BY_ID = "UPDATE passwords SET data = ? WHERE id = ?;";
-
-  public static final String DELETE_PASSWORDHISTORY_BY_ID = "DELETE FROM history WHERE id = ?;";
-  public static final String DELETE_PASSWORD_BY_ID = "DELETE FROM passwords WHERE id = ?;";
+  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId;";
 
   private static DatabaseProvider INSTANCE;
 
@@ -133,8 +110,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   @Override
   public void onCreate(SQLiteDatabase db) {
-    db.execSQL(INSTALL_PASSWORDS);
-    db.execSQL(INSTALL_HISTORY);
+    db.execSQL(INSTALL_PASSWORDS + INSTALL_HISTORY);
+
   }
 
   @Override

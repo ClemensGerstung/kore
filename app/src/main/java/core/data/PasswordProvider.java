@@ -156,8 +156,8 @@ public class PasswordProvider {
 
   }
 
-  public void addPassword(String program, String username, String password) throws Exception {
-    DatabaseProvider provider = DatabaseProvider.getConnection(context);
+  public Password addPassword(String program, String username, String password) throws Exception {
+
 
         /*
         PasswordHistory history = PasswordHistory.createItem(password);
@@ -180,9 +180,10 @@ public class PasswordProvider {
 
         passwordObject.setId((int) id);
         addPassword(passwordObject);*/
+    return addPassword(null);
   }
 
-  public void addPassword(Password password) throws Exception {
+  public Password addPassword(Password password) throws Exception {
 
     if (!contains(password))
       add(password);
@@ -192,20 +193,10 @@ public class PasswordProvider {
         lastPasswordId = password.getId();
     }
 
-        /*
-        if (password.hasId() && !currentUser.hasPassword(password.getId())) {
-
-            currentUser.addPasswordById(password.getId());
-
-            String json = currentUser.getPasswordsAsJson();
-            String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
-
-            long effectedRows = DatabaseProvider.getConnection(context)
-                    .update(DatabaseProvider.UPDATE_PASSWORDIDS_FOR_USER, encryptedJson, Integer.toString(currentUser.getId()));
-        }*/
-
     if (passwordActionListener != null)
       passwordActionListener.onPasswordAdded(password);
+
+    return password;
   }
 
   public void editPassword(int id, String newPassword) throws Exception {
