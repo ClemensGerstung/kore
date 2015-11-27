@@ -249,7 +249,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     // TODO: check
     public void clear() {
         if(first == null)
-            throw new IllegalArgumentException("List is already cleared!");
+            throw new IllegalStateException("List is already cleared!");
 
         Element<K, V> element = first;
         Element<K, V> next = first.getNext();
