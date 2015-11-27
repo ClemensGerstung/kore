@@ -22,7 +22,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String INSERT_NEW_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (@password, DATE('now'), @passwordId);";
 
-  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId;";
+  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId;";
 
   private static DatabaseProvider INSTANCE;
 
@@ -42,17 +42,13 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     this.password = password;
   }
 
-  public static DatabaseProvider getConnection(Context context, String password) {
+  public static DatabaseProvider getConnection(Context context) {
     if (INSTANCE == null) {
       SQLiteDatabase.loadLibs(context);
-      INSTANCE = new DatabaseProvider(context, password);
+      INSTANCE = new DatabaseProvider(context, null);
     }
 
     return INSTANCE;
-  }
-
-  public static DatabaseProvider getConnection(Context context) {
-    return getConnection(context, null);
   }
 
   public boolean needSetup() {
