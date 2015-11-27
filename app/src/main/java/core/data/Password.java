@@ -1,5 +1,6 @@
 package core.data;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -40,7 +41,29 @@ public class Password {
     passwordHistory = null;
   }
 
- 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Password)) return false;
+
+    Password password = (Password) o;
+
+    if (id != password.id) return false;
+    if (position != password.position) return false;
+    if (!username.equals(password.username)) return false;
+    return program.equals(password.program);
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id;
+    result = 31 * result + position;
+    result = 31 * result + username.hashCode();
+    result = 31 * result + program.hashCode();
+    return result;
+  }
+
   public int getId() {
     return id;
   }
@@ -120,58 +143,28 @@ public class Password {
         '}';
   }
 
-
-  @Deprecated
-  void setFromJson(String data) throws IOException {
-    StringReader reader = new StringReader(data);
-    JsonReader jsonReader = new JsonReader(reader);
-
-    jsonReader.beginObject();
-    while (jsonReader.hasNext()) {
-      String jsonName = jsonReader.nextName();
-      switch (jsonName) {
-        case "username":
-          username = jsonReader.nextString();
-          break;
-        case "program":
-          program = jsonReader.nextString();
-          break;
-        case "history":
-          jsonReader.beginArray();
-          while (jsonReader.hasNext()) {
-            jsonReader.beginObject();
-            String idName = jsonReader.nextName();
-            if (!idName.equals("id")) continue;
-            passwordHistory.addLast(jsonReader.nextInt(), null);
-            jsonReader.endObject();
-          }
-          jsonReader.endArray();
-          break;
-        case "position":
-          position = jsonReader.nextInt();
-          break;
-        default:
-          jsonReader.nextString();
-          break;
-      }
-    }
-    jsonReader.close();
-
-    reader.close();
-    jsonReader.close();
-  }
-
-  @Deprecated
-  public static Password getFromJson(int id, String data) throws IOException {
-    Password password = new Password();
-    password.id = id;
-    password.setFromJson(data);
-    return password;
-  }
-
   public void swapPositionWith(Password password) {
     int tmp = position;
     position = password.getPosition();
-    password.setPosition(position);
+    password.setPosition(tmp);
+  }
+
+  public static Password getFromCursor(Cursor cursor) {
+    int id = cursor.getInt(0);
+    String username = cursor.getString(1);
+    String program = cursor.getString(2);
+    int position = cursor.getInt(3);
+    int historyId = cursor.getInt(4);
+
+    Password password = new Password(id, position, username, program);
+
+    PasswordHistory history = PasswordHistory.getFromCursor(cursor);
+    password.addPasswordHistoryItem(historyId, history);
+
+    return password;
+  }
+
+  public void merge(Password nextPassword) {
+
   }
 }
