@@ -13,16 +13,12 @@ public class PasswordProvider {
   private Context context;
   private List<Password> passwords;
   private Transactions transactions;
-  private int lastPasswordId;
-  private int lastPasswordHistoryId;
   private PasswordActionListener passwordActionListener;
 
-  PasswordProvider(Context context) {
+  private PasswordProvider(Context context) {
     this.context = context;
     this.passwords = new ArrayList<>();
     this.transactions = new Transactions();
-    this.lastPasswordId = -1;
-    this.lastPasswordHistoryId = -1;
   }
 
   public static PasswordProvider getInstance(Context context) {
@@ -187,11 +183,6 @@ public class PasswordProvider {
 
     if (!contains(password))
       add(password);
-
-    if (password.hasId()) {
-      if (lastPasswordId < password.getId())
-        lastPasswordId = password.getId();
-    }
 
     if (passwordActionListener != null)
       passwordActionListener.onPasswordAdded(password);
