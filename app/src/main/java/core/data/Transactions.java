@@ -38,7 +38,7 @@ public class Transactions {
                 builder.append(";");
         }
 
-        DatabaseProvider.getConnection(context, password).rawQuery(builder.toString());
+        DatabaseProvider.getConnection(context).rawQuery(builder.toString());
 
         return transactions.size();
     }

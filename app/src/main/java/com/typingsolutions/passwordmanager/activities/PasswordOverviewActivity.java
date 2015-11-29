@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
+import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
 import core.adapter.PasswordOverviewAdapter;
 import core.data.Password;
@@ -100,6 +101,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             return true;
         }
     };
+
     private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -186,7 +188,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //UserProvider.logout();
+                        PasswordProvider.logoutComplete();
+                        DatabaseProvider.logout();
 
                         Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
                         startActivity(intent);
@@ -196,7 +199,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
                     }
                 })
                 .create();
-
+        // TODO: set onKeyListener for alertdialog on back pressed
 //        TODO: on show save passwords in background
 //        alertDialog.setOnShowListener();
         alertDialog.show();
