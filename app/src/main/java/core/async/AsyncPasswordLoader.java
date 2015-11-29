@@ -42,7 +42,6 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
 
       PasswordProvider.getInstance(context).addPassword(password);
 
-
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }

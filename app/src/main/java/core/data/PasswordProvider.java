@@ -194,7 +194,7 @@ public class PasswordProvider {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
     PasswordHistory history = PasswordHistory.createItem(newPassword);
-    String json = history.getJson();
+    //String json = history.getJson();
         /*String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
 
         long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY_ITEM, encryptedJson);
