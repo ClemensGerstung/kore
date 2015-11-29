@@ -64,9 +64,9 @@ public class PasswordProvider {
     return passwords.contains(p);
   }
 
-  void logoutComplete() {
-    simpleLogout();
-    context = null;
+  public static void logoutComplete() {
+    Instance.simpleLogout();
+    Instance.context = null;
   }
 
   void simpleLogout() {

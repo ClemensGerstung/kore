@@ -96,11 +96,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return this;
   }
 
-  Cursor getLastCursor() {
-    return lastCursor;
-  }
-
-  public static void dismiss() {
+  public static void logout() {
+    INSTANCE.password = null;
+    INSTANCE.lastCursor = null;
+    INSTANCE.context = null;
     INSTANCE.close();
   }
 
