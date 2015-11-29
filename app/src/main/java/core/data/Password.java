@@ -165,6 +165,8 @@ public class Password {
   }
 
   public void merge(Password nextPassword) {
-
+    passwordHistory.addAll(nextPassword.passwordHistory,
+        Dictionary.InsertOption.After,
+        Dictionary.IterationOption.Forwards);
   }
 }

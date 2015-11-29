@@ -8,6 +8,7 @@ import core.Utils;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.ParseException;
 import java.util.Date;
 
 public class PasswordHistory {
@@ -50,22 +51,6 @@ public class PasswordHistory {
     return result;
   }
 
-  public String getJson() throws IOException {
-    StringWriter writer = new StringWriter();
-    JsonWriter jsonWriter = new JsonWriter(writer);
-
-    jsonWriter.beginObject();
-    jsonWriter.name("value").value(value);
-    jsonWriter.name("dateChanged").value(Utils.getDateAsSimpleString(changedDate));
-    jsonWriter.name("salt").value(Utils.getSalt());
-    jsonWriter.endObject();
-
-    String result = writer.toString();
-    writer.close();
-    jsonWriter.close();
-    return result;
-  }
-
   public static PasswordHistory createItem(String value) {
     PasswordHistory history = new PasswordHistory();
     history.value = value;
@@ -74,6 +59,12 @@ public class PasswordHistory {
   }
 
   public static PasswordHistory getFromCursor(Cursor cursor) {
-    return null;
+    try {
+      String value = cursor.getString(5);
+      Date changed = Utils.getDateFromString(cursor.getString(6));
+      return new PasswordHistory(value, changed);
+    } catch (ParseException e) {
+      return null;
+    }
   }
 }
