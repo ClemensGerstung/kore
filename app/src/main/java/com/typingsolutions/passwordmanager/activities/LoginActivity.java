@@ -144,7 +144,8 @@ public class LoginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     databaseProvider = DatabaseProvider.getConnection(this);
-    if (databaseProvider.needSetup()) {
+    boolean needSetup = databaseProvider.needSetup();
+    if (needSetup) {
       setContentView(R.layout.setup_layout);
 
       toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
