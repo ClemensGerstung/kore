@@ -1,9 +1,10 @@
 package core;
 
 import android.content.Context;
-import android.database.Cursor;
+import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
+import net.sqlcipher.database.SQLiteStatement;
 
 import java.io.File;
 
@@ -74,7 +75,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     try {
       SQLiteDatabase database = getReadableDatabase(password);
       boolean result = database != null;
-      if(result)
+      if (result)
         this.password = password;
       return result;
     } catch (Exception e) {
@@ -94,6 +95,51 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     SQLiteDatabase db = getWritableDatabase(password);
     db.execSQL(query);
     return this;
+  }
+
+  public long insert(String query, String... args) {
+    SQLiteDatabase db = getWritableDatabase(password);
+
+    db.beginTransaction();
+    long id = -1;
+    try {
+      SQLiteStatement compiled = db.compileStatement(query);
+      for (int i = 0; i < args.length; i++) {
+        compiled.bindString(i, args[i]);
+      }
+      id = compiled.executeInsert();
+
+      db.setTransactionSuccessful();
+    } finally {
+      db.endTransaction();
+    }
+
+    return id;
+  }
+
+  public long update(String query, String... args) {
+    SQLiteDatabase db = getWritableDatabase(password);
+
+    db.beginTransaction();
+    long affectedRows = -1;
+    try {
+      net.sqlcipher.database.SQLiteStatement compiled = db.compileStatement(query);
+      for (int i = 0; i < args.length; i++) {
+        compiled.bindString(i, args[i]);
+      }
+      affectedRows = (long) compiled.executeUpdateDelete();
+
+      db.setTransactionSuccessful();
+    } finally {
+      db.endTransaction();
+    }
+
+    return affectedRows;
+  }
+
+
+  public long remove(String query, String... args) {
+    return update(query, args);
   }
 
   public static void logout() {
