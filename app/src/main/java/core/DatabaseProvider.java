@@ -106,7 +106,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   @Override
   public void onCreate(SQLiteDatabase db) {
-    db.execSQL(INSTALL_PASSWORDS + INSTALL_HISTORY);
+    db.execSQL(INSTALL_PASSWORDS);
+    db.execSQL(INSTALL_HISTORY);
 
   }
 
