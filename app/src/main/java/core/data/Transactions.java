@@ -8,47 +8,63 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Transactions {
-    private List<Transaction> transactions;
+  private List<Transaction> transactions;
+  private int passwordId = -1;
+  private int historyId = -1;
 
-    public Transactions() {
-        transactions = new ArrayList<>();
+  public Transactions() {
+    transactions = new ArrayList<>();
+  }
+
+  public Transaction addTransaction(String query, Dictionary.Element... params) {
+    Dictionary<String, String> dic = new Dictionary<>();
+    for (Dictionary.Element elem : params) {
+      dic.addLast((String) elem.getKey(), (String) elem.getValue());
     }
 
-    public Transaction addTransaction(String query, Dictionary.Element... params) {
-        Dictionary<String, String> dic = new Dictionary<>();
-        for (Dictionary.Element elem : params) {
-            dic.addLast((String) elem.getKey(), (String) elem.getValue());
-        }
+    Transaction transaction = new Transaction(query, dic);
+    transactions.add(transaction);
 
-        Transaction transaction = new Transaction(query, dic);
-        transactions.add(transaction);
+    return transaction;
+  }
 
-        return transaction;
+  public int commitAllTransactions(Context context, String password) {
+
+    for (Transaction trans : transactions) {
+      String query = trans.getTranslatedQuery();
+
+      DatabaseProvider.getConnection(context).rawQuery(query);
     }
 
-    public int commitAllTransactions(Context context, String password) {
-        StringBuilder builder = new StringBuilder();
+    return transactions.size();
+  }
 
-        for (Transaction trans : transactions) {
-            String query = trans.getTranslatedQuery();
+  public Transaction redoLastTransaction() {
+    return transactions.remove(transactions.size() - 1);
+  }
 
-            builder.append(query);
+  public void logout() {
+    transactions.clear();
+    transactions = null;
+  }
 
-            if (!query.endsWith(";"))
-                builder.append(";");
-        }
+  public void setIdsFromPassword(Password password) {
+    if (password.getId() > passwordId)
+      passwordId = password.getId();
 
-        DatabaseProvider.getConnection(context, password).rawQuery(builder.toString());
-
-        return transactions.size();
+    for (Integer i : password.getPasswordIds()) {
+      if (i > historyId)
+        historyId = i;
     }
+  }
 
-    public Transaction redoLastTransaction() {
-        return transactions.remove(transactions.size() - 1);
-    }
+  public int getNewPasswordId() {
+    passwordId += 1;
+    return passwordId;
+  }
 
-    public void logout() {
-        transactions.clear();
-        transactions = null;
-    }
+  public int getNewHistoryId() {
+    historyId += 1;
+    return historyId;
+  }
 }

@@ -205,10 +205,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.password_list_menu, menu);
+        inflater.inflate(R.menu.passwordoverviewlayout_menu, menu);
 
         // init searchview
-        searchItem = menu.findItem(R.id.passwordlistmenu_item_search);
+        searchItem = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(onQueryTextListener);
         MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
@@ -221,7 +221,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.passwordlistmenu_item_order:
+            case R.id.passwordoverviewlayout_menuitem_order:
                 String[] orderOptions = getResources().getStringArray(R.array.order_options);
 
                 AlertDialog alertDialog = new AlertDialog.Builder(this)
@@ -231,7 +231,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
                 alertDialog.show();
                 break;
-            case R.id.passwordlistmenu_item_logout:
+            case R.id.passwordoverviewlayout_menuitem_logout:
                 onBackPressed();
                 break;
         }

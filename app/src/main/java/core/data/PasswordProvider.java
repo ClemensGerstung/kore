@@ -181,8 +181,10 @@ public class PasswordProvider {
 
   public Password addPassword(Password password) throws Exception {
 
-    if (!contains(password))
+    if (!contains(password)) {
       add(password);
+      transactions.setIdsFromPassword(password);
+    }
 
     if (passwordActionListener != null)
       passwordActionListener.onPasswordAdded(password);
