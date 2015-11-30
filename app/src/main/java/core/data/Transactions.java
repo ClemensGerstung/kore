@@ -22,7 +22,7 @@ public class Transactions {
       dic.addLast((String) elem.getKey(), (String) elem.getValue());
     }
 
-    Transaction transaction = new Transaction(query, dic);
+    Transaction transaction = null;
     transactions.add(transaction);
 
     return transaction;
@@ -31,9 +31,7 @@ public class Transactions {
   public int commitAllTransactions(Context context, String password) {
 
     for (Transaction trans : transactions) {
-      String query = trans.getTranslatedQuery();
 
-      DatabaseProvider.getConnection(context).rawQuery(query);
     }
 
     return transactions.size();
