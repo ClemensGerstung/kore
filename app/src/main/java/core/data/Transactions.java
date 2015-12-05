@@ -16,12 +16,7 @@ public class Transactions {
     transactions = new ArrayList<>();
   }
 
-  public Transaction addTransaction(String query, Dictionary.Element... params) {
-    Dictionary<String, String> dic = new Dictionary<>();
-    for (Dictionary.Element elem : params) {
-      dic.addLast((String) elem.getKey(), (String) elem.getValue());
-    }
-
+  public Transaction addTransaction(String query, String... params) {
     Transaction transaction = null;
     transactions.add(transaction);
 
