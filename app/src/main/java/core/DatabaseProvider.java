@@ -123,7 +123,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     db.beginTransaction();
     long affectedRows = -1;
     try {
-      net.sqlcipher.database.SQLiteStatement compiled = db.compileStatement(query);
+      SQLiteStatement compiled = db.compileStatement(query);
       for (int i = 0; i < args.length; i++) {
         compiled.bindString(i, args[i]);
       }
