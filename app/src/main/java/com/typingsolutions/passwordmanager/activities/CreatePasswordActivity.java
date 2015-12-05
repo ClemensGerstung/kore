@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
+import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
@@ -88,7 +89,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         String password = this.password.getText().toString();
 
         try {
-            //UserProvider.getInstance(this).addPassword(program, username, password);
+            PasswordProvider.getInstance(this).addPassword(program, username, password);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
         } finally {

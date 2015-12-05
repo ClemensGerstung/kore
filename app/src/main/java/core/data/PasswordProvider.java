@@ -27,6 +27,10 @@ public class PasswordProvider {
     return Instance;
   }
 
+  public Transactions getTransactions() {
+    return transactions;
+  }
+
   public void set(Password password) {
     int index = passwords.indexOf(password);
     passwords.set(index, password);
@@ -67,10 +71,6 @@ public class PasswordProvider {
       p.logout();
     }
     passwords.clear();
-  }
-
-  List<Password> getPasswords() {
-    return passwords;
   }
 
   public void order(int which) {
@@ -151,8 +151,10 @@ public class PasswordProvider {
 
     int position = passwords.size() + 1;
     Password passwordObject = new Password(id, position, username, program);
-    passwordObject.addPasswordHistoryItem(id, PasswordHistory.createItem(password));
+    passwordObject.addPasswordHistoryItem(historyId, PasswordHistory.createItem(password));
 
+    transactions.addTransaction(DatabaseProvider.INSERT_NEW_PASSWORD, username, program, id);
+    transactions.addTransaction(DatabaseProvider.INSERT_NEW_HISTORY, password, id);
 
     return addPassword(passwordObject);
   }
