@@ -145,7 +145,6 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   public static void logout() {
     INSTANCE.password = null;
     INSTANCE.lastCursor = null;
-    INSTANCE.context = null;
     INSTANCE.close();
   }
 

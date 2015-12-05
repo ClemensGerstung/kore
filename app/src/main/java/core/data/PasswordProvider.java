@@ -27,13 +27,6 @@ public class PasswordProvider {
     return Instance;
   }
 
-  public void add(Password password) {
-    if (password.getPosition() == Integer.MIN_VALUE)
-      password.setPosition(passwords.size() + 1);
-
-    passwords.add(password);
-  }
-
   public void set(Password password) {
     int index = passwords.indexOf(password);
     passwords.set(index, password);
@@ -153,36 +146,21 @@ public class PasswordProvider {
   }
 
   public Password addPassword(String program, String username, String password) throws Exception {
+    int id = transactions.getNewPasswordId();
+    int historyId = transactions.getNewHistoryId();
+
+    int position = passwords.size() + 1;
+    Password passwordObject = new Password(id, position, username, program);
+    passwordObject.addPasswordHistoryItem(id, PasswordHistory.createItem(password));
 
 
-        /*
-        PasswordHistory history = PasswordHistory.createItem(password);
-        String json = history.getJson();
-        String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
-
-        long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY_ITEM, encryptedJson);
-
-        if (historyId == -1)
-            throw new UserProviderException("Couldn't insert your password history item!");
-
-        Password passwordObject = Password.createSimplePassword(program, username);
-        passwordObject.setPasswordHistoryItem((int) historyId, history);
-        json = passwordObject.getJson();
-        encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
-        long id = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, encryptedJson);
-
-        if (id == -1)
-            throw new UserProviderException("Couldn't insert your password!");
-
-        passwordObject.setId((int) id);
-        addPassword(passwordObject);*/
-    return addPassword(null);
+    return addPassword(passwordObject);
   }
 
   public Password addPassword(Password password) throws Exception {
 
     if (!contains(password)) {
-      add(password);
+      passwords.add(password);
       transactions.setIdsFromPassword(password);
     }
 
