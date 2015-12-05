@@ -1,12 +1,15 @@
 package core;
 
 import android.content.Context;
+import android.util.Log;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 import net.sqlcipher.database.SQLiteStatement;
 
 import java.io.File;
+import java.io.StreamCorruptedException;
+import java.io.StringReader;
 
 public class DatabaseProvider extends SQLiteOpenHelper {
 
@@ -19,9 +22,9 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   private static final String INSTALL_HISTORY =
       "CREATE TABLE history(id INTEGER PRIMARY KEY, password TEXT, changed DATE, passwordId INT, FOREIGN KEY(passwordId) REFERENCES passwords(id));";
 
-  public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(username, program, position) VALUES (@username, @program, @position);";
+  public static final String INSERT_NEW_PASSWORD = "INSERT INTO passwords(username, program, position) VALUES (?, ?, ?);";
 
-  public static final String INSERT_NEW_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (@password, DATE('now'), @passwordId);";
+  public static final String INSERT_NEW_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (?, DATE('now'), ?);";
 
   public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId;";
 
@@ -97,7 +100,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return this;
   }
 
-  public long insert(String query, String... args) {
+  public long insert(String query, Object... args) {
     SQLiteDatabase db = getWritableDatabase(password);
 
     db.beginTransaction();
@@ -105,11 +108,18 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     try {
       SQLiteStatement compiled = db.compileStatement(query);
       for (int i = 0; i < args.length; i++) {
-        compiled.bindString(i, args[i]);
+        Object argument = args[i];
+        if (argument instanceof Long) {
+          compiled.bindLong(i, (Long) argument);
+        } else if (argument instanceof String) {
+          compiled.bindString(i, (String) argument);
+        }
       }
       id = compiled.executeInsert();
 
       db.setTransactionSuccessful();
+    } catch (Exception e) {
+      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     } finally {
       db.endTransaction();
     }

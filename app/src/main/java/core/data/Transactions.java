@@ -16,17 +16,23 @@ public class Transactions {
     transactions = new ArrayList<>();
   }
 
-  public Transaction addTransaction(String query, String... params) {
-    Transaction transaction = null;
+  public Transaction addTransaction(String query, Object... params) {
+    Transaction transaction = new Transaction(Transaction.Mode.Add, query, params);
     transactions.add(transaction);
 
     return transaction;
   }
 
-  public int commitAllTransactions(Context context, String password) {
+
+  public int commitAllTransactions(Context context) {
+    DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
     for (Transaction trans : transactions) {
-
+      switch (trans.getMode()) {
+        case Add:
+          provider.insert(trans.getQuery(), trans.getArgs());
+          break;
+      }
     }
 
     return transactions.size();

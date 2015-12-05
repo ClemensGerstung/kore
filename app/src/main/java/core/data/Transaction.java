@@ -2,10 +2,10 @@ package core.data;
 
 public class Transaction {
   private String query;
-  private String[] args;
+  private Object[] args;
   private Mode mode;
 
-  public Transaction(Mode mode, String query, String... args) {
+  public Transaction(Mode mode, String query, Object... args) {
     this.mode = mode;
     this.query = query;
     this.args = args;
@@ -15,7 +15,7 @@ public class Transaction {
     return query;
   }
 
-  public String[] getArgs() {
+  public Object[] getArgs() {
     return args;
   }
 
