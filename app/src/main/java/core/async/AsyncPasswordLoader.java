@@ -36,8 +36,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
           password.merge(nextPassword);
         } else {
           PasswordProvider.getInstance(context).addPassword(password);
-          if (cursor.moveToNext())
-            password = Password.getFromCursor(cursor);
+          password = nextPassword;
         }
       }
 

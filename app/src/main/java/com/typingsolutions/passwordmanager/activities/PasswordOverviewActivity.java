@@ -128,6 +128,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
 
+    // set action listener for passwordprovider
+    PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
+
     // get elements from XML-View
     passwordRecyclerView = (RecyclerView) findViewById(R.id.passwordlistlayout_listview_passwords);
     toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
