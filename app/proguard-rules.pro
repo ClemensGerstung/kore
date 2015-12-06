@@ -89,6 +89,10 @@ public void updateFields(com.elsinga.sample.proguard.SensorData);
 
 }
 
+# SQLCipher
+
+-keep class net.sqlcipher.** {*;}
+
 # Remove Logging
 -assumenosideeffects class android.util.Log {
     public static *** e(...);
