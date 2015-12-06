@@ -19,7 +19,6 @@ import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
 import core.adapter.PasswordOverviewAdapter;
-import core.async.AsyncPasswordWriter;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -188,13 +187,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         })
         .create();
     // TODO: set onKeyListener for alertdialog on back pressed
-    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-      @Override
-      public void onShow(DialogInterface dialog) {
-        AsyncPasswordWriter writer = new AsyncPasswordWriter(PasswordOverviewActivity.this);
-        writer.execute();
-      }
-    });
     alertDialog.show();
   }
 

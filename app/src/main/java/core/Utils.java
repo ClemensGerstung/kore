@@ -69,19 +69,9 @@ public class Utils {
         return password.matches(REGEX_PASSWORD_SAFETY);
     }
 
-    public static String getCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    public static String getDateAsSimpleString(Date date) {
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault());
-        return dateFormat.format(date);
-    }
-
     public static Date getDateFromString(String date) throws ParseException {
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault());
-        return dateFormat.parse(date);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date dateObj = dateFormat.parse(date);
+        return dateObj;
     }
 }

@@ -26,7 +26,8 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     try {
       Cursor cursor = provider.query(DatabaseProvider.GET_PASSWORDS);
 
-      if (!cursor.moveToNext()) return null;
+      if (!cursor.moveToNext())
+        return null;
       Password password = Password.getFromCursor(cursor);
 
       while (cursor.moveToNext()) {
@@ -42,6 +43,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
 
       PasswordProvider.getInstance(context).addPassword(password);
       cursor.close();
+      provider.getLastCursor().close();
 
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
