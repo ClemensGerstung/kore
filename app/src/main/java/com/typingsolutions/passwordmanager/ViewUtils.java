@@ -9,53 +9,65 @@ import android.view.animation.DecelerateInterpolator;
 
 public final class ViewUtils {
 
-    public static final long FAST_ANIMATION_DURATION = 250;
+  public static final long FAST_ANIMATION_DURATION = 250;
 
-    public static synchronized void show(final Context context, final View view, @AnimRes int animation) {
-        boolean hiding = (boolean) view.getTag(R.string.hidden);
-        if (hiding || view.getVisibility() != View.VISIBLE) {
-            view.clearAnimation();
-            view.setVisibility(View.VISIBLE);
-            Animation anim = android.view.animation.AnimationUtils.loadAnimation(context, animation);
-            anim.setDuration(FAST_ANIMATION_DURATION);
-            anim.setInterpolator(new DecelerateInterpolator());
-
-            view.startAnimation(anim);
-        }
+  public static synchronized void show(final Context context, final View view, @AnimRes int animation) {
+    boolean hiding = true;
+    try {
+      hiding = (boolean) view.getTag(R.string.hidden);
+    } catch (Exception e) {
+      view.setTag(R.string.hidden, false);
     }
 
-    public static synchronized void hide(final Context context, final View view, @AnimRes int animation) {
-        boolean hiding = (boolean) view.getTag(R.string.hidden);
-        if (hiding || view.getVisibility() != View.VISIBLE) return;
+    if (hiding || view.getVisibility() != View.VISIBLE) {
+      view.clearAnimation();
+      view.setVisibility(View.VISIBLE);
+      Animation anim = android.view.animation.AnimationUtils.loadAnimation(context, animation);
+      anim.setDuration(FAST_ANIMATION_DURATION);
+      anim.setInterpolator(new DecelerateInterpolator());
 
-        Animation anim = android.view.animation.AnimationUtils.loadAnimation(context, animation);
-        anim.setInterpolator(new AccelerateInterpolator());
-        anim.setDuration(FAST_ANIMATION_DURATION);
-        anim.setAnimationListener(new LocalAnimationListener(view));
-        view.startAnimation(anim);
+      view.startAnimation(anim);
+    }
+  }
+
+  public static synchronized void hide(final Context context, final View view, @AnimRes int animation) {
+    boolean hiding = true;
+    try {
+      hiding = (boolean) view.getTag(R.string.hidden);
+    } catch (Exception e) {
+      view.setTag(R.string.hidden, false);
     }
 
-    private static class LocalAnimationListener implements Animation.AnimationListener {
+    if (hiding || view.getVisibility() != View.VISIBLE) return;
 
-        private View view;
+    Animation anim = android.view.animation.AnimationUtils.loadAnimation(context, animation);
+    anim.setInterpolator(new AccelerateInterpolator());
+    anim.setDuration(FAST_ANIMATION_DURATION);
+    anim.setAnimationListener(new LocalAnimationListener(view));
+    view.startAnimation(anim);
+  }
 
-        public LocalAnimationListener(View view) {
-            this.view = view;
-        }
+  private static class LocalAnimationListener implements Animation.AnimationListener {
 
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
+    private View view;
 
-        @Override
-        public void onAnimationStart(Animation animation) {
-            view.setTag(R.string.hidden, true);
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            view.setTag(R.string.hidden, false);
-            view.setVisibility(View.GONE);
-        }
+    public LocalAnimationListener(View view) {
+      this.view = view;
     }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+      view.setTag(R.string.hidden, true);
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+      view.setTag(R.string.hidden, false);
+      view.setVisibility(View.GONE);
+    }
+  }
 }

@@ -21,9 +21,11 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.ViewUtils;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.RetypePasswordCallback;
@@ -48,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
   private CheckBox checkBox_safeLogin;
   private OutlinedImageView outlinedImageView_background;
   private CoordinatorLayout coordinatorLayout_root;
+  private ProgressBar progressBar_waiter;
 
   private ILoginServiceRemote loginServiceRemote;
   private LoginReceiver loginReceiver;
@@ -90,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
       boolean hasPassword = editText_setupPassword.getText().length() > 0;
       boolean hasRepeated = editText_setupRepeated.getText().length() > 0;
 
-      if(hasPassword & hasRepeated) floatingActionButton_login.show();
+      if (hasPassword & hasRepeated) floatingActionButton_login.show();
       else floatingActionButton_login.hide();
     }
 
@@ -108,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-      if(s.length() == 0) {
+      if (s.length() == 0) {
         floatingActionButton_login.hide();
         loginCallback.setValues("", checkBox_safeLogin.isChecked());
       } else {
@@ -178,6 +181,7 @@ public class LoginActivity extends AppCompatActivity {
     checkBox_safeLogin = (CheckBox) findViewById(R.id.loginlayout_checkbox_safelogin);
     outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
     coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.loginlayout_coordinatorlayout_root);
+    progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
 
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
@@ -253,6 +257,24 @@ public class LoginActivity extends AppCompatActivity {
 
   public View getRootView() {
     return coordinatorLayout_root;
+  }
+
+  public synchronized void showWaiter() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        ViewUtils.show(LoginActivity.this, progressBar_waiter, android.R.anim.fade_in);
+      }
+    });
+  }
+
+  public synchronized void hideWaiter() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        ViewUtils.hide(LoginActivity.this, progressBar_waiter, android.R.anim.fade_out);
+      }
+    });
   }
 
   private boolean isServiceRunning(Class<?> serviceClass) {

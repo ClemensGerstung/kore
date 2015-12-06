@@ -21,6 +21,7 @@ public class LoginCallback extends BaseCallback {
   private final DatabaseProvider.OnOpenListener openListener = new DatabaseProvider.OnOpenListener() {
     @Override
     public void open() {
+      loginActivity.hideWaiter();
       Intent intent = new Intent(context, PasswordOverviewActivity.class);
       intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
       context.startActivity(intent);
@@ -30,6 +31,7 @@ public class LoginCallback extends BaseCallback {
     @Override
     public void refused() {
       try {
+        loginActivity.hideWaiter();
         Snackbar.make(loginActivity.getRootView(), "Your password is wrong!", Snackbar.LENGTH_LONG).show();
         loginActivity.getLoginServiceRemote().increaseTries();
       } catch (RemoteException e) {
@@ -50,8 +52,8 @@ public class LoginCallback extends BaseCallback {
       if (loginActivity.getLoginServiceRemote().isUserBlocked())
         throw new LoginException("Sorry, you're blocked", LoginException.BLOCKED);
 
+      loginActivity.showWaiter();
       DatabaseProvider provider = DatabaseProvider.getConnection(context);
-      AppCompatSpinner spinner = new AppCompatSpinner(context);
       provider.tryOpen(password, openListener);
 
     } catch (Exception e) {
