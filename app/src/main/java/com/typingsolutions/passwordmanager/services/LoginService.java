@@ -51,6 +51,7 @@ public class LoginService extends Service {
       do {
         long time = SystemClock.elapsedRealtime();
         long diff = time - lastTime;
+        lastTime = time;
 
         currentLockTime -= diff;
         getApplicationContext().sendBroadcast(intent);

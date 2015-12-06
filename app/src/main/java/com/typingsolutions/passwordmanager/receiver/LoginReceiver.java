@@ -16,16 +16,13 @@ public class LoginReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        /*int id = UserProvider.getInstance(loginActivity).getId();
-
         try {
-            loginActivity.getLoginServiceRemote().getBlockedTimeAsync(id);
+            loginActivity.getLoginServiceRemote().getBlockedTimeAsync();
 
 //            boolean blocked = loginActivity.getLoginServiceRemote().isUserBlocked(id);
 //            if(!blocked) return;
         } catch (RemoteException e) {
             Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-        }*/
+        }
     }
 }
