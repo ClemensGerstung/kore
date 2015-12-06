@@ -3,6 +3,7 @@ package core.data;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import core.DatabaseProvider;
+import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
 
 import java.util.*;
@@ -12,23 +13,17 @@ public class PasswordProvider {
 
   private Context context;
   private List<Password> passwords;
-  private Transactions transactions;
   private PasswordActionListener passwordActionListener;
 
   private PasswordProvider(Context context) {
     this.context = context;
     this.passwords = new ArrayList<>();
-    this.transactions = new Transactions();
   }
 
   public static PasswordProvider getInstance(Context context) {
     if (Instance == null)
       Instance = new PasswordProvider(context);
     return Instance;
-  }
-
-  public Transactions getTransactions() {
-    return transactions;
   }
 
   public void set(Password password) {
@@ -146,25 +141,27 @@ public class PasswordProvider {
   }
 
   public Password addPassword(String program, String username, String password) throws Exception {
-    int id = transactions.getNewPasswordId();
-    int historyId = transactions.getNewHistoryId();
-
     int position = passwords.size() + 1;
-    Password passwordObject = new Password(id, position, username, program);
-    passwordObject.addPasswordHistoryItem(historyId, PasswordHistory.createItem(password));
 
-    transactions.addTransaction(DatabaseProvider.INSERT_NEW_PASSWORD, username, program, id);
-    transactions.addTransaction(DatabaseProvider.INSERT_NEW_HISTORY, password, id);
+    DatabaseProvider provider = DatabaseProvider.getConnection(context);
+    long passwordId = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, username, program, position);
+    if (passwordId < 0)
+      throw new PasswordProviderException("Couldn't insert your password");
+
+    long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY, password, passwordId);
+    if (historyId < 0)
+      throw new PasswordProviderException("Couldn't insert your password!");
+
+    Password passwordObject = new Password((int) passwordId, position, username, program);
+    passwordObject.addPasswordHistoryItem((int) historyId, PasswordHistory.createItem(password));
 
     return addPassword(passwordObject);
   }
 
   public Password addPassword(Password password) throws Exception {
 
-    if (!contains(password)) {
+    if (!passwords.contains(password))
       passwords.add(password);
-      transactions.setIdsFromPassword(password);
-    }
 
     if (passwordActionListener != null)
       passwordActionListener.onPasswordAdded(password);

@@ -110,9 +110,11 @@ public class DatabaseProvider extends SQLiteOpenHelper {
       for (int i = 0; i < args.length; i++) {
         Object argument = args[i];
         if (argument instanceof Long) {
-          compiled.bindLong(i, (Long) argument);
+          compiled.bindLong(i + 1, (Long) argument);
         } else if (argument instanceof String) {
-          compiled.bindString(i, (String) argument);
+          compiled.bindString(i + 1, (String) argument);
+        } else if (argument instanceof Integer) {
+          compiled.bindLong(i + 1, Long.valueOf((Integer) argument));
         }
       }
       id = compiled.executeInsert();
@@ -154,15 +156,19 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static void logout() {
     INSTANCE.password = null;
+    INSTANCE.lastCursor.close();
     INSTANCE.lastCursor = null;
     INSTANCE.close();
+  }
+
+  public Cursor getLastCursor() {
+    return lastCursor;
   }
 
   @Override
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(INSTALL_PASSWORDS);
     db.execSQL(INSTALL_HISTORY);
-
   }
 
   @Override

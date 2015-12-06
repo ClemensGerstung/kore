@@ -61,7 +61,8 @@ public class PasswordHistory {
   public static PasswordHistory getFromCursor(Cursor cursor) {
     try {
       String value = cursor.getString(5);
-      Date changed = Utils.getDateFromString(cursor.getString(6));
+      String dateString = cursor.getString(6);
+      Date changed = Utils.getDateFromString(dateString);
       return new PasswordHistory(value, changed);
     } catch (ParseException e) {
       return null;
