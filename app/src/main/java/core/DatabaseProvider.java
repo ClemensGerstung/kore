@@ -74,16 +74,27 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return isOpen;
   }
 
-  public boolean tryOpen(String password) {
-    try {
-      SQLiteDatabase database = getReadableDatabase(password);
-      boolean result = database != null;
-      if (result)
-        this.password = password;
-      return result;
-    } catch (Exception e) {
-      return false;
-    }
+  public void tryOpen(String password, final OnOpenListener onOpenListener) {
+
+    final String userProvidedPassword = password;
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          SQLiteDatabase database = getReadableDatabase(userProvidedPassword);
+          boolean result = database != null;
+          if (result) {
+            DatabaseProvider.this.password = userProvidedPassword;
+            onOpenListener.open();
+          } else {
+            onOpenListener.refused();
+          }
+        } catch (Exception e) {
+          onOpenListener.refused();
+        }
+      }
+    });
+    thread.start();
   }
 
   public Cursor query(String query, String... args) {
@@ -178,5 +189,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public interface OnSetupListener {
     String onSetup();
+  }
+
+  public interface OnOpenListener {
+    void open();
+    void refused();
   }
 }

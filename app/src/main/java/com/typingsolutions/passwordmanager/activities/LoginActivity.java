@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -176,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
     editText_password = (EditText) findViewById(R.id.loginlayout_edittext_password);
     checkBox_safeLogin = (CheckBox) findViewById(R.id.loginlayout_checkbox_safelogin);
     outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
+    coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.loginlayout_coordinatorlayout_root);
 
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
@@ -243,6 +245,14 @@ public class LoginActivity extends AppCompatActivity {
 
   public ILoginServiceRemote getLoginServiceRemote() {
     return loginServiceRemote;
+  }
+
+  public OutlinedImageView getBackground() {
+    return outlinedImageView_background;
+  }
+
+  public View getRootView() {
+    return coordinatorLayout_root;
   }
 
   private boolean isServiceRunning(Class<?> serviceClass) {
