@@ -242,9 +242,19 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   public void retypePassword() {
-    editText_setupPassword.setText("");
-    editText_setupRepeated.setText("");
-    editText_setupPassword.requestFocus();
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        if (editText_setupPassword != null) {
+          editText_setupPassword.setText("");
+          editText_setupPassword.requestFocus();
+        }
+        if (editText_setupRepeated != null)
+          editText_setupRepeated.setText("");
+        if (editText_password != null)
+          editText_password.setText("");
+      }
+    });
   }
 
   public ILoginServiceRemote getLoginServiceRemote() {
@@ -273,6 +283,26 @@ public class LoginActivity extends AppCompatActivity {
       @Override
       public void run() {
         ViewUtils.hide(LoginActivity.this, progressBar_waiter, android.R.anim.fade_out);
+      }
+    });
+  }
+
+  public void showInput() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        editText_password.show();
+        ViewUtils.show(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_show);
+      }
+    });
+  }
+
+  public void hideInput() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        editText_password.hide();
+        ViewUtils.hide(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_hide);
       }
     });
   }
