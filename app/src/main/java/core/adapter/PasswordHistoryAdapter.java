@@ -17,51 +17,51 @@ import java.util.Locale;
 
 public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistoryAdapter.ViewHolder> {
 
-    private Context context;
-    private LayoutInflater inflater;
-    private int passwordId;
+  private Context context;
+  private LayoutInflater inflater;
+  private int passwordId;
 
-    public PasswordHistoryAdapter(Context context, int passwordIndex) {
-        super();
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
-        this.passwordId = passwordIndex;
+  public PasswordHistoryAdapter(Context context, int passwordIndex) {
+    super();
+    this.context = context;
+    this.inflater = LayoutInflater.from(context);
+    this.passwordId = passwordIndex;
+  }
+
+  @Override
+  public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    View view = inflater.inflate(R.layout.password_history_item_layout, viewGroup, false);
+
+    return new ViewHolder(view);
+  }
+
+  @Override
+  public void onBindViewHolder(ViewHolder holder, int position) {
+    Password password = PasswordProvider.getInstance(context).getById(passwordId);
+    PasswordHistory history = password.getItemAt(position + 1);
+
+    DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
+    String date = dateFormat.format(history.getChangedDate());
+
+    holder.password.setText(history.getValue());
+    holder.date.setText(date);
+  }
+
+  @Override
+  public int getItemCount() {
+    Password password = PasswordProvider.getInstance(context).getById(passwordId);
+    return password.getHistoryCount() - 1;
+  }
+
+
+  public class ViewHolder extends RecyclerView.ViewHolder {
+    final TextView password;
+    final TextView date;
+
+    public ViewHolder(View itemView) {
+      super(itemView);
+      password = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_password);
+      date = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_date);
     }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = inflater.inflate(R.layout.password_history_item_layout, viewGroup, false);
-
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Password password = PasswordProvider.getInstance(context).getById(passwordId);
-        PasswordHistory history = password.getItemAt(position + 1);
-
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
-        String date = dateFormat.format(history.getChangedDate());
-
-        holder.password.setText(history.getValue());
-        holder.date.setText(date);
-    }
-
-    @Override
-    public int getItemCount() {
-        Password password = PasswordProvider.getInstance(context).getById(passwordId);
-        return password.getHistoryCount() - 1;
-    }
-
-
-    public class ViewHolder extends RecyclerView.ViewHolder  {
-        final TextView password;
-        final TextView date;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            password = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_password);
-            date = (TextView) itemView.findViewById(R.id.passwordhistoryitemlayout_textview_date);
-        }
-    }
+  }
 }
