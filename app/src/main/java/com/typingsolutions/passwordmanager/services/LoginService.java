@@ -73,7 +73,7 @@ public class LoginService extends Service {
         size = callbacks.beginBroadcast();
 
         for (int i = 0; i < size; i++)
-          callbacks.getBroadcastItem(i).onStart();
+          callbacks.getBroadcastItem(i).onFinish();
 
         callbacks.finishBroadcast();
       } catch (RemoteException e) {

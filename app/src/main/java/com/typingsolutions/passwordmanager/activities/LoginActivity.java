@@ -7,6 +7,8 @@ import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.AnimatorRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,10 +21,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.ViewUtils;
@@ -39,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
   
   public static final String SAFELOGIN = "safelogin";
   private ServiceCallbackImplementation serviceCallback = new ServiceCallbackImplementation(this);
-  private boolean hidden = false;
 
   private Toolbar toolbar;
   private FloatingActionButton floatingActionButton_login;
@@ -50,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
   private OutlinedImageView outlinedImageView_background;
   private CoordinatorLayout coordinatorLayout_root;
   private ProgressBar progressBar_waiter;
+  private ImageView imageView_background;
 
   private ILoginServiceRemote loginServiceRemote;
   private DatabaseProvider databaseProvider;
@@ -180,6 +179,7 @@ public class LoginActivity extends AppCompatActivity {
     outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_outlinedimageview_background);
     coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.loginlayout_coordinatorlayout_root);
     progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
+    imageView_background = (ImageView) findViewById(R.id.loginlayout_imageview_background);
 
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
@@ -286,6 +286,9 @@ public class LoginActivity extends AppCompatActivity {
       public void run() {
         editText_password.show();
         ViewUtils.show(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_show);
+
+        startAnimator(imageView_background, R.animator.flip_left_in);
+        startAnimator(outlinedImageView_background, R.animator.flip_left_out);
       }
     });
   }
@@ -297,12 +300,17 @@ public class LoginActivity extends AppCompatActivity {
         editText_password.hide();
         ViewUtils.hide(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_hide);
 
-        Animator animator = AnimatorInflater.loadAnimator(LoginActivity.this, R.animator.flip_left_in);
-        animator.setTarget(outlinedImageView_background);
-        animator.setDuration(300);
-        animator.start();
+        startAnimator(imageView_background, R.animator.flip_right_out);
+        startAnimator(outlinedImageView_background, R.animator.flip_right_in);
       }
     });
+  }
+
+  private synchronized void startAnimator(@NonNull View view, @AnimatorRes int res) {
+    Animator animator = AnimatorInflater.loadAnimator(LoginActivity.this, res);
+    animator.setTarget(view);
+    animator.setDuration(300);
+    animator.start();
   }
 
   private boolean isServiceRunning(Class<?> serviceClass) {

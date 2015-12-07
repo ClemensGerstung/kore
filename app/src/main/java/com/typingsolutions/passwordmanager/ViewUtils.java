@@ -31,11 +31,11 @@ public final class ViewUtils {
   }
 
   public static synchronized void hide(final Context context, final View view, @AnimRes int animation) {
-    boolean hiding = true;
+    boolean hiding = false;
     try {
       hiding = (boolean) view.getTag(R.string.hidden);
     } catch (Exception e) {
-      view.setTag(R.string.hidden, false);
+      view.setTag(R.string.hidden, true);
     }
 
     if (hiding || view.getVisibility() != View.VISIBLE) return;

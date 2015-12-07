@@ -13,6 +13,7 @@
              android:padding="26dp"
              android:layout_gravity="center"
              android:id="@+id/loginlayout_imageview_background"
+             android:background="@drawable/circle"
              android:src="@mipmap/verified"/>
 
   <ui.OutlinedImageView
