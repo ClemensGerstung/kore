@@ -19,7 +19,7 @@ public class OutlinedImageView extends ImageView {
     BLUE_ANTI_ALIASED = new Paint(Paint.ANTI_ALIAS_FLAG);
     BLUE_ANTI_ALIASED.setStyle(Paint.Style.STROKE);
     BLUE_ANTI_ALIASED.setColor(0xff1976D2);
-    BLUE_ANTI_ALIASED.setStrokeWidth(5.f);
+    BLUE_ANTI_ALIASED.setStrokeWidth(10.f);
     GREY_ANTI_ALIASED = new Paint(Paint.ANTI_ALIAS_FLAG);
     GREY_ANTI_ALIASED.setColor(0xffe0e0e0);
   }
@@ -49,7 +49,7 @@ public class OutlinedImageView extends ImageView {
   @Override
   protected void onDraw(@NonNull Canvas canvas) {
     if (bound == null) {
-      bound = new RectF(0, 0, getWidth(), getHeight());
+      bound = new RectF(5, 5, getWidth() - 5, getHeight() - 5);
     }
 
     if (blocked) {

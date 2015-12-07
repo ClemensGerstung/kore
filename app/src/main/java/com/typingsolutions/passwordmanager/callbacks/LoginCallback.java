@@ -34,6 +34,7 @@ public class LoginCallback extends BaseCallback {
         loginActivity.hideWaiter();
         Snackbar.make(loginActivity.getRootView(), "Your password is wrong!", Snackbar.LENGTH_LONG).show();
         loginActivity.getLoginServiceRemote().increaseTries();
+        loginActivity.retypePassword();
       } catch (RemoteException e) {
         Snackbar.make(loginActivity.getRootView(), "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
       }

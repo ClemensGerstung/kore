@@ -31,10 +31,10 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
 //
 //        Log.d(getClass().getSimpleName(), String.format("Update: %s", time));
 //
-//        if (time <= 0) {
-//            loginActivity.showAllInputs();
-//        } else {
-//            loginActivity.hideAllInputs();
-//        }
+    if (time <= 0) {
+      loginActivity.showInput();
+    } else {
+      loginActivity.hideInput();
+    }
   }
 }
