@@ -1,12 +1,12 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.app.ActivityManager;
 import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,12 +26,10 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.ViewUtils;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.RetypePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.SetupCallback;
-import com.typingsolutions.passwordmanager.callbacks.service.GetLockTimeServiceCallback;
-import com.typingsolutions.passwordmanager.receiver.LoginReceiver;
+import com.typingsolutions.passwordmanager.callbacks.service.ServiceCallbackImplementation;
 import com.typingsolutions.passwordmanager.services.LoginService;
 import core.DatabaseProvider;
 import core.Utils;
@@ -40,7 +38,8 @@ import ui.OutlinedImageView;
 public class LoginActivity extends AppCompatActivity {
   
   public static final String SAFELOGIN = "safelogin";
-  private GetLockTimeServiceCallback serviceCallback = new GetLockTimeServiceCallback(this);
+  private ServiceCallbackImplementation serviceCallback = new ServiceCallbackImplementation(this);
+  private boolean hidden = false;
 
   private Toolbar toolbar;
   private FloatingActionButton floatingActionButton_login;
@@ -53,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
   private ProgressBar progressBar_waiter;
 
   private ILoginServiceRemote loginServiceRemote;
-  private LoginReceiver loginReceiver;
   private DatabaseProvider databaseProvider;
   private LoginCallback loginCallback = new LoginCallback(this, this);
   private SetupCallback setupCallback = new SetupCallback(this, this);
@@ -179,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
     floatingActionButton_login = (FloatingActionButton) findViewById(R.id.loginlayout_floatingactionbutton_login);
     editText_password = (EditText) findViewById(R.id.loginlayout_edittext_password);
     checkBox_safeLogin = (CheckBox) findViewById(R.id.loginlayout_checkbox_safelogin);
-    outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_imageview_background);
+    outlinedImageView_background = (OutlinedImageView) findViewById(R.id.loginlayout_outlinedimageview_background);
     coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.loginlayout_coordinatorlayout_root);
     progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
 
@@ -198,16 +196,11 @@ public class LoginActivity extends AppCompatActivity {
       startService(intent);
 
     bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
-
-    loginReceiver = new LoginReceiver(this);
-    IntentFilter intentFilter = new IntentFilter(LoginService.INTENT_ACTION);
-    getApplicationContext().registerReceiver(loginReceiver, intentFilter);
   }
 
   @Override
   protected void onStop() {
     unbindService(loginServiceConnection);
-    getApplicationContext().unregisterReceiver(loginReceiver);
     super.onStop();
   }
 
@@ -303,6 +296,11 @@ public class LoginActivity extends AppCompatActivity {
       public void run() {
         editText_password.hide();
         ViewUtils.hide(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_hide);
+
+        Animator animator = AnimatorInflater.loadAnimator(LoginActivity.this, R.animator.flip_left_in);
+        animator.setTarget(outlinedImageView_background);
+        animator.setDuration(300);
+        animator.start();
       }
     });
   }

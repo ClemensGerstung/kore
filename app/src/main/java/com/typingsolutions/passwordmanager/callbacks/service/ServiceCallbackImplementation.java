@@ -7,10 +7,10 @@ import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import core.IServiceCallback;
 import ui.OutlinedImageView;
 
-public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
+public class ServiceCallbackImplementation extends IServiceCallback.Stub {
   private LoginActivity loginActivity;
 
-  public GetLockTimeServiceCallback(@NonNull LoginActivity loginActivity) {
+  public ServiceCallbackImplementation(@NonNull LoginActivity loginActivity) {
     this.loginActivity = loginActivity;
   }
 
@@ -25,16 +25,15 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
         background.invalidate();
       }
     });
+  }
 
-    //Log.d(getClass().getSimpleName(), String.format("%s -> %s", time, completeTime));
-//        loginActivity.redrawBlockedbackground();
-//
-//        Log.d(getClass().getSimpleName(), String.format("Update: %s", time));
-//
-    if (time <= 0) {
-      loginActivity.showInput();
-    } else {
-      loginActivity.hideInput();
-    }
+  @Override
+  public void onStart() throws RemoteException {
+    loginActivity.hideInput();
+  }
+
+  @Override
+  public void onFinish() throws RemoteException {
+    loginActivity.showInput();
   }
 }

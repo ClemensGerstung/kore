@@ -49,19 +49,36 @@ public class LoginService extends Service {
   private final Runnable blockRunnable = new Runnable() {
     @Override
     public void run() {
-      long lastTime = SystemClock.elapsedRealtime();
-      Intent intent = new Intent(INTENT_ACTION);
+      try {
+        long lastTime = SystemClock.elapsedRealtime();
 
-      do {
-        long time = SystemClock.elapsedRealtime();
-        long diff = time - lastTime;
-        lastTime = time;
+        int size = callbacks.beginBroadcast();
 
-        currentLockTime -= diff;
-        getApplicationContext().sendBroadcast(intent);
+        for (int i = 0; i < size; i++)
+          callbacks.getBroadcastItem(i).onStart();
 
-        SystemClock.sleep(SLEEP_TIME);
-      } while (currentLockTime > 0);
+        callbacks.finishBroadcast();
+
+        do {
+          long time = SystemClock.elapsedRealtime();
+          long diff = time - lastTime;
+          lastTime = time;
+
+          currentLockTime -= diff;
+          binder.getBlockedTimeAsync();
+
+          SystemClock.sleep(SLEEP_TIME);
+        } while (currentLockTime > 0);
+
+        size = callbacks.beginBroadcast();
+
+        for (int i = 0; i < size; i++)
+          callbacks.getBroadcastItem(i).onStart();
+
+        callbacks.finishBroadcast();
+      } catch (RemoteException e) {
+        Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+      }
     }
   };
 
@@ -174,7 +191,6 @@ public class LoginService extends Service {
     if (json.equals("") && hash.equals(""))
       return;
 
-
     try {
       String computedHash = Utils.getHashedString(json);
 
@@ -211,7 +227,6 @@ public class LoginService extends Service {
       thread.start();
     }
   }
-
 
   private void write() {
     StringWriter writer = new StringWriter();
