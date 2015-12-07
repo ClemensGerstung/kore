@@ -26,10 +26,6 @@ public class PasswordProvider {
     return Instance;
   }
 
-  public void remove(Password password) {
-    passwords.remove(password);
-  }
-
   public int size() {
     return passwords.size();
   }
@@ -45,10 +41,6 @@ public class PasswordProvider {
       }
     }
     return null;
-  }
-
-  public boolean contains(Password p) {
-    return passwords.contains(p);
   }
 
   public static void logoutComplete() {
@@ -201,17 +193,15 @@ public class PasswordProvider {
 
   public void removePassword(Password password) {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
-    /*
+
     for (Integer i : password.getPasswordIds()) {
-      provider.remove(DatabaseProvider.DELETE_PASSWORDHISTORY_BY_ID, i.toString());
+      provider.remove(DatabaseProvider.REMOVE_HISTORY_BY_ID, i);
     }
 
-    provider.remove(DatabaseProvider.DELETE_PASSWORD_BY_ID, Integer.toString(password.getId()));
+    provider.remove(DatabaseProvider.REMOVE_PASSWORD_BY_ID, password.getId());
 
-    DatabaseProvider.dismiss();
+    passwords.remove(password);
 
-    passwordProvider.remove(password);
-    */
     if (passwordActionListener != null)
       passwordActionListener.onPasswordRemoved(password);
   }
