@@ -28,7 +28,11 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId;";
 
-  public static final String UPDATE_PASSWORD_BY_ID ="UPDATE passwords SET program = ?, username = ? WHERE id = ?;";
+  public static final String UPDATE_PASSWORD_BY_ID = "UPDATE passwords SET program = ?, username = ? WHERE id = ?;";
+
+  public static final String REMOVE_PASSWORD_BY_ID = "DELETE FROM passwords WHERE id = ?;";
+
+  public static final String REMOVE_HISTORY_BY_ID = "DELETE FROM history WHERE id = ?;";
 
   private static DatabaseProvider INSTANCE;
 
@@ -171,7 +175,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   }
 
 
-  public long remove(String query, String... args) {
+  public long remove(String query, Object... args) {
     return update(query, args);
   }
 
