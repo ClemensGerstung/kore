@@ -7,12 +7,16 @@ import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.util.JsonReader;
+import android.util.JsonWriter;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import core.IServiceCallback;
 import core.Utils;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 
 
@@ -131,64 +135,114 @@ public class LoginService extends Service {
 
   @Override
   public IBinder onBind(Intent intent) {
-    readSerializedData();
+    load();
     return binder;
   }
 
   @Override
   public void onRebind(Intent intent) {
-    readSerializedData();
+    load();
   }
 
-  // TODO: onStop write time, maxtime and tries to file
   @Override
   public boolean onUnbind(Intent intent) {
-    SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
-    SharedPreferences.Editor editor = preferences.edit();
+    Log.d(getClass().getSimpleName(), "Service -> unbind/stop");
 
-   /* try {
-      String json = blockedUserList.toJson();
-      String hash = Utils.getHashedString(json);
-
-//            Log.d(getClass().getSimpleName(), json);
-
-      editor.putString("json", json);
-      editor.putString("hash", hash);
-
-      editor.apply();
-    } catch (IOException | NoSuchAlgorithmException e) {
-      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-    }*/
+    write();
 
     return true;
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    readSerializedData();
+    Log.d(getClass().getSimpleName(), "Service -> start");
+    load();
     return START_STICKY;
   }
 
   @Override
   public void onDestroy() {
-
+    Log.d(getClass().getSimpleName(), "Service -> destroy");
+    write();
   }
 
-  // TODO: read from file maxtime, time and tries
-  private void readSerializedData() {
+  private void load() {
     SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
     String json = preferences.getString("json", "");
     String hash = preferences.getString("hash", "");
 
-    /*try {
+    if (json.equals("") && hash.equals(""))
+      return;
+
+
+    try {
       String computedHash = Utils.getHashedString(json);
-      blockedUserList.fromJson(json, hash.equals(computedHash));
+
+      if (!computedHash.equals(hash)) {
+        tries = TRIES_FOR_SMALL_BLOCK;
+        currentMaxLockTime = FINAL_BLOCK_TIME;
+        currentLockTime = currentMaxLockTime;
+        return;
+      }
+
+      StringReader reader = new StringReader(json);
+      JsonReader jsonReader = new JsonReader(reader);
+
+      jsonReader.beginObject();
+      while (jsonReader.hasNext()) {
+        String name = jsonReader.nextName();
+        if (name.equals("tries")) {
+          tries = jsonReader.nextInt();
+        } else if (name.equals("time")) {
+          currentLockTime = jsonReader.nextInt();
+        } else if (name.equals("maxTime")) {
+          currentMaxLockTime = jsonReader.nextInt();
+        }
+      }
+      jsonReader.endObject();
+      reader.close();
+      jsonReader.close();
     } catch (NoSuchAlgorithmException | IOException e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     } finally {
       preferences.edit().clear().apply();
-    }*/
+
+      Thread thread = new Thread(blockRunnable);
+      thread.start();
+    }
   }
 
+
+  private void write() {
+    StringWriter writer = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(writer);
+
+    try {
+      jsonWriter.beginObject();
+      jsonWriter.name("tries").value(tries);
+      jsonWriter.name("time").value(currentLockTime);
+      jsonWriter.name("maxTime").value(currentMaxLockTime);
+      jsonWriter.endObject();
+
+      String json = writer.toString();
+      writer.flush();
+      writer.close();
+      jsonWriter.flush();
+      jsonWriter.close();
+
+      String hash = Utils.getHashedString(json);
+
+      SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
+      SharedPreferences.Editor editor = preferences.edit();
+
+      editor.putString("json", json)
+          .putString("hash", hash)
+          .apply();
+
+
+    } catch (IOException | NoSuchAlgorithmException e) {
+      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+    }
+  }
 
 }

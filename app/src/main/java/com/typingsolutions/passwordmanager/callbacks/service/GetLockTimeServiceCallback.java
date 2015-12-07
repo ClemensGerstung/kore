@@ -26,7 +26,7 @@ public class GetLockTimeServiceCallback extends IServiceCallback.Stub {
       }
     });
 
-    Log.d(getClass().getSimpleName(), String.format("%s -> %s", time, completeTime));
+    //Log.d(getClass().getSimpleName(), String.format("%s -> %s", time, completeTime));
 //        loginActivity.redrawBlockedbackground();
 //
 //        Log.d(getClass().getSimpleName(), String.format("Update: %s", time));
