@@ -16,7 +16,6 @@ public class LoginCallback extends BaseCallback {
   private LoginActivity loginActivity;
   private String password;
   private boolean safeLogin;
-  private ProgressDialog progress;
 
   private final DatabaseProvider.OnOpenListener openListener = new DatabaseProvider.OnOpenListener() {
     @Override
