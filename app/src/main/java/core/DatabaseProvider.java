@@ -28,6 +28,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId;";
 
+  public static final String UPDATE_PASSWORD_BY_ID ="UPDATE passwords SET program = ?, username = ? WHERE id = ?;";
+
   private static DatabaseProvider INSTANCE;
 
   private Cursor lastCursor;
@@ -118,17 +120,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     long id = -1;
     try {
       SQLiteStatement compiled = db.compileStatement(query);
-      for (int i = 0; i < args.length; i++) {
-        Object argument = args[i];
-        if (argument instanceof Long) {
-          compiled.bindLong(i + 1, (Long) argument);
-        } else if (argument instanceof String) {
-          compiled.bindString(i + 1, (String) argument);
-        } else if (argument instanceof Integer) {
-          compiled.bindLong(i + 1, Long.valueOf((Integer) argument));
-        }
-      }
+      bindParams(compiled, args);
       id = compiled.executeInsert();
+      compiled.clearBindings();
+      compiled.close();
 
       db.setTransactionSuccessful();
     } catch (Exception e) {
@@ -140,17 +135,17 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return id;
   }
 
-  public long update(String query, String... args) {
+  public long update(String query, Object... args) {
     SQLiteDatabase db = getWritableDatabase(password);
 
     db.beginTransaction();
     long affectedRows = -1;
     try {
       SQLiteStatement compiled = db.compileStatement(query);
-      for (int i = 0; i < args.length; i++) {
-        compiled.bindString(i, args[i]);
-      }
+      bindParams(compiled, args);
       affectedRows = (long) compiled.executeUpdateDelete();
+      compiled.clearBindings();
+      compiled.close();
 
       db.setTransactionSuccessful();
     } finally {
@@ -160,6 +155,21 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return affectedRows;
   }
 
+  private void bindParams(SQLiteStatement compiled, Object[] args) {
+    for (int i = 0; i < args.length; i++) {
+      Object argument = args[i];
+      if (argument == null) {
+        compiled.bindNull(i + 1);
+      } else if (argument instanceof Long) {
+        compiled.bindLong(i + 1, (Long) argument);
+      } else if (argument instanceof String) {
+        compiled.bindString(i + 1, (String) argument);
+      } else if (argument instanceof Integer) {
+        compiled.bindLong(i + 1, Long.valueOf((Integer) argument));
+      }
+    }
+  }
+
 
   public long remove(String query, String... args) {
     return update(query, args);
@@ -167,7 +177,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static void logout() {
     INSTANCE.password = null;
-    INSTANCE.lastCursor.close();
+    if (INSTANCE.lastCursor != null)
+      INSTANCE.lastCursor.close();
     INSTANCE.lastCursor = null;
     INSTANCE.close();
   }
@@ -193,6 +204,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public interface OnOpenListener {
     void open();
+
     void refused();
   }
 }

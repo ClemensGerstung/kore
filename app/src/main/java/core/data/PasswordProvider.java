@@ -26,11 +26,6 @@ public class PasswordProvider {
     return Instance;
   }
 
-  public void set(Password password) {
-    int index = passwords.indexOf(password);
-    passwords.set(index, password);
-  }
-
   public void remove(Password password) {
     passwords.remove(password);
   }
@@ -173,18 +168,16 @@ public class PasswordProvider {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
     PasswordHistory history = PasswordHistory.createItem(newPassword);
-    //String json = history.getJson();
-        /*String encryptedJson = AesProvider.encrypt(json, currentUser.plainPassword);
 
-        long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY_ITEM, encryptedJson);
+    long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY, newPassword, id);
 
-        if (historyId == -1)
-            throw new UserProviderException("Couldn't insert your password history item!");
+    if (historyId == -1)
+      throw new UserProviderException("Couldn't insert your password history item!");
 
-        Password password = passwordProvider.getById(id);
-        password.addPasswordHistoryItem((int) historyId, history);
+    Password password = getById(id);
+    password.addPasswordHistoryItem((int) historyId, history);
 
-        editPassword(password);*/
+    editPassword(password);
   }
 
   public void editPassword(int id, @Nullable String program, @Nullable String username) throws Exception {
@@ -192,20 +185,18 @@ public class PasswordProvider {
     password.setUsername(username);
     password.setProgram(program);
 
+    DatabaseProvider.getConnection(context)
+        .update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, program, username, id);
+
     editPassword(password);
   }
 
-  public void editPassword(Password password) throws Exception {
-    set(password);
+  void editPassword(Password password) throws Exception {
+    int index = passwords.indexOf(password);
+    passwords.set(index, password);
 
-        /*String json = password.getJson();
-        String encrypted = AesProvider.encrypt(json, currentUser.plainPassword);
-
-        DatabaseProvider.getConnection(context).update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, encrypted, Integer.toString(password.getId()));
-*/
     if (passwordActionListener != null)
       passwordActionListener.onPasswordEdited(password, password.getFirstHistoryItem());
-
   }
 
   public void removePassword(Password password) {
