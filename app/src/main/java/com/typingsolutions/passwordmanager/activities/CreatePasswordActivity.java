@@ -11,8 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.callbacks.GeneratePasswordCallback;
 import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
@@ -22,6 +24,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
   private EditText program;
   private EditText username;
   private EditText password;
+  private Button button;
 
   private TextWatcher switchTextWatcher = new TextWatcher() {
     @Override
@@ -53,6 +56,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
     CardView delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
     CardView passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
+    button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
 
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -65,6 +69,8 @@ public class CreatePasswordActivity extends AppCompatActivity {
     username.addTextChangedListener(switchTextWatcher);
     program.addTextChangedListener(switchTextWatcher);
     password.addTextChangedListener(switchTextWatcher);
+    button.setOnClickListener(new GeneratePasswordCallback(this, password));
+
 
     delete.setVisibility(View.GONE);
     passwordHistoryCard.setVisibility(View.GONE);
