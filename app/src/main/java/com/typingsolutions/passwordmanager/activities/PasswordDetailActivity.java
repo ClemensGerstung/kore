@@ -9,10 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.DeletePasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import core.adapter.PasswordHistoryAdapter;
 import core.data.Password;
@@ -74,6 +76,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
       }
     }
   };
+  private Button button;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     passwordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
     passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
     passwordCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_password);
+    button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
 
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -106,6 +110,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     passwordHistory.setLayoutManager(layoutManager);
     passwordHistory.setAdapter(passwordHistoryAdapter);
 
+    button.setOnClickListener(new GeneratePasswordCallback(this, password));
 
     String programString = currentPassword.getProgram();
     programTextWatcher = new AddPasswordTextWatcher(this, programString, true);
