@@ -22,9 +22,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginService extends Service {
 
-  public static final String INTENT_ACTION = "com.typingsolutions.passwordmanager.service.LoginService.UPDATE_BLOCKING";
-  public static final String INTENT_BLOCK = "com.typingsolutions.passwordmanager.service.LoginService.BLOCK";
-
   public static final int SLEEP_TIME = 1000;
 
   // tries until block
@@ -218,13 +215,15 @@ public class LoginService extends Service {
       jsonReader.endObject();
       reader.close();
       jsonReader.close();
+
+      if (currentLockTime > 0) {
+        Thread thread = new Thread(blockRunnable);
+        thread.start();
+      }
     } catch (NoSuchAlgorithmException | IOException e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     } finally {
       preferences.edit().clear().apply();
-
-      Thread thread = new Thread(blockRunnable);
-      thread.start();
     }
   }
 
