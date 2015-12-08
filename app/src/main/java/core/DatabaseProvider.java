@@ -8,8 +8,6 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 import net.sqlcipher.database.SQLiteStatement;
 
 import java.io.File;
-import java.io.StreamCorruptedException;
-import java.io.StringReader;
 
 public class DatabaseProvider extends SQLiteOpenHelper {
 

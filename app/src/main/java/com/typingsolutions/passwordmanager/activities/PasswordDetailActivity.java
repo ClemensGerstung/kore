@@ -179,8 +179,12 @@ public class PasswordDetailActivity extends AppCompatActivity {
   }
 
   public void switchMenuState(boolean state) {
-    MenuItem item = toolbar.getMenu().getItem(0);
-    item.setEnabled(state);
-    item.getIcon().setAlpha(state ? 255 : 64);
+    try {
+      MenuItem item = toolbar.getMenu().getItem(0);
+      item.setEnabled(state);
+      item.getIcon().setAlpha(state ? 255 : 64);
+    } catch (Exception e) {
+      // ignored
+    }
   }
 }
