@@ -34,7 +34,6 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   private static DatabaseProvider INSTANCE;
 
-  private Cursor lastCursor;
   private String password;
   private Context context;
   private OnSetupListener onSetupListener;
@@ -45,7 +44,6 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   private DatabaseProvider(Context context, String password) {
     super(context, DATABASE_NAME, null, VERSION);
-    this.lastCursor = null;
     this.context = context;
     this.password = password;
   }
@@ -103,16 +101,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public Cursor query(String query, String... args) {
     SQLiteDatabase db = getReadableDatabase(password);
-
-    lastCursor = db.rawQuery(query, args);
-
-    return lastCursor;
-  }
-
-  public DatabaseProvider rawQuery(String query) {
-    SQLiteDatabase db = getWritableDatabase(password);
-    db.execSQL(query);
-    return this;
+    return db.rawQuery(query, args);
   }
 
   public long insert(String query, Object... args) {
@@ -124,7 +113,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
       SQLiteStatement compiled = db.compileStatement(query);
       bindParams(compiled, args);
       id = compiled.executeInsert();
-      compiled.clearBindings();
+      //compiled.clearBindings();
       compiled.close();
 
       db.setTransactionSuccessful();
@@ -146,7 +135,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
       SQLiteStatement compiled = db.compileStatement(query);
       bindParams(compiled, args);
       affectedRows = (long) compiled.executeUpdateDelete();
-      compiled.clearBindings();
+      //compiled.clearBindings();
       compiled.close();
 
       db.setTransactionSuccessful();
@@ -179,14 +168,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static void logout() {
     INSTANCE.password = null;
-    if (INSTANCE.lastCursor != null)
-      INSTANCE.lastCursor.close();
-    INSTANCE.lastCursor = null;
     INSTANCE.close();
-  }
-
-  public Cursor getLastCursor() {
-    return lastCursor;
   }
 
   @Override
