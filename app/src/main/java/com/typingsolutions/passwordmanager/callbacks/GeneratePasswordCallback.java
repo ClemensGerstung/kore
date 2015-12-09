@@ -77,7 +77,8 @@ public class GeneratePasswordCallback extends BaseCallback {
       builder.append(array[rand]);
     }
 
-    editText.setText(builder.toString());
+    editText.setText("");
+    editText.append(builder.toString());
   }
 
 

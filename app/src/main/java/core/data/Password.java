@@ -80,10 +80,6 @@ public class Password {
     return program;
   }
 
-  public void setPasswordHistoryItem(Integer id, PasswordHistory item) {
-    passwordHistory.setForKey(id, item, Dictionary.IterationOption.Forwards);
-  }
-
   public String getFirstItem() {
     return getFirstHistoryItem().getValue();
   }
@@ -96,20 +92,8 @@ public class Password {
     passwordHistory.addFirst(id, item);
   }
 
-  public Integer getKeyAt(int position) {
-    return passwordHistory.getKeyAt(position);
-  }
-
   public Collection<Integer> getPasswordIds() {
     return passwordHistory.keys();
-  }
-
-  public boolean hasId() {
-    return id != -1;
-  }
-
-  public void setId(int id) {
-    this.id = id;
   }
 
   public void setPosition(int position) {
@@ -147,6 +131,16 @@ public class Password {
     int tmp = position;
     position = password.getPosition();
     password.setPosition(tmp);
+  }
+
+  void reversePasswordHistory() {
+    Dictionary<Integer, PasswordHistory> temp = new Dictionary<>(passwordHistory);
+    passwordHistory.clear();
+    Dictionary.Element element = temp.getLastIterator();
+    while (temp.hasPrevious()) {
+      passwordHistory.addLast((Integer) element.getKey(), (PasswordHistory) element.getValue());
+      element = temp.previous();
+    }
   }
 
   public static Password getFromCursor(Cursor cursor) {

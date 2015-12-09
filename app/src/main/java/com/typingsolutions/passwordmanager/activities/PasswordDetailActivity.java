@@ -163,7 +163,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
       newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
       newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
     } catch (Exception e) {
-      e.printStackTrace();
+      // ignored
     }
 
     try {

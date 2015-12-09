@@ -147,6 +147,8 @@ public class PasswordProvider {
 
   public Password addPassword(Password password) throws Exception {
 
+    password.reversePasswordHistory();
+
     if (!passwords.contains(password))
       passwords.add(password);
 
