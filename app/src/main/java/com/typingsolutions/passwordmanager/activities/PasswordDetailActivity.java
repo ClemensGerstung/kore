@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import com.typingsolutions.passwordmanager.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.DeletePasswordCallback;
@@ -76,7 +77,6 @@ public class PasswordDetailActivity extends AppCompatActivity {
       }
     }
   };
-  private Button button;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
     passwordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
     passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
     passwordCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_password);
-    button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
+    Button button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
+
 
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -136,6 +137,12 @@ public class PasswordDetailActivity extends AppCompatActivity {
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    ScrollView view = (ScrollView) findViewById(R.id.passworddetaillayout_scrollview_scroller);
+    view.fullScroll(View.FOCUS_UP);
+  }
 
   @Override
   protected void onPause() {
