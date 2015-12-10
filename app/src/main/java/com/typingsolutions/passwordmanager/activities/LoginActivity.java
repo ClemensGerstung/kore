@@ -185,8 +185,6 @@ public class LoginActivity extends AppCompatActivity {
     if(!Utils.isRooted())
       textview_rootedIndicator.setVisibility(View.GONE);
 
-
-
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
     editText_password.addTextChangedListener(loginTextWatcher);

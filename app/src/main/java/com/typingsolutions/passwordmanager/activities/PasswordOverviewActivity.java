@@ -225,6 +225,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
       case R.id.passwordoverviewlayout_menuitem_logout:
         onBackPressed();
         break;
+      case R.id.passwordoverviewlayout_menuitem_about:
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+        break;
     }
 
     return true;

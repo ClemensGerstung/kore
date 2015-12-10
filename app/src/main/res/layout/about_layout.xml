@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:theme="@style/Base.AppTheme"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/aboutlayout_toolbar_actionbar"
+      android:clickable="true"
+      android:layout_margin="0dp"
+      android:layout_height="?attr/actionBarSize"
+      android:layout_width="match_parent"
+      android:background="?attr/colorPrimary"
+      app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+      app:navigationIcon="@mipmap/arrow_back"
+      app:title="About and Licenses"/>
+
+  <RelativeLayout android:layout_width="match_parent"
+                  android:layout_height="4dp"
+                  android:layout_below="@+id/aboutlayout_toolbar_actionbar"
+                  android:background="@drawable/shadow"/>
+
+  <WebView android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_margin="@dimen/margin"
+           android:layout_below="@+id/aboutlayout_toolbar_actionbar"
+           android:id="@+id/aboutlayout_webview_about"/>
+</RelativeLayout>
