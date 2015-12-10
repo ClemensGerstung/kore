@@ -4,5 +4,34 @@
                 app:theme="@style/Base.AppTheme"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-  <TextView android:layout_width="match_parent" android:layout_height="match_parent" android:text="about"/>
+  <LinearLayout android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content">
+    <ImageView android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@mipmap/icon"/>
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="24sp"
+              android:layout_marginTop="20dp"
+              android:textColor="#616161"
+              android:text="Password.Manager for Android"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="6sp"
+              android:textColor="#E0E0E0"
+              android:text="And ONLY for Android"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Version {Major}.{Minor} ({Release})"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="14sp"
+              android:textSize="16sp"
+              android:text="Copyright 2015 TypingSolutions"/>
+  </LinearLayout>
+
 </RelativeLayout>
