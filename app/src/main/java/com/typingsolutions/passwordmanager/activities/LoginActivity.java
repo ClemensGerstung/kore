@@ -49,10 +49,12 @@ public class LoginActivity extends AppCompatActivity {
   private CoordinatorLayout coordinatorLayout_root;
   private ProgressBar progressBar_waiter;
   private ImageView imageView_background;
+  private TextView textview_rootedIndicator;
 
   private ILoginServiceRemote loginServiceRemote;
   private DatabaseProvider databaseProvider;
   private LoginCallback loginCallback = new LoginCallback(this, this);
+
   private SetupCallback setupCallback = new SetupCallback(this, this);
 
   private final ServiceConnection loginServiceConnection = new ServiceConnection() {
@@ -130,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
       preferences.edit().putBoolean(LoginActivity.SAFELOGIN, isChecked).apply();
     }
   };
-
   private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -180,6 +181,11 @@ public class LoginActivity extends AppCompatActivity {
     coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.loginlayout_coordinatorlayout_root);
     progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
     imageView_background = (ImageView) findViewById(R.id.loginlayout_imageview_background);
+    textview_rootedIndicator = (TextView) findViewById(R.id.loginlayout_textview_rootedindicator);
+    if(!Utils.isRooted())
+      textview_rootedIndicator.setVisibility(View.GONE);
+
+
 
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
@@ -286,6 +292,7 @@ public class LoginActivity extends AppCompatActivity {
       public void run() {
         editText_password.show();
         ViewUtils.show(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_show);
+        ViewUtils.show(LoginActivity.this, textview_rootedIndicator, android.support.design.R.anim.design_fab_in);
 
         startAnimator(imageView_background, R.animator.flip_left_in);
         startAnimator(outlinedImageView_background, R.animator.flip_left_out);
@@ -299,6 +306,7 @@ public class LoginActivity extends AppCompatActivity {
       public void run() {
         editText_password.hide();
         ViewUtils.hide(LoginActivity.this, checkBox_safeLogin, R.anim.checkbox_hide);
+        ViewUtils.hide(LoginActivity.this, textview_rootedIndicator, android.support.design.R.anim.design_fab_out);
 
         startAnimator(imageView_background, R.animator.flip_right_out);
         startAnimator(outlinedImageView_background, R.animator.flip_right_in);
