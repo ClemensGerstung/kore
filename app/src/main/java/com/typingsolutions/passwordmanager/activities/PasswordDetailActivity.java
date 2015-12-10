@@ -50,31 +50,32 @@ public class PasswordDetailActivity extends AppCompatActivity {
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
       int windowHeight = PasswordDetailActivity.this.getWindow().getDecorView().getHeight();
 
-      if (first) {
-        first = false;
-        if (bottom > windowHeight) return;
+      if (!first)
+        return;
 
-        Rect phr = new Rect();
-        Rect password = new Rect();
+      first = false;
+      if (bottom > windowHeight) return;
 
-        passwordHistoryCard.getGlobalVisibleRect(phr);
-        passwordCard.getGlobalVisibleRect(password);
+      Rect phr = new Rect();
+      Rect password = new Rect();
 
-        ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) passwordHistoryCard.getLayoutParams();
+      passwordHistoryCard.getGlobalVisibleRect(phr);
+      passwordCard.getGlobalVisibleRect(password);
 
-        int toolbarHeight = Build.VERSION.SDK_INT >= 21 ? toolbar.getMeasuredHeight() : 0;
-        int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
+      ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) passwordHistoryCard.getLayoutParams();
 
-        int newDeletePos = windowHeight - delete.getMeasuredHeight();
-        int historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
-        Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
+      int toolbarHeight = Build.VERSION.SDK_INT >= 21 ? toolbar.getMeasuredHeight() : 0;
+      int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
 
-        ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
-        if (historyCardHeight > passwordHistoryCard.getMeasuredHeight()) {
-          params.height = historyCardHeight;
-        }
-        passwordHistoryCard.setLayoutParams(params);
+      int newDeletePos = windowHeight - delete.getMeasuredHeight();
+      int historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
+      Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
+
+      ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
+      if (historyCardHeight > passwordHistoryCard.getMeasuredHeight()) {
+        params.height = historyCardHeight;
       }
+      passwordHistoryCard.setLayoutParams(params);
     }
   };
 

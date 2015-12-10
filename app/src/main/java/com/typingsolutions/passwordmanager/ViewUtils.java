@@ -12,6 +12,8 @@ public final class ViewUtils {
   public static final long FAST_ANIMATION_DURATION = 250;
 
   public static synchronized void show(final Context context, final View view, @AnimRes int animation) {
+    if(view == null) return;
+
     boolean hiding = true;
     try {
       hiding = (boolean) view.getTag(R.string.hidden);
@@ -31,6 +33,8 @@ public final class ViewUtils {
   }
 
   public static synchronized void hide(final Context context, final View view, @AnimRes int animation) {
+    if(view == null) return;
+
     boolean hiding = false;
     try {
       hiding = (boolean) view.getTag(R.string.hidden);
