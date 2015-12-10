@@ -19,6 +19,8 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
     <android.support.design.widget.TabLayout
         android:id="@+id/aboutlayout_tablayout_navigation"
+        app:tabIndicatorColor="#ffffff"
+        app:tabIndicatorHeight="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
   </android.support.design.widget.AppBarLayout>

@@ -28,5 +28,8 @@ public class AboutActivity extends AppCompatActivity {
 
     viewpager_content.setAdapter(adapter);
     tabLayout_navigation.setupWithViewPager(viewpager_content);
+
+    tabLayout_navigation.getTabAt(0).setIcon(R.mipmap.info);
+    tabLayout_navigation.getTabAt(1).setIcon(R.mipmap.copyright);
   }
 }
