@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.callbacks;
+package com.typingsolutions.passwordmanager.callbacks.click;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,6 +6,7 @@ import android.provider.UserDictionary;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import core.Utils;
 
 import java.util.Collections;

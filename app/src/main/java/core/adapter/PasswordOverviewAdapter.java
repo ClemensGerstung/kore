@@ -3,20 +3,24 @@ package core.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewManager;
+import android.util.Log;
+import android.view.*;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.DatabaseProvider;
+import core.Utils;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -91,10 +95,27 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     if (!safe) {
       viewHolder.password.setText(history.getValue());
+      viewHolder.username.setText(password.getUsername());
     }
-    viewHolder.username.setText(password.getUsername());
+
     viewHolder.program.setText(password.getProgram());
     viewHolder.id = password.getId();
+    viewHolder.icon.setText(password.getProgram().toUpperCase().toCharArray(), 0, 1);
+    try {
+      String programHash = Utils.getHashedString(password.getProgram()).substring(0, 6);
+      String passwordHash = Utils.getHashedString(password.getFirstItem()).substring(0, 6);
+
+      int hexColor = Integer.parseInt(programHash, 16)
+          | Integer.parseInt(passwordHash, 16)
+          | 0xFF000000;
+
+      viewHolder.icon
+          .getBackground()
+          .setColorFilter(hexColor, PorterDuff.Mode.MULTIPLY);
+      viewHolder.icon.setGravity(Gravity.CENTER);
+    } catch (Exception e) {
+      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+    }
   }
 
   @Override
@@ -167,6 +188,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     final TextView program;
     final TextView username;
     final TextView password;
+    final TextView icon;
     int id;
     private boolean safe = false;
 
@@ -176,6 +198,13 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
       username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
       password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
+      icon = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_icon);
+      /*icon.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          Toast.makeText(context, "Heeeey", Toast.LENGTH_LONG).show();
+        }
+      });*/
 
       itemView.setOnClickListener(this);
     }
