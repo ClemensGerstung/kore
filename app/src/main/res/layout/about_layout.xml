@@ -26,7 +26,8 @@
               android:text="And ONLY for Android"/>
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="Version {Major}.{Minor} ({Release})"/>
+              android:id="@+id/aboutlayout_textview_version"
+              android:text="Version {Major} ({Release})"/>
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginTop="14sp"
