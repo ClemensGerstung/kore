@@ -32,6 +32,7 @@ import com.typingsolutions.passwordmanager.callbacks.service.ServiceCallbackImpl
 import com.typingsolutions.passwordmanager.services.LoginService;
 import core.DatabaseProvider;
 import core.Utils;
+import core.data.PasswordProvider;
 import ui.OutlinedImageView;
 
 public class LoginActivity extends AppCompatActivity {
@@ -130,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
       final SharedPreferences preferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
       preferences.edit().putBoolean(LoginActivity.SAFELOGIN, isChecked).apply();
+      PasswordProvider.getInstance(LoginActivity.this).isSafe(isChecked);
     }
   };
   private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
@@ -185,10 +187,14 @@ public class LoginActivity extends AppCompatActivity {
     if(!Utils.isRooted())
       textview_rootedIndicator.setVisibility(View.GONE);
 
+    SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+    boolean isSafe = preferences.getBoolean(SAFELOGIN, true);
+
     floatingActionButton_login.hide();
     floatingActionButton_login.setOnClickListener(loginCallback);
     editText_password.addTextChangedListener(loginTextWatcher);
     checkBox_safeLogin.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
+    checkBox_safeLogin.setChecked(isSafe);
   }
 
   @Override
