@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +33,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   private FloatingActionButton addPasswordFloatingActionButton;
   private TextView noPasswordsTextView;
   private MenuItem searchItem;
+  private SwipeRefreshLayout swipeRefreshLayout;
 
   private SearchView searchView;
   private PasswordOverviewAdapter passwordOverviewAdapter;
@@ -39,7 +41,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
   private RecyclerView.LayoutManager layoutManager;
 
-  private WrongPasswordReceiver wrongPasswordReceiver;
   private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -136,6 +137,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
     addPasswordFloatingActionButton = (FloatingActionButton) findViewById(R.id.passwordlistlayout_floatingactionbutton_add);
     noPasswordsTextView = (TextView) findViewById(R.id.passwordlistlayout_textview_nopasswords);
+    swipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
+    swipeRefreshLayout.setEnabled(false);
 
     // set onClick-event to add new passwords
     addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
@@ -144,16 +147,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
 
     // init and set adapter
-    passwordOverviewAdapter = new PasswordOverviewAdapter(this);
+    passwordOverviewAdapter = new PasswordOverviewAdapter(this, swipeRefreshLayout);
     layoutManager = new LinearLayoutManager(this);
     passwordRecyclerView.setAdapter(passwordOverviewAdapter);
     passwordRecyclerView.setLayoutManager(layoutManager);
 
+    // make secure
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
-    wrongPasswordReceiver = new WrongPasswordReceiver(this);
-    IntentFilter filter = new IntentFilter(WRONGPASSWORD);
-    registerReceiver(wrongPasswordReceiver, filter);
 
     // load passwords in background
     passwordLoader = new AsyncPasswordLoader(this);
@@ -164,7 +165,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
   @Override
   protected void onDestroy() {
-    unregisterReceiver(wrongPasswordReceiver);
     unregisterReceiver(screenOffReceiver);
     super.onDestroy();
   }
@@ -236,5 +236,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
   public void makeSnackBar() {
     Snackbar.make(addPasswordFloatingActionButton, "Your passwords do not match", Snackbar.LENGTH_LONG).show();
+  }
+
+  public void hideRefreshing() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        swipeRefreshLayout.setRefreshing(false);
+      }
+    });
   }
 }

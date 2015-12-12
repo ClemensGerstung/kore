@@ -3,6 +3,8 @@ package core.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.provider.ContactsContract;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
+import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -23,7 +26,26 @@ import java.util.List;
 
 public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewAdapter.ViewHolder> {
 
+  private final SwipeRefreshLayout swipeRefreshLayout;
+  private int currentId;
+  private final DatabaseProvider.OnOpenListener onOpenListener = new DatabaseProvider.OnOpenListener() {
+    @Override
+    public void open() {
+      passwordOverviewActivity.hideRefreshing();
+      Intent intent = new Intent(context, PasswordDetailActivity.class);
+      intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, currentId);
+      context.startActivity(intent);
+    }
+
+    @Override
+    public void refused() {
+      passwordOverviewActivity.hideRefreshing();
+      passwordOverviewActivity.makeSnackBar();
+    }
+  };
+
   private Context context;
+  private PasswordOverviewActivity passwordOverviewActivity;
   private LayoutInflater inflater;
   private List<Password> localPasswords;
   private boolean useFiltered;
@@ -38,9 +60,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   private static final int IS_PROGRAM_FILTERED = 4;
   private boolean safe;
 
-  public PasswordOverviewAdapter(Context context) {
+  public PasswordOverviewAdapter(PasswordOverviewActivity context, SwipeRefreshLayout swipeRefreshLayout) {
     super();
     this.context = context;
+    this.passwordOverviewActivity = context;
+    this.swipeRefreshLayout = swipeRefreshLayout;
     inflater = LayoutInflater.from(context);
     localPasswords = new ArrayList<>();
     useFiltered = false;
@@ -186,18 +210,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       EditText editText = (EditText) alert.findViewById(R.id.reenterpasswordlayout_edittext_password);
       String password = editText.getText().toString();
 
-      //if(UserProvider.checkPassword(password)) {
-      Intent intent = new Intent(context, PasswordDetailActivity.class);
-      intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
-      context.startActivity(intent);
-            /*}
-            else {
-                alert.dismiss();
-                Intent intent = new Intent(PasswordOverviewActivity.WRONGPASSWORD);
-                context.getApplicationContext().sendBroadcast(intent);
-            }*/
+      swipeRefreshLayout.setRefreshing(true);
+      DatabaseProvider.getConnection(context).tryOpen(password, onOpenListener);
+      currentId = id;
+
+      alert.dismiss();
     }
   }
-
-
 }
