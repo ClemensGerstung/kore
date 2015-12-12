@@ -10,9 +10,9 @@ import core.data.PasswordProvider;
 
 public class OnOrderDialogShowCallback implements DialogInterface.OnShowListener, DialogInterface.OnClickListener {
 
-  private int checkedId;
-  private boolean invert;
   private Context context;
+  private CheckBox inverse;
+  private RadioGroup group;
 
   public OnOrderDialogShowCallback(Context context) {
     this.context = context;
@@ -20,9 +20,11 @@ public class OnOrderDialogShowCallback implements DialogInterface.OnShowListener
 
   @Override
   public void onClick(DialogInterface dialog, int which) {
-    int order = (checkedId == R.id.orderlayout_radiobutton_password ? 0 :
-            (checkedId == R.id.orderlayout_radiobutton_username ? 2 :
-            (checkedId == R.id.orderlayout_radiobutton_program ? 3 : 0)))
+    int checkedId = group.getCheckedRadioButtonId();
+    boolean invert = inverse.isChecked();
+    int order = (checkedId == R.id.orderlayout_radiobutton_password ? 2 :
+            (checkedId == R.id.orderlayout_radiobutton_username ? 0 :
+            (checkedId == R.id.orderlayout_radiobutton_program ? 4 : 0)))
         + (invert ? 1 : 0);
 
     PasswordProvider.getInstance(context).order(order);
@@ -35,10 +37,8 @@ public class OnOrderDialogShowCallback implements DialogInterface.OnShowListener
 
     AlertDialog alertDialog = (AlertDialog) dialog;
 
-    RadioGroup group = (RadioGroup) alertDialog.findViewById(R.id.orderlayout_radiogroup_wrapper);
-    checkedId = group.getCheckedRadioButtonId();
-    CheckBox inverse = (CheckBox) alertDialog.findViewById(R.id.orderlayout_checkbox_inverse);
-    invert = inverse.isChecked();
+    group = (RadioGroup) alertDialog.findViewById(R.id.orderlayout_radiogroup_wrapper);
+    inverse = (CheckBox) alertDialog.findViewById(R.id.orderlayout_checkbox_inverse);
 
     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "order", this);
   }
