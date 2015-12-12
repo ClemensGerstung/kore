@@ -13,14 +13,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
-import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
-import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
 import core.adapter.PasswordOverviewAdapter;
@@ -77,8 +73,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
       });
 
-      //if (UserProvider.getInstance(PasswordOverviewActivity.this).hasPassword())
-      //    return;
+      if (PasswordProvider.getInstance(PasswordOverviewActivity.this).size() > 0)
+          return;
 
       if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
         noPasswordsTextView.setVisibility(View.VISIBLE);

@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.callbacks;
+package com.typingsolutions.passwordmanager.callbacks.click;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
+import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 import core.Utils;
 
 public class SetupCallback extends BaseCallback {

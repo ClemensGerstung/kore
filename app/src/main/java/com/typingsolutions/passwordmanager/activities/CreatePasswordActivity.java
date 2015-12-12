@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.callbacks.GeneratePasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
 import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
