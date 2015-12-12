@@ -93,6 +93,16 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         }
       });
     }
+
+    @Override
+    public void onOrder() {
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          passwordOverviewAdapter.notifyDataSetChanged();
+        }
+      });
+    }
   };
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
