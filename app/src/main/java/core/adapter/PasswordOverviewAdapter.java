@@ -159,6 +159,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     void makeSafe() {
       ViewManager parent = (ViewManager) password.getParent();
       parent.removeView(password);
+      parent.removeView(username);
 
       safe = true;
     }

@@ -14,6 +14,7 @@ public class PasswordProvider {
   private Context context;
   private List<Password> passwords;
   private PasswordActionListener passwordActionListener;
+  private boolean safe;
 
   private PasswordProvider(Context context) {
     this.context = context;
@@ -213,7 +214,11 @@ public class PasswordProvider {
   }
 
   public boolean isSafe() {
-    return false;
+    return  this.safe;
+  }
+
+  public void isSafe(boolean safe) {
+    this.safe = safe;
   }
 
   public interface PasswordActionListener {
