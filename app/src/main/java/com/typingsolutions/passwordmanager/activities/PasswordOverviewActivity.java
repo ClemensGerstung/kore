@@ -13,9 +13,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.receiver.WrongPasswordReceiver;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
@@ -115,14 +119,6 @@ public class PasswordOverviewActivity extends AppCompatActivity {
       return false;
     }
   };
-  private DialogInterface.OnClickListener orderItemClickListener = new DialogInterface.OnClickListener() {
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-      dialog.dismiss();
-      PasswordProvider.getInstance(PasswordOverviewActivity.this).order(which);
-      passwordOverviewAdapter.notifyDataSetChanged();
-    }
-  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +133,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
     addPasswordFloatingActionButton = (FloatingActionButton) findViewById(R.id.passwordlistlayout_floatingactionbutton_add);
     noPasswordsTextView = (TextView) findViewById(R.id.passwordlistlayout_textview_nopasswords);
-    swipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
+    swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
     swipeRefreshLayout.setEnabled(false);
+    swipeRefreshLayout.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
 
     // set onClick-event to add new passwords
     addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
@@ -213,13 +210,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     switch (id) {
       case R.id.passwordoverviewlayout_menuitem_order:
-        String[] orderOptions = getResources().getStringArray(R.array.order_options);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-            .setTitle("Order passwords by")
-            .setItems(orderOptions, orderItemClickListener)
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+            .setView(R.layout.order_layout)
+            .setNegativeButton("discard", null)
+            .setPositiveButton("order", null)
             .create();
 
+        alertDialog.setOnShowListener(new OnOrderDialogShowCallback(this));
         alertDialog.show();
         break;
       case R.id.passwordoverviewlayout_menuitem_logout:
