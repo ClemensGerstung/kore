@@ -62,7 +62,14 @@ public class LoginService extends Service {
           lastTime = time;
 
           currentLockTime -= diff;
-          binder.getBlockedTimeAsync();
+
+          size = callbacks.beginBroadcast();
+
+          for (int i = 0; i < size; i++) {
+            callbacks.getBroadcastItem(i).getLockTime(currentLockTime, currentMaxLockTime);
+          }
+
+          callbacks.finishBroadcast();
 
           SystemClock.sleep(SLEEP_TIME);
         } while (currentLockTime > 0);
@@ -112,25 +119,31 @@ public class LoginService extends Service {
     }
 
     @Override
-    public void getBlockedTimeAsync() throws RemoteException {
-      final int size = callbacks.beginBroadcast();
+    public void resetTries() throws RemoteException {
+      tries = 0;
+    }
 
-      for (int i = 0; i < size; i++) {
-        callbacks.getBroadcastItem(i).getLockTime(currentLockTime, currentMaxLockTime);
+    @Override
+    public int getRemainingTries() throws RemoteException {
+      if(tries < TRIES_FOR_SMALL_BLOCK) {
+        return TRIES_FOR_SMALL_BLOCK - tries;
+      } else if (tries < TRIES_FOR_MEDIUM_BLOCK) {
+        return TRIES_FOR_MEDIUM_BLOCK - tries;
+      } else if(tries < TRIES_FOR_LARGE_BLOCK) {
+        return TRIES_FOR_LARGE_BLOCK - tries;
+      } else if(tries < TRIES_FOR_FINAL_BLOCK) {
+        return TRIES_FOR_FINAL_BLOCK - tries;
+      } else if(tries >= TRIES_FOR_FINAL_BLOCK) {
+        return 1;
       }
-
-      callbacks.finishBroadcast();
+      return 0;
     }
 
     @Override
-    public boolean isUserBlocked() throws RemoteException {
-      return currentLockTime > 0;
+    public boolean isBlocked() throws RemoteException {
+      return tries > 0;
     }
 
-    @Override
-    public int getMaxBlockTime() throws RemoteException {
-      return currentMaxLockTime;
-    }
 
     @Override
     public void registerCallback(IServiceCallback callback) throws RemoteException {
