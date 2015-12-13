@@ -95,6 +95,6 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
 
   @Override
   public void onItemClear() {
-    itemView.setBackgroundColor(0);
+
   }
 }

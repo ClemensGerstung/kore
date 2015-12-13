@@ -54,6 +54,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   private static final int IS_USERNAME_FILTERED = 2;
   private static final int IS_PROGRAM_FILTERED = 4;
   private boolean safe;
+  private int removedFilteredItems;
 
   public PasswordOverviewAdapter(PasswordOverviewActivity context, SwipeRefreshLayout swipeRefreshLayout) {
     super();
@@ -61,6 +62,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     this.passwordOverviewActivity = context;
     this.swipeRefreshLayout = swipeRefreshLayout;
     inflater = LayoutInflater.from(context);
+    removedFilteredItems = 0;
   }
 
   @Override
@@ -107,12 +109,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }
 
-    //ViewUtils.show(context, viewHolder.itemView, android.support.design.R.anim.design_fab_in);
   }
 
   @Override
   public int getItemCount() {
-    return PasswordProvider.getInstance(context).size();
+    return PasswordProvider.getInstance(context).size() - removedFilteredItems;
   }
 
   public synchronized void filter(String query) {
@@ -130,16 +131,16 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       filter(query, IS_NOT_FILTERED);
     }
 
-    notifyDataSetChanged();
+    //notifyDataSetChanged();
   }
 
   private void filter(String query, int flag) {
-
     PasswordProvider provider = PasswordProvider.getInstance(context);
     for (int i = 0; i < provider.size(); i++) {
       Password password = provider.get(i);
-      if (matches(password, query, flag)) {
-
+      if (!matches(password, query, flag)) {
+        notifyItemRemoved(i);
+        removedFilteredItems++;
       }
     }
   }
@@ -170,7 +171,8 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   }
 
   public void resetFilter() {
-
+    notifyDataSetChanged();
+    removedFilteredItems = 0;
   }
 
   @Override
