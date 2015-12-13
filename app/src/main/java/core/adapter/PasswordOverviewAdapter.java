@@ -1,34 +1,24 @@
 package core.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.DatabaseProvider;
 import core.Utils;
+import core.adapter.viewholder.PasswordOverviewViewHolder;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewAdapter.ViewHolder> {
+public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewViewHolder>
+    implements IItemTouchHelperAdapter {
 
   private final SwipeRefreshLayout swipeRefreshLayout;
   private int currentId;
@@ -51,8 +41,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   private Context context;
   private PasswordOverviewActivity passwordOverviewActivity;
   private LayoutInflater inflater;
-  private List<Password> localPasswords;
-  private boolean useFiltered;
+
 
   private static final String PASSWORD_FILTER_PREFIX = "pw:";
   private static final String USERNAME_FILTER_PREFIX = "us:";
@@ -70,27 +59,26 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     this.passwordOverviewActivity = context;
     this.swipeRefreshLayout = swipeRefreshLayout;
     inflater = LayoutInflater.from(context);
-    localPasswords = new ArrayList<>();
-    useFiltered = false;
   }
 
   @Override
-  public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
+  public PasswordOverviewViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
     View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
 
     safe = PasswordProvider.getInstance(context).isSafe();
 
-    ViewHolder viewHolder = new ViewHolder(view);
+    PasswordOverviewViewHolder passwordOverviewViewHolder
+        = new PasswordOverviewViewHolder(context, this, view);
     if (safe) {
-      viewHolder.makeSafe();
+      passwordOverviewViewHolder.makeSafe();
     }
 
-    return viewHolder;
+    return passwordOverviewViewHolder;
   }
 
   @Override
-  public void onBindViewHolder(ViewHolder viewHolder, int position) {
-    Password password = useFiltered ? localPasswords.get(position) : PasswordProvider.getInstance(context).get(position);
+  public void onBindViewHolder(PasswordOverviewViewHolder viewHolder, int position) {
+    Password password = PasswordProvider.getInstance(context).get(position);
     PasswordHistory history = password.getFirstHistoryItem();
 
     if (!safe) {
@@ -112,6 +100,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
           .getBackground()
           .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.MULTIPLY);
       viewHolder.icon.setGravity(Gravity.CENTER);
+
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }
@@ -119,11 +108,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   @Override
   public int getItemCount() {
-    return useFiltered ? localPasswords.size() : PasswordProvider.getInstance(context).size();
+    return PasswordProvider.getInstance(context).size();
   }
 
   public synchronized void filter(String query) {
-    localPasswords.clear();
+
     if (query.startsWith(PASSWORD_FILTER_PREFIX)) {
       String filter = query.replace(PASSWORD_FILTER_PREFIX, "");
       filter(filter, IS_PASSWORD_FILTERED);
@@ -138,7 +127,6 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     }
 
     notifyDataSetChanged();
-    useFiltered = true;
   }
 
   private void filter(String query, int flag) {
@@ -147,8 +135,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     for (int i = 0; i < provider.size(); i++) {
       Password password = provider.get(i);
       if (matches(password, query, flag)) {
-        if (localPasswords.contains(password)) continue;
-        localPasswords.add(password);
+
       }
     }
   }
@@ -179,70 +166,29 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   }
 
   public void resetFilter() {
-    useFiltered = false;
-    localPasswords.clear();
+
   }
 
-  public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, DialogInterface.OnClickListener {
-    final TextView program;
-    final TextView username;
-    final TextView password;
-    final TextView icon;
-    int id;
-    private boolean safe = false;
+  @Override
+  public void onItemMove(int fromPosition, int toPosition) {
 
-    public ViewHolder(View itemView) {
-      super(itemView);
+  }
 
-      program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
-      username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
-      password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
-      icon = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_icon);
-      /*icon.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          Toast.makeText(context, "Heeeey", Toast.LENGTH_LONG).show();
-        }
-      });*/
+  @Override
+  public void onItemDismiss(int position) {
+    PasswordProvider.getInstance(context).removePassword(position);
+    notifyItemRemoved(position);
+  }
 
-      itemView.setOnClickListener(this);
-    }
+  public void setRefreshing(boolean refreshing) {
+    swipeRefreshLayout.setRefreshing(refreshing);
+  }
 
-    void makeSafe() {
-      ViewManager parent = (ViewManager) password.getParent();
-      parent.removeView(password);
-      parent.removeView(username);
+  public void setCurrentId(int currentId) {
+    this.currentId = currentId;
+  }
 
-      safe = true;
-    }
-
-    @Override
-    public void onClick(View v) {
-      if (safe) {
-        AlertDialog dialog = new AlertDialog.Builder(context)
-            .setTitle("Reenter your password")
-            .setView(R.layout.reenter_password_layout)
-            .setPositiveButton("OK", this)
-            .create();
-        dialog.show();
-      } else {
-        Intent intent = new Intent(context, PasswordDetailActivity.class);
-        intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
-        context.startActivity(intent);
-      }
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-      AlertDialog alert = (AlertDialog) dialog;
-      EditText editText = (EditText) alert.findViewById(R.id.reenterpasswordlayout_edittext_password);
-      String password = editText.getText().toString();
-
-      swipeRefreshLayout.setRefreshing(true);
-      DatabaseProvider.getConnection(context).tryOpen(password, onOpenListener);
-      currentId = id;
-
-      alert.dismiss();
-    }
+  public DatabaseProvider.OnOpenListener getOnOpenListener() {
+    return onOpenListener;
   }
 }

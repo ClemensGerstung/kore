@@ -12,9 +12,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import core.DatabaseProvider;
@@ -74,7 +76,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
       });
 
       if (PasswordProvider.getInstance(PasswordOverviewActivity.this).size() > 0)
-          return;
+        return;
 
       if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
         noPasswordsTextView.setVisibility(View.VISIBLE);
@@ -154,6 +156,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     layoutManager = new LinearLayoutManager(this);
     passwordRecyclerView.setAdapter(passwordOverviewAdapter);
     passwordRecyclerView.setLayoutManager(layoutManager);
+    ItemTouchHelper itemTouchHelper
+        = new ItemTouchHelper(new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter));
+    itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
 
     // make secure
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
