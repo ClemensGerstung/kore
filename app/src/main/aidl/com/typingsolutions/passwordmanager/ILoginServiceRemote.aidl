@@ -5,10 +5,10 @@ import core.IServiceCallback;
 
 interface ILoginServiceRemote {
     void increaseTries();
+    void resetTries();
 
-    oneway void getBlockedTimeAsync();
-    boolean isUserBlocked();
-    int getMaxBlockTime();
+    int getRemainingTries();
+    boolean isBlocked();
 
     void registerCallback(IServiceCallback callback);
     void unregisterCallback(IServiceCallback callback);

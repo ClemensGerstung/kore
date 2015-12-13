@@ -159,7 +159,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     passwordRecyclerView.setLayoutManager(layoutManager);
 
     PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
-    passwordRecyclerView.setItemAnimator(animator);
+    //passwordRecyclerView.setItemAnimator(animator);
 
     SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);

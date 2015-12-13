@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
@@ -21,11 +22,16 @@ public class LoginCallback extends BaseCallback {
   private final DatabaseProvider.OnOpenListener openListener = new DatabaseProvider.OnOpenListener() {
     @Override
     public void open() {
-      loginActivity.hideWaiter();
-      Intent intent = new Intent(context, PasswordOverviewActivity.class);
-      intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
-      context.startActivity(intent);
-      loginActivity.finish();
+      try {
+        loginActivity.hideWaiter();
+        Intent intent = new Intent(context, PasswordOverviewActivity.class);
+        intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
+        context.startActivity(intent);
+        loginActivity.getLoginServiceRemote().resetTries();
+        loginActivity.finish();
+      } catch (RemoteException e) {
+        Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+      }
     }
 
     @Override
@@ -50,7 +56,7 @@ public class LoginCallback extends BaseCallback {
   @Override
   public void onClick(View v) {
     try {
-      if (loginActivity.getLoginServiceRemote().isUserBlocked())
+      if (loginActivity.getLoginServiceRemote().isBlocked())
         throw new LoginException("Sorry, you're blocked", LoginException.BLOCKED);
 
       loginActivity.showWaiter();
