@@ -2,14 +2,9 @@ package com.typingsolutions.passwordmanager.callbacks;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.widget.Toast;
-import core.adapter.IItemTouchHelperAdapter;
-import core.adapter.viewholder.PasswordOverviewViewHolder;
-import core.data.PasswordProvider;
+import com.typingsolutions.passwordmanager.adapter.IItemTouchHelperAdapter;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   private Context context;
@@ -44,17 +39,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
   @Override
   public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-    AlertDialog dialog = new AlertDialog.Builder(context)
-        .setMessage("Delete this password?")
-        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            adapter.onItemDismiss(viewHolder.getAdapterPosition());
-          }
-        })
-        .setNegativeButton("DISCARD", null)
-        .create();
-    dialog.show();
+    adapter.onItemDismiss(viewHolder.getAdapterPosition());
   }
 
   @Override

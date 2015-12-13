@@ -1,4 +1,4 @@
-package core.adapter;
+package com.typingsolutions.passwordmanager.adapter;
 
 import android.support.v7.widget.RecyclerView;
 

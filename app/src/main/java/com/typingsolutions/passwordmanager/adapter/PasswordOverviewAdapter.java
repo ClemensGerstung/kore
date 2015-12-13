@@ -1,9 +1,11 @@
-package core.adapter;
+package com.typingsolutions.passwordmanager.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
@@ -12,7 +14,7 @@ import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.DatabaseProvider;
 import core.Utils;
-import core.adapter.viewholder.PasswordOverviewViewHolder;
+import com.typingsolutions.passwordmanager.adapter.viewholder.PasswordOverviewViewHolder;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -89,6 +91,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     viewHolder.program.setText(password.getProgram());
     viewHolder.id = password.getId();
     viewHolder.icon.setText(password.getProgram().toUpperCase().toCharArray(), 0, 1);
+
     try {
       String programHash = Utils.getHashedString(password.getProgram()).substring(0, 6);
       String passwordHash = Utils.getHashedString(password.getFirstItem()).substring(0, 6);
@@ -100,10 +103,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
           .getBackground()
           .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.MULTIPLY);
       viewHolder.icon.setGravity(Gravity.CENTER);
-
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }
+
+    //ViewUtils.show(context, viewHolder.itemView, android.support.design.R.anim.design_fab_in);
   }
 
   @Override
@@ -175,9 +179,25 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   }
 
   @Override
-  public void onItemDismiss(int position) {
-    PasswordProvider.getInstance(context).removePassword(position);
-    notifyItemRemoved(position);
+  public void onItemDismiss(final int position) {
+    AlertDialog dialog = new AlertDialog.Builder(context)
+        .setMessage("Delete this password?")
+        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            PasswordProvider.getInstance(context).removePassword(position);
+            notifyItemRemoved(position);
+          }
+        })
+        .setNegativeButton("DISCARD", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            notifyDataSetChanged();
+          }
+        })
+        .create();
+    dialog.show();
+
   }
 
   public void setRefreshing(boolean refreshing) {

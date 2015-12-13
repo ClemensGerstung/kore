@@ -1,18 +1,10 @@
-package core.adapter;
+package com.typingsolutions.passwordmanager.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.DynamicDrawableSpan;
-import android.text.style.ImageSpan;
-import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.fragments.AboutFragment;
 import com.typingsolutions.passwordmanager.fragments.LicenseFragment;
 

@@ -1,4 +1,4 @@
-package core.adapter.viewholder;
+package com.typingsolutions.passwordmanager.adapter.viewholder;
 
 import android.support.v7.widget.helper.ItemTouchHelper;
 
