@@ -181,6 +181,10 @@ public class PasswordProvider {
       passwordActionListener.onPasswordEdited(password, password.getFirstHistoryItem());
   }
 
+  public void removePassword(int position) {
+    removePassword(get(position));
+  }
+
   public void removePassword(Password password) {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 

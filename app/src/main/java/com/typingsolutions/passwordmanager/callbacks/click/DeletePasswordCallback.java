@@ -29,14 +29,14 @@ public class DeletePasswordCallback extends BaseCallback {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Delete password")
                 .setMessage("Are you sure to delete this password?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         PasswordProvider.getInstance(context).removePassword(currentPassword);
                         passwordDetailActivity.onBackPressed();
                     }
                 })
-                .setNegativeButton("NOPE", null)
+                .setNegativeButton("DISCARD", null)
                 .create();
         dialog.show();
     }
