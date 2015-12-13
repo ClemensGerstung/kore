@@ -68,7 +68,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public boolean setup() {
     if (onSetupListener == null) return false;
-    String password = onSetupListener.onSetup();
+    password = onSetupListener.onSetup();
 
     SQLiteDatabase sqLiteDatabase = getWritableDatabase(password);
     boolean isOpen = sqLiteDatabase.isOpen();
