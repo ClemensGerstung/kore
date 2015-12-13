@@ -162,8 +162,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     passwordRecyclerView.setItemAnimator(animator);
 
     SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
-    ItemTouchHelper itemTouchHelper
-        = new ItemTouchHelper(simpleItemTouchHelperCallback);
+    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);
     itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
 
     // make secure

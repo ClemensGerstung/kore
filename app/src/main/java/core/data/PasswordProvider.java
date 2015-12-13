@@ -181,11 +181,11 @@ public class PasswordProvider {
       passwordActionListener.onPasswordEdited(password, password.getFirstHistoryItem());
   }
 
-  public void removePassword(int position) {
-    removePassword(get(position));
+  public Password removePassword(int position) {
+    return removePassword(get(position));
   }
 
-  public void removePassword(Password password) {
+  public Password removePassword(Password password) {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
     List<Integer> list = new ArrayList<>(password.getPasswordIds());
@@ -199,6 +199,8 @@ public class PasswordProvider {
 
     if (passwordActionListener != null)
       passwordActionListener.onPasswordRemoved(password);
+
+    return password;
   }
 
   public void setPasswordActionListener(PasswordActionListener passwordActionListener) {

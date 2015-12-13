@@ -175,7 +175,10 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   @Override
   public void onItemMove(int fromPosition, int toPosition) {
-
+    Password from = PasswordProvider.getInstance(context).get(fromPosition);
+    Password to = PasswordProvider.getInstance(context).get(toPosition);
+    from.swapPositionWith(to);
+    notifyItemMoved(fromPosition, toPosition);
   }
 
   @Override

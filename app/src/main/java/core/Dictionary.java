@@ -5,6 +5,13 @@ import java.util.Collection;
 import java.util.Iterator;
 
 // because Java sucks...
+
+/**
+ * A double chained dictionary. indicated by the key
+ *
+ * @param <K> the type of the key
+ * @param <V> the type of the value
+ */
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
 
   public class Element<T, U> {
@@ -102,22 +109,47 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     }
   }
 
+  /**
+   * The first element in the dictionary
+   */
   private Element<K, V> first;
+  /**
+   * The last element in the dictionary
+   */
   private Element<K, V> last;
+  /**
+   * The current element during iteration
+   */
   private Element<K, V> current;
 
+  /**
+   * Initialises an empty {@see Dictionary}
+   */
   public Dictionary() {
     first = null;
     last = null;
     current = null;
   }
 
+
+  /**
+   * Copy constructor for the {@see Dictionary}
+   *
+   * @param other the {@see Dictionary} to copy
+   */
   public Dictionary(Dictionary<K, V> other) {
     this();
     addAll(other, InsertOption.After, IterationOption.Forwards);
   }
 
-  public void addLast(K key, V value) {
+  /**
+   * Adds a not existing element to the end of the dictionary
+   *
+   * @param key   the key of the element
+   * @param value the value of the element
+   * @return the new added element
+   */
+  public Element<K, V> addLast(K key, V value) {
     if (containsKey(key, IterationOption.Backwards))
       throw new IllegalArgumentException("Already contains key " + key.toString() + "!");
 
@@ -130,9 +162,18 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       last.setPrevious(element);
       element.setNext(last);
     }
+
+    return last;
   }
 
-  public void addFirst(K key, V value) {
+  /**
+   * Adds an not existing element to the front of the dictionary
+   *
+   * @param key   of the element
+   * @param value of the element
+   * @return the new element
+   */
+  public Element<K, V> addFirst(K key, V value) {
     if (containsKey(key, IterationOption.Forwards))
       throw new IllegalArgumentException("Already contains key " + key.toString() + "!");
 
@@ -145,42 +186,95 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       first.setNext(element);
       element.setPrevious(first);
     }
+    return first;
   }
-
+  
+  /**
+   * Adds all elements of another dictionary to the current
+   *
+   * @param other        the dictionary to copy
+   * @param insertOption either add before the current dictionary or behind
+   * @param option       iterate the other dictionary from front to end or vice versa
+   */
   public void addAll(Dictionary<K, V> other, InsertOption insertOption, IterationOption option) {
     Element<K, V> iterator = (option == IterationOption.Forwards ? other.getFirstIterator() : other.getLastIterator());
-    while (other.hasNext()) {
-      if (!containsKey(iterator.key, option)) {
-        if (insertOption == InsertOption.After) {
-          addLast(iterator.key, iterator.value);
-        } else {
-          addFirst(iterator.key, iterator.value);
-        }
-      }
-      iterator = option == IterationOption.Forwards ? other.next() : other.previous();
+    addAll(iterator, insertOption, option);
+  }
+
+  /**
+   * Recursive method to copy a dictionary
+   *
+   * @param element         to copy
+   * @param insertOption    either add before the current element or behind
+   * @param iterationOption iterate the other dictionary from front to end or vice versa
+   */
+  private void addAll(Element<K, V> element, InsertOption insertOption, IterationOption iterationOption) {
+    boolean forward = iterationOption == IterationOption.Forwards;
+
+    if (containsKey(element.key, iterationOption))
+      addAll(element, insertOption, iterationOption, forward);
+
+    if (insertOption == InsertOption.After) {
+      addLast(element.key, element.value);
+    } else {
+      addFirst(element.key, element.value);
+    }
+
+    addAll(element, insertOption, iterationOption, forward);
+  }
+
+  /**
+   * Recursive method to copy a dictionary
+   *
+   * @param element         to copy
+   * @param insertOption    either add before the current element or behind
+   * @param iterationOption iterate the other dictionary from front to end or vice versa
+   * @param forward         {@param iterationOption} == {@see IterationOption.Forwards}
+   */
+  private void addAll(Element<K, V> element, InsertOption insertOption, IterationOption iterationOption, boolean forward) {
+    if (forward && element.hasNext()) {
+      addAll(element.getNext(), insertOption, iterationOption);
+    } else if (!forward && element.hasPrevious()) {
+      addAll(element.getPrevious(), insertOption, iterationOption);
     }
   }
 
+  /**
+   * Sets an value for an specific key or adds it if it doesn't exist
+   * @param key to search for
+   * @param value to set
+   * @param option to iterate through the dictionary
+   */
   public void setForKey(K key, V value, IterationOption option) {
     Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
 
-    boolean setValue = false;
-    while (iterator != null) {
-      if (iterator.getKey().equals(key)) {
-        iterator.setValue(value);
-        setValue = true;
-        break;
-      }
+    boolean setValue = setForKey(iterator, key, value, option == IterationOption.Backwards);
 
-      iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+    if (setValue)
+      return;
+
+    if (option == IterationOption.Backwards) {
+      addFirst(key, value);
+    } else {
+      addLast(key, value);
+    }
+  }
+
+  /**
+   * Recursive method to set an value for a key
+   * @param element current iterator
+   * @param key to search for
+   * @param value to set
+   * @param forward iteration way through the dictionary
+   * @return if element was in dictionary
+   */
+  private boolean setForKey(Element<K, V> element, K key, V value, boolean forward) {
+    if (element.key.equals(key)) {
+      element.value = value;
+      return true;
     }
 
-    if (!setValue) {
-      if (option == IterationOption.Backwards)
-        addFirst(key, value);
-      else
-        addLast(key, value);
-    }
+    return (forward && element.hasNext() || !forward && element.hasPrevious()) && setForKey(forward ? element.next : element.prev, key, value, forward);
   }
 
   public void insertKey(K search, K key, V value, InsertOption insertOption, IterationOption option) {
@@ -245,10 +339,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return result;
   }
 
-  // TODO: check
   public void clear() {
     if (first == null && last == null)
-      throw new IllegalStateException("List is already cleared!");
+      throw new IllegalStateException("dictionary is already cleared!");
 
     Element<K, V> element = first;
     Element<K, V> next = first.getNext();
@@ -342,23 +435,37 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public Collection<K> keys() {
-    Collection<K> list = new ArrayList<>();
+    ArrayList<K> dictionary = new ArrayList<>();
 
-    for (Element<K, V> element : this) {
-      list.add(element.key);
-    }
+    if (!hasNext())
+      return dictionary;
 
-    return list;
+    return keys(dictionary, getFirstIterator());
+  }
+
+  private Collection<K> keys(Collection<K> collection, Element<K, V> element) {
+    collection.add(element.key);
+    if (element.hasNext())
+      return keys(collection, element.getNext());
+
+    return collection;
   }
 
   public Collection<V> values() {
-    Collection<V> list = new ArrayList<>();
+    Collection<V> dictionary = new ArrayList<>();
 
-    for (Element<K, V> element : this) {
-      list.add(element.value);
-    }
+    if (!hasNext())
+      return dictionary;
 
-    return list;
+    return values(dictionary, getFirstIterator());
+  }
+
+  private Collection<V> values(Collection<V> collection, Element<K, V> element) {
+    collection.add(element.value);
+    if (element.hasNext())
+      return values(collection, element.getNext());
+
+    return collection;
   }
 
   @SuppressWarnings("CloneDoesntCallSuperClone")

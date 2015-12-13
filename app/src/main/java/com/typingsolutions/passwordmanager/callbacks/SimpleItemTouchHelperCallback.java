@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import com.typingsolutions.passwordmanager.adapter.IItemTouchHelperAdapter;
+import com.typingsolutions.passwordmanager.adapter.viewholder.IItemTouchHelperViewHolder;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   private Context context;
@@ -33,8 +34,9 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   }
 
   @Override
-  public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-    return false;
+  public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
+    adapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+    return true;
   }
 
   @Override
@@ -43,12 +45,20 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   }
 
   @Override
-  public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y) {
-    super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+  public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+    super.clearView(recyclerView, viewHolder);
+
+    IItemTouchHelperViewHolder itemViewHolder = (IItemTouchHelperViewHolder) viewHolder;
+    itemViewHolder.onItemClear();
   }
 
   @Override
-  public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-    super.clearView(recyclerView, viewHolder);
+  public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+    if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+      IItemTouchHelperViewHolder itemViewHolder = (IItemTouchHelperViewHolder) viewHolder;
+      itemViewHolder.onItemSelected();
+    }
+
+    super.onSelectedChanged(viewHolder, actionState);
   }
 }
