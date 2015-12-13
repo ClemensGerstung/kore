@@ -106,12 +106,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       String passwordHash = Utils.getHashedString(password.getFirstItem()).substring(0, 6);
 
       int hexColor = Integer.parseInt(programHash, 16)
-          | Integer.parseInt(passwordHash, 16)
-          | 0xFF000000;
+          | Integer.parseInt(passwordHash, 16);
 
       viewHolder.icon
           .getBackground()
-          .setColorFilter(hexColor, PorterDuff.Mode.MULTIPLY);
+          .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.MULTIPLY);
       viewHolder.icon.setGravity(Gravity.CENTER);
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));

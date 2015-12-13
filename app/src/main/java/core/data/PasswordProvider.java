@@ -184,7 +184,8 @@ public class PasswordProvider {
   public void removePassword(Password password) {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
-    for (Integer i : password.getPasswordIds()) {
+    List<Integer> list = new ArrayList<>(password.getPasswordIds());
+    for (Integer i : list) {
       provider.remove(DatabaseProvider.REMOVE_HISTORY_BY_ID, i);
     }
 
