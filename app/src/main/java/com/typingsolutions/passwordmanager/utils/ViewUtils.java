@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager;
+package com.typingsolutions.passwordmanager.utils;
 
 import android.content.Context;
 import android.support.annotation.AnimRes;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import com.typingsolutions.passwordmanager.R;
 
 public final class ViewUtils {
 

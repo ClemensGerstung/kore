@@ -1,4 +1,4 @@
-package core.adapter.viewholder;
+package com.typingsolutions.passwordmanager.adapter.viewholder;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import core.DatabaseProvider;
-import core.adapter.PasswordOverviewAdapter;
+import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 
 
 public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder

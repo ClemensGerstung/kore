@@ -12,12 +12,12 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
-import com.typingsolutions.passwordmanager.LinearLayoutManager;
+import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.click.DeletePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
-import core.adapter.PasswordHistoryAdapter;
+import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import core.data.Password;
 import core.data.PasswordProvider;
 

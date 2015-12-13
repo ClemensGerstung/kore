@@ -19,9 +19,10 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
+import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
-import core.adapter.PasswordOverviewAdapter;
+import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -156,8 +157,13 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     layoutManager = new LinearLayoutManager(this);
     passwordRecyclerView.setAdapter(passwordOverviewAdapter);
     passwordRecyclerView.setLayoutManager(layoutManager);
+
+    PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
+    passwordRecyclerView.setItemAnimator(animator);
+
+    SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
     ItemTouchHelper itemTouchHelper
-        = new ItemTouchHelper(new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter));
+        = new ItemTouchHelper(simpleItemTouchHelperCallback);
     itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
 
     // make secure

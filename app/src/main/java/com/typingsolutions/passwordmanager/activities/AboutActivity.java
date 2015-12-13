@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.typingsolutions.passwordmanager.R;
-import core.adapter.AboutViewPagerAdapter;
+import com.typingsolutions.passwordmanager.adapter.AboutViewPagerAdapter;
 
 
 public class AboutActivity extends AppCompatActivity {

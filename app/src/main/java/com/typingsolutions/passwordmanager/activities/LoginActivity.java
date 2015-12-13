@@ -24,7 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.ViewUtils;
+import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import com.typingsolutions.passwordmanager.callbacks.click.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.RetypePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.SetupCallback;
