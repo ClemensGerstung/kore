@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.EditTextImpl;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewManager;
@@ -89,7 +90,7 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
 
   @Override
   public void onItemSelected() {
-    itemView.setBackgroundColor(0xFFFFFFFF);
+
   }
 
   @Override

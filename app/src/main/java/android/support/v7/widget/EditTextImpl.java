@@ -15,42 +15,46 @@ import android.widget.*;
 
 public class EditTextImpl {
 
-    public void initShadow() {
-        RoundRectDrawableWithShadow.sRoundRectHelper
-                = new RoundRectDrawableWithShadow.RoundRectHelper() {
-            @Override
-            public void drawRoundRect(Canvas canvas, RectF bounds, float cornerRadius,
-                                      Paint paint) {
-                canvas.drawRoundRect(bounds, cornerRadius, cornerRadius, paint);
-            }
-        };
-    }
+  public void initShadow() {
+    RoundRectDrawableWithShadow.sRoundRectHelper
+        = new RoundRectDrawableWithShadow.RoundRectHelper() {
+      @Override
+      public void drawRoundRect(Canvas canvas, RectF bounds, float cornerRadius,
+                                Paint paint) {
+        canvas.drawRoundRect(bounds, cornerRadius, cornerRadius, paint);
+      }
+    };
+  }
 
-    public void init(View view, Context context, int backgroundColor, float radius, float elevation, float translationZ) {
-        RoundRectDrawableWithShadow background = new RoundRectDrawableWithShadow(context.getResources(), backgroundColor, radius, elevation, elevation + translationZ);
-        background.setAddPaddingForCorners(false);
-        view.setBackgroundDrawable(background);
-        updatePadding(view);
-    }
+  public void init(View view, Context context, int backgroundColor, float radius, float elevation, float translationZ) {
+    RoundRectDrawableWithShadow background = new RoundRectDrawableWithShadow(context.getResources(), backgroundColor, radius, elevation, elevation + translationZ);
+    background.setAddPaddingForCorners(false);
+    view.setBackgroundDrawable(background);
+    updatePadding(view);
+  }
 
-    public void updatePadding(View view) {
-        Rect shadowPadding = new Rect();
-        getShadowBackground(view).getMaxShadowAndCornerPadding(shadowPadding);
-        view.setMinimumHeight((int) Math.ceil(getMinHeight(view)));
-        view.setMinimumWidth((int) Math.ceil(getMinWidth(view)));
-        ((EditText)view).setShadowPadding(shadowPadding.left, shadowPadding.top,
-                shadowPadding.right, shadowPadding.bottom);
-    }
+  public void updatePadding(View view) {
+    Rect shadowPadding = new Rect();
+    getShadowBackground(view).getMaxShadowAndCornerPadding(shadowPadding);
+    view.setMinimumHeight((int) Math.ceil(getMinHeight(view)));
+    view.setMinimumWidth((int) Math.ceil(getMinWidth(view)));
 
-    public float getMinWidth(View view) {
-        return getShadowBackground(view).getMinWidth();
-    }
+    if(!(view instanceof EditText))
+      return;
 
-    public float getMinHeight(View view) {
-        return getShadowBackground(view).getMinHeight();
-    }
+    ((EditText) view).setShadowPadding(shadowPadding.left, shadowPadding.top,
+        shadowPadding.right, shadowPadding.bottom);
+  }
 
-    RoundRectDrawableWithShadow getShadowBackground(View view) {
-        return ((RoundRectDrawableWithShadow) view.getBackground());
-    }
+  public float getMinWidth(View view) {
+    return getShadowBackground(view).getMinWidth();
+  }
+
+  public float getMinHeight(View view) {
+    return getShadowBackground(view).getMinHeight();
+  }
+
+  RoundRectDrawableWithShadow getShadowBackground(View view) {
+    return ((RoundRectDrawableWithShadow) view.getBackground());
+  }
 }
