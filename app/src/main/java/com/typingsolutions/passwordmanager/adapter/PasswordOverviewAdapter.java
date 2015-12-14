@@ -136,11 +136,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   private void filter(String query, int flag) {
     PasswordProvider provider = PasswordProvider.getInstance(context);
-    for (int i = 0; i < provider.size(); i++) {
+    for (int i = provider.size() - 1; i >= 0; i--) {
       Password password = provider.get(i);
       if (!matches(password, query, flag)) {
-        notifyItemRemoved(i);
         removedFilteredItems++;
+        notifyItemRemoved(i);
       }
     }
   }
@@ -177,9 +177,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   @Override
   public void onItemMove(int fromPosition, int toPosition) {
-    Password from = PasswordProvider.getInstance(context).get(fromPosition);
-    Password to = PasswordProvider.getInstance(context).get(toPosition);
-    from.swapPositionWith(to);
+    PasswordProvider.getInstance(context).swapPassword(fromPosition, toPosition);
     notifyItemMoved(fromPosition, toPosition);
   }
 
@@ -197,7 +195,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         .setNegativeButton("DISCARD", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            notifyDataSetChanged();
+            notifyItemChanged(position);
           }
         })
         .create();

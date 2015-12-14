@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.EditTextImpl;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -90,11 +91,15 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
 
   @Override
   public void onItemSelected() {
-
+    CardView cardView = (CardView) itemView;
+    cardView.setCardElevation(12.0f);
+    cardView.setCardBackgroundColor(0xFAFAFAFA);
   }
 
   @Override
   public void onItemClear() {
-
+    CardView cardView = (CardView) itemView;
+    cardView.setCardElevation(0.0f);
+    cardView.setCardBackgroundColor(0x00FAFAFA);
   }
 }
