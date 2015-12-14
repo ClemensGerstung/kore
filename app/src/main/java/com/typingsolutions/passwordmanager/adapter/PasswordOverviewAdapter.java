@@ -19,11 +19,16 @@ import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewViewHolder>
     implements IItemTouchHelperAdapter {
 
   private final SwipeRefreshLayout swipeRefreshLayout;
   private int currentId;
+  private List<Integer> removedItems = new ArrayList<>();
+
   private final DatabaseProvider.OnOpenListener onOpenListener = new DatabaseProvider.OnOpenListener() {
     @Override
     public void open() {
@@ -118,6 +123,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   public synchronized void filter(String query) {
 
+    if(query.isEmpty()) {
+      resetFilter();
+      return;
+    }
+
     if (query.startsWith(PASSWORD_FILTER_PREFIX)) {
       String filter = query.replace(PASSWORD_FILTER_PREFIX, "");
       filter(filter, IS_PASSWORD_FILTERED);
@@ -131,7 +141,6 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       filter(query, IS_NOT_FILTERED);
     }
 
-    //notifyDataSetChanged();
   }
 
   private void filter(String query, int flag) {
@@ -141,6 +150,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
       if (!matches(password, query, flag)) {
         removedFilteredItems++;
         notifyItemRemoved(i);
+        removedItems.add(i);
       }
     }
   }
@@ -171,8 +181,11 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   }
 
   public void resetFilter() {
-    notifyDataSetChanged();
+    for (Integer i : removedItems) {
+      notifyItemInserted(i);
+    }
     removedFilteredItems = 0;
+    removedItems.clear();
   }
 
   @Override
