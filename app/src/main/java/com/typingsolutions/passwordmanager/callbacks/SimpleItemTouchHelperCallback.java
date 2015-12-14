@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import com.typingsolutions.passwordmanager.adapter.IItemTouchHelperAdapter;
+import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.adapter.viewholder.IItemTouchHelperViewHolder;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {

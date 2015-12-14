@@ -203,6 +203,13 @@ public class PasswordProvider {
     return password;
   }
 
+  public void swapPassword(int from, int to) {
+    Collections.swap(passwords, from, to);
+    Password fromPassword = PasswordProvider.getInstance(context).get(from);
+    Password toPassword = PasswordProvider.getInstance(context).get(to);
+    fromPassword.swapPositionWith(toPassword);
+  }
+
   public void setPasswordActionListener(PasswordActionListener passwordActionListener) {
     this.passwordActionListener = passwordActionListener;
   }
