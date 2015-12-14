@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
     progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
     imageView_background = (ImageView) findViewById(R.id.loginlayout_imageview_background);
     textview_rootedIndicator = (TextView) findViewById(R.id.loginlayout_textview_rootedindicator);
-    if(!Utils.isRooted())
+    if (!Utils.isRooted())
       textview_rootedIndicator.setVisibility(View.GONE);
 
     SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -231,15 +231,8 @@ public class LoginActivity extends AppCompatActivity {
         return true;
       }
     } else {
-      int remTries = 0;
-      try {
-        remTries = loginServiceRemote.getRemainingTries();
-      } catch (Exception e) {
-        Snackbar.make(coordinatorLayout_root, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
-      }
-
       Snackbar
-          .make(coordinatorLayout_root, String.format("Sorry, your passwords don't match! %s tries left", remTries), Snackbar.LENGTH_LONG)
+          .make(coordinatorLayout_root, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG)
           .setAction("RETYPE", new RetypePasswordCallback(this, this))
           .show();
     }

@@ -125,15 +125,15 @@ public class LoginService extends Service {
 
     @Override
     public int getRemainingTries() throws RemoteException {
-      if(tries < TRIES_FOR_SMALL_BLOCK) {
-        return TRIES_FOR_SMALL_BLOCK - tries;
+      if (tries < TRIES_FOR_SMALL_BLOCK) {
+        return TRIES_FOR_SMALL_BLOCK - tries - 1;
       } else if (tries < TRIES_FOR_MEDIUM_BLOCK) {
-        return TRIES_FOR_MEDIUM_BLOCK - tries;
-      } else if(tries < TRIES_FOR_LARGE_BLOCK) {
-        return TRIES_FOR_LARGE_BLOCK - tries;
-      } else if(tries < TRIES_FOR_FINAL_BLOCK) {
-        return TRIES_FOR_FINAL_BLOCK - tries;
-      } else if(tries >= TRIES_FOR_FINAL_BLOCK) {
+        return TRIES_FOR_MEDIUM_BLOCK - tries - 1;
+      } else if (tries < TRIES_FOR_LARGE_BLOCK) {
+        return TRIES_FOR_LARGE_BLOCK - tries - 1;
+      } else if (tries < TRIES_FOR_FINAL_BLOCK) {
+        return TRIES_FOR_FINAL_BLOCK - tries - 1;
+      } else if (tries >= TRIES_FOR_FINAL_BLOCK) {
         return 1;
       }
       return 0;
@@ -141,7 +141,7 @@ public class LoginService extends Service {
 
     @Override
     public boolean isBlocked() throws RemoteException {
-      return tries > 0;
+      return currentLockTime > 0;
     }
 
 

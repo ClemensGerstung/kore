@@ -1,11 +1,9 @@
 package com.typingsolutions.passwordmanager.callbacks.click;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
@@ -37,8 +35,9 @@ public class LoginCallback extends BaseCallback {
     @Override
     public void refused() {
       try {
+        int remTries = loginActivity.getLoginServiceRemote().getRemainingTries();
         loginActivity.hideWaiter();
-        Snackbar.make(loginActivity.getRootView(), "Your password is wrong!", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(loginActivity.getRootView(), String.format("Your password is wrong! %s tries left", remTries), Snackbar.LENGTH_LONG).show();
         loginActivity.getLoginServiceRemote().increaseTries();
         loginActivity.retypePassword();
       } catch (RemoteException e) {

@@ -22,7 +22,7 @@ android {
         applicationId "com.typingsolutions.passwordmanager"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 3
+        versionCode 15
         versionName "1.5"
     }
     buildTypes {
