@@ -47,7 +47,11 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
+      if(!PasswordProvider.isLoggedIn())
+        return;
+
       PasswordProvider.logoutComplete();
+
       Intent loginIntent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
       startActivity(loginIntent);
     }

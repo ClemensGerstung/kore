@@ -47,6 +47,11 @@ public class PasswordProvider {
   public static void logoutComplete() {
     Instance.simpleLogout();
     Instance.context = null;
+    Instance = null;
+  }
+
+  public static boolean isLoggedIn() {
+    return Instance != null;
   }
 
   void simpleLogout() {
