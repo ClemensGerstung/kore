@@ -31,7 +31,7 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
   public int id;
   private boolean safe = false;
 
-  public PasswordOverviewViewHolder(Context context, PasswordOverviewAdapter passwordOverviewAdapter, final View itemView) {
+  public PasswordOverviewViewHolder(final Context context, PasswordOverviewAdapter passwordOverviewAdapter, final View itemView) {
     super(itemView);
 
     this.context = context;
@@ -44,7 +44,10 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
     icon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-
+        AlertDialog dialog = new AlertDialog.Builder(context)
+            .setTitle("asdf")
+            .create();
+        dialog.show();
       }
     });
 

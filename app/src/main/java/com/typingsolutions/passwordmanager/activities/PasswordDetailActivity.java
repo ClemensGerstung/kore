@@ -1,8 +1,5 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -14,16 +11,14 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.click.DeletePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
-import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
+import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
-import core.Utils;
 import core.data.Password;
 import core.data.PasswordProvider;
 
@@ -63,6 +58,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     passwordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
     collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
     Button button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
+    TextView nohistory = (TextView) findViewById(R.id.passworddetaillayout_textview_nohistory);
 
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -108,14 +104,15 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
     ViewUtils.setColor(header, programString, passwordString);
 
-    if (!header.requestFocus())
-      header.requestFocus();
+    if(currentPassword.getHistoryCount() > 1) {
+      nohistory.setVisibility(View.GONE);
+      passwordHistory.setVisibility(View.VISIBLE);
+    }
+
+    if (!delete.requestFocus())
+      delete.requestFocus();
   }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-  }
 
   @Override
   protected void onPause() {
