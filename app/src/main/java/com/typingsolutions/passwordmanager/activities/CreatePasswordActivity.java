@@ -50,22 +50,22 @@ public class CreatePasswordActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_detail_layout);
 
-    /*toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
-    program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
+    toolbar = (Toolbar) findViewById(R.id.passworddetaillayout_toolbar_actionbar);
+    /*program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
     CardView delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
     CardView passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
     button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
-
+*/
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        onBackPressed();
+        //onBackPressed();
       }
     });
-
+/*
     username.addTextChangedListener(switchTextWatcher);
     program.addTextChangedListener(switchTextWatcher);
     password.addTextChangedListener(switchTextWatcher);
@@ -80,9 +80,9 @@ public class CreatePasswordActivity extends AppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.create_user_menu, menu);
-    boolean result = program.getText().length() > 0
+/*    boolean result = program.getText().length() > 0
         && password.getText().length() > 0;
-    switchMenuState(result);
+    switchMenuState(result);*/
     return true;
   }
 
