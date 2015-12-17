@@ -12,6 +12,7 @@ import android.view.*;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
+import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.DatabaseProvider;
 import core.Utils;
 import com.typingsolutions.passwordmanager.adapter.viewholder.PasswordOverviewViewHolder;
@@ -99,20 +100,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
     viewHolder.id = password.getId();
     viewHolder.icon.setText(password.getProgram().toUpperCase().toCharArray(), 0, 1);
 
-    try {
-      String programHash = Utils.getHashedString(password.getProgram()).substring(0, 6);
-      String passwordHash = Utils.getHashedString(password.getFirstItem()).substring(0, 6);
-
-      int hexColor = Integer.parseInt(programHash, 16)
-          | Integer.parseInt(passwordHash, 16);
-
-      viewHolder.icon
-          .getBackground()
-          .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.MULTIPLY);
-      viewHolder.icon.setGravity(Gravity.CENTER);
-    } catch (Exception e) {
-      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-    }
+    ViewUtils.setColor(viewHolder.icon, password.getProgram(), password.getFirstItem());
 
   }
 
