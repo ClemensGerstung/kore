@@ -20,11 +20,12 @@
   </style>
 
   <style name="standardEditText" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="colorControlNormal">#2196F3</item>
-    <item name="android:textColorPrimary">#FFFFFF</item>
+    <item name="colorControlNormal">#616161</item>
+    <item name="android:textColorPrimary">#000000</item>
     <item name="android:textCursorDrawable">@null</item>
-    <item name="android:textColorHint">#424242</item>
-    <item name="colorControlActivated">#0D47A1</item>
+    <item name="android:textColorHint">#616161</item>
+    <item name="android:cacheColorHint">@null</item>
+    <item name="colorControlActivated">#2196F3</item>
   </style>
 
 </resources>

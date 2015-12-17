@@ -84,7 +84,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_detail_layout);
 
-    toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
+    /*toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
     program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
@@ -136,13 +136,13 @@ public class PasswordDetailActivity extends AppCompatActivity {
     passwordHistoryCard.requestFocus();
 
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-  }
+ */ }
 
   @Override
   protected void onResume() {
     super.onResume();
-    ScrollView view = (ScrollView) findViewById(R.id.passworddetaillayout_scrollview_scroller);
-    view.fullScroll(View.FOCUS_UP);
+    //ScrollView view = (ScrollView) findViewById(R.id.passworddetaillayout_scrollview_scroller);
+    //view.fullScroll(View.FOCUS_UP);
   }
 
   @Override

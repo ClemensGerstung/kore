@@ -19,7 +19,7 @@ import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 
 public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
     implements View.OnClickListener, DialogInterface.OnClickListener,
-               IItemTouchHelperViewHolder {
+    IItemTouchHelperViewHolder {
 
   private Context context;
   private PasswordOverviewAdapter passwordOverviewAdapter;
@@ -70,6 +70,7 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
       dialog.show();
     } else {
       Intent intent = new Intent(context, PasswordDetailActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
       intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
       context.startActivity(intent);
     }
