@@ -84,16 +84,16 @@ public class PasswordDetailActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_detail_layout);
 
-    /*toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
+    toolbar = (Toolbar) findViewById(R.id.passworddetaillayout_toolbar_actionbar);
     program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
-    delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
+    /*delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
     passwordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
     passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
     passwordCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_password);
     Button button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
-
+*/
 
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -101,7 +101,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
       public void onClick(View v) {
         onBackPressed();
       }
-    });
+    });/*
 
     passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
     if (passwordId == -1) return;
