@@ -1,8 +1,11 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +15,15 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.click.DeletePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
+import com.typingsolutions.passwordmanager.utils.ViewUtils;
+import core.Utils;
 import core.data.Password;
 import core.data.PasswordProvider;
 
@@ -40,6 +46,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
   private AddPasswordTextWatcher passwordTextWatcher;
 
   private int passwordId;
+  private CollapsingToolbarLayout collapsingToolbarLayout;
+  private TextView header;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +58,10 @@ public class PasswordDetailActivity extends AppCompatActivity {
     program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
+    header = (TextView) findViewById(R.id.passworddetaillayout_textview_header);
     delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
     passwordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
+    collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
     Button button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
 
     setSupportActionBar(toolbar);
@@ -93,8 +103,13 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
-    if(!button.requestFocus())
-      button.requestFocus();
+    collapsingToolbarLayout.setTitle(programString);
+    collapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
+
+    ViewUtils.setColor(header, programString, passwordString);
+
+    if (!header.requestFocus())
+      header.requestFocus();
   }
 
   @Override
@@ -124,8 +139,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
     String newProgram = null;
     String newPassword = null;
     try {
-      newUsername = usernameTextWatcher.needUpdate() ? username.getText().toString() : null;
-      newProgram = programTextWatcher.needUpdate() ? program.getText().toString() : null;
+      newUsername = username.getText().toString();
+      newProgram = program.getText().toString();
       newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
     } catch (Exception e) {
       // ignored
@@ -136,9 +151,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
         PasswordProvider.getInstance(this).editPassword(passwordId, newPassword);
       }
 
-      if (newUsername != null || newProgram != null) {
-        PasswordProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
-      }
+      PasswordProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }

@@ -1,19 +1,25 @@
 package com.typingsolutions.passwordmanager.utils;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.annotation.AnimRes;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import core.Utils;
+
+import java.util.Arrays;
 
 public final class ViewUtils {
 
   public static final long FAST_ANIMATION_DURATION = 250;
 
   public static synchronized void show(final Context context, final View view, @AnimRes int animation) {
-    if(view == null) return;
+    if (view == null) return;
 
     boolean hiding = true;
     try {
@@ -34,7 +40,7 @@ public final class ViewUtils {
   }
 
   public static synchronized void hide(final Context context, final View view, @AnimRes int animation) {
-    if(view == null) return;
+    if (view == null) return;
 
     boolean hiding = false;
     try {
@@ -50,6 +56,24 @@ public final class ViewUtils {
     anim.setDuration(FAST_ANIMATION_DURATION);
     anim.setAnimationListener(new LocalAnimationListener(view));
     view.startAnimation(anim);
+  }
+
+  public static void setColor(TextView textView, String first, String second) {
+    try {
+      String programHash = Utils.getHashedString(first).substring(0, 6);
+      String passwordHash = Utils.getHashedString(second).substring(0, 6);
+
+      int hexColor = Integer.parseInt(programHash, 16)
+          & Integer.parseInt(passwordHash, 16);
+
+      hexColor += 0x333333;
+
+      textView.getBackground()
+          .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.MULTIPLY);
+      textView.setText(first.toCharArray(), 0, 1);
+    } catch (Exception e) {
+      Log.e(ViewUtils.class.getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+    }
   }
 
   private static class LocalAnimationListener implements Animation.AnimationListener {
