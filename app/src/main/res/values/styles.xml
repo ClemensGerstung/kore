@@ -27,9 +27,4 @@
     <item name="android:cacheColorHint">@null</item>
     <item name="colorControlActivated">#2196F3</item>
   </style>
-
-  <style name="flatButton" parent="Base.Widget.AppCompat.Button.Borderless">
-    <!--<item name="colorControlHighlight">#000</item>-->
-    <item name="color">#000</item>
-  </style>
 </resources>

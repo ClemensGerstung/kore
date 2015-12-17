@@ -30,8 +30,6 @@ public class PasswordDetailActivity extends AppCompatActivity {
   private EditText username;
   private EditText password;
   private CardView delete;
-  private CardView passwordHistoryCard;
-  private CardView passwordCard;
   private RecyclerView passwordHistory;
 
   private RecyclerView.LayoutManager layoutManager;
@@ -43,42 +41,6 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
   private int passwordId;
 
-  private boolean first = true;
-
-  private View.OnLayoutChangeListener deleteLayoutChanged = new View.OnLayoutChangeListener() {
-    @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-      int windowHeight = PasswordDetailActivity.this.getWindow().getDecorView().getHeight();
-
-      if (!first)
-        return;
-
-      first = false;
-      if (bottom > windowHeight) return;
-
-      Rect phr = new Rect();
-      Rect password = new Rect();
-
-      passwordHistoryCard.getGlobalVisibleRect(phr);
-      passwordCard.getGlobalVisibleRect(password);
-
-      ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) passwordHistoryCard.getLayoutParams();
-
-      int toolbarHeight = Build.VERSION.SDK_INT >= 21 ? toolbar.getMeasuredHeight() : 0;
-      int additionalMargin = Build.VERSION.SDK_INT >= 21 ? (margin.topMargin * 2 + margin.bottomMargin) : 0;
-
-      int newDeletePos = windowHeight - delete.getMeasuredHeight();
-      int historyCardHeight = newDeletePos - additionalMargin - password.bottom - toolbarHeight;
-      Log.i(getClass().getSimpleName(), String.format("Height: %s", historyCardHeight));
-
-      ViewGroup.LayoutParams params = passwordHistoryCard.getLayoutParams();
-      if (historyCardHeight > passwordHistoryCard.getMeasuredHeight()) {
-        params.height = historyCardHeight;
-      }
-      passwordHistoryCard.setLayoutParams(params);
-    }
-  };
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -88,12 +50,9 @@ public class PasswordDetailActivity extends AppCompatActivity {
     program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
-    /*delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
+    delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
     passwordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
-    passwordHistoryCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_passwordhistory);
-    passwordCard = (CardView) findViewById(R.id.passworddetaillayout_cardview_password);
     Button button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
-*/
 
     setSupportActionBar(toolbar);
     toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -101,7 +60,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
       public void onClick(View v) {
         onBackPressed();
       }
-    });/*
+    });
 
     passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
     if (passwordId == -1) return;
@@ -129,20 +88,18 @@ public class PasswordDetailActivity extends AppCompatActivity {
     password.setText(passwordString);
     password.addTextChangedListener(passwordTextWatcher);
 
-    delete.addOnLayoutChangeListener(deleteLayoutChanged);
     DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
     delete.setOnClickListener(onClickListener);
 
-    passwordHistoryCard.requestFocus();
-
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
- */ }
+
+    if(!button.requestFocus())
+      button.requestFocus();
+  }
 
   @Override
   protected void onResume() {
     super.onResume();
-    //ScrollView view = (ScrollView) findViewById(R.id.passworddetaillayout_scrollview_scroller);
-    //view.fullScroll(View.FOCUS_UP);
   }
 
   @Override
