@@ -50,7 +50,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_detail_layout);
 
-    toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
+    /*toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
     program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
@@ -73,7 +73,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
 
 
     delete.setVisibility(View.GONE);
-    passwordHistoryCard.setVisibility(View.GONE);
+    passwordHistoryCard.setVisibility(View.GONE);*/
   }
 
   @Override
