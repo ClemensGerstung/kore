@@ -56,5 +56,9 @@
     <activity android:name=".activities.AboutActivity"
               android:theme="@style/Base.AppTheme"
               android:label="About and Licenses"/>
+
+    <activity android:name=".activities.BackupActivity"
+              android:theme="@style/Base.AppTheme"
+              android:label="Backup and Restore"/>
   </application>
 </manifest>

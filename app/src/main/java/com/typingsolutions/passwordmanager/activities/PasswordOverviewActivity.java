@@ -251,6 +251,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
         break;
+      case R.id.passwordoverviewlayout_menuitem_backup:
+        intent = new Intent(this, BackupActivity.class);
+        startActivity(intent);
+        break;
     }
 
     return true;
