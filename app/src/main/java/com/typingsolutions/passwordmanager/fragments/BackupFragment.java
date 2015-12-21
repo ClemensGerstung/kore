@@ -1,24 +1,32 @@
 package com.typingsolutions.passwordmanager.fragments;
 
-import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.EditText;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.callbacks.click.ExpandCallback;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class BackupFragment extends Fragment {
+  public static final int BACKUP_REQUEST_CODE = 36;
+
   private Button doBackup;
   private ImageButton expand;
   private TextInputLayout passwordWrapper;
@@ -38,6 +46,7 @@ public class BackupFragment extends Fragment {
     hint = (TextView) root.findViewById(R.id.backuplayout_textview_hint);
 
     expand.setOnClickListener(new ExpandCallback(getActivity(), this));
+    doBackup.setOnClickListener(new DoBackupCallback(getActivity()));
 
     return root;
   }
@@ -54,15 +63,11 @@ public class BackupFragment extends Fragment {
     return hint;
   }
 
-  class ExpandCallback extends BaseCallback {
+  class DoBackupCallback extends BaseCallback {
 
-    private BackupFragment fragment;
-    private boolean expanded;
 
-    public ExpandCallback(Context context, BackupFragment fragment) {
+    public DoBackupCallback(Context context) {
       super(context);
-      this.fragment = fragment;
-      expanded = false;
     }
 
     @Override
@@ -72,52 +77,15 @@ public class BackupFragment extends Fragment {
 
     @Override
     public void onClick(View v) {
-      v.animate()
-          .rotation(0)
-          .rotationBy(180)
-          .setDuration(150)
-          .setInterpolator(new DecelerateInterpolator())
-          .setListener(new ExpandAnimationListenerImplementation(v))
-          .start();
+      Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+      intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-      if (expanded) {
-        fragment.getHint().setVisibility(View.GONE);
-        fragment.getPasswordWrapper().setVisibility(View.GONE);
-        fragment.getRepeatPasswordWrapper().setVisibility(View.GONE);
-      } else {
-        fragment.getHint().setVisibility(View.VISIBLE);
-        fragment.getPasswordWrapper().setVisibility(View.VISIBLE);
-        fragment.getRepeatPasswordWrapper().setVisibility(View.VISIBLE);
-      }
-    }
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+      String fileName = String.format("password-manager-backup-%s.encrypt", dateFormat.format(new Date()));
+      intent.putExtra(Intent.EXTRA_TITLE, fileName);
+      intent.setType("*/*");
+      ((Activity) context).startActivityForResult(intent, BACKUP_REQUEST_CODE);
 
-    private class ExpandAnimationListenerImplementation implements Animator.AnimatorListener {
-      private View view;
-
-
-      public ExpandAnimationListenerImplementation(View view) {
-        this.view = view;
-      }
-
-      @Override
-      public void onAnimationStart(Animator animation) {
-        view.setClickable(false);
-      }
-
-      @Override
-      public void onAnimationEnd(Animator animation) {
-        view.setClickable(true);
-      }
-
-      @Override
-      public void onAnimationCancel(Animator animation) {
-
-      }
-
-      @Override
-      public void onAnimationRepeat(Animator animation) {
-
-      }
     }
   }
 }

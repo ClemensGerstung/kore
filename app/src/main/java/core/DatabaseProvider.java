@@ -11,7 +11,7 @@ import java.io.File;
 
 public class DatabaseProvider extends SQLiteOpenHelper {
 
-  private static final String DATABASE_NAME = "password.manager.database.db";
+  public static final String DATABASE_NAME = "password.manager.database.db";
 
   public static final int VERSION = 0x02;
 
