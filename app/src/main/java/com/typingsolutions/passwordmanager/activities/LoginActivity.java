@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
     progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
     imageView_background = (ImageView) findViewById(R.id.loginlayout_imageview_background);
     textview_rootedIndicator = (TextView) findViewById(R.id.loginlayout_textview_rootedindicator);
-    if (!Utils.isRooted())
+    //if (!Utils.isRooted())
       textview_rootedIndicator.setVisibility(View.GONE);
 
     SharedPreferences preferences = getPreferences(MODE_PRIVATE);

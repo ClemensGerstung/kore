@@ -1,7 +1,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:theme="@style/Base.AppTheme"
+    android:theme="@style/Base.AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/loginlayout_coordinatorlayout_root"
@@ -75,7 +75,7 @@
       android:layout_height="?attr/actionBarSize"
       android:layout_width="match_parent"
       android:background="?attr/colorPrimary"
-      app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
       app:title="Password.Manager"/>
 
   <RelativeLayout android:layout_width="match_parent"
