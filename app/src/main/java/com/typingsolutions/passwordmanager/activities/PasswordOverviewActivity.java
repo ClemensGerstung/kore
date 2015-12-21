@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
@@ -252,7 +251,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         startActivity(intent);
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
-        intent = new Intent(this, BackupActivity.class);
+        intent = new Intent(this, BackupRestoreActivity.class);
         startActivity(intent);
         break;
     }
