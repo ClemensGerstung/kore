@@ -161,6 +161,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     }
   }
 
+  public void changePassword(String password) {
+    getWritableDatabase(this.password).changePassword(password);
+    this.password = password;
+  }
 
   public long remove(String query, Object... args) {
     return update(query, args);
@@ -169,6 +173,38 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   public static void logout() {
     INSTANCE.password = null;
     INSTANCE.close();
+  }
+
+  public static void changePassword(String path, String newPassword, OnChangePasswordListener changePasswordListener) {
+    changePassword(path, INSTANCE.password, newPassword, changePasswordListener);
+  }
+
+  public static void changePassword(final String path, final String oldPassword, final String newPassword, final OnChangePasswordListener changePasswordListener) {
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        SQLiteDatabase database = null;
+        try {
+          database =
+              SQLiteDatabase.openDatabase(path, oldPassword, null, SQLiteDatabase.CONFLICT_IGNORE);
+          if (database != null) {
+            changePasswordListener.open();
+          } else {
+            changePasswordListener.refused();
+          }
+        } catch (Exception e) {
+          changePasswordListener.refused();
+        }
+
+        try {
+          database.changePassword(newPassword);
+          changePasswordListener.changed();
+        } catch (Exception e) {
+          changePasswordListener.failed();
+        }
+      }
+    });
+    thread.start();
   }
 
   @Override
@@ -190,5 +226,11 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     void open();
 
     void refused();
+  }
+
+  public interface OnChangePasswordListener extends OnOpenListener {
+    void changed();
+
+    void failed();
   }
 }
