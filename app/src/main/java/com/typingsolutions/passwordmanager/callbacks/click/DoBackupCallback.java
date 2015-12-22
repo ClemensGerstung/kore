@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
 
 import java.text.DateFormat;
@@ -32,6 +33,6 @@ public class DoBackupCallback extends BaseCallback {
     String fileName = String.format("password-manager-backup-%s.encrypt", dateFormat.format(new Date()));
     intent.putExtra(Intent.EXTRA_TITLE, fileName);
     intent.setType("*/*");
-    ((Activity) context).startActivityForResult(intent, BackupFragment.BACKUP_REQUEST_CODE);
+    ((Activity) context).startActivityForResult(intent, BackupRestoreActivity.BACKUP_REQUEST_CODE);
   }
 }

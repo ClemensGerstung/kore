@@ -1,10 +1,12 @@
 package com.typingsolutions.passwordmanager.callbacks.click;
 
 import android.animation.Animator;
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -37,25 +39,23 @@ public class ExpandCallback extends BaseCallback {
 
     TextView hint = backupRestoreActivity.getHint();
     TextInputLayout passwordWrapper = backupRestoreActivity.getPasswordWrapper();
+    TextInputLayout repeatPasswordWrapper = backupRestoreActivity.getRepeatPasswordWrapper();
     if (expanded) {
-      hint.animate().alpha(1.f)
+      /*hint.animate().alpha(1.f)
           .alphaBy(0.f)
           .setInterpolator(new DecelerateInterpolator())
           .setDuration(150)
-          .start();
+          .start();*/
+
       hint.setVisibility(View.GONE);
       passwordWrapper.setVisibility(View.GONE);
-      backupRestoreActivity.getRepeatPasswordWrapper().setVisibility(View.GONE);
+      repeatPasswordWrapper.setVisibility(View.GONE);
     } else {
       hint.setVisibility(View.VISIBLE);
       passwordWrapper.setVisibility(View.VISIBLE);
-      backupRestoreActivity.getRepeatPasswordWrapper().setVisibility(View.VISIBLE);
+      repeatPasswordWrapper.setVisibility(View.VISIBLE);
     }
     expanded = !expanded;
-  }
-
-  private void animate(View view, float from, float to, int delay) {
-
   }
 
   private class ExpandAnimationListenerImplementation implements Animator.AnimatorListener {
