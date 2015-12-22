@@ -12,10 +12,10 @@
             style="?android:attr/textAppearanceMedium"
             android:textColor="#000"
             android:text="Order by:"
-            android:layout_marginBottom="@dimen/margin"/>
+            android:layout_marginBottom="@dimen/margin6dp"/>
   <RadioGroup android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/margin"
+              android:layout_marginBottom="@dimen/margin6dp"
               android:id="@+id/orderlayout_radiogroup_wrapper"
               android:checkedButton="@+id/orderlayout_radiobutton_password">
     <RadioButton android:layout_width="match_parent"

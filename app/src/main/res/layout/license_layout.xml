@@ -4,5 +4,5 @@
          app:theme="@style/Base.AppTheme"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:layout_margin="@dimen/margin"
+         android:layout_margin="@dimen/margin6dp"
          android:id="@+id/licenselayout_webview_about"/>

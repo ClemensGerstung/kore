@@ -78,12 +78,12 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:fabSize="normal"
-      android:layout_margin="@dimen/margin"
+      android:layout_margin="@dimen/margin6dp"
       android:layout_gravity="end|bottom"
       app:backgroundTint="#2196F3"
       app:rippleColor="#1976D2"
-      app:elevation="@dimen/margin"
+      app:elevation="@dimen/margin6dp"
       android:clickable="true"
-      app:pressedTranslationZ="@dimen/margin"
+      app:pressedTranslationZ="@dimen/margin6dp"
       android:src="@mipmap/done"/>
 </android.support.design.widget.CoordinatorLayout>
