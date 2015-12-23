@@ -1,3 +1,12 @@
+/**
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <phk@FreeBSD.ORG> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Poul-Henning Kamp
+ * ----------------------------------------------------------------------------
+ */
+
 package core;
 
 import java.util.ArrayList;
@@ -14,73 +23,154 @@ import java.util.Iterator;
  */
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
 
+  /**
+   * Element for the dictionary to save keys and values
+   *
+   * @param <T> the type of the key
+   * @param <U> the type of the value
+   */
   public class Element<T, U> {
+    /**
+     * Key of the element
+     */
     private T key;
+
+    /**
+     * Value of the element
+     */
     private U value;
+
+    /**
+     * element's successor
+     */
     private Element<T, U> next;
+    /**
+     * element's predecessor
+     */
     private Element<T, U> prev;
 
-    Element(T key, U value) {
+    /**
+     * Constructor to create an element
+     *
+     * @param key   for the element
+     * @param value for the element
+     */
+    /*package*/ Element(T key, U value) {
       this.key = key;
       this.value = value;
       this.next = null;
       this.prev = null;
     }
 
-    Element(Element<T, U> other) {
+    /**
+     * Copy constructor
+     *
+     * @param other element to copy
+     */
+    /*package*/ Element(Element<T, U> other) {
       key = other.key;
       value = other.value;
       next = other.next;
       prev = other.prev;
     }
 
+    /**
+     * Gets the element's key
+     *
+     * @return the element's key
+     */
     public T getKey() {
       return key;
     }
 
-    public void setKey(T key) {
-      this.key = key;
-    }
-
+    /**
+     * Gets the value of the element
+     *
+     * @return the value
+     */
     public U getValue() {
       return value;
     }
 
+    /**
+     * Sets the value of the element
+     *
+     * @param value to set
+     */
     public void setValue(U value) {
       this.value = value;
     }
 
-    Element<T, U> getNext() {
+    /**
+     * Gets the successor
+     *
+     * @return next element
+     */
+    /*package*/ Element<T, U> getNext() {
       return next;
     }
 
-    void setNext(Element<T, U> next) {
+    /**
+     * Sets the successor
+     *
+     * @param next element for the current
+     */
+    /*package*/ void setNext(Element<T, U> next) {
       this.next = next;
     }
 
-    Element<T, U> getPrevious() {
+    /**
+     * Gets the predecessor
+     *
+     * @return the previous element
+     */
+    /*package*/  Element<T, U> getPrevious() {
       return prev;
     }
 
-    void setPrevious(Element<T, U> prev) {
+    /**
+     * Sets the predecessor
+     *
+     * @param prev element to the current
+     */
+    /*package*/  void setPrevious(Element<T, U> prev) {
       this.prev = prev;
     }
 
-    boolean hasNext() {
+    /**
+     * Indicates if there is an successor
+     *
+     * @return {@code true} if there is one
+     */
+    /*package*/  boolean hasNext() {
       return next != null;
     }
 
-    boolean hasPrevious() {
+    /**
+     * Indicates if there is an predecessor
+     *
+     * @return {@code true} if there is one
+     */
+    /*package*/ boolean hasPrevious() {
       return prev != null;
     }
 
-    void delete() {
+    /**
+     * Resets the element
+     */
+    /*package*/ void delete() {
       key = null;
       value = null;
       next = null;
       prev = null;
     }
 
+    /**
+     * Compares two elements
+     *
+     * @param o element to compare with
+     * @return {@code true} if equals
+     */
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -93,6 +183,11 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
     }
 
+    /**
+     * Calculates an unique hash value for the element
+     *
+     * @return the calculated hash
+     */
     @Override
     public int hashCode() {
       int result = key != null ? key.hashCode() : 0;
@@ -100,6 +195,11 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       return result;
     }
 
+    /**
+     * Human readable string
+     *
+     * @return the human readable string
+     */
     @Override
     public String toString() {
       return "Element{" +
@@ -241,8 +341,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
   /**
    * Sets an value for an specific key or adds it if it doesn't exist
-   * @param key to search for
-   * @param value to set
+   *
+   * @param key    to search for
+   * @param value  to set
    * @param option to iterate through the dictionary
    */
   public void setForKey(K key, V value, IterationOption option) {
@@ -262,9 +363,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
   /**
    * Recursive method to set an value for a key
+   *
    * @param element current iterator
-   * @param key to search for
-   * @param value to set
+   * @param key     to search for
+   * @param value   to set
    * @param forward iteration way through the dictionary
    * @return if element was in dictionary
    */
@@ -277,7 +379,17 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return (forward && element.hasNext() || !forward && element.hasPrevious()) && setForKey(forward ? element.next : element.prev, key, value, forward);
   }
 
-  public void insertKey(K search, K key, V value, InsertOption insertOption, IterationOption option) {
+  /**
+   * Inserts an element before or after another element with the spezific search key
+   *
+   * @param search       key to search element for
+   * @param key          of the new element
+   * @param value        of the new element
+   * @param insertOption insert new element before or after the the found elements
+   * @param option       to iterate through the dictionary
+   * @return the new element
+   */
+  public Element<K, V> insertKey(K search, K key, V value, InsertOption insertOption, IterationOption option) {
     if (!containsKey(search, option))
       throw new IllegalArgumentException("Doesn't contain key " + search.toString() + "!");
 
@@ -286,42 +398,80 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
     Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
 
-    while (iterator != null) {
-      if (iterator.getKey().equals(search)) {
-        Element<K, V> element = new Element<K, V>(key, value);
-        if (insertOption == InsertOption.Before) {
-          Element<K, V> tmp = iterator.prev;
-          tmp.setNext(element);
-          element.setPrevious(tmp);
-          element.setNext(iterator);
-          iterator.setPrevious(element);
-        } else if (insertOption == InsertOption.After) {
-          Element<K, V> tmp = iterator.next;
-          tmp.setPrevious(element);
-          element.setNext(tmp);
-          element.setPrevious(iterator);
-          iterator.setNext(element);
-        }
-        break;
-      }
-
-      iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
-    }
+    return insertKey(iterator, search, key, value, insertOption, option);
   }
 
+  /**
+   * Recursive method to insert an element
+   *
+   * @param element      current element to check key
+   * @param search       key to search element for
+   * @param key          of the new element
+   * @param value        of the new element
+   * @param insertOption insert new element before or after the the found elements
+   * @param option       to iterate through the dictionary
+   * @return the new element
+   */
+  private Element<K, V> insertKey(Element<K, V> element, K search, K key, V value, InsertOption insertOption, IterationOption option) {
+    if (element.getKey().equals(search)) {
+      Element<K, V> inserted = new Element<K, V>(key, value);
+      if (insertOption == InsertOption.Before) {
+        Element<K, V> tmp = element.prev;
+        tmp.setNext(inserted);
+        inserted.setPrevious(tmp);
+        inserted.setNext(element);
+        element.setPrevious(inserted);
+      } else if (insertOption == InsertOption.After) {
+        Element<K, V> tmp = element.next;
+        tmp.setPrevious(inserted);
+        inserted.setNext(tmp);
+        inserted.setPrevious(element);
+        element.setNext(inserted);
+      }
+      return inserted;
+    }
+
+    if (option == IterationOption.Forwards && element.hasNext()) {
+      return insertKey(element.getNext(), search, key, value, insertOption, option);
+    } else if (option == IterationOption.Backwards && element.hasPrevious()) {
+      return insertKey(element.getPrevious(), search, key, value, insertOption, option);
+    }
+
+    return null;
+  }
+
+  /**
+   * Searches for a key in the dictionary
+   *
+   * @param key    to search for
+   * @param option iterate through the dictionary forwards or backwards
+   * @return {@code true} if key is in dictionary otherwise {@code false}
+   */
   public boolean containsKey(K key, IterationOption option) {
-    boolean result = false;
     Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
 
-    while (iterator != null) {
-      if (iterator.getKey().equals(key)) {
-        result = true;
-        break;
-      }
+    return containsKey(iterator, key, option);
+  }
 
-      iterator = option == IterationOption.Backwards ? iterator.getPrevious() : iterator.getNext();
+  /**
+   * Recursive method to search for an key in the dictionary
+   *
+   * @param element current element to check key
+   * @param key     to search for
+   * @param option  iterate through the dictionary forwards or backwards
+   * @return {@code true} if key is in dictionary otherwise {@code false}
+   */
+  private boolean containsKey(Element<K, V> element, K key, IterationOption option) {
+    if (element.getKey().equals(key))
+      return true;
+
+    if (option == IterationOption.Forwards && element.hasNext()) {
+      return containsKey(element.getNext(), key, option);
+    } else if (option == IterationOption.Backwards && element.hasPrevious()) {
+      return containsKey(element.getPrevious(), key, option);
     }
-    return result;
+
+    return false;
   }
 
   public boolean containsValue(V value, IterationOption option) {
@@ -339,9 +489,14 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return result;
   }
 
+
+
+  /**
+   * Clears the dictionary
+   */
   public void clear() {
     if (first == null && last == null)
-      throw new IllegalStateException("dictionary is already cleared!");
+      throw new IllegalStateException("Dictionary is already cleared!");
 
     Element<K, V> element = first;
     Element<K, V> next = first.getNext();
@@ -412,28 +567,56 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return null;
   }
 
+  /**
+   * Counts the number of elements in the dictionary
+   *
+   * @return the number of elements
+   */
   public int size() {
     Element<K, V> element = getFirstIterator();
-    int result = 0;
 
-    while (element != null) {
-      result++;
-      element = element.next;
-    }
-
-    return result;
+    return size(element, 0);
   }
 
+  /**
+   * Recursive method to count the number of elements
+   *
+   * @param element current element
+   * @param size    the current size
+   * @return the size
+   */
+  private int size(Element<K, V> element, int size) {
+    if (element.hasNext())
+      size(element.getNext(), size + 1);
+
+    return size;
+  }
+
+  /**
+   * Gets the first element of the dictionary
+   *
+   * @return the first element
+   */
   public Element<K, V> getFirstIterator() {
     current = first;
     return current;
   }
 
+  /**
+   * Gets the last element of the dictionary
+   *
+   * @return the last element
+   */
   public Element<K, V> getLastIterator() {
     current = last;
     return current;
   }
 
+  /**
+   * Gets all keys from the current dictionary in one collection
+   *
+   * @return the new collection with all keys
+   */
   public Collection<K> keys() {
     ArrayList<K> dictionary = new ArrayList<>();
 
@@ -443,6 +626,13 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return keys(dictionary, getFirstIterator());
   }
 
+  /**
+   * Recursive method to get all keys
+   *
+   * @param collection the collection with all inserted keys
+   * @param element    to insert the key into the collection
+   * @return the collection
+   */
   private Collection<K> keys(Collection<K> collection, Element<K, V> element) {
     collection.add(element.key);
     if (element.hasNext())
@@ -451,6 +641,11 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return collection;
   }
 
+  /**
+   * Gets all values of the current dictionary in one collection
+   *
+   * @return the new collection with all values
+   */
   public Collection<V> values() {
     Collection<V> dictionary = new ArrayList<>();
 
@@ -460,6 +655,13 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return values(dictionary, getFirstIterator());
   }
 
+  /**
+   * Recursive method to get all values of the current dictionary
+   *
+   * @param collection the collection with all values
+   * @param element    element to insert the value into the collection
+   * @return the collection
+   */
   private Collection<V> values(Collection<V> collection, Element<K, V> element) {
     collection.add(element.value);
     if (element.hasNext())
@@ -468,27 +670,52 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return collection;
   }
 
+  /**
+   * Copies the current dictionary
+   *
+   * @return the cloned dictionary
+   */
   @SuppressWarnings("CloneDoesntCallSuperClone")
   @Override
   public Dictionary<K, V> clone() {
     return new Dictionary<>(this);
   }
 
+  /**
+   * Returns the iterator
+   *
+   * @return this dictionary
+   */
   @Override
   public Iterator<Element> iterator() {
     current = first;
     return this;
   }
 
+  /**
+   * Checks if there is an successor to the current iterator
+   *
+   * @return {@code true} if there is one
+   */
   @Override
   public boolean hasNext() {
     return current != null;
   }
 
+  /**
+   * Same as {@code hasNext()} but for the predecessor
+   *
+   * @return {@code true} if there is one
+   */
   public boolean hasPrevious() {
     return hasNext();
   }
 
+  /**
+   * Gets the nex element for iteration
+   *
+   * @return the successor
+   */
   @Override
   public Element next() {
     if (current == null)
@@ -498,7 +725,12 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return current;
   }
 
-  public Element previous() {
+  /**
+   * Gets the previous element in the iteration
+   *
+   * @return the predecessor
+   */
+  public Element<K, V> previous() {
     if (current == null)
       throw new UnsupportedOperationException("no previous element");
 
@@ -506,18 +738,43 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return current;
   }
 
+  /**
+   * Optional method
+   *
+   * @throws UnsupportedOperationException
+   */
   @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Option to iterate through the dictionary
+   */
   public enum IterationOption {
-    Forwards,
-    Backwards
+    /**
+     *
+     */
+    Backwards,
+
+    /**
+     *
+     */
+    Forwards
   }
 
+  /**
+   * Option to insert elements into the dictionary
+   */
   public enum InsertOption {
+    /**
+     *
+     */
     Before,
+
+    /**
+     *
+     */
     After
   }
 }
