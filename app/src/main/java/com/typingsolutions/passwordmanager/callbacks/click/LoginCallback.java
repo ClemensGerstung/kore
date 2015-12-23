@@ -1,11 +1,18 @@
 package com.typingsolutions.passwordmanager.callbacks.click;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
+import android.support.v4.animation.AnimatorCompatHelper;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -24,6 +31,7 @@ public class LoginCallback extends BaseCallback {
         loginActivity.hideWaiter();
         Intent intent = new Intent(context, PasswordOverviewActivity.class);
         intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
+
         context.startActivity(intent);
         loginActivity.getLoginServiceRemote().resetTries();
         loginActivity.finish();

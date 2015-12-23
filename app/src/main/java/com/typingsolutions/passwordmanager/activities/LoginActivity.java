@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
   private ProgressBar progressBar_waiter;
   private ImageView imageView_background;
   private TextView textview_rootedIndicator;
+  private Button button_setup;
 
   private ILoginServiceRemote loginServiceRemote;
   private DatabaseProvider databaseProvider;
@@ -90,11 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-      boolean hasPassword = editText_setupPassword.getText().length() > 0;
-      boolean hasRepeated = editText_setupRepeated.getText().length() > 0;
-
-      if (hasPassword & hasRepeated) floatingActionButton_login.show();
-      else floatingActionButton_login.hide();
+      button_setup.setEnabled(editText_setupPassword.getText().toString().equals(editText_setupRepeated.getText().toString()));
     }
 
     @Override
@@ -152,10 +149,7 @@ public class LoginActivity extends AppCompatActivity {
     if (needSetup) {
       setContentView(R.layout.setup_layout);
 
-      toolbar = (Toolbar) findViewById(R.id.setuplayout_toolbar);
-      setSupportActionBar(toolbar);
-
-      floatingActionButton_login = (FloatingActionButton) findViewById(R.id.setuplayout_floatingactionbutton_login);
+      button_setup = (Button) findViewById(R.id.setuplayout_button_setup);
       editText_setupPassword = (android.widget.EditText) findViewById(R.id.setuplayout_edittext_password);
       editText_setupRepeated = (android.widget.EditText) findViewById(R.id.setuplayout_edittext_repeatpassword);
       coordinatorLayout_root = (CoordinatorLayout) findViewById(R.id.setuplayout_coordinatorlayout_root);
@@ -164,9 +158,7 @@ public class LoginActivity extends AppCompatActivity {
       editText_setupRepeated.addTextChangedListener(setupTextWatcher);
 
       editText_setupRepeated.setOnEditorActionListener(setupKeyBoardActionListener);
-
-      floatingActionButton_login.setOnClickListener(setupCallback);
-      floatingActionButton_login.hide();
+      button_setup.setOnClickListener(new SetupCallback(this, this));
       return;
     }
 
@@ -324,6 +316,8 @@ public class LoginActivity extends AppCompatActivity {
     animator.setDuration(300);
     animator.start();
   }
+
+
 
   private boolean isServiceRunning(Class<?> serviceClass) {
     ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

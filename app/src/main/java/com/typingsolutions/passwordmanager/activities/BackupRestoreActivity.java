@@ -146,6 +146,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
     if (requestCode == RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
       if (data == null) return;
       final Uri uri = data.getData();
+      String path = Utils.getPath(this, uri);
 
     }
 
