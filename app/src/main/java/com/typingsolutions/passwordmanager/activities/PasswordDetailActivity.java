@@ -107,6 +107,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
     if(currentPassword.getHistoryCount() > 1) {
       nohistory.setVisibility(View.GONE);
       passwordHistory.setVisibility(View.VISIBLE);
+      passwordHistory.setNestedScrollingEnabled(false);
+      passwordHistory.setEnabled(false);
     }
 
     if (!delete.requestFocus())
