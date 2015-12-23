@@ -145,7 +145,7 @@
                     android:text="Do Backup"/>
             <ImageButton style="?attr/borderlessButtonStyle"
                          android:id="@+id/backuprestorelayout_imagebutton_expand"
-                         android:src="@mipmap/ic_keyboard_arrow_down_white_24dp"
+                         android:src="@mipmap/arrow_down"
                          android:tint="#000"
                          android:layout_gravity="right"
                          android:layout_width="wrap_content"
