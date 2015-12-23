@@ -29,14 +29,14 @@ public class SetupCallback extends BaseCallback {
       AlertDialog alertDialog = new AlertDialog.Builder(context)
           .setTitle("Your password doesn't seem to be safe")
           .setMessage("We recommend to use lower and upper letters, digits, some special characters and at least 8 characters. Do you want to keep it anyway?")
-          .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+          .setPositiveButton("GOT IT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
               dialog.dismiss();
               setup();
             }
           })
-          .setNegativeButton("NOPE", new DialogInterface.OnClickListener() {
+          .setNegativeButton("CHANGE", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
               dialog.dismiss();

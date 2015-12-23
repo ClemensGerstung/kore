@@ -11,11 +11,13 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.click.DeletePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
@@ -61,12 +63,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     TextView nohistory = (TextView) findViewById(R.id.passworddetaillayout_textview_nohistory);
 
     setSupportActionBar(toolbar);
-    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        onBackPressed();
-      }
-    });
+    toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 
     passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
     if (passwordId == -1) return;
@@ -111,8 +108,9 @@ public class PasswordDetailActivity extends AppCompatActivity {
       passwordHistory.setEnabled(false);
     }
 
-    if (!delete.requestFocus())
-      delete.requestFocus();
+    // TODO:
+    if (!toolbar.requestFocus())
+      toolbar.requestFocus();
   }
 
 

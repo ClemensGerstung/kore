@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.AboutViewPagerAdapter;
+import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 
 
 public class AboutActivity extends AppCompatActivity {
@@ -25,12 +26,7 @@ public class AboutActivity extends AppCompatActivity {
     viewpager_content = (ViewPager) findViewById(R.id.aboutlayout_viewpager_content);
 
     setSupportActionBar(toolbar_actionbar);
-    toolbar_actionbar.setNavigationOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        onBackPressed();
-      }
-    });
+    toolbar_actionbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
     AboutViewPagerAdapter adapter = new AboutViewPagerAdapter(this, getSupportFragmentManager());
 
     viewpager_content.setAdapter(adapter);
