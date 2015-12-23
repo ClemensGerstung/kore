@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
@@ -59,12 +60,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
     button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
 */
     setSupportActionBar(toolbar);
-    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        //onBackPressed();
-      }
-    });
+    toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 /*
     username.addTextChangedListener(switchTextWatcher);
     program.addTextChangedListener(switchTextWatcher);
