@@ -1,18 +1,13 @@
 package com.typingsolutions.passwordmanager.callbacks.click;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
-import android.support.v4.animation.AnimatorCompatHelper;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
+import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
@@ -31,10 +26,11 @@ public class LoginCallback extends BaseCallback {
         loginActivity.hideWaiter();
         Intent intent = new Intent(context, PasswordOverviewActivity.class);
         intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
-
         context.startActivity(intent);
+        loginActivity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
         loginActivity.getLoginServiceRemote().resetTries();
-        loginActivity.finish();
+        ActivityCompat.finishAfterTransition(loginActivity);
       } catch (RemoteException e) {
         Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
       }

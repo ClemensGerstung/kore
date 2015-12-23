@@ -4,6 +4,7 @@ import android.content.*;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -194,8 +195,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     AlertDialog alertDialog = new AlertDialog.Builder(this)
         .setTitle("Logout")
         .setMessage("Are you sure to logout?")
-        .setNegativeButton("Nope", null)
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        .setNegativeButton("Discard", null)
+        .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             PasswordProvider.logoutComplete();
@@ -204,8 +205,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
             Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
             startActivity(intent);
 
+            PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             PasswordOverviewActivity.super.onBackPressed();
-            PasswordOverviewActivity.this.finish();
+            ActivityCompat.finishAfterTransition(PasswordOverviewActivity.this);
           }
         })
         .create();
