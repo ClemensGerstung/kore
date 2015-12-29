@@ -1,6 +1,7 @@
 package core;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -183,18 +184,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     Thread thread = new Thread(new Runnable() {
       @Override
       public void run() {
-        SQLiteDatabase database = null;
-        try {
-          database =
-              SQLiteDatabase.openDatabase(path, oldPassword, null, SQLiteDatabase.CONFLICT_IGNORE);
-          if (database != null) {
-            changePasswordListener.open();
-          } else {
-            changePasswordListener.refused();
-          }
-        } catch (Exception e) {
-          changePasswordListener.refused();
-        }
+        SQLiteDatabase database = open(path, oldPassword, changePasswordListener);
 
         try {
           database.changePassword(newPassword);
@@ -205,6 +195,35 @@ public class DatabaseProvider extends SQLiteOpenHelper {
       }
     });
     thread.start();
+  }
+
+  public static void openDatabase(final String path, final String password, @NonNull final OnOpenPathListener openListener) {
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        SQLiteDatabase database = open(path, password, openListener);
+        if (database != null && database.isOpen())
+          openListener.open(database);
+      }
+    });
+
+    thread.start();
+  }
+
+  private static SQLiteDatabase open(final String path, final String password, @NonNull final OnOpenListener openListener) {
+    SQLiteDatabase database = null;
+    try {
+      database =
+          SQLiteDatabase.openDatabase(path, password, null, SQLiteDatabase.CONFLICT_IGNORE);
+      if (database.isOpen()) {
+        openListener.open();
+      } else {
+        openListener.refused();
+      }
+    } catch (Exception e) {
+      openListener.refused();
+    }
+    return database;
   }
 
   @Override
@@ -226,6 +245,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     void open();
 
     void refused();
+  }
+
+  public interface OnOpenPathListener extends OnOpenListener {
+    void open(SQLiteDatabase database);
   }
 
   public interface OnChangePasswordListener extends OnOpenListener {
