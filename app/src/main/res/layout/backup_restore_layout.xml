@@ -1,222 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/backuprestorelayout_coordinatorlayout_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-  <android.support.design.widget.AppBarLayout
-      android:id="@+id/backuprestorelayout_appbaralyout_wrapper"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/backuprestorelayout_toolbar_actionbar"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/backuprestorelayout_coordinatorlayout_root"
+        style="@style/Theme.AppCompat"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:navigationIcon="@mipmap/arrow_back"
-        app:title="Backup and Restore"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-  </android.support.design.widget.AppBarLayout>
+        android:layout_height="match_parent">
 
-  <android.support.v4.widget.NestedScrollView
-      android:layout_height="match_parent"
-      android:layout_width="match_parent"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"
-      android:layout_marginTop="@dimen/margin6dp">
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical">
-      <android.support.v7.widget.CardView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:cardUseCompatPadding="true"
-          app:contentPadding="@dimen/margin16dp">
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/backuprestorelayout_appbaralyout_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/backuprestorelayout_toolbar_actionbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:navigationIcon="@mipmap/arrow_back"
+                app:title="Backup and Restore"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_marginTop="@dimen/margin6dp">
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="vertical">
-          <TextView android:layout_width="match_parent"
+            <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Backup your passwords"
-                    android:textColor="#000"
-                    android:layout_marginBottom="@dimen/margin16dp"
-                    style="?attr/textAppearanceListItemSmall"/>
-          <Switch android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:visibility="gone"
-                  android:text="Schedule Backup"/>
-          <android.support.design.widget.TextInputLayout
-              android:id="@+id/backuprestorelayout_textinputlayout_scheduledpasswordwrapper"
-              android:layout_width="match_parent"
-              android:layout_marginStart="@dimen/margin6dp"
-              android:layout_marginTop="@dimen/margin6dp"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:layout_marginEnd="@dimen/margin6dp"
-              android:theme="@style/standardEditText">
-            <EditText android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:singleLine="true"
-                      android:ellipsize="end"
-                      android:theme="@style/standardEditText"
-                      android:inputType="textPassword"
-                      android:id="@+id/backuprestorelayout_edittext_scheduledpassword"
-                      android:hint="Set password"/>
-          </android.support.design.widget.TextInputLayout>
-          <android.support.design.widget.TextInputLayout
-              android:layout_width="match_parent"
-              android:layout_marginStart="@dimen/margin6dp"
-              android:id="@+id/backuprestorelayout_textinputlayout_scheduledrepeatpasswordwrapper"
-              android:layout_marginTop="@dimen/margin6dp"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:layout_marginEnd="@dimen/margin6dp"
-              android:theme="@style/standardEditText">
-            <EditText android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:singleLine="true"
-                      android:ellipsize="end"
-                      android:theme="@style/standardEditText"
-                      android:inputType="textPassword"
-                      android:id="@+id/backuprestorelayout_edittext_scheduledrepeatpassword"
-                      android:hint="Repeat password"/>
-          </android.support.design.widget.TextInputLayout>
-          <TextView android:layout_width="match_parent"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/margin16dp">
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="Backup your passwords"
+                              android:textColor="#000"
+                              android:layout_marginBottom="@dimen/margin16dp"
+                              style="?attr/textAppearanceListItemSmall"/>
+                    <GridLayout android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:columnCount="2">
+                        <Button style="?attr/borderlessButtonStyle"
+                                android:id="@+id/backuprestorelayout_button_dobackup"
+                                android:textColor="#000"
+                                android:layout_column="0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Do Backup"/>
+                        <ImageButton style="?attr/borderlessButtonStyle"
+                                     android:id="@+id/backuprestorelayout_imagebutton_expand"
+                                     android:src="@mipmap/arrow_down"
+                                     android:tint="#000"
+                                     android:layout_gravity="right"
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"/>
+                    </GridLayout>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/backuprestorelayout_textview_hint"
+                              android:textColor="#909090"
+                              android:visibility="gone"
+                              android:text="You can set a password for the backup. If not set, the backup will use your current masterpassword."/>
+                    <android.support.design.widget.TextInputLayout
+                            android:id="@+id/backuprestorelayout_textinputlayout_passwordwrapper"
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="@dimen/margin6dp"
+                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:theme="@style/standardEditText">
+                        <EditText android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                                  android:theme="@style/standardEditText"
+                                  android:inputType="textPassword"
+                                  android:id="@+id/backuprestorelayout_edittext_password"
+                                  android:hint="Set password"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="@dimen/margin6dp"
+                            android:id="@+id/backuprestorelayout_textinputlayout_repeatpasswordwrapper"
+                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:theme="@style/standardEditText">
+                        <EditText android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                                  android:theme="@style/standardEditText"
+                                  android:inputType="textPassword"
+                                  android:id="@+id/backuprestorelayout_edittext_repeatpassword"
+                                  android:hint="Repeat password"/>
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="Repeat at:"/>
-          <GridLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:alignmentMode="alignBounds"
-                      android:visibility="gone"
-                      android:columnCount="7">
-            <Button android:text="M"
-                    android:layout_column="0"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-            <Button android:text="T"
-                    android:layout_column="1"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-            <Button android:text="W"
-                    android:layout_column="2"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-            <Button android:text="T"
-                    android:layout_column="3"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-            <Button android:text="F"
-                    android:layout_column="4"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-            <Button android:text="S"
-                    android:layout_column="5"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-            <Button android:text="S"
-                    android:layout_column="6"
-                    android:layout_width="@dimen/scheduled_weekday"
-                    android:layout_height="@dimen/scheduled_weekday"
-                    android:layout_margin="@dimen/margin3dp"
-                    android:background="@drawable/circle"/>
-          </GridLayout>
-          <GridLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:columnCount="2">
-            <Button style="?attr/borderlessButtonStyle"
-                    android:id="@+id/backuprestorelayout_button_dobackup"
-                    android:textColor="#000"
-                    android:layout_column="0"
-                    android:text="Do Backup"/>
-            <ImageButton style="?attr/borderlessButtonStyle"
-                         android:id="@+id/backuprestorelayout_imagebutton_expand"
-                         android:src="@mipmap/arrow_down"
-                         android:tint="#000"
-                         android:layout_gravity="right"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"/>
-          </GridLayout>
-          <TextView android:layout_width="match_parent"
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/margin16dp">
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="Backup your passwords"
+                              android:textColor="#000"
+                              android:layout_marginBottom="@dimen/margin16dp"
+                              style="?attr/textAppearanceListItemSmall"/>
+                    <android.support.v7.widget.SwitchCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Enable scheduled backup"/>
+                    <android.support.design.widget.TextInputLayout
+                            android:id="@+id/backuprestorelayout_textinputlayout_scheduledpasswordwrapper"
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="@dimen/margin6dp"
+                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:theme="@style/standardEditText">
+                        <EditText android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                                  android:theme="@style/standardEditText"
+                                  android:inputType="textPassword"
+                                  android:id="@+id/backuprestorelayout_edittext_scheduledpassword"
+                                  android:hint="Set password"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="@dimen/margin6dp"
+                            android:id="@+id/backuprestorelayout_textinputlayout_scheduledrepeatpasswordwrapper"
+                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:theme="@style/standardEditText">
+                        <EditText android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                                  android:theme="@style/standardEditText"
+                                  android:inputType="textPassword"
+                                  android:id="@+id/backuprestorelayout_edittext_scheduledrepeatpassword"
+                                  android:hint="Repeat password"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <CheckBox android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="Create local backup"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/backuprestorelayout_textview_scheduledlocalhint"
+                              android:textColor="#909090"
+                              android:text="The app will create a backup locally on your device so you can copy/move it where ever you want to."/>
+                    <CheckBox android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="Create backup in Google Drive"/>
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:id="@+id/backuprestorelayout_textview_schedulesdrivehint"
+                              android:textColor="#909090"
+                              android:visibility="gone"
+                              android:text="The app will create a backup in your private Google Drive. So you'll have all of your password even after your phone burned to a cinder!"/>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/backuprestorelayout_textview_hint"
-                    android:textColor="#909090"
-                    android:visibility="gone"
-                    android:text="You can set a password for the backup. If not set, the backup will use your current masterpassword."/>
-          <android.support.design.widget.TextInputLayout
-              android:id="@+id/backuprestorelayout_textinputlayout_passwordwrapper"
-              android:layout_width="match_parent"
-              android:layout_marginStart="@dimen/margin6dp"
-              android:layout_marginTop="@dimen/margin6dp"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:layout_marginEnd="@dimen/margin6dp"
-              android:theme="@style/standardEditText">
-            <EditText android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:singleLine="true"
-                      android:ellipsize="end"
-                      android:theme="@style/standardEditText"
-                      android:inputType="textPassword"
-                      android:id="@+id/backuprestorelayout_edittext_password"
-                      android:hint="Set password"/>
-          </android.support.design.widget.TextInputLayout>
-          <android.support.design.widget.TextInputLayout
-              android:layout_width="match_parent"
-              android:layout_marginStart="@dimen/margin6dp"
-              android:id="@+id/backuprestorelayout_textinputlayout_repeatpasswordwrapper"
-              android:layout_marginTop="@dimen/margin6dp"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:layout_marginEnd="@dimen/margin6dp"
-              android:theme="@style/standardEditText">
-            <EditText android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:singleLine="true"
-                      android:ellipsize="end"
-                      android:theme="@style/standardEditText"
-                      android:inputType="textPassword"
-                      android:id="@+id/backuprestorelayout_edittext_repeatpassword"
-                      android:hint="Repeat password"/>
-          </android.support.design.widget.TextInputLayout>
+                    app:cardUseCompatPadding="true"
+                    app:contentPadding="@dimen/margin16dp">
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical">
+                    <TextView android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:text="Restore your passwords"
+                              android:textColor="#000"
+                              android:layout_marginBottom="@dimen/margin16dp"
+                              style="?attr/textAppearanceListItemSmall"/>
+                    <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="@dimen/margin6dp"
+                            android:id="@+id/backuprestorelayout_textinputlayout_restorepasswordwrapper"
+                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:theme="@style/standardEditText">
+                        <EditText android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:ellipsize="end"
+                                  android:theme="@style/standardEditText"
+                                  android:inputType="textPassword"
+                                  android:id="@+id/backuprestorelayout_edittext_restorepassword"
+                                  android:hint="Backup's password"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <Button android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Load Backup"
+                            style="?attr/borderlessButtonStyle"
+                            android:textColor="#000"
+                            android:id="@+id/backuprestorelayout_button_loadbackup"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
-      </android.support.v7.widget.CardView>
-      <android.support.v7.widget.CardView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:cardUseCompatPadding="true"
-          app:contentPadding="@dimen/margin16dp">
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical">
-          <TextView android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Restore your passwords"
-                    android:textColor="#000"
-                    android:layout_marginBottom="@dimen/margin16dp"
-                    style="?attr/textAppearanceListItemSmall"/>
-          <Button android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="Load Backup"
-                  style="?attr/borderlessButtonStyle"
-                  android:textColor="#000"
-                  android:id="@+id/backuprestorelayout_button_loadbackup"/>
-        </LinearLayout>
-      </android.support.v7.widget.CardView>
-    </LinearLayout>
-  </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

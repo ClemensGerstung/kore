@@ -26,6 +26,8 @@ import com.typingsolutions.passwordmanager.callbacks.click.LoadBackupCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.DatabaseProvider;
 import core.Utils;
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +45,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
   private EditText editText_password;
   private TextInputLayout repeatPasswordWrapper;
   private EditText editText_repeatPassword;
+  private EditText editText_restorePassword;
   private TextView hint;
   private Toolbar toolbar_actionbar;
 
@@ -69,29 +72,6 @@ public class BackupRestoreActivity extends AppCompatActivity {
     }
   };
 
-  private final DatabaseProvider.OnChangePasswordListener changePasswordListener
-      = new DatabaseProvider.OnChangePasswordListener() {
-    @Override
-    public void changed() {
-
-    }
-
-    @Override
-    public void failed() {
-
-    }
-
-    @Override
-    public void open() {
-
-    }
-
-    @Override
-    public void refused() {
-
-    }
-  };
-
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -105,6 +85,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
     hint = (TextView) findViewById(R.id.backuprestorelayout_textview_hint);
     editText_password = (EditText) findViewById(R.id.backuprestorelayout_edittext_password);
     editText_repeatPassword = (EditText) findViewById(R.id.backuprestorelayout_edittext_repeatpassword);
+    editText_restorePassword = (EditText) findViewById(R.id.backuprestorelayout_edittext_restorepassword);
     loadBackup = (Button) findViewById(R.id.backuprestorelayout_button_loadbackup);
 
     setSupportActionBar(toolbar_actionbar);
@@ -119,7 +100,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
     // Backup database
     if (requestCode == BACKUP_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
       if (data == null) return;
@@ -146,43 +127,98 @@ public class BackupRestoreActivity extends AppCompatActivity {
     if (requestCode == RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
       if (data == null) return;
       final Uri uri = data.getData();
-      String path = Utils.getPath(this, uri);
+      String path = "";
+      String password = editText_restorePassword.getText().toString();
 
+      DatabaseProvider.OnOpenPathListener openPathListener = new DatabaseProvider.OnOpenPathListener() {
+        @Override
+        public void open(SQLiteDatabase database) {
+          Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
+        }
+
+        @Override
+        public void open() {
+
+        }
+
+        @Override
+        public void refused() {
+
+        }
+      };
+      DatabaseProvider.openDatabase(path, password, openPathListener);
     }
 
     super.onActivityResult(requestCode, resultCode, data);
   }
 
-  private void copyDatabase(Uri uri) {
+  private void copyDatabase(final Uri uri) {
+    final int flags = (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
     try {
-      ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "w");
+      final ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "w");
       File source = getDatabasePath(DatabaseProvider.DATABASE_NAME);
 
-      FileInputStream is = new FileInputStream(source);
-      FileOutputStream os = new FileOutputStream(parcelFileDescriptor.getFileDescriptor());
+      // temporary file to copy and change password.
+      final File tmp = new File(source.getPath().substring(0, source.getPath().lastIndexOf("/")), "tmp.db");
 
-      byte[] buffer = new byte[1024];
-      int length;
-      while ((length = is.read(buffer)) > 0) {
-        os.write(buffer, 0, length);
-      }
-      is.close();
-      os.close();
+      //noinspection ResultOfMethodCallIgnored
+      tmp.createNewFile();
 
-      final int flags = (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-          /*& data.getFlags()*/;
 
-      getContentResolver().takePersistableUriPermission(uri, flags);
+      DatabaseProvider.OnChangePasswordListener changePasswordListener
+          = new DatabaseProvider.OnChangePasswordListener() {
+        @Override
+        public void changed() {
+          // copy database with changed password to new location
+          Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor());
 
-      // Change password
-      if (editText_repeatPassword.getText().length() > 0 && editText_password.getText().length() > 0) {
-        String path = Utils.getPath(this, uri);
+          getContentResolver().takePersistableUriPermission(uri, flags);
+          Snackbar.make(toolbar_actionbar, "Changing password of your backup was successful!", Snackbar.LENGTH_LONG).show();
+
+          //noinspection ResultOfMethodCallIgnored
+          tmp.delete();
+        }
+
+        @Override
+        public void failed() {
+          Snackbar.make(toolbar_actionbar, "Couldn't change the password of your backup! The backup was created with your current main password!", Snackbar.LENGTH_LONG).show();
+
+          //noinspection ResultOfMethodCallIgnored
+          tmp.delete();
+        }
+
+        @Override
+        public void open() {
+
+        }
+
+        @Override
+        public void refused() {
+
+        }
+      };
+
+      // if set new password to copied database
+      if (editText_repeatPassword.length() > 0 && editText_password.length() > 0) {
+        // copy database to tmp-database and change password of this...
+        // unfortunately there is no better way to do this because I'm not able to access the recently copied file
+        Utils.copyFile(source, tmp);
+
+        String path = tmp.getPath();
         DatabaseProvider.changePassword(path, editText_password.getText().toString(), changePasswordListener);
-      }
+      } else {
+        // simply copy database with current master password
+        Utils.copyFile(source, parcelFileDescriptor.getFileDescriptor());
 
-      Snackbar.make(getWindow().getDecorView(), "Backup of your passwords was successful!", Snackbar.LENGTH_LONG).show();
+        getContentResolver().takePersistableUriPermission(uri, flags);
+        Snackbar.make(toolbar_actionbar, "Backup of your passwords was successful!", Snackbar.LENGTH_LONG).show();
+
+        //noinspection ResultOfMethodCallIgnored
+        tmp.delete();
+      }
     } catch (Exception e) {
-      Snackbar.make(this.getWindow().getDecorView(), "Couldn't backup your password", Snackbar.LENGTH_LONG).show();
+      Snackbar.make(toolbar_actionbar, "Couldn't backup your passwords", Snackbar.LENGTH_LONG).show();
     }
   }
 
