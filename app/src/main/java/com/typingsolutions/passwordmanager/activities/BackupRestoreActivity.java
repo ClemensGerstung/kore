@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -30,8 +31,6 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 
 public class BackupRestoreActivity extends AppCompatActivity {
@@ -127,26 +126,43 @@ public class BackupRestoreActivity extends AppCompatActivity {
     if (requestCode == RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
       if (data == null) return;
       final Uri uri = data.getData();
-      String path = "";
-      String password = editText_restorePassword.getText().toString();
+      try {
+        ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
 
-      DatabaseProvider.OnOpenPathListener openPathListener = new DatabaseProvider.OnOpenPathListener() {
-        @Override
-        public void open(SQLiteDatabase database) {
-          Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
-        }
+        String path = getDatabasePath(DatabaseProvider.DATABASE_NAME).getPath();
+        path = path.substring(0, path.lastIndexOf("/"));
 
-        @Override
-        public void open() {
+        // temporary file to copy and change password.
+        final File tmp = new File(path, "tmp.db");
 
-        }
+        String password = editText_restorePassword.getText().toString();
 
-        @Override
-        public void refused() {
+        DatabaseProvider.OnOpenPathListener openPathListener = new DatabaseProvider.OnOpenPathListener() {
+          @Override
+          public void open(SQLiteDatabase database) {
+            Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
 
-        }
-      };
-      DatabaseProvider.openDatabase(path, password, openPathListener);
+            //noinspection ResultOfMethodCallIgnored
+            tmp.delete();
+          }
+
+          @Override
+          public void open() {
+
+          }
+
+          @Override
+          public void refused() {
+
+          }
+        };
+
+        Utils.copyFile(parcelFileDescriptor.getFileDescriptor(), tmp);
+
+        DatabaseProvider.openDatabase(path, password, openPathListener);
+      } catch (Exception e) {
+        Snackbar.make(toolbar_actionbar, "Couldn't load your backup", Snackbar.LENGTH_LONG).show();
+      }
     }
 
     super.onActivityResult(requestCode, resultCode, data);
@@ -172,9 +188,8 @@ public class BackupRestoreActivity extends AppCompatActivity {
         public void changed() {
           // copy database with changed password to new location
           Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor());
-
           getContentResolver().takePersistableUriPermission(uri, flags);
-          Snackbar.make(toolbar_actionbar, "Changing password of your backup was successful!", Snackbar.LENGTH_LONG).show();
+          Snackbar.make(toolbar_actionbar, "Your backup and changing password of this was successful!", Snackbar.LENGTH_LONG).show();
 
           //noinspection ResultOfMethodCallIgnored
           tmp.delete();
@@ -182,7 +197,10 @@ public class BackupRestoreActivity extends AppCompatActivity {
 
         @Override
         public void failed() {
-          Snackbar.make(toolbar_actionbar, "Couldn't change the password of your backup! The backup was created with your current main password!", Snackbar.LENGTH_LONG).show();
+          // copy database with unchanged password
+          Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor());
+          getContentResolver().takePersistableUriPermission(uri, flags);
+          Snackbar.make(toolbar_actionbar, "Your backup was successful but the password is your current password!", Snackbar.LENGTH_LONG).show();
 
           //noinspection ResultOfMethodCallIgnored
           tmp.delete();
@@ -221,7 +239,6 @@ public class BackupRestoreActivity extends AppCompatActivity {
       Snackbar.make(toolbar_actionbar, "Couldn't backup your passwords", Snackbar.LENGTH_LONG).show();
     }
   }
-
 
   public TextView getHint() {
     return hint;
