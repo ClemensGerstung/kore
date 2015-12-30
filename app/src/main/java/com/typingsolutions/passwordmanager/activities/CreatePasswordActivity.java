@@ -60,7 +60,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
     setContentView(R.layout.create_password_layout);
 
     toolbar = (Toolbar) findViewById(R.id.createpasswordlayout_toolbar_actionbar);
-    AppBarLayout appBarLayout = (AppBarLayout) toolbar.getParent();
+    //AppBarLayout appBarLayout = (AppBarLayout) toolbar.getParent();
     //int color = COLORS[(int)(Math.random() * COLORS.length)];
     //appBarLayout.setBackgroundColor(color);
 
