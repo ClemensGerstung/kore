@@ -188,9 +188,12 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
         try {
           database.changePassword(newPassword);
+
           changePasswordListener.changed();
         } catch (Exception e) {
           changePasswordListener.failed();
+        } finally {
+          database.close();
         }
       }
     });
@@ -213,8 +216,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   private static SQLiteDatabase open(final String path, final String password, @NonNull final OnOpenListener openListener) {
     SQLiteDatabase database = null;
     try {
-      database =
-          SQLiteDatabase.openDatabase(path, password, null, SQLiteDatabase.CONFLICT_IGNORE);
+      database = SQLiteDatabase.openDatabase(path, password, null, SQLiteDatabase.OPEN_READWRITE);
+
       if (database.isOpen()) {
         openListener.open();
       } else {

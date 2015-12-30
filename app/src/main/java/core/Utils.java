@@ -72,6 +72,18 @@ public class Utils {
     return size;
   }
 
+  public static int copyFile(FileDescriptor source, File target) {
+    int size = 0;
+
+    try {
+      size = copyFile(new FileInputStream(source), new FileOutputStream(target));
+    } catch (Exception e) {
+      return -1;
+    }
+
+    return size;
+  }
+
   public static int copyFile(File source, FileDescriptor target) {
     int size = 0;
 
