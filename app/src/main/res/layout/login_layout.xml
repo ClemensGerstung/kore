@@ -8,8 +8,8 @@
     android:fitsSystemWindows="true"
     android:padding="0dp">
 
-  <ImageView android:layout_width="@dimen/loginlayout_backgorundimage_dimen"
-             android:layout_height="@dimen/loginlayout_backgorundimage_dimen"
+  <ImageView android:layout_width="@dimen/loginlayout_background_diameter"
+             android:layout_height="@dimen/loginlayout_background_diameter"
              android:padding="26dp"
              android:layout_gravity="center"
              android:id="@+id/loginlayout_imageview_background"
@@ -17,8 +17,8 @@
              android:src="@mipmap/verified"/>
 
   <ui.OutlinedImageView
-      android:layout_width="@dimen/loginlayout_backgorundimage_dimen"
-      android:layout_height="@dimen/loginlayout_backgorundimage_dimen"
+      android:layout_width="@dimen/loginlayout_background_diameter"
+      android:layout_height="@dimen/loginlayout_background_diameter"
       android:padding="26dp"
       android:layout_gravity="center"
       android:alpha="0"
@@ -32,14 +32,14 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/loginlayout_textinputlayout_wrapper"
         android:layout_width="wrap_content"
-        android:layout_marginStart="@dimen/margin6dp"
-        android:layout_marginTop="@dimen/margin6dp"
+        android:layout_marginStart="@dimen/dimen_sm"
+        android:layout_marginTop="@dimen/dimen_sm"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin6dp"
+        android:layout_marginEnd="@dimen/dimen_sm"
         app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
       <android.support.v7.widget.EditText
           android:id="@+id/loginlayout_edittext_password"
-          android:layout_width="@dimen/edittext_width"
+          android:layout_width="@dimen/loginlayout_edittext_width"
           android:layout_height="wrap_content"
           app:support_elevation="2dp"
           app:support_translationZ="3dp"
@@ -54,15 +54,15 @@
               android:id="@+id/loginlayout_checkbox_safelogin"
               android:layout_below="@+id/loginlayout_textinputlayout_wrapper"
               android:layout_alignStart="@+id/loginlayout_textinputlayout_wrapper"
-              android:layout_marginStart="@dimen/margin6dp"
+              android:layout_marginStart="@dimen/dimen_sm"
               android:text="Use secure login"/>
 
-    <TextView android:layout_width="@dimen/edittext_width"
+    <TextView android:layout_width="@dimen/loginlayout_edittext_width"
               android:layout_height="wrap_content"
               android:id="@+id/loginlayout_textview_rootedindicator"
               android:layout_below="@+id/loginlayout_checkbox_safelogin"
               android:gravity="center"
-              android:layout_marginTop="@dimen/margin6dp"
+              android:layout_marginTop="@dimen/dimen_sm"
               android:text="Your device is rooted! This may cause some security issues."
               android:textColor="#B71C1C"/>
   </RelativeLayout>
@@ -89,19 +89,19 @@
       android:layout_height="wrap_content"
       app:fabSize="normal"
       android:layout_gravity="end|bottom"
-      android:layout_margin="@dimen/margin16dp"
+      android:layout_margin="@dimen/dimen_lg"
       app:backgroundTint="#2196F3"
       app:rippleColor="#1976D2"
-      app:elevation="@dimen/margin6dp"
+      app:elevation="@dimen/dimen_sm"
       android:clickable="true"
-      app:pressedTranslationZ="@dimen/margin6dp"
+      app:pressedTranslationZ="@dimen/dimen_sm"
       android:src="@mipmap/send"/>
 
   <ProgressBar android:indeterminate="true"
                android:layout_width="35dp"
                android:layout_height="35dp"
                android:visibility="gone"
-               android:layout_marginBottom="@dimen/margin16dp"
+               android:layout_marginBottom="@dimen/dimen_lg"
                android:id="@+id/loginlayout_progressbar_waiter"
                style="?android:attr/progressBarStyle"
                android:layout_gravity="center_horizontal|bottom"/>

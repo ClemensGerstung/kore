@@ -11,4 +11,5 @@
     </array>
 
     <string name="servicedescription">Loginservice of this app</string>
+    <string name="createpassword_program_hint">Where\'s the password used for (program, website, etc.)?</string>
 </resources>

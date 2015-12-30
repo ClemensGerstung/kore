@@ -1,8 +1,8 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,16 +10,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends AppCompatActivity {
 
+  private static final int[] COLORS =
+      {
+          R.color.createpassword_red,
+          R.color.createpassword_yellow,
+          R.color.createpassword_green,
+          R.color.createpassword_purple,
+          R.color.createpassword_lime,
+          R.color.createpassword_orange,
+          R.color.createpassword_grey
+      };
 
   private Toolbar toolbar;
   private EditText program;
@@ -49,9 +57,13 @@ public class CreatePasswordActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.password_detail_layout);
+    setContentView(R.layout.create_password_layout);
 
-    toolbar = (Toolbar) findViewById(R.id.passworddetaillayout_toolbar_actionbar);
+    toolbar = (Toolbar) findViewById(R.id.createpasswordlayout_toolbar_actionbar);
+    AppBarLayout appBarLayout = (AppBarLayout) toolbar.getParent();
+    //int color = COLORS[(int)(Math.random() * COLORS.length)];
+    //appBarLayout.setBackgroundColor(color);
+
     /*program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
@@ -75,7 +87,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.create_user_menu, menu);
+    inflater.inflate(R.menu.create_password_menu, menu);
 /*    boolean result = program.getText().length() > 0
         && password.getText().length() > 0;
     switchMenuState(result);*/

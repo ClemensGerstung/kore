@@ -1,13 +1,21 @@
 <resources>
-  <!-- Default screen margins, per the Android Design guidelines. -->
-  <dimen name="activity_horizontal_margin">0dp</dimen>
-  <dimen name="activity_vertical_margin">0dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">0dp</dimen>
+    <dimen name="activity_vertical_margin">0dp</dimen>
 
-  <dimen name="margin3dp">3dp</dimen>
-  <dimen name="margin6dp">6dp</dimen>
-  <dimen name="margin16dp">16dp</dimen>
-  <dimen name="scheduled_weekday">36dp</dimen>
-  <dimen name="edittext_width">300dp</dimen>
-  <dimen name="notuser_marginbottom">26dp</dimen>
-  <dimen name="loginlayout_backgorundimage_dimen">250dp</dimen>
+    <!-- Default values for margin and padding -->
+    <dimen name="zero">0dp</dimen>
+    <dimen name="dimen_xs">2dp</dimen>
+    <dimen name="dimen_sm">4dp</dimen>
+    <dimen name="dimen_md">8dp</dimen>
+    <dimen name="dimen_lg">16dp</dimen>
+    <dimen name="dimen_xl">24dp</dimen>
+
+    <!-- Specific dimensions for some special elements -->
+    <dimen name="loginlayout_edittext_width">300dp</dimen>
+    <dimen name="loginlayout_background_diameter">250dp</dimen>
+    <dimen name="passworddetail_header_height">175dp</dimen>
+    <dimen name="passworddetial_header_fontsize">50sp</dimen>
+    <dimen name="passworddetial_header_title_marginstart">48dp</dimen>
+    <dimen name="passworddetial_header_title_marginend">64dp</dimen>
 </resources>

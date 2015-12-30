@@ -123,7 +123,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.create_user_menu, menu);
+    inflater.inflate(R.menu.password_detail_menu, menu);
     switchMenuState(false);
     return super.onCreateOptionsMenu(menu);
   }
