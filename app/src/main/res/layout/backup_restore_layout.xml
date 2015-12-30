@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_marginTop="@dimen/margin6dp">
+            android:layout_marginTop="@dimen/dimen_sm">
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="vertical">
@@ -34,7 +34,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="@dimen/margin16dp">
+                    app:contentPadding="@dimen/dimen_lg">
                 <LinearLayout android:layout_width="match_parent"
                               android:layout_height="wrap_content"
                               android:orientation="vertical">
@@ -42,7 +42,7 @@
                               android:layout_height="wrap_content"
                               android:text="Backup your passwords"
                               android:textColor="#000"
-                              android:layout_marginBottom="@dimen/margin16dp"
+                              android:layout_marginBottom="@dimen/dimen_lg"
                               style="?attr/textAppearanceListItemSmall"/>
                     <GridLayout android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -71,11 +71,11 @@
                     <android.support.design.widget.TextInputLayout
                             android:id="@+id/backuprestorelayout_textinputlayout_passwordwrapper"
                             android:layout_width="match_parent"
-                            android:layout_marginStart="@dimen/margin6dp"
-                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_marginStart="@dimen/dimen_sm"
+                            android:layout_marginTop="@dimen/dimen_sm"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
-                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:layout_marginEnd="@dimen/dimen_sm"
                             android:theme="@style/standardEditText">
                         <EditText android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
@@ -88,12 +88,12 @@
                     </android.support.design.widget.TextInputLayout>
                     <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
-                            android:layout_marginStart="@dimen/margin6dp"
+                            android:layout_marginStart="@dimen/dimen_sm"
                             android:id="@+id/backuprestorelayout_textinputlayout_repeatpasswordwrapper"
-                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_marginTop="@dimen/dimen_sm"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
-                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:layout_marginEnd="@dimen/dimen_sm"
                             android:theme="@style/standardEditText">
                         <EditText android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="@dimen/margin16dp">
+                    app:contentPadding="@dimen/dimen_lg">
                 <LinearLayout android:layout_width="match_parent"
                               android:layout_height="wrap_content"
                               android:orientation="vertical">
@@ -118,7 +118,7 @@
                               android:layout_height="wrap_content"
                               android:text="Backup your passwords"
                               android:textColor="#000"
-                              android:layout_marginBottom="@dimen/margin16dp"
+                              android:layout_marginBottom="@dimen/dimen_lg"
                               style="?attr/textAppearanceListItemSmall"/>
                     <android.support.v7.widget.SwitchCompat
                             android:layout_width="match_parent"
@@ -127,11 +127,11 @@
                     <android.support.design.widget.TextInputLayout
                             android:id="@+id/backuprestorelayout_textinputlayout_scheduledpasswordwrapper"
                             android:layout_width="match_parent"
-                            android:layout_marginStart="@dimen/margin6dp"
-                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_marginStart="@dimen/dimen_sm"
+                            android:layout_marginTop="@dimen/dimen_sm"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
-                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:layout_marginEnd="@dimen/dimen_sm"
                             android:theme="@style/standardEditText">
                         <EditText android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
@@ -144,12 +144,12 @@
                     </android.support.design.widget.TextInputLayout>
                     <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
-                            android:layout_marginStart="@dimen/margin6dp"
+                            android:layout_marginStart="@dimen/dimen_sm"
                             android:id="@+id/backuprestorelayout_textinputlayout_scheduledrepeatpasswordwrapper"
-                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_marginTop="@dimen/dimen_sm"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
-                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:layout_marginEnd="@dimen/dimen_sm"
                             android:theme="@style/standardEditText">
                         <EditText android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="@dimen/margin16dp">
+                    app:contentPadding="@dimen/dimen_lg">
                 <LinearLayout android:layout_width="match_parent"
                               android:layout_height="wrap_content"
                               android:orientation="vertical">
@@ -192,15 +192,15 @@
                               android:layout_height="wrap_content"
                               android:text="Restore your passwords"
                               android:textColor="#000"
-                              android:layout_marginBottom="@dimen/margin16dp"
+                              android:layout_marginBottom="@dimen/dimen_lg"
                               style="?attr/textAppearanceListItemSmall"/>
                     <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
-                            android:layout_marginStart="@dimen/margin6dp"
+                            android:layout_marginStart="@dimen/dimen_sm"
                             android:id="@+id/backuprestorelayout_textinputlayout_restorepasswordwrapper"
-                            android:layout_marginTop="@dimen/margin6dp"
+                            android:layout_marginTop="@dimen/dimen_sm"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin6dp"
+                            android:layout_marginEnd="@dimen/dimen_sm"
                             android:theme="@style/standardEditText">
                         <EditText android:layout_width="match_parent"
                                   android:layout_height="wrap_content"

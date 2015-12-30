@@ -20,7 +20,7 @@
       android:layout_height="wrap_content"
       app:cardElevation="4dp"
       app:cardCornerRadius="0dp"
-      app:contentPadding="@dimen/margin16dp"
+      app:contentPadding="@dimen/dimen_lg"
       android:layout_gravity="bottom">
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
       <TextView android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#424242"
-                android:layout_marginBottom="@dimen/margin6dp"
+                android:layout_marginBottom="@dimen/dimen_sm"
                 style="?android:attr/textAppearanceMedium"
                 android:text="Let's setup your masterpassword"/>
 
@@ -66,7 +66,7 @@
               android:layout_height="wrap_content"
               android:text="Setup"
               android:id="@+id/setuplayout_button_setup"
-              android:layout_marginTop="@dimen/margin6dp"
+              android:layout_marginTop="@dimen/dimen_sm"
               style="?attr/borderlessButtonStyle"
               android:layout_gravity="end"
               android:textColor="#000"/>
