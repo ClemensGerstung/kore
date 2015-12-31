@@ -11,6 +11,12 @@
     <dimen name="dimen_lg">16dp</dimen>
     <dimen name="dimen_xl">24dp</dimen>
 
+    <dimen name="font_xs">10sp</dimen>
+    <dimen name="font_sm">12sp</dimen>
+    <dimen name="font_md">14sp</dimen>
+    <dimen name="font_lg">16sp</dimen>
+    <dimen name="font_xl">28sp</dimen>
+
     <!-- Specific dimensions for some special elements -->
     <dimen name="loginlayout_edittext_width">300dp</dimen>
     <dimen name="loginlayout_background_diameter">250dp</dimen>

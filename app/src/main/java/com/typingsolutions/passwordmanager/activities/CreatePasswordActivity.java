@@ -1,7 +1,12 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -10,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
@@ -30,12 +36,14 @@ public class CreatePasswordActivity extends AppCompatActivity {
       };
 
   private Toolbar toolbar;
+  private AppBarLayout appBarLayout;
   private EditText program;
+  private NestedScrollView nestedScrollView;
   private EditText username;
   private EditText password;
   private Button button;
 
-  private TextWatcher switchTextWatcher = new TextWatcher() {
+  private final TextWatcher switchTextWatcher = new TextWatcher() {
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -54,17 +62,33 @@ public class CreatePasswordActivity extends AppCompatActivity {
     }
   };
 
+  private final NestedScrollView.OnScrollChangeListener scrollChangeListener = new NestedScrollView.OnScrollChangeListener() {
+    @Override
+    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+      float elevation=0;
+      if(scrollY > 0) {
+        elevation = CreatePasswordActivity.this.getResources().getDimension(R.dimen.dimen_sm);
+      } else if(scrollY <= 0) {
+        elevation = CreatePasswordActivity.this.getResources().getDimension(R.dimen.zero);
+      }
+
+      ViewCompat.setElevation(appBarLayout, elevation);
+    }
+  };
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.create_password_layout);
 
-    toolbar = (Toolbar) findViewById(R.id.createpasswordlayout_toolbar_actionbar);
-    //AppBarLayout appBarLayout = (AppBarLayout) toolbar.getParent();
-    //int color = COLORS[(int)(Math.random() * COLORS.length)];
-    //appBarLayout.setBackgroundColor(color);
+    appBarLayout = (AppBarLayout) findViewById(R.id.createpasswordlayout_appbar_wrapper);
+    toolbar = (Toolbar) appBarLayout.findViewById(R.id.createpasswordlayout_toolbar_actionbar);
+    program = (EditText) appBarLayout.findViewById(R.id.createpasswordlayout_edittext_program);
+    nestedScrollView = (NestedScrollView) findViewById(R.id.createpasswordlayout_nestedscrollview_wrapper);
 
-    /*program = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
+
+
+    /*
     username = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
     password = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
     CardView delete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
@@ -79,9 +103,11 @@ public class CreatePasswordActivity extends AppCompatActivity {
     password.addTextChangedListener(switchTextWatcher);
     button.setOnClickListener(new GeneratePasswordCallback(this, password));
 
-
     delete.setVisibility(View.GONE);
     passwordHistoryCard.setVisibility(View.GONE);*/
+
+    nestedScrollView.setOnScrollChangeListener(scrollChangeListener);
+    nestedScrollView.requestFocus();
   }
 
   @Override
