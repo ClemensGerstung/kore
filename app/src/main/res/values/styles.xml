@@ -25,15 +25,17 @@
     </style>
 
     <style name="standardEditText" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorControlNormal">@color/lightgrey</item>
+        <item name="colorControlNormal">@color/mediumgrey</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textCursorDrawable">@null</item>
-        <item name="android:textColorHint">@color/lightgrey</item>
+        <item name="android:textColorHint">@color/mediumgrey</item>
         <item name="android:cacheColorHint">@null</item>
         <item name="colorControlActivated">@color/primary</item>
     </style>
 
     <style name="CreatePassword.EditText" parent="standardEditText">
-        <item name="colorControlActivated">@color/darkgrey</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
     </style>
 </resources>

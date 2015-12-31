@@ -6,7 +6,8 @@
 
     <color name="black">#000</color>
     <color name="darkgrey">#212121</color>
-    <color name="lightgrey">#616161</color>
+    <color name="mediumgrey">#9E9E9E</color>
+    <color name="lightgrey">#EEE</color>
     <color name="white">#FFF</color>
     <color name="transparent">#00FFFFFF</color>
 
