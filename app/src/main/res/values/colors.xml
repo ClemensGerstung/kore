@@ -17,6 +17,8 @@
 
     <color name="delete_red">#d50000</color>
 
+    <color name="graphite">#616161</color>
+
     <color name="createpassword_red">#B71C1C</color>
     <color name="createpassword_yellow">#F57F17</color>
     <color name="createpassword_green">#1B5E20</color>
