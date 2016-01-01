@@ -450,7 +450,8 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   public boolean containsKey(K key, IterationOption option) {
     Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
 
-    return containsKey(iterator, key, option);
+    return iterator != null && containsKey(iterator, key, option);
+
   }
 
   /**
