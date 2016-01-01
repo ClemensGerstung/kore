@@ -4,9 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import net.sqlcipher.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
-import net.sqlcipher.database.SQLiteStatement;
+import net.sqlcipher.database.*;
 
 import java.io.File;
 
@@ -216,7 +214,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   private static SQLiteDatabase open(final String path, final String password, @NonNull final OnOpenListener openListener) {
     SQLiteDatabase database = null;
     try {
-      database = SQLiteDatabase.openDatabase(path, password, null, SQLiteDatabase.OPEN_READWRITE);
+      database = SQLiteDatabase.openDatabase(path, password, null, SQLiteDatabase.OPEN_READONLY);
 
       if (database.isOpen()) {
         openListener.open();
