@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
@@ -101,23 +100,21 @@ public class PasswordDetailActivity extends AppCompatActivity {
 
     ViewUtils.setColor(header, programString, passwordString);
 
-    if(currentPassword.getHistoryCount() > 1) {
+    if (currentPassword.getHistoryCount() > 1) {
       nohistory.setVisibility(View.GONE);
       passwordHistory.setVisibility(View.VISIBLE);
       passwordHistory.setNestedScrollingEnabled(false);
       passwordHistory.setEnabled(false);
     }
 
-    // TODO:
-    if (!toolbar.requestFocus())
-      toolbar.requestFocus();
+    if (!((View) program.getParent()).requestFocus())
+      ((View) program.getParent()).requestFocus();
   }
 
 
   @Override
   protected void onPause() {
     super.onPause();
-    finish();
   }
 
   @Override

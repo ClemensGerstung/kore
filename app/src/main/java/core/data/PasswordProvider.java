@@ -66,42 +66,42 @@ public class PasswordProvider {
       Collections.sort(passwords, new Comparator<Password>() {
         @Override
         public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getUsername(), lhs.getUsername(), false);
+          return PasswordProvider.this.compare(rhs, lhs, rhs.getUsername(), lhs.getUsername());
         }
       });
     } else if (which == 1) {    // order by username descending
       Collections.sort(passwords, new Comparator<Password>() {
         @Override
         public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getUsername(), lhs.getUsername(), true);
+          return PasswordProvider.this.compare(lhs, rhs, lhs.getUsername(), rhs.getUsername());
         }
       });
     } else if (which == 2) {   // order by password ascending
       Collections.sort(passwords, new Comparator<Password>() {
         @Override
         public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getFirstItem(), lhs.getFirstItem(), false);
+          return PasswordProvider.this.compare(rhs, lhs, rhs.getFirstItem(), lhs.getFirstItem());
         }
       });
     } else if (which == 3) {    // order by password descending
       Collections.sort(passwords, new Comparator<Password>() {
         @Override
         public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getFirstItem(), lhs.getFirstItem(), true);
+          return PasswordProvider.this.compare(lhs, rhs, lhs.getFirstItem(), rhs.getFirstItem());
         }
       });
     } else if (which == 4) {   // order by program ascending
       Collections.sort(passwords, new Comparator<Password>() {
         @Override
         public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getProgram(), lhs.getProgram(), false);
+          return PasswordProvider.this.compare(rhs, lhs, rhs.getProgram(), lhs.getProgram());
         }
       });
     } else if (which == 5) {    // order by program descending
       Collections.sort(passwords, new Comparator<Password>() {
         @Override
         public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getProgram(), lhs.getProgram(), true);
+          return PasswordProvider.this.compare(lhs, rhs, lhs.getProgram(), rhs.getProgram());
         }
       });
     }
@@ -110,12 +110,10 @@ public class PasswordProvider {
       passwordActionListener.onOrder();
   }
 
-  private int compare(Password rhs, Password lhs, String compareRhs, String compareLhs, boolean invert) {
-    int compareTo = compareLhs.compareTo(compareRhs);
+  private int compare(Password rhs, Password lhs, String compareRhs, String compareLhs) {
+    int compareTo = compareLhs.toLowerCase().compareTo(compareRhs.toLowerCase());
     if (compareTo != 0)
       lhs.swapPositionWith(rhs);
-
-    compareTo = invert ? ~compareTo : compareTo;
 
     return compareTo;
   }
