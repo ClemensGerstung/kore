@@ -97,7 +97,7 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
   public void onItemSelected() {
     CardView cardView = (CardView) itemView;
     cardView.setCardElevation(12.0f);
-    cardView.setCardBackgroundColor(0xFAFAFAFA);
+    cardView.setCardBackgroundColor(0x99FAFAFA);
   }
 
   @Override
