@@ -5,6 +5,7 @@
 
     <!-- Default values for margin and padding -->
     <dimen name="zero">0dp</dimen>
+    <dimen name="dimen_xxs">1dp</dimen>
     <dimen name="dimen_xs">2dp</dimen>
     <dimen name="dimen_sm">4dp</dimen>
     <dimen name="dimen_md">8dp</dimen>

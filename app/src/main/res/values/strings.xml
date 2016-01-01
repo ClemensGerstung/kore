@@ -12,4 +12,9 @@
 
     <string name="servicedescription">Loginservice of this app</string>
     <string name="createpassword_program_hint">Where\'s the password used for (program, website, etc.)?</string>
+    <string name="createpassword_disclaimer">For now these are the only values you can set.\nI will add some more
+        configurable items to the password in the future. For now I think it\'s okay, because I want the app to become
+        ready.\nIf you have any idea for additional values YOU want to configure for an password, please tell me so I can
+        add them soon.
+    </string>
 </resources>
