@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -142,8 +143,12 @@ public class BackupRestoreActivity extends AppCompatActivity {
           public void open(SQLiteDatabase database) {
             Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
 
+
+
             //noinspection ResultOfMethodCallIgnored
             tmp.delete();
+            cursor.close();
+            database.close();
           }
 
           @Override
@@ -159,7 +164,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
 
         Utils.copyFile(parcelFileDescriptor.getFileDescriptor(), tmp);
 
-        DatabaseProvider.openDatabase(path, password, openPathListener);
+        DatabaseProvider.openDatabase(tmp.getPath(), password, openPathListener);
       } catch (Exception e) {
         Snackbar.make(toolbar_actionbar, "Couldn't load your backup", Snackbar.LENGTH_LONG).show();
       }
