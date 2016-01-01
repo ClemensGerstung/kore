@@ -98,7 +98,8 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     viewHolder.program.setText(password.getProgram());
     viewHolder.id = password.getId();
-    viewHolder.icon.setText(password.getProgram().toUpperCase().toCharArray(), 0, 1);
+    String upperCase = password.getProgram().toUpperCase();
+    viewHolder.icon.setText(upperCase.toCharArray(), 0, 1);
 
     ViewUtils.setColor(viewHolder.icon, password.getProgram(), password.getFirstItem());
 
