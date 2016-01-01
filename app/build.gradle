@@ -19,11 +19,11 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.typingsolutions.passwordmanager.dev"
+        applicationId "com.typingsolutions.passwordmanager"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 15
-        versionName "1.5"
+        versionCode 25
+        versionName "1.6"
     }
     buildTypes {
         release {
