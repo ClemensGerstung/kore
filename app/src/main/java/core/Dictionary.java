@@ -588,7 +588,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    */
   private int size(Element<K, V> element, int size) {
     if (element.hasNext())
-      size(element.getNext(), size + 1);
+      return size(element.getNext(), size + 1);
 
     return size;
   }
