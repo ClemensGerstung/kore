@@ -3,6 +3,7 @@ package core.data;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import core.DatabaseProvider;
+import core.Dictionary;
 import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
 import net.sqlcipher.Cursor;
@@ -52,20 +53,43 @@ public class PasswordProvider {
       if (nextPassword.equals(password)) {
         password.merge(nextPassword);
       } else {
-        for (Password p : passwords) {
-          if(!p.simpleEquals(password))
-            continue;
-
-
-          break;
-        }
+        mergeOrAdd(password);
 
         merged++;
+        password.orderHistoryByDate();
         password = nextPassword;
       }
     }
 
+    mergeOrAdd(password);
+    merged++;
+
     return merged;
+  }
+
+  private void mergeOrAdd(Password password) {
+    boolean contains = false;
+
+    for (Password p : passwords) {
+      if (!p.simpleEquals(password))
+        continue;
+
+      for (Dictionary.Element element : password.getPasswordHistory()) {
+        Object value = element.getValue();
+        if(!(value instanceof PasswordHistory))
+          continue;
+        PasswordHistory history = (PasswordHistory) value;
+        if(p.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
+          continue;
+        p.addPasswordHistoryItem((Integer) element.getKey(), history);
+      }
+      contains = true;
+      break;
+    }
+
+    if(!contains) {
+      addPassword(password);
+    }
   }
 
   public Password getById(int id) {
@@ -169,7 +193,7 @@ public class PasswordProvider {
     return addPassword(passwordObject);
   }
 
-  public Password addPassword(Password password) throws Exception {
+  public Password addPassword(Password password) {
 
     password.orderHistoryByDate();
 
