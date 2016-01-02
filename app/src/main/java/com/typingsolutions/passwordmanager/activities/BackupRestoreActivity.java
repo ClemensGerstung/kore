@@ -142,7 +142,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
         DatabaseProvider.OnOpenPathListener openPathListener = new DatabaseProvider.OnOpenPathListener() {
           @Override
           public void open(SQLiteDatabase database) {
-            Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
+            Cursor cursor = database.rawQuery(DatabaseProvider.GET_PASSWORDS, null);
             PasswordProvider.getInstance(BackupRestoreActivity.this).merge(cursor);
 
             //noinspection ResultOfMethodCallIgnored
