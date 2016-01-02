@@ -28,6 +28,7 @@ import com.typingsolutions.passwordmanager.callbacks.click.LoadBackupCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.DatabaseProvider;
 import core.Utils;
+import core.data.PasswordProvider;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -142,8 +143,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
           @Override
           public void open(SQLiteDatabase database) {
             Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
-
-
+            PasswordProvider.getInstance(BackupRestoreActivity.this).merge(cursor);
 
             //noinspection ResultOfMethodCallIgnored
             tmp.delete();
@@ -158,7 +158,9 @@ public class BackupRestoreActivity extends AppCompatActivity {
 
           @Override
           public void refused() {
-
+            //noinspection ResultOfMethodCallIgnored
+            tmp.delete();
+            Snackbar.make(toolbar_actionbar, "Couldn't load your backup", Snackbar.LENGTH_LONG).show();
           }
         };
 

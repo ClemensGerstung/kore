@@ -2,15 +2,10 @@ package core.data;
 
 import android.database.Cursor;
 import android.support.annotation.Nullable;
-import android.util.JsonReader;
-import android.util.JsonWriter;
-import core.*;
 import core.Dictionary;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
 
 public class Password {
   private int id;
@@ -50,9 +45,11 @@ public class Password {
 
     if (id != password.id) return false;
     if (position != password.position) return false;
-    if (!username.equals(password.username)) return false;
-    return program.equals(password.program);
+    return username.equals(password.username) && program.equals(password.program);
+  }
 
+  public boolean simpleEquals(Password password) {
+    return password.program.equals(program) && password.username.equals(username);
   }
 
   @Override
@@ -90,6 +87,10 @@ public class Password {
 
   public void addPasswordHistoryItem(Integer id, PasswordHistory item) {
     passwordHistory.addFirst(id, item);
+  }
+
+  public Dictionary<Integer, PasswordHistory> getPasswordHistory() {
+    return passwordHistory;
   }
 
   public Collection<Integer> getPasswordIds() {
@@ -133,14 +134,13 @@ public class Password {
     password.setPosition(tmp);
   }
 
-  void reversePasswordHistory() {
-    Dictionary<Integer, PasswordHistory> temp = new Dictionary<>(passwordHistory);
-    passwordHistory.clear();
-    Dictionary.Element element = temp.getLastIterator();
-    while (temp.hasPrevious()) {
-      passwordHistory.addLast((Integer) element.getKey(), (PasswordHistory) element.getValue());
-      element = temp.previous();
-    }
+  void orderHistoryByDate() {
+    passwordHistory.sortByValue(new Comparator<PasswordHistory>() {
+      @Override
+      public int compare(PasswordHistory lhs, PasswordHistory rhs) {
+        return lhs.getChangedDate().compareTo(rhs.getChangedDate());
+      }
+    });
   }
 
   public static Password getFromCursor(Cursor cursor) {

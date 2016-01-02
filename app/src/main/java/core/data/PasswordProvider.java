@@ -5,8 +5,12 @@ import android.support.annotation.Nullable;
 import core.DatabaseProvider;
 import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
+import net.sqlcipher.Cursor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class PasswordProvider {
   private static PasswordProvider Instance;
@@ -33,6 +37,35 @@ public class PasswordProvider {
 
   public Password get(int index) {
     return passwords.get(index);
+  }
+
+  public int merge(Cursor cursor) {
+    int merged = 0;
+
+    if (!cursor.moveToNext())
+      return 0;
+    Password password = Password.getFromCursor(cursor);
+
+    while (cursor.moveToNext()) {
+      Password nextPassword = Password.getFromCursor(cursor);
+
+      if (nextPassword.equals(password)) {
+        password.merge(nextPassword);
+      } else {
+        for (Password p : passwords) {
+          if(!p.simpleEquals(password))
+            continue;
+
+
+          break;
+        }
+
+        merged++;
+        password = nextPassword;
+      }
+    }
+
+    return merged;
   }
 
   public Password getById(int id) {
@@ -106,7 +139,7 @@ public class PasswordProvider {
       });
     }
 
-    if(passwordActionListener != null)
+    if (passwordActionListener != null)
       passwordActionListener.onOrder();
   }
 
@@ -138,7 +171,7 @@ public class PasswordProvider {
 
   public Password addPassword(Password password) throws Exception {
 
-    password.reversePasswordHistory();
+    password.orderHistoryByDate();
 
     if (!passwords.contains(password))
       passwords.add(password);
@@ -208,8 +241,8 @@ public class PasswordProvider {
 
   public void swapPassword(int from, int to) {
     Collections.swap(passwords, from, to);
-    Password fromPassword = PasswordProvider.getInstance(context).get(from);
-    Password toPassword = PasswordProvider.getInstance(context).get(to);
+    Password fromPassword = get(from);
+    Password toPassword = get(to);
     fromPassword.swapPositionWith(toPassword);
   }
 
