@@ -3,10 +3,15 @@ package core.data;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import core.DatabaseProvider;
+import core.Dictionary;
 import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
+import net.sqlcipher.Cursor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class PasswordProvider {
   private static PasswordProvider Instance;
@@ -33,6 +38,58 @@ public class PasswordProvider {
 
   public Password get(int index) {
     return passwords.get(index);
+  }
+
+  public int merge(Cursor cursor) {
+    int merged = 0;
+
+    if (!cursor.moveToNext())
+      return 0;
+    Password password = Password.getFromCursor(cursor);
+
+    while (cursor.moveToNext()) {
+      Password nextPassword = Password.getFromCursor(cursor);
+
+      if (nextPassword.equals(password)) {
+        password.merge(nextPassword);
+      } else {
+        mergeOrAdd(password);
+
+        merged++;
+        password.orderHistoryByDate();
+        password = nextPassword;
+      }
+    }
+
+    mergeOrAdd(password);
+    merged++;
+
+    return merged;
+  }
+
+  private void mergeOrAdd(Password password) {
+    boolean contains = false;
+
+    for (Password p : passwords) {
+      if (!p.simpleEquals(password))
+        continue;
+
+      for (Dictionary.Element element : p.getPasswordHistory()) {
+        Object value = element.getValue();
+        if(!(value instanceof PasswordHistory))
+          continue;
+        PasswordHistory history = (PasswordHistory) value;
+        if(p.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
+          continue;
+        p.addPasswordHistoryItem((Integer) element.getKey(), history);
+      }
+      contains = true;
+      break;
+    }
+
+    if(!contains) {
+      addPassword(password);
+    }
   }
 
   public Password getById(int id) {
@@ -106,7 +163,7 @@ public class PasswordProvider {
       });
     }
 
-    if(passwordActionListener != null)
+    if (passwordActionListener != null)
       passwordActionListener.onOrder();
   }
 
@@ -136,9 +193,9 @@ public class PasswordProvider {
     return addPassword(passwordObject);
   }
 
-  public Password addPassword(Password password) throws Exception {
+  public Password addPassword(Password password) {
 
-    password.reversePasswordHistory();
+    password.orderHistoryByDate();
 
     if (!passwords.contains(password))
       passwords.add(password);
@@ -208,8 +265,8 @@ public class PasswordProvider {
 
   public void swapPassword(int from, int to) {
     Collections.swap(passwords, from, to);
-    Password fromPassword = PasswordProvider.getInstance(context).get(from);
-    Password toPassword = PasswordProvider.getInstance(context).get(to);
+    Password fromPassword = get(from);
+    Password toPassword = get(to);
     fromPassword.swapPositionWith(toPassword);
   }
 

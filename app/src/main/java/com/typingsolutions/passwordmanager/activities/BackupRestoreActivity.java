@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import com.typingsolutions.passwordmanager.callbacks.click.LoadBackupCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.DatabaseProvider;
 import core.Utils;
+import core.data.PasswordProvider;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -140,10 +142,13 @@ public class BackupRestoreActivity extends AppCompatActivity {
         DatabaseProvider.OnOpenPathListener openPathListener = new DatabaseProvider.OnOpenPathListener() {
           @Override
           public void open(SQLiteDatabase database) {
-            Cursor cursor = database.rawQuery("SELECT * FROM passwords", null);
+            Cursor cursor = database.rawQuery(DatabaseProvider.GET_PASSWORDS, null);
+            PasswordProvider.getInstance(BackupRestoreActivity.this).merge(cursor);
 
             //noinspection ResultOfMethodCallIgnored
             tmp.delete();
+            cursor.close();
+            database.close();
           }
 
           @Override
@@ -153,13 +158,15 @@ public class BackupRestoreActivity extends AppCompatActivity {
 
           @Override
           public void refused() {
-
+            //noinspection ResultOfMethodCallIgnored
+            tmp.delete();
+            Snackbar.make(toolbar_actionbar, "Couldn't load your backup", Snackbar.LENGTH_LONG).show();
           }
         };
 
         Utils.copyFile(parcelFileDescriptor.getFileDescriptor(), tmp);
 
-        DatabaseProvider.openDatabase(path, password, openPathListener);
+        DatabaseProvider.openDatabase(tmp.getPath(), password, openPathListener);
       } catch (Exception e) {
         Snackbar.make(toolbar_actionbar, "Couldn't load your backup", Snackbar.LENGTH_LONG).show();
       }
