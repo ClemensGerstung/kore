@@ -74,7 +74,7 @@ public class PasswordProvider {
       if (!p.simpleEquals(password))
         continue;
 
-      for (Dictionary.Element element : password.getPasswordHistory()) {
+      for (Dictionary.Element element : p.getPasswordHistory()) {
         Object value = element.getValue();
         if(!(value instanceof PasswordHistory))
           continue;
