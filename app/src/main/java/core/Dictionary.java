@@ -11,6 +11,7 @@ package core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 // because Java sucks...
@@ -99,6 +100,15 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
      */
     public void setValue(U value) {
       this.value = value;
+    }
+
+    /**
+     * Sets the key of the element
+     *
+     * @param key to set
+     */
+    /*package*/ void setKey(T key) {
+      this.key = key;
     }
 
     /**
@@ -288,7 +298,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     }
     return first;
   }
-  
+
   /**
    * Adds all elements of another dictionary to the current
    *
@@ -491,7 +501,6 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
 
-
   /**
    * Clears the dictionary
    */
@@ -513,26 +522,46 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     current = null;
   }
 
+  private Element<K, V> set(int position, Element<K, V> element) {
+    if (position >= size())
+      return addLast(element.getKey(), element.getValue());
+
+    Element<K, V> temp = get(position);
+    temp.key = element.key;
+    temp.value = element.value;
+
+    return temp;
+  }
+
+  public Element<K, V> set(int position, K key, V value) {
+    return set(position, new Element<>(key, value));
+  }
+
+  public Element<K, V> get(int position) {
+    if (position >= size())
+      throw new IllegalArgumentException("Position is larger than the actual size");
+
+    return get(getFirstIterator(), 0, position);
+  }
+
+  private Element<K, V> get(Element<K, V> current, int currentPos, int targetPos) {
+    if (currentPos < targetPos)
+      return get(current.getNext(), currentPos + 1, targetPos);
+    return current;
+  }
+
   public K getKeyAt(int position) {
     if (position >= size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
-    Element<K, V> element = getFirstIterator();
-    for (int i = 0; i < position; i++) {
-      element = element.getNext();
-    }
-    return element.getKey();
+    return get(getFirstIterator(), 0, position).getKey();
   }
 
   public V getValueAt(int position) {
     if (position >= size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
-    Element<K, V> element = getFirstIterator();
-    for (int i = 0; i < position; i++) {
-      element = element.getNext();
-    }
-    return element.getValue();
+    return get(getFirstIterator(), 0, position).getValue();
   }
 
   public Element<K, V> removeByKey(K key) {
@@ -747,6 +776,71 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   @Override
   public void remove() {
     throw new UnsupportedOperationException();
+  }
+
+  public void sort(Comparator<Element<K, V>> comparator) {
+    quickSort(comparator, 0, size() - 1, 0);
+  }
+
+  public void sortByValue(Comparator<V> comparator) {
+    quickSort(comparator, 0, size() - 1, 1);
+  }
+
+  public void sortByKey(Comparator<K> comparator) {
+    quickSort(comparator, 0, size() - 1, 2);
+  }
+
+  private void quickSort(Comparator comparator, int low, int high, int flag) {
+    if (low > high)
+      return;
+
+    int pivotIndex = low + ((high - low) / 2);
+    Element<K, V> pivot = get(pivotIndex);
+
+    int i = low - 1;
+    int j = high;
+    boolean result;
+
+    do {
+      do {
+        i++;
+
+        if(flag == 1) { // sort by value
+          result = comparator.compare(get(i).getValue(), pivot.getValue()) < 0;
+        } else if(flag == 2) { // sort by key
+          result = comparator.compare(get(i).getKey(), pivot.getKey()) < 0;
+        } else { // normal sort
+          result = comparator.compare(get(i), pivot) < 0;
+        }
+      } while (result);
+
+      do {
+        j--;
+
+        if(flag == 1) { // sort by value
+          result = comparator.compare(get(j).getValue(), pivot.getValue()) > 0;
+        } else if(flag == 2) { // sort by key
+          result = comparator.compare(get(j).getKey(), pivot.getKey()) > 0;
+        } else { // normal sort
+          result = comparator.compare(get(j), pivot) > 0;
+        }
+      } while (result && j > pivotIndex);
+
+      if (i < j)
+        swap(i, j);
+
+    } while (i < j);
+
+    swap(high, i);
+
+    quickSort(comparator, low, i - 1, flag);
+    quickSort(comparator, i + 1, high, flag);
+  }
+
+  protected void swap(int from, int to) {
+    Element<K, V> temp = get(from);
+    set(from, get(to));
+    set(to, temp);
   }
 
   /**
