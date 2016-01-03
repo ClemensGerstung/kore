@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
@@ -194,6 +195,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   @Override
   protected void onStop() {
     super.onStop();
+    Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
     if(logout) {
       PasswordProvider.logoutComplete();
       DatabaseProvider.logout();
@@ -295,5 +297,9 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         swipeRefreshLayout.setRefreshing(false);
       }
     });
+  }
+
+  public void doNotLogout() {
+    logout = false;
   }
 }
