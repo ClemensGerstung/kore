@@ -164,7 +164,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
           }
         };
 
-        Utils.copyFile(parcelFileDescriptor.getFileDescriptor(), tmp);
+        Utils.copyFile(parcelFileDescriptor.getFileDescriptor(), tmp, Utils.Flag.Restore);
 
         DatabaseProvider.openDatabase(tmp.getPath(), password, openPathListener);
       } catch (Exception e) {
@@ -194,7 +194,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
         @Override
         public void changed() {
           // copy database with changed password to new location
-          Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor());
+          Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor(), Utils.Flag.Backup);
           getContentResolver().takePersistableUriPermission(uri, flags);
           Snackbar.make(toolbar_actionbar, "Your backup and changing password of this was successful!", Snackbar.LENGTH_LONG).show();
 
@@ -205,7 +205,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
         @Override
         public void failed() {
           // copy database with unchanged password
-          Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor());
+          Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor(), Utils.Flag.Backup);
           getContentResolver().takePersistableUriPermission(uri, flags);
           Snackbar.make(toolbar_actionbar, "Your backup was successful but the password is your current password!", Snackbar.LENGTH_LONG).show();
 
@@ -228,13 +228,13 @@ public class BackupRestoreActivity extends AppCompatActivity {
       if (editText_repeatPassword.length() > 0 && editText_password.length() > 0) {
         // copy database to tmp-database and change password of this...
         // unfortunately there is no better way to do this because I'm not able to access the recently copied file
-        Utils.copyFile(source, tmp);
+        Utils.copyFile(source, tmp, Utils.Flag.Backup);
 
         String path = tmp.getPath();
         DatabaseProvider.changePassword(path, editText_password.getText().toString(), changePasswordListener);
       } else {
         // simply copy database with current master password
-        Utils.copyFile(source, parcelFileDescriptor.getFileDescriptor());
+        Utils.copyFile(source, parcelFileDescriptor.getFileDescriptor(), Utils.Flag.Backup);
 
         getContentResolver().takePersistableUriPermission(uri, flags);
         Snackbar.make(toolbar_actionbar, "Backup of your passwords was successful!", Snackbar.LENGTH_LONG).show();
