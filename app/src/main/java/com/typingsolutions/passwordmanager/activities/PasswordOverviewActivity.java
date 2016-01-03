@@ -39,6 +39,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   private MenuItem searchItem;
   private SwipeRefreshLayout swipeRefreshLayout;
 
+  private boolean logout = true;
+
   private SearchView searchView;
   private PasswordOverviewAdapter passwordOverviewAdapter;
   private AsyncPasswordLoader passwordLoader;
@@ -183,6 +185,21 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    logout = true;
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    if(logout) {
+      PasswordProvider.logoutComplete();
+      DatabaseProvider.logout();
+      finish();
+    }
+  }
 
   @Override
   protected void onDestroy() {
@@ -199,20 +216,24 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            PasswordProvider.logoutComplete();
-            DatabaseProvider.logout();
-
-            Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-            startActivity(intent);
-
-            PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            PasswordOverviewActivity.super.onBackPressed();
-            ActivityCompat.finishAfterTransition(PasswordOverviewActivity.this);
+            logout();
           }
         })
         .create();
     // TODO: set onKeyListener for alertdialog on back pressed
     alertDialog.show();
+  }
+
+  private void logout() {
+    PasswordProvider.logoutComplete();
+    DatabaseProvider.logout();
+
+    Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+    startActivity(intent);
+
+    PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    PasswordOverviewActivity.super.onBackPressed();
+    ActivityCompat.finishAfterTransition(this);
   }
 
   @Override
@@ -249,10 +270,12 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         onBackPressed();
         break;
       case R.id.passwordoverviewlayout_menuitem_about:
+        logout = false;
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
+        logout = false;
         intent = new Intent(this, BackupRestoreActivity.class);
         startActivity(intent);
         break;
