@@ -523,7 +523,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   private Element<K, V> set(int position, Element<K, V> element) {
-    if (position >= size())
+    if (position > size())
       return addLast(element.getKey(), element.getValue());
 
     Element<K, V> temp = get(position);
@@ -538,7 +538,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public Element<K, V> get(int position) {
-    if (position >= size())
+    if (position > size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
     return get(getFirstIterator(), 0, position);
@@ -551,14 +551,14 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public K getKeyAt(int position) {
-    if (position >= size())
+    if (position > size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
     return get(getFirstIterator(), 0, position).getKey();
   }
 
   public V getValueAt(int position) {
-    if (position >= size())
+    if (position > size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
     return get(getFirstIterator(), 0, position).getValue();
@@ -781,15 +781,15 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public void sort(Comparator<Element<K, V>> comparator) {
-    quickSort(comparator, 0, size() - 1, 0);
+    quickSort(comparator, 0, size(), 0);
   }
 
   public void sortByValue(Comparator<V> comparator) {
-    quickSort(comparator, 0, size() - 1, 1);
+    quickSort(comparator, 0, size(), 1);
   }
 
   public void sortByKey(Comparator<K> comparator) {
-    quickSort(comparator, 0, size() - 1, 2);
+    quickSort(comparator, 0, size(), 2);
   }
 
   private void quickSort(Comparator comparator, int low, int high, int flag) {
@@ -831,7 +831,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       if (i < j)
         swap(i, j);
 
-    } while (i < j);
+    } while (i <= j);
 
     swap(high, i);
 
@@ -840,7 +840,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   protected void swap(int from, int to) {
-    Element<K, V> temp = get(from);
+    Element<K, V> temp = new Element<>(get(from));
     set(from, get(to));
     set(to, temp);
   }
