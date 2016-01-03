@@ -18,13 +18,13 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
+import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
-import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -195,7 +195,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   @Override
   protected void onStop() {
     Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
-    if(logout) {
+    if (logout) {
       PasswordProvider.logoutComplete();
       DatabaseProvider.logout();
       finish();
