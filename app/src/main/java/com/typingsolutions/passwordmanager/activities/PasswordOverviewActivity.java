@@ -229,6 +229,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   private void logout() {
     PasswordProvider.logoutComplete();
     DatabaseProvider.logout();
+    logout = false;
 
     Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
     startActivity(intent);
