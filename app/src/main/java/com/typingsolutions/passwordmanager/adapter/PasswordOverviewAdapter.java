@@ -1,20 +1,15 @@
 package com.typingsolutions.passwordmanager.adapter;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.*;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.DatabaseProvider;
-import core.Utils;
 import com.typingsolutions.passwordmanager.adapter.viewholder.PasswordOverviewViewHolder;
 import core.data.Password;
 import core.data.PasswordHistory;
@@ -25,29 +20,9 @@ import java.util.List;
 
 public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOverviewViewHolder>
     implements IItemTouchHelperAdapter {
-
-  private final SwipeRefreshLayout swipeRefreshLayout;
-  private int currentId;
   private List<Integer> removedItems = new ArrayList<>();
 
-  private final DatabaseProvider.OnOpenListener onOpenListener = new DatabaseProvider.OnOpenListener() {
-    @Override
-    public void open() {
-      passwordOverviewActivity.hideRefreshing();
-      Intent intent = new Intent(context, PasswordDetailActivity.class);
-      intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, currentId);
-      context.startActivity(intent);
-    }
-
-    @Override
-    public void refused() {
-      passwordOverviewActivity.hideRefreshing();
-      passwordOverviewActivity.makeSnackBar();
-    }
-  };
-
-  private Context context;
-  private PasswordOverviewActivity passwordOverviewActivity;
+  private PasswordOverviewActivity activity;
   private LayoutInflater inflater;
 
 
@@ -62,12 +37,10 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   private boolean safe;
   private int removedFilteredItems;
 
-  public PasswordOverviewAdapter(PasswordOverviewActivity context, SwipeRefreshLayout swipeRefreshLayout) {
+  public PasswordOverviewAdapter(PasswordOverviewActivity passwordOverviewActivity) {
     super();
-    this.context = context;
-    this.passwordOverviewActivity = context;
-    this.swipeRefreshLayout = swipeRefreshLayout;
-    inflater = LayoutInflater.from(context);
+    this.activity = passwordOverviewActivity;
+    inflater = LayoutInflater.from(passwordOverviewActivity);
     removedFilteredItems = 0;
   }
 
@@ -75,10 +48,10 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   public PasswordOverviewViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
     View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
 
-    safe = PasswordProvider.getInstance(context).isSafe();
+    safe = PasswordProvider.getInstance(activity).isSafe();
 
     PasswordOverviewViewHolder passwordOverviewViewHolder
-        = new PasswordOverviewViewHolder(context, this, view);
+        = new PasswordOverviewViewHolder(activity, view);
     if (safe) {
       passwordOverviewViewHolder.makeSafe();
     }
@@ -88,7 +61,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   @Override
   public void onBindViewHolder(PasswordOverviewViewHolder viewHolder, int position) {
-    Password password = PasswordProvider.getInstance(context).get(position);
+    Password password = PasswordProvider.getInstance(activity).get(position);
     PasswordHistory history = password.getFirstHistoryItem();
 
     if (!safe) {
@@ -107,7 +80,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   @Override
   public int getItemCount() {
-    return PasswordProvider.getInstance(context).size() - removedFilteredItems;
+    return PasswordProvider.getInstance(activity).size() - removedFilteredItems;
   }
 
   public synchronized void filter(String query) {
@@ -133,7 +106,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
   }
 
   private void filter(String query, int flag) {
-    PasswordProvider provider = PasswordProvider.getInstance(context);
+    PasswordProvider provider = PasswordProvider.getInstance(activity);
     for (int i = provider.size() - 1; i >= 0; i--) {
       Password password = provider.get(i);
       if (!matches(password, query, flag)) {
@@ -179,18 +152,18 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   @Override
   public void onItemMove(int fromPosition, int toPosition) {
-    PasswordProvider.getInstance(context).swapPassword(fromPosition, toPosition);
+    PasswordProvider.getInstance(activity).swapPassword(fromPosition, toPosition);
     notifyItemMoved(fromPosition, toPosition);
   }
 
   @Override
   public void onItemDismiss(final int position) {
-    AlertDialog dialog = new AlertDialog.Builder(context)
+    AlertDialog dialog = new AlertDialog.Builder(activity)
         .setMessage("Delete this password?")
         .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            PasswordProvider.getInstance(context).removePassword(position);
+            PasswordProvider.getInstance(activity).removePassword(position);
             notifyItemRemoved(position);
           }
         })
@@ -203,17 +176,5 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         .create();
     dialog.show();
 
-  }
-
-  public void setRefreshing(boolean refreshing) {
-    swipeRefreshLayout.setRefreshing(refreshing);
-  }
-
-  public void setCurrentId(int currentId) {
-    this.currentId = currentId;
-  }
-
-  public DatabaseProvider.OnOpenListener getOnOpenListener() {
-    return onOpenListener;
   }
 }

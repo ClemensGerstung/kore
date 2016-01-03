@@ -163,7 +163,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
 
     // init and set adapter
-    passwordOverviewAdapter = new PasswordOverviewAdapter(this, swipeRefreshLayout);
+    passwordOverviewAdapter = new PasswordOverviewAdapter(this);
     layoutManager = new LinearLayoutManager(this);
     passwordRecyclerView.setAdapter(passwordOverviewAdapter);
     passwordRecyclerView.setLayoutManager(layoutManager);
@@ -286,15 +286,15 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     return true;
   }
 
-  public void makeSnackBar() {
-    Snackbar.make(addPasswordFloatingActionButton, "Your passwords do not match", Snackbar.LENGTH_LONG).show();
+  public void makeSnackBar(String text) {
+    Snackbar.make(addPasswordFloatingActionButton, text, Snackbar.LENGTH_LONG).show();
   }
 
-  public void hideRefreshing() {
+  public void setRefreshing(final boolean refreshing) {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(refreshing);
       }
     });
   }

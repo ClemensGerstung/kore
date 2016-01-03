@@ -138,7 +138,7 @@ public class Password {
     passwordHistory.sortByValue(new Comparator<PasswordHistory>() {
       @Override
       public int compare(PasswordHistory lhs, PasswordHistory rhs) {
-        return lhs.getChangedDate().compareTo(rhs.getChangedDate());
+        return rhs.getChangedDate().compareTo(lhs.getChangedDate());
       }
     });
   }

@@ -604,8 +604,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    */
   public int size() {
     Element<K, V> element = getFirstIterator();
+    if (element != null)
+      return size(element, 0);
 
-    return size(element, 0);
+    return 0;
   }
 
   /**
@@ -805,9 +807,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       do {
         i++;
 
-        if(flag == 1) { // sort by value
+        if (flag == 1) { // sort by value
           result = comparator.compare(get(i).getValue(), pivot.getValue()) < 0;
-        } else if(flag == 2) { // sort by key
+        } else if (flag == 2) { // sort by key
           result = comparator.compare(get(i).getKey(), pivot.getKey()) < 0;
         } else { // normal sort
           result = comparator.compare(get(i), pivot) < 0;
@@ -817,9 +819,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       do {
         j--;
 
-        if(flag == 1) { // sort by value
+        if (flag == 1) { // sort by value
           result = comparator.compare(get(j).getValue(), pivot.getValue()) > 0;
-        } else if(flag == 2) { // sort by key
+        } else if (flag == 2) { // sort by key
           result = comparator.compare(get(j).getKey(), pivot.getKey()) > 0;
         } else { // normal sort
           result = comparator.compare(get(j), pivot) > 0;
