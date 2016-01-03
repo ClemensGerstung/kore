@@ -194,13 +194,13 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
   @Override
   protected void onStop() {
-    super.onStop();
     Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
     if(logout) {
       PasswordProvider.logoutComplete();
       DatabaseProvider.logout();
       finish();
     }
+    super.onStop();
   }
 
   @Override
