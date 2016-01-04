@@ -32,6 +32,7 @@ import com.typingsolutions.passwordmanager.callbacks.service.ServiceCallbackImpl
 import com.typingsolutions.passwordmanager.services.LoginService;
 import core.DatabaseProvider;
 import core.Utils;
+import core.async.AsyncDatabasePipeline;
 import core.data.PasswordProvider;
 import ui.OutlinedImageView;
 
@@ -143,6 +144,15 @@ public class LoginActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // TODO: remove
+
+    AsyncDatabasePipeline pipeline = AsyncDatabasePipeline.getPipeline(this);
+    pipeline.addQuery("1", "afds", "asds", "adsf");
+    pipeline.addQuery("2", "ukjhgs", "afdhgdf", "jhg");
+    pipeline.addQuery("3", "afdggfd", "dhgjf", "fhjg");
+
+    // END TODO
 
     databaseProvider = DatabaseProvider.getConnection(this);
     boolean needSetup = databaseProvider.needSetup();
