@@ -125,6 +125,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
       copyDatabase(uri);
     }
 
+    // restore database
     if (requestCode == RESTORE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
       if (data == null) return;
       final Uri uri = data.getData();
