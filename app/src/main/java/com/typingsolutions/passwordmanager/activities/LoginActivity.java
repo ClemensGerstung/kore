@@ -145,15 +145,6 @@ public class LoginActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // TODO: remove
-
-    AsyncDatabasePipeline pipeline = AsyncDatabasePipeline.getPipeline(this);
-    pipeline.addQuery("1", "afds", "asds", "adsf");
-    pipeline.addQuery("2", "ukjhgs", "afdhgdf", "jhg");
-    pipeline.addQuery("3", "afdggfd", "dhgjf", "fhjg");
-
-    // END TODO
-
     databaseProvider = DatabaseProvider.getConnection(this);
     boolean needSetup = databaseProvider.needSetup();
     if (needSetup) {

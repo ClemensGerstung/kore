@@ -95,7 +95,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
     delete.setOnClickListener(onClickListener);
 
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
     collapsingToolbarLayout.setTitle(programString);
     collapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
