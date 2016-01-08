@@ -37,9 +37,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
         if (nextPassword.equals(password)) {
           password.merge(nextPassword);
         } else {
-          Log.d(getClass().getSimpleName(), String.format("Historysize (password): %s", password.getHistoryCount()));
-          Password password1 = PasswordProvider.getInstance(context).addPassword(password);
-          Log.d(getClass().getSimpleName(), String.format("Historysize (password1): %s", password1.getHistoryCount()));
+          PasswordProvider.getInstance(context).addPassword(password);
           password = nextPassword;
         }
       }
