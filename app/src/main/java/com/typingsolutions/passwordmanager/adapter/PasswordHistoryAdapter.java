@@ -19,13 +19,13 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
   private Context context;
   private LayoutInflater inflater;
-  private int passwordId;
+  private Password password;
 
   public PasswordHistoryAdapter(Context context, int passwordIndex) {
     super();
     this.context = context;
     this.inflater = LayoutInflater.from(context);
-    this.passwordId = passwordIndex;
+    this.password = PasswordProvider.getInstance(context).getById(passwordIndex);
   }
 
   @Override
@@ -37,7 +37,6 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
   @Override
   public void onBindViewHolder(ViewHolder holder, int position) {
-    Password password = PasswordProvider.getInstance(context).getById(passwordId);
     PasswordHistory history = password.getItemAt(position + 1);
 
     DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
@@ -49,8 +48,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
   @Override
   public int getItemCount() {
-    Password password = PasswordProvider.getInstance(context).getById(passwordId);
-    return password.getHistoryCount() - 1;
+    return password.getHistoryCount();
   }
 
 

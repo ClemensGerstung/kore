@@ -1,8 +1,10 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -93,10 +95,11 @@ public class PasswordDetailActivity extends AppCompatActivity {
     DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
     delete.setOnClickListener(onClickListener);
 
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
     collapsingToolbarLayout.setTitle(programString);
     collapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
+    ViewCompat.setElevation(collapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
 
     ViewUtils.setColor(header, programString, passwordString);
 
@@ -107,10 +110,8 @@ public class PasswordDetailActivity extends AppCompatActivity {
       passwordHistory.setEnabled(false);
     }
 
-    if (!((View) program.getParent()).requestFocus())
-      ((View) program.getParent()).requestFocus();
+    button.requestFocus();
   }
-
 
   @Override
   protected void onPause() {

@@ -9,6 +9,8 @@
 
 package core;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -307,7 +309,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    * @param option       iterate the other dictionary from front to end or vice versa
    */
   public void addAll(Dictionary<K, V> other, InsertOption insertOption, IterationOption option) {
-    Element<K, V> iterator = (option == IterationOption.Forwards ? other.getFirstIterator() : other.getLastIterator());
+    Element<K, V> iterator = (option == IterationOption.Forwards ? other.first : other.last);
     addAll(iterator, insertOption, option);
   }
 
@@ -357,7 +359,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    * @param option to iterate through the dictionary
    */
   public void setForKey(K key, V value, IterationOption option) {
-    Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+    Element<K, V> iterator = option == IterationOption.Backwards ? last : first;
 
     boolean setValue = setForKey(iterator, key, value, option == IterationOption.Backwards);
 
@@ -406,7 +408,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     if (containsKey(key, option))
       throw new IllegalArgumentException("Already contains key " + key.toString() + "!");
 
-    Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+    Element<K, V> iterator = option == IterationOption.Backwards ? last : first;
 
     return insertKey(iterator, search, key, value, insertOption, option);
   }
@@ -458,7 +460,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    * @return {@code true} if key is in dictionary otherwise {@code false}
    */
   public boolean containsKey(K key, IterationOption option) {
-    Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+    Element<K, V> iterator = option == IterationOption.Backwards ? last : first;
 
     return iterator != null && containsKey(iterator, key, option);
 
@@ -487,7 +489,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
   public boolean containsValue(V value, IterationOption option) {
     boolean result = false;
-    Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+    Element<K, V> iterator = option == IterationOption.Backwards ? last : first;
 
     while (iterator != null) {
       if (iterator.getValue().equals(value)) {
@@ -523,7 +525,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   private Element<K, V> set(int position, Element<K, V> element) {
-    if (position >= size())
+    if (position > size())
       return addLast(element.getKey(), element.getValue());
 
     Element<K, V> temp = get(position);
@@ -538,10 +540,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public Element<K, V> get(int position) {
-    if (position >= size())
+    if (position > size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
-    return get(getFirstIterator(), 0, position);
+    return get(first, 0, position);
   }
 
   private Element<K, V> get(Element<K, V> current, int currentPos, int targetPos) {
@@ -551,41 +553,47 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public K getKeyAt(int position) {
-    if (position >= size())
+    if (position > size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
-    return get(getFirstIterator(), 0, position).getKey();
+    return get(first, 0, position).getKey();
   }
 
   public V getValueAt(int position) {
-    if (position >= size())
+    if (position > size())
       throw new IllegalArgumentException("Position is larger than the actual size");
 
-    return get(getFirstIterator(), 0, position).getValue();
+    return get(first, 0, position).getValue();
   }
 
   public Element<K, V> removeByKey(K key) {
     if (!containsKey(key, IterationOption.Forwards))
       throw new IllegalArgumentException("Doesn't contain key " + key.toString() + "!");
 
-    for (Element element : this) {
-      if (element.key.equals(key)) {
-        Element prev = element.prev;
-        Element next = element.next;
+    return removeByKey(first, key);
+  }
+
+  @Nullable
+  private Element<K, V> removeByKey(Element<K, V> element, K key) {
+    if (element.key.equals(key)) {
+      Element<K, V> prev = element.prev;
+      Element<K, V> next = element.next;
+      if (prev != null)
         prev.setNext(next);
+      if (next != null)
         next.setPrevious(prev);
-        return element;
-      }
+
+      return element;
     }
 
-    return null;
+    return removeByKey(element.next, key);
   }
 
   public V getByKey(K search, IterationOption option) {
     if (!containsKey(search, option))
       throw new IllegalArgumentException("Doesn't contain key " + search.toString() + "!");
 
-    Element<K, V> iterator = option == IterationOption.Backwards ? getLastIterator() : getFirstIterator();
+    Element<K, V> iterator = option == IterationOption.Backwards ? last : first;
 
     while (iterator != null) {
       if (iterator.getKey().equals(search)) {
@@ -603,9 +611,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    * @return the number of elements
    */
   public int size() {
-    Element<K, V> element = getFirstIterator();
+    if (first != null)
+      return size(first, 0);
 
-    return size(element, 0);
+    return 0;
   }
 
   /**
@@ -747,7 +756,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    * @return the successor
    */
   @Override
-  public Element next() {
+  public Element<K, V> next() {
     if (current == null)
       throw new UnsupportedOperationException("No next element");
 
@@ -779,15 +788,15 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public void sort(Comparator<Element<K, V>> comparator) {
-    quickSort(comparator, 0, size() - 1, 0);
+    quickSort(comparator, 0, size(), 0);
   }
 
   public void sortByValue(Comparator<V> comparator) {
-    quickSort(comparator, 0, size() - 1, 1);
+    quickSort(comparator, 0, size(), 1);
   }
 
   public void sortByKey(Comparator<K> comparator) {
-    quickSort(comparator, 0, size() - 1, 2);
+    quickSort(comparator, 0, size(), 2);
   }
 
   private void quickSort(Comparator comparator, int low, int high, int flag) {
@@ -805,9 +814,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       do {
         i++;
 
-        if(flag == 1) { // sort by value
+        if (flag == 1) { // sort by value
           result = comparator.compare(get(i).getValue(), pivot.getValue()) < 0;
-        } else if(flag == 2) { // sort by key
+        } else if (flag == 2) { // sort by key
           result = comparator.compare(get(i).getKey(), pivot.getKey()) < 0;
         } else { // normal sort
           result = comparator.compare(get(i), pivot) < 0;
@@ -817,9 +826,9 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       do {
         j--;
 
-        if(flag == 1) { // sort by value
+        if (flag == 1) { // sort by value
           result = comparator.compare(get(j).getValue(), pivot.getValue()) > 0;
-        } else if(flag == 2) { // sort by key
+        } else if (flag == 2) { // sort by key
           result = comparator.compare(get(j).getKey(), pivot.getKey()) > 0;
         } else { // normal sort
           result = comparator.compare(get(j), pivot) > 0;
@@ -829,7 +838,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       if (i < j)
         swap(i, j);
 
-    } while (i < j);
+    } while (i <= j);
 
     swap(high, i);
 
@@ -838,7 +847,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   protected void swap(int from, int to) {
-    Element<K, V> temp = get(from);
+    Element<K, V> temp = new Element<>(get(from));
     set(from, get(to));
     set(to, temp);
   }

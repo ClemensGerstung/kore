@@ -2,66 +2,67 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.typingsolutions.passwordmanager">
 
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-  <application
-      android:allowBackup="true"
-      android:icon="@mipmap/icon"
-      android:backupAgent=".utils.PasswordManagerBackupManager"
-      android:label="@string/app_name">
+    <application
+            android:allowBackup="true"
+            android:icon="@drawable/icon_dev"
+            android:backupAgent=".utils.PasswordManagerBackupManager"
+            android:label="@string/app_name">
 
-    <service android:name=".services.LoginService"
-             android:process=":Service">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-    </service>
+        <service android:name=".services.LoginService"
+                 android:process=":Service">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </service>
 
-    <receiver android:name=".receiver.BootReceiver"
-              android:enabled="true"
-              android:exported="true">
-      <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED"/>
-      </intent-filter>
-    </receiver>
+        <receiver android:name=".receiver.BootReceiver"
+                  android:enabled="true"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
-    <activity
-        android:name=".activities.LoginActivity"
-        android:theme="@style/Base.AppTheme"
-        android:windowSoftInputMode="adjustResize"
-        android:label="@string/app_name">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-    </activity>
+        <activity
+                android:name=".activities.LoginActivity"
+                android:theme="@style/Base.AppTheme"
+                android:windowSoftInputMode="adjustResize"
+                android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
-    <activity android:name=".activities.PasswordOverviewActivity"
-              android:theme="@style/Base.AppTheme"
-              android:label="@string/app_name">
-      <intent-filter>
-        <action android:name="android.intent.action.SCREEN_OFF"/>
-      </intent-filter>
-    </activity>
+        <activity android:name=".activities.PasswordOverviewActivity"
+                  android:theme="@style/Base.AppTheme"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF"/>
+            </intent-filter>
+        </activity>
 
-    <activity android:name=".activities.CreatePasswordActivity"
-              android:theme="@style/Base.AppTheme"
-              android:label=""/>
+        <activity android:name=".activities.CreatePasswordActivity"
+                  android:theme="@style/Base.AppTheme"
+                  android:label=""/>
 
-    <activity android:name=".activities.PasswordDetailActivity"
-              android:theme="@style/Base.AppTheme"
-              android:label=""/>
+        <activity android:name=".activities.PasswordDetailActivity"
+                  android:windowSoftInputMode="stateHidden"
+                  android:theme="@style/Base.AppTheme"
+                  android:label=""/>
 
-    <activity android:name=".activities.AboutActivity"
-              android:theme="@style/Base.AppTheme"
-              android:label="About and Licenses"/>
+        <activity android:name=".activities.AboutActivity"
+                  android:theme="@style/Base.AppTheme"
+                  android:label="About and Licenses"/>
 
-    <activity android:name=".activities.BackupRestoreActivity"
-              android:theme="@style/Base.AppTheme"
-              android:label=""/>
-  </application>
+        <activity android:name=".activities.BackupRestoreActivity"
+                  android:theme="@style/Base.AppTheme"
+                  android:label=""/>
+    </application>
 </manifest>
