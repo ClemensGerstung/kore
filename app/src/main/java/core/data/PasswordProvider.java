@@ -2,16 +2,16 @@ package core.data;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import core.DatabaseProvider;
 import core.Dictionary;
 import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
 import net.sqlcipher.Cursor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class PasswordProvider {
   private static PasswordProvider Instance;
@@ -70,26 +70,28 @@ public class PasswordProvider {
   private void mergeOrAdd(Password password) {
     boolean contains = false;
 
-    for (Password p : passwords) {
-      if (!p.simpleEquals(password))
+    for (Password existingPassword : passwords) {
+      contains = false;
+      if (!existingPassword.simpleEquals(password))
         continue;
 
-      for (Dictionary.Element element : p.getPasswordHistory()) {
-        Object value = element.getValue();
-        if(!(value instanceof PasswordHistory))
+      Collection<PasswordHistory> values = password.getPasswordHistory().values();
+      for (PasswordHistory value : values) {
+        if (existingPassword.getPasswordHistory().containsValue(value, Dictionary.IterationOption.Forwards))
           continue;
-        PasswordHistory history = (PasswordHistory) value;
-        if(p.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
-          continue;
-        p.addPasswordHistoryItem((Integer) element.getKey(), history);
+        addHistoryItemAsync(existingPassword, value);
       }
       contains = true;
       break;
     }
 
-    if(!contains) {
+    if (!contains) {
       addPassword(password);
     }
+  }
+
+  private void addHistoryItemAsync(Password password, PasswordHistory item) {
+
   }
 
   public Password getById(int id) {
@@ -119,60 +121,28 @@ public class PasswordProvider {
   }
 
   public void order(int which) {
-    if (which == 0) {   // order by username ascending
-      Collections.sort(passwords, new Comparator<Password>() {
-        @Override
-        public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getUsername(), lhs.getUsername());
-        }
-      });
+    Comparator<Password> comparator = null;
+
+    if (which == 0) {           // order by username ascending
+      comparator = new PasswordComparator("getUsername", false);
     } else if (which == 1) {    // order by username descending
-      Collections.sort(passwords, new Comparator<Password>() {
-        @Override
-        public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(lhs, rhs, lhs.getUsername(), rhs.getUsername());
-        }
-      });
-    } else if (which == 2) {   // order by password ascending
-      Collections.sort(passwords, new Comparator<Password>() {
-        @Override
-        public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getFirstItem(), lhs.getFirstItem());
-        }
-      });
+      comparator = new PasswordComparator("getUsername", true);
+    } else if (which == 2) {    // order by password ascending
+      comparator = new PasswordComparator("getFirstItem", false);
     } else if (which == 3) {    // order by password descending
-      Collections.sort(passwords, new Comparator<Password>() {
-        @Override
-        public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(lhs, rhs, lhs.getFirstItem(), rhs.getFirstItem());
-        }
-      });
-    } else if (which == 4) {   // order by program ascending
-      Collections.sort(passwords, new Comparator<Password>() {
-        @Override
-        public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(rhs, lhs, rhs.getProgram(), lhs.getProgram());
-        }
-      });
+      comparator = new PasswordComparator("getFirstItem", true);
+    } else if (which == 4) {    // order by program ascending
+      comparator = new PasswordComparator("getProgram", false);
     } else if (which == 5) {    // order by program descending
-      Collections.sort(passwords, new Comparator<Password>() {
-        @Override
-        public int compare(Password lhs, Password rhs) {
-          return PasswordProvider.this.compare(lhs, rhs, lhs.getProgram(), rhs.getProgram());
-        }
-      });
+      comparator = new PasswordComparator("getProgram", true);
     }
 
-    if (passwordActionListener != null)
-      passwordActionListener.onOrder();
-  }
+    if (comparator != null) {
+      Collections.sort(passwords, comparator);
 
-  private int compare(Password rhs, Password lhs, String compareRhs, String compareLhs) {
-    int compareTo = compareLhs.toLowerCase().compareTo(compareRhs.toLowerCase());
-    if (compareTo != 0)
-      lhs.swapPositionWith(rhs);
-
-    return compareTo;
+      if (passwordActionListener != null)
+        passwordActionListener.onOrder();
+    }
   }
 
   public Password addPassword(String program, String username, String password) throws Exception {
@@ -206,7 +176,7 @@ public class PasswordProvider {
     return password;
   }
 
-  public void editPassword(int id, String newPassword) throws Exception {
+  public int editPassword(int id, String newPassword) throws Exception {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
     PasswordHistory history = PasswordHistory.createItem(newPassword);
@@ -220,9 +190,11 @@ public class PasswordProvider {
     password.addPasswordHistoryItem((int) historyId, history);
 
     editPassword(password);
+
+    return (int) historyId;
   }
 
-  public void editPassword(int id, @Nullable String program, @Nullable String username) throws Exception {
+  public void editPassword(int id, @Nullable String program, @Nullable String username) {
     Password password = getById(id);
     password.setUsername(username);
     password.setProgram(program);
@@ -233,7 +205,7 @@ public class PasswordProvider {
     editPassword(password);
   }
 
-  void editPassword(Password password) throws Exception {
+  void editPassword(Password password) {
     int index = passwords.indexOf(password);
     passwords.set(index, password);
 
@@ -290,5 +262,35 @@ public class PasswordProvider {
     void onPasswordEdited(Password password, PasswordHistory history);
 
     void onOrder();
+  }
+
+  private class PasswordComparator implements Comparator<Password> {
+    private Method method;
+    private boolean inverted;
+
+    public PasswordComparator(String method, boolean inverted) {
+      try {
+        this.inverted = inverted;
+        this.method = Password.class.getDeclaredMethod(method);
+      } catch (NoSuchMethodException e) {
+        Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+      }
+    }
+
+    @Override
+    public int compare(Password lhs, Password rhs) {
+      try {
+        String lhsString = ((String) (inverted ? method.invoke(lhs) : method.invoke(rhs))).toLowerCase();
+        String rhsString = ((String) (inverted ? method.invoke(rhs) : method.invoke(lhs))).toLowerCase();
+
+        int compareTo = lhsString.compareTo(rhsString);
+        if (compareTo != 0)
+          lhs.swapPositionWith(rhs);
+
+        return compareTo;
+      } catch (IllegalAccessException | InvocationTargetException e) {
+        return 0;
+      }
+    }
   }
 }

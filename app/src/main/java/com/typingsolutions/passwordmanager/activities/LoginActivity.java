@@ -32,6 +32,7 @@ import com.typingsolutions.passwordmanager.callbacks.service.ServiceCallbackImpl
 import com.typingsolutions.passwordmanager.services.LoginService;
 import core.DatabaseProvider;
 import core.Utils;
+import core.async.AsyncDatabasePipeline;
 import core.data.PasswordProvider;
 import ui.OutlinedImageView;
 

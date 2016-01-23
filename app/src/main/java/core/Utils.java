@@ -1,10 +1,5 @@
 package core;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.MediaStore;
-
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -60,11 +55,11 @@ public class Utils {
     }
   }
 
-  public static int copyFile(File source, File target) {
+  public static int copyFile(File source, File target, Flag flag) {
     int size = 0;
 
     try {
-      size = copyFile(new FileInputStream(source), new FileOutputStream(target));
+      size = copyFile(new FileInputStream(source), new FileOutputStream(target), flag);
     } catch (Exception e) {
       return -1;
     }
@@ -72,11 +67,11 @@ public class Utils {
     return size;
   }
 
-  public static int copyFile(FileDescriptor source, File target) {
+  public static int copyFile(FileDescriptor source, File target, Flag flag) {
     int size = 0;
 
     try {
-      size = copyFile(new FileInputStream(source), new FileOutputStream(target));
+      size = copyFile(new FileInputStream(source), new FileOutputStream(target), flag);
     } catch (Exception e) {
       return -1;
     }
@@ -84,11 +79,11 @@ public class Utils {
     return size;
   }
 
-  public static int copyFile(File source, FileDescriptor target) {
+  public static int copyFile(File source, FileDescriptor target, Flag flag) {
     int size = 0;
 
     try {
-      size = copyFile(new FileInputStream(source), new FileOutputStream(target));
+      size = copyFile(new FileInputStream(source), new FileOutputStream(target), flag);
     } catch (Exception e) {
       return -1;
     }
@@ -96,7 +91,7 @@ public class Utils {
     return size;
   }
 
-  private static int copyFile(FileInputStream source, FileOutputStream target) {
+  private static int copyFile(FileInputStream source, FileOutputStream target, Flag flag) {
     //TODO: check hash?
     int size = 0;
     byte[] buffer = new byte[1024];
@@ -107,6 +102,7 @@ public class Utils {
         target.write(buffer, 0, length);
         size += length;
       }
+
       source.close();
       target.close();
     } catch (IOException e) {
@@ -114,5 +110,9 @@ public class Utils {
     }
 
     return size;
+  }
+
+  public enum Flag {
+    Backup, Restore
   }
 }

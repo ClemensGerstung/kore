@@ -14,16 +14,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
+import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
-import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
@@ -38,6 +39,8 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   private TextView noPasswordsTextView;
   private MenuItem searchItem;
   private SwipeRefreshLayout swipeRefreshLayout;
+
+  private boolean logout = true;
 
   private SearchView searchView;
   private PasswordOverviewAdapter passwordOverviewAdapter;
@@ -160,7 +163,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
 
     // init and set adapter
-    passwordOverviewAdapter = new PasswordOverviewAdapter(this, swipeRefreshLayout);
+    passwordOverviewAdapter = new PasswordOverviewAdapter(this);
     layoutManager = new LinearLayoutManager(this);
     passwordRecyclerView.setAdapter(passwordOverviewAdapter);
     passwordRecyclerView.setLayoutManager(layoutManager);
@@ -173,7 +176,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
 
     // make secure
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
 
     // load passwords in background
@@ -183,6 +186,22 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    logout = true;
+  }
+
+  @Override
+  protected void onStop() {
+    Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
+    if (logout) {
+      PasswordProvider.logoutComplete();
+      DatabaseProvider.logout();
+      finish();
+    }
+    super.onStop();
+  }
 
   @Override
   protected void onDestroy() {
@@ -199,20 +218,25 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            PasswordProvider.logoutComplete();
-            DatabaseProvider.logout();
-
-            Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-            startActivity(intent);
-
-            PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            PasswordOverviewActivity.super.onBackPressed();
-            ActivityCompat.finishAfterTransition(PasswordOverviewActivity.this);
+            logout();
           }
         })
         .create();
     // TODO: set onKeyListener for alertdialog on back pressed
     alertDialog.show();
+  }
+
+  private void logout() {
+    PasswordProvider.logoutComplete();
+    DatabaseProvider.logout();
+    logout = false;
+
+    Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+    startActivity(intent);
+
+    PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    PasswordOverviewActivity.super.onBackPressed();
+    ActivityCompat.finishAfterTransition(this);
   }
 
   @Override
@@ -249,10 +273,12 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         onBackPressed();
         break;
       case R.id.passwordoverviewlayout_menuitem_about:
+        logout = false;
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
+        logout = false;
         intent = new Intent(this, BackupRestoreActivity.class);
         startActivity(intent);
         break;
@@ -261,16 +287,20 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     return true;
   }
 
-  public void makeSnackBar() {
-    Snackbar.make(addPasswordFloatingActionButton, "Your passwords do not match", Snackbar.LENGTH_LONG).show();
+  public void makeSnackBar(String text) {
+    Snackbar.make(addPasswordFloatingActionButton, text, Snackbar.LENGTH_LONG).show();
   }
 
-  public void hideRefreshing() {
+  public void setRefreshing(final boolean refreshing) {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(refreshing);
       }
     });
+  }
+
+  public void doNotLogout() {
+    logout = false;
   }
 }
