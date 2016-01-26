@@ -1,6 +1,7 @@
 package core.async;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Pair;
 import core.DatabaseProvider;
@@ -32,7 +33,6 @@ public class AsyncDatabasePipeline {
       }
 
       while (working) {
-
         try {
           String query = element.getKey().first.toUpperCase();
           if (query.startsWith("INSERT")) {
@@ -59,8 +59,10 @@ public class AsyncDatabasePipeline {
       }
 
       try {
-        looper.wait();
-        looper.run();
+        synchronized (AsyncDatabasePipeline.this.looper) {
+          looper.wait();
+          looper.run();
+        }
       } catch (InterruptedException ignored) {
       }
     }
@@ -79,30 +81,42 @@ public class AsyncDatabasePipeline {
 
   private static AsyncDatabasePipeline PIPELINE;
 
-  public static void add(String query, Object... params) {
+  public static void add(String query, @Nullable AsyncQueryListener listener, Object... params) {
     if (PIPELINE == null)
       throw new IllegalStateException("Pipeline has not been initialized! Call getPipeline() first!");
 
-    PIPELINE.addQuery(query, params);
+    PIPELINE.addQuery(query, listener, params);
   }
 
-  public void addQuery(String query, Object... params) {
-    //queries.addLast(query, params);
-    if (!working) {
+  public void addQuery(String query, @Nullable AsyncQueryListener listener, Object... params) {
+    queries.addFirst(new Pair<>(query, params), listener);
+
+    synchronized (looper) {
+      if (working)
+        return;
+
       if (!looper.isAlive()) {
         looper.start();
       } else {
-        synchronized (looper) {
-          looper.notify();
-        }
+        looper.notify();
       }
     }
   }
 
   public static void end() {
+    if (PIPELINE == null)
+      throw new IllegalStateException("Pipeline has not been initialized! Call getPipeline() first!");
 
+    PIPELINE.endLooper();
   }
 
+  public void endLooper() {
+    synchronized (looper) {
+      exit = true;
+      looper.notify();
+      looper.interrupt();
+    }
+  }
   public static AsyncDatabasePipeline getPipeline(Context context) {
     if (PIPELINE == null) {
       PIPELINE = new AsyncDatabasePipeline(context);
@@ -114,6 +128,7 @@ public class AsyncDatabasePipeline {
     this.context = context;
     this.queries = new Dictionary<>();
     this.working = false;
+    this.exit = false;
     this.looper = new Thread(looping);
   }
 
