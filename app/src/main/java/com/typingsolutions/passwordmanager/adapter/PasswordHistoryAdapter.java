@@ -48,7 +48,7 @@ public class PasswordHistoryAdapter extends RecyclerView.Adapter<PasswordHistory
 
   @Override
   public int getItemCount() {
-    return password.getHistoryCount()-1;
+    return password.getHistoryCount() - 1;
   }
 
 

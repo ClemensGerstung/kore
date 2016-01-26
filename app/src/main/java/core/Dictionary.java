@@ -32,7 +32,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
    * @param <T> the type of the key
    * @param <U> the type of the value
    */
-  public class Element<T, U> {
+  public static class Element<T, U> implements Cloneable {
     /**
      * Key of the element
      */
@@ -175,6 +175,11 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       value = null;
       next = null;
       prev = null;
+    }
+
+    @Override
+    protected Element<T, U> clone() {
+      return new Element<>(this);
     }
 
     /**
@@ -573,6 +578,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     return removeByKey(first, key);
   }
 
+  public Element<K,V> removeFirst() {
+    return removeByKey(first.key).clone();
+  }
+
   @Nullable
   private Element<K, V> removeByKey(Element<K, V> element, K key) {
     if (element.key.equals(key)) {
@@ -775,6 +784,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
 
     current = current.getPrevious();
     return current;
+  }
+
+  public boolean hasElements() {
+    return first != null && last != null;
   }
 
   /**
