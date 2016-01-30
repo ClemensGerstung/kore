@@ -78,7 +78,7 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
     String password = editText.getText().toString();
 
     activity.setRefreshing(true);
-    DatabaseProvider.getConnection(activity).tryOpen(password, null);
+    DatabaseProvider.getConnection(activity).tryOpen(password, this);
 
     alert.dismiss();
   }

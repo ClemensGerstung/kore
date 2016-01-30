@@ -136,7 +136,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
      *
      * @return the previous element
      */
-    /*package*/  Element<T, U> getPrevious() {
+    /*package*/ Element<T, U> getPrevious() {
       return prev;
     }
 
@@ -145,7 +145,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
      *
      * @param prev element to the current
      */
-    /*package*/  void setPrevious(Element<T, U> prev) {
+    /*package*/ void setPrevious(Element<T, U> prev) {
       this.prev = prev;
     }
 
@@ -154,7 +154,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
      *
      * @return {@code true} if there is one
      */
-    /*package*/  boolean hasNext() {
+    /*package*/ boolean hasNext() {
       return next != null;
     }
 
@@ -177,6 +177,10 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
       prev = null;
     }
 
+    /**
+     * Copies the current element
+     * @return a copy of the current element
+     */
     @Override
     protected Element<T, U> clone() {
       return new Element<>(this);
