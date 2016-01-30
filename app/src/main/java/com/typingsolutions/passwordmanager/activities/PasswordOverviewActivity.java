@@ -177,7 +177,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
 
     // make secure
-    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
 
     // load passwords in background
