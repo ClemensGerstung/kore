@@ -212,8 +212,6 @@ public class PasswordProvider {
 
     AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.UPDATE_PASSWORD_BY_ID, null, program, username, id);
 
-    //DatabaseProvider.getConnection(context).update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, program, username, id);
-
     editPassword(password);
   }
 
@@ -229,15 +227,18 @@ public class PasswordProvider {
     return removePassword(get(position));
   }
 
-  public Password removePassword(Password password) {
+  public Password removePassword(final Password password) {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
 
     List<Integer> list = new ArrayList<>(password.getPasswordIds());
     for (Integer i : list) {
-      provider.remove(DatabaseProvider.REMOVE_HISTORY_BY_ID, i);
+      AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.REMOVE_HISTORY_BY_ID, null, i);
+      //provider.remove(DatabaseProvider.REMOVE_HISTORY_BY_ID, i);
     }
 
-    provider.remove(DatabaseProvider.REMOVE_PASSWORD_BY_ID, password.getId());
+    //provider.remove(DatabaseProvider.REMOVE_PASSWORD_BY_ID, password.getId());
+
+    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.REMOVE_PASSWORD_BY_ID, null, password.getId());
 
     passwords.remove(password);
 
