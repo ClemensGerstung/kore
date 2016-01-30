@@ -2,16 +2,10 @@ package core.async;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.Pair;
 import core.DatabaseProvider;
 import core.Dictionary;
 import net.sqlcipher.Cursor;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
 public class AsyncDatabasePipeline {
   private Context context;
@@ -25,7 +19,7 @@ public class AsyncDatabasePipeline {
     public void run() {
       if (exit)
         return;
-      Dictionary.Element<Pair<String, Object[]>, AsyncQueryListener> element = null;
+      Dictionary.Element<Pair<String, Object[]>, AsyncQueryListener> element;
       DatabaseProvider provider = DatabaseProvider.getConnection(context);
       synchronized (AsyncDatabasePipeline.this.looper) {
         element = queries.removeFirst();
@@ -38,9 +32,9 @@ public class AsyncDatabasePipeline {
           if (query.startsWith("INSERT")) {
             long result = provider.insert(element.getKey().first, element.getKey().second);
             raiseActionListener(element.getValue(), result >= 0, "INSERT result is -1!", result);
-          } else if (query.startsWith("UPDATE") || query.startsWith("REMOVE")) {
+          } else if (query.startsWith("UPDATE") || query.startsWith("DELETE")) {
             long result = provider.update(element.getKey().first, element.getKey().second);
-            raiseActionListener(element.getValue(), result >= 0, "UPDATE/REMOVE result is -1!", result);
+            raiseActionListener(element.getValue(), result >= 0, "UPDATE/DELETE result is -1!", result);
           } else if (query.startsWith("SELECT")) {
             Cursor cursor = provider.query(element.getKey().first, (String[]) element.getKey().second);
             raiseActionListener(element.getValue(), cursor != null, "Couldn't query", cursor);
@@ -52,7 +46,7 @@ public class AsyncDatabasePipeline {
         }
 
         synchronized (AsyncDatabasePipeline.this.looper) {
-          if(!queries.hasElements())
+          if (!queries.hasElements())
             break;
 
           element = queries.removeFirst();
@@ -112,6 +106,7 @@ public class AsyncDatabasePipeline {
       looper.interrupt();
     }
   }
+
   public static AsyncDatabasePipeline getPipeline(Context context) {
     if (PIPELINE == null) {
       PIPELINE = new AsyncDatabasePipeline(context);
