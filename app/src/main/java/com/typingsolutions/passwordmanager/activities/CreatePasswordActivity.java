@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.R;
@@ -77,6 +78,8 @@ public class CreatePasswordActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.create_password_layout);
+
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
     appBarLayout = (AppBarLayout) findViewById(R.id.createpasswordlayout_appbar_wrapper);
     toolbar = (Toolbar) appBarLayout.findViewById(R.id.createpasswordlayout_toolbar_actionbar);

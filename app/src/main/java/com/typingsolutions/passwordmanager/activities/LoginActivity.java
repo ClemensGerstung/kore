@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
@@ -145,6 +146,8 @@ public class LoginActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
     databaseProvider = DatabaseProvider.getConnection(this);
     boolean needSetup = databaseProvider.needSetup();
