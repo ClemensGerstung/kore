@@ -83,13 +83,15 @@ public class DatabaseProvider extends SQLiteOpenHelper {
       public void run() {
         try {
           SQLiteDatabase database = getReadableDatabase(userProvidedPassword);
-          boolean result = database != null;
+          boolean result = database != null && database.isOpen();
           if (result) {
             DatabaseProvider.this.password = userProvidedPassword;
             onOpenListener.open();
+            database.close();
           } else {
             onOpenListener.refused();
           }
+
         } catch (Exception e) {
           onOpenListener.refused();
         }
