@@ -10,6 +10,7 @@ import core.data.PasswordProvider;
 
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
   private Context context;
+  private net.sqlcipher.Cursor cursor;
 
   public AsyncPasswordLoader(Context context) {
     super();
@@ -24,7 +25,7 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
   protected Void doInBackground(String... params) {
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
     try {
-      Cursor cursor = provider.query(DatabaseProvider.GET_PASSWORDS);
+      cursor = provider.query(DatabaseProvider.GET_PASSWORDS);
 
       if (!cursor.moveToNext())
         return null;
@@ -51,5 +52,11 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
     }
 
     return null;
+  }
+
+  @Override
+  protected void onCancelled() {
+    super.onCancelled();
+    cursor.close();
   }
 }
