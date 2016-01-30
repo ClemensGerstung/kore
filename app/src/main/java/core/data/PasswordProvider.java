@@ -1,10 +1,13 @@
 package core.data;
 
 import android.content.Context;
+import android.os.Debug;
 import android.support.annotation.Nullable;
+import android.support.v4.util.DebugUtils;
 import android.util.Log;
 import core.DatabaseProvider;
 import core.Dictionary;
+import core.async.AsyncDatabasePipeline;
 import core.exceptions.PasswordProviderException;
 import core.exceptions.UserProviderException;
 import net.sqlcipher.Cursor;
@@ -176,22 +179,30 @@ public class PasswordProvider {
     return password;
   }
 
-  public int editPassword(int id, String newPassword) throws Exception {
-    DatabaseProvider provider = DatabaseProvider.getConnection(context);
+  public int editPassword(final int id, String newPassword) throws Exception {
+    final PasswordHistory history = PasswordHistory.createItem(newPassword);
 
-    PasswordHistory history = PasswordHistory.createItem(newPassword);
+    AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
+      @Override
+      public void executed(Object... results) {
+        if (!(results[0] instanceof Long))
+          return;
 
-    long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY, newPassword, id);
+        long historyId = (Long) results[0];
+        Password password = getById(id);
+        password.addPasswordHistoryItem((int) historyId, history);
 
-    if (historyId == -1)
-      throw new UserProviderException("Couldn't insert your password history item!");
+        editPassword(password);
+      }
 
-    Password password = getById(id);
-    password.addPasswordHistoryItem((int) historyId, history);
+      @Override
+      public void failed(String message) {
+      }
+    };
 
-    editPassword(password);
+    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_NEW_HISTORY, listener, newPassword, id);
 
-    return (int) historyId;
+    return 0;
   }
 
   public void editPassword(int id, @Nullable String program, @Nullable String username) {
@@ -199,8 +210,9 @@ public class PasswordProvider {
     password.setUsername(username);
     password.setProgram(program);
 
-    DatabaseProvider.getConnection(context)
-        .update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, program, username, id);
+    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.UPDATE_PASSWORD_BY_ID, null, program, username, id);
+
+    //DatabaseProvider.getConnection(context).update(DatabaseProvider.UPDATE_PASSWORD_BY_ID, program, username, id);
 
     editPassword(password);
   }

@@ -28,8 +28,8 @@ public class AsyncDatabasePipeline {
       Dictionary.Element<Pair<String, Object[]>, AsyncQueryListener> element = null;
       DatabaseProvider provider = DatabaseProvider.getConnection(context);
       synchronized (AsyncDatabasePipeline.this.looper) {
-        element = queries.getFirstIterator();
-        working = queries.hasNext();
+        element = queries.removeFirst();
+        working = true;
       }
 
       while (working) {
@@ -51,8 +51,10 @@ public class AsyncDatabasePipeline {
           raiseActionListener(element.getValue(), false, e.getMessage());
         }
 
-
         synchronized (AsyncDatabasePipeline.this.looper) {
+          if(!queries.hasElements())
+            break;
+
           element = queries.removeFirst();
           working = queries.hasElements();
         }
@@ -61,7 +63,7 @@ public class AsyncDatabasePipeline {
       try {
         synchronized (AsyncDatabasePipeline.this.looper) {
           looper.wait();
-          looper.run();
+          looping.run();
         }
       } catch (InterruptedException ignored) {
       }
@@ -81,15 +83,8 @@ public class AsyncDatabasePipeline {
 
   private static AsyncDatabasePipeline PIPELINE;
 
-  public static void add(String query, @Nullable AsyncQueryListener listener, Object... params) {
-    if (PIPELINE == null)
-      throw new IllegalStateException("Pipeline has not been initialized! Call getPipeline() first!");
-
-    PIPELINE.addQuery(query, listener, params);
-  }
-
   public void addQuery(String query, @Nullable AsyncQueryListener listener, Object... params) {
-    queries.addFirst(new Pair<>(query, params), listener);
+    queries.addLast(new Pair<>(query, params), listener);
 
     synchronized (looper) {
       if (working)
