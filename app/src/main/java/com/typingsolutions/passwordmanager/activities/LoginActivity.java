@@ -20,6 +20,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
@@ -177,8 +178,8 @@ public class LoginActivity extends AppCompatActivity {
     progressBar_waiter = (ProgressBar) findViewById(R.id.loginlayout_progressbar_waiter);
     imageView_background = (ImageView) findViewById(R.id.loginlayout_imageview_background);
     textview_rootedIndicator = (TextView) findViewById(R.id.loginlayout_textview_rootedindicator);
-    //if (!Utils.isRooted())
-      textview_rootedIndicator.setVisibility(View.GONE);
+    if (!Utils.isRooted())
+      ((ViewManager) textview_rootedIndicator.getParent()).removeView(textview_rootedIndicator);
 
     SharedPreferences preferences = getPreferences(MODE_PRIVATE);
     boolean isSafe = preferences.getBoolean(SAFELOGIN, true);
@@ -317,7 +318,6 @@ public class LoginActivity extends AppCompatActivity {
     animator.setDuration(300);
     animator.start();
   }
-
 
 
   private boolean isServiceRunning(Class<?> serviceClass) {

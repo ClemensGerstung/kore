@@ -28,6 +28,7 @@ import core.async.AsyncPasswordLoader;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
+import core.exceptions.UserProviderException;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
 
@@ -189,6 +190,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
+    if(!PasswordProvider.isLoggedIn()) {
+      finish();
+      Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+      startActivity(intent);
+      return;
+    }
+
+
     logout = true;
   }
 

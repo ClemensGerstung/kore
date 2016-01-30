@@ -22,6 +22,7 @@ import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCall
 import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
+import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordProvider;
 
@@ -44,12 +45,14 @@ public class PasswordDetailActivity extends AppCompatActivity {
   private AddPasswordTextWatcher passwordTextWatcher;
 
   private int passwordId;
+  private boolean exitApp;
   private CollapsingToolbarLayout collapsingToolbarLayout;
   private TextView header;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    exitApp = true;
     setContentView(R.layout.password_detail_layout);
 
     toolbar = (Toolbar) findViewById(R.id.passworddetaillayout_toolbar_actionbar);
@@ -114,8 +117,19 @@ public class PasswordDetailActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onPause() {
-    super.onPause();
+  protected void onStop() {
+    if (exitApp) {
+      PasswordProvider.logoutComplete();
+      DatabaseProvider.logout();
+      finish();
+    }
+    super.onStop();
+  }
+
+  @Override
+  public void onBackPressed() {
+    exitApp = false;
+    super.onBackPressed();
   }
 
   @Override

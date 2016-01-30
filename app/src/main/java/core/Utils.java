@@ -47,12 +47,29 @@ public class Utils {
   }
 
   public static boolean isRooted() {
-    try {
-      File f = new File("/data");
-      return f.mkdir();
-    } catch (Exception e) {
-      return false;
+    String binaryName = "su";
+
+    boolean found = false;
+
+    String[] places = {
+        "/sbin/",
+        "/system/bin/",
+        "/system/xbin/",
+        "/data/local/xbin/",
+        "/data/local/bin/",
+        "/system/sd/xbin/",
+        "/system/bin/failsafe/",
+        "/data/local/"
+    };
+
+    for (String where : places) {
+      if (new File(where + binaryName).exists()) {
+        found = true;
+        break;
+      }
     }
+
+    return found;
   }
 
   public static int copyFile(File source, File target, Flag flag) {
