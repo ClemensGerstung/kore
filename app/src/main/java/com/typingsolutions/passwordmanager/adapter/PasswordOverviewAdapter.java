@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.*;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
@@ -85,19 +86,22 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   public synchronized void filter(String query) {
 
-    if(query.isEmpty()) {
+    if (query.isEmpty()) {
       resetFilter();
       return;
     }
 
     if (query.startsWith(PASSWORD_FILTER_PREFIX)) {
       String filter = query.replace(PASSWORD_FILTER_PREFIX, "");
+      resetFilter();
       filter(filter, IS_PASSWORD_FILTERED);
     } else if (query.startsWith(USERNAME_FILTER_PREFIX)) {
       String filter = query.replace(USERNAME_FILTER_PREFIX, "");
+      resetFilter();
       filter(filter, IS_USERNAME_FILTERED);
     } else if (query.startsWith(PROGRAM_FILTER_PREFIX)) {
       String filter = query.replace(PROGRAM_FILTER_PREFIX, "");
+      resetFilter();
       filter(filter, IS_PROGRAM_FILTERED);
     } else {
       filter(query, IS_NOT_FILTERED);
@@ -107,12 +111,17 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   private void filter(String query, int flag) {
     PasswordProvider provider = PasswordProvider.getInstance(activity);
-    for (int i = provider.size() - 1; i >= 0; i--) {
+    for (int i = provider.size() - 1 - removedFilteredItems; i >= 0; i--) {
       Password password = provider.get(i);
       if (!matches(password, query, flag)) {
         removedFilteredItems++;
         notifyItemRemoved(i);
         removedItems.add(i);
+      } else {
+        if (!removedItems.contains(i)) return;
+        removedFilteredItems--;
+        notifyItemInserted(i);
+        removedItems.remove((Object) i);
       }
     }
   }
@@ -126,7 +135,9 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     switch (filterFlags) {
       case 0: // IS_NOT_FILTERED
-        returnValue = program.contains(simpleQuery) || passwordValue.contains(simpleQuery) || username.contains(simpleQuery);
+        returnValue = program.contains(simpleQuery)
+            || passwordValue.contains(simpleQuery)
+            || username.contains(simpleQuery);
         break;
       case 1: // IS_PASSWORD_FILTERED
         returnValue = passwordValue.contains(simpleQuery);
@@ -138,6 +149,8 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
         returnValue = program.contains(simpleQuery);
         break;
     }
+
+    Log.d("Query", String.format("%s --> %s (%s) => %s", password, simpleQuery, filterFlags, returnValue));
 
     return returnValue;
   }
