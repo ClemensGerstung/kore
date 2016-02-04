@@ -11,11 +11,23 @@ import java.util.Locale;
 
 public class Utils {
 
-
+  /**
+   * All available characters for passwords
+   */
   public static String AVAILABLE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_.:,;+*?!%&/";
 
+  /**
+   * The regex string for safe passwords
+   * (min 8 chars, upper, lower case letters, digits and some special chars)
+   */
   public static String REGEX_PASSWORD_SAFETY = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-_.:,;+*?!%&/]).{8,})";
 
+  /**
+   * Hashes the data with the SHA1 algorithm
+   * @param data to create hash from
+   * @return the generated hash
+   * @throws NoSuchAlgorithmException
+   */
   public static String getHashedString(String data) throws NoSuchAlgorithmException {
     byte[] key = data.getBytes();
     MessageDigest sha = MessageDigest.getInstance("sha1");
@@ -26,15 +38,6 @@ public class Utils {
       result += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
     }
     return result;
-  }
-
-  public static String getSalt() {
-    String salt = "";
-    for (int i = 0; i < 15; i++) {
-      int rnd = (int) (Math.random() * AVAILABLE_CHARACTERS.length());
-      salt += AVAILABLE_CHARACTERS.toCharArray()[rnd];
-    }
-    return salt;
   }
 
   public static boolean isSafe(String password) {
