@@ -111,7 +111,7 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
   private void filter(String query, int flag) {
     PasswordProvider provider = PasswordProvider.getInstance(activity);
-    for (int i = provider.size() - 1 - removedFilteredItems; i >= 0; i--) {
+    for (int i = provider.size() - 1; i >= 0; i--) {
       Password password = provider.get(i);
       if (!matches(password, query, flag)) {
         removedFilteredItems++;

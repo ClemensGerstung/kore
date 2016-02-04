@@ -68,6 +68,9 @@ public class LoginActivity extends AppCompatActivity {
 
       try {
         loginServiceRemote.registerCallback(serviceCallback);
+
+        if(loginServiceRemote.isBlocked())
+          hideInput();
       } catch (RemoteException e) {
         Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
       }
@@ -189,6 +192,7 @@ public class LoginActivity extends AppCompatActivity {
     editText_password.addTextChangedListener(loginTextWatcher);
     checkBox_safeLogin.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
     checkBox_safeLogin.setChecked(isSafe);
+
   }
 
   @Override

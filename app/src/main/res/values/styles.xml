@@ -8,6 +8,7 @@
         <item name="colorControlActivated">@color/primaryLight</item>
         <!--<item name="colorControlHighlight">#BBDEFB</item>-->
         <item name="android:itemTextAppearance">@style/CustomMenu</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="Base.AppTheme.Setup" parent="Base.AppTheme">
