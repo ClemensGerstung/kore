@@ -13,26 +13,14 @@ import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCall
 
 
 public class AboutActivity extends AppCompatActivity {
-  private Toolbar toolbar_actionbar;
-  private TabLayout tabLayout_navigation;
-  private ViewPager viewpager_content;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.about_license_layout);
-    toolbar_actionbar = (Toolbar) findViewById(R.id.aboutlayout_toolbar_actionbar);
-    tabLayout_navigation = (TabLayout) findViewById(R.id.aboutlayout_tablayout_navigation);
-    viewpager_content = (ViewPager) findViewById(R.id.aboutlayout_viewpager_content);
-
+    Toolbar toolbar_actionbar = (Toolbar) findViewById(R.id.aboutlayout_toolbar_actionbar);
     setSupportActionBar(toolbar_actionbar);
-    toolbar_actionbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
-    AboutViewPagerAdapter adapter = new AboutViewPagerAdapter(this, getSupportFragmentManager());
 
-    viewpager_content.setAdapter(adapter);
-    tabLayout_navigation.setupWithViewPager(viewpager_content);
 
-    tabLayout_navigation.getTabAt(0).setIcon(R.mipmap.info);
-    tabLayout_navigation.getTabAt(1).setIcon(R.mipmap.copyright);
   }
 }
