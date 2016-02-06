@@ -1,0 +1,40 @@
+Version 1.7.1 (App-Version 30)
+~~Start of Changelog
+SetupScreen
+- simple setupscreen for user to setup his/her masterpassword
+- message if password doesn't seem to be safe enough (min. 8 chars -> upper and lower case letters, digits, special chars)
+
+LoginScreen
+- simple screen to enter masterpassword with button on the button-right to perform login
+- lock function after three fails (30s -> 60s -> ... -> 5min)
+- lock indication (no input and stopwatch like circle)
+- can switch to safe login
+
+PasswordOverview
+- shows all current passwords (program, username, password)
+  - if safe login it only shows program
+  - circle with first letter for aesthetics -> background color is calculated by hash of program and password
+- if no passwords there will be a text saying this
+- search (quite buggie)
+- order (should work fine -> testers got problems)
+- add password
+- show details of password (so password history)
+- reorder passwords (drag and drop)
+- delete (swipe left/right) -> confirmation
+
+AddPassword
+- simple layout (see Google Calendar) for adding
+- program and password required for adding
+- randomg generating of passwords
+
+PasswordDetail
+- shows all details of password
+  - for now only the history
+- can change all values
+- changed passwords will be tracked
+- can delete password
+
+Backup/Restore
+- can create backup (copies the database to a location the user selects)
+- backup can be encrypted by any other password
+- restore only adds password temporarily to current overview
