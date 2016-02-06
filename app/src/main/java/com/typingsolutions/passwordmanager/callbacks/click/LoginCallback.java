@@ -18,13 +18,11 @@ public class LoginCallback extends BaseCallback {
   private LoginActivity loginActivity;
   private String password;
   private boolean safeLogin;
-  private View view;
 
   private final DatabaseProvider.OnOpenListener openListener = new DatabaseProvider.OnOpenListener() {
     @Override
     public void open() {
       try {
-        view.setEnabled(true);
         loginActivity.hideWaiter();
         Intent intent = new Intent(context, PasswordOverviewActivity.class);
         intent.putExtra(LoginActivity.SAFELOGIN, safeLogin);
@@ -64,11 +62,11 @@ public class LoginCallback extends BaseCallback {
       if (loginActivity.getLoginServiceRemote().isBlocked())
         throw new LoginException("Sorry, you're blocked", LoginException.BLOCKED);
 
-      view = v;
-      view.setEnabled(false);
+      v.setEnabled(false);
       loginActivity.showWaiter();
       DatabaseProvider provider = DatabaseProvider.getConnection(context);
       provider.tryOpen(password, openListener);
+      //Log.d(getClass().getSimpleName(), password);
 
     } catch (Exception e) {
       if (e instanceof LoginException

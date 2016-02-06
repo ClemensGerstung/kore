@@ -49,7 +49,7 @@
         </activity>
 
         <activity android:name=".activities.CreatePasswordActivity"
-                  android:theme="@style/Base.AppTheme"
+                  android:theme="@style/Base.AppTheme.Detail"
                   android:label=""/>
 
         <activity android:name=".activities.PasswordDetailActivity"
