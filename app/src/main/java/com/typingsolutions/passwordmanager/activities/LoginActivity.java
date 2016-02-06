@@ -284,6 +284,7 @@ public class LoginActivity extends AppCompatActivity {
       @Override
       public void run() {
         ViewUtils.hide(LoginActivity.this, progressBar_waiter, android.R.anim.fade_out);
+        floatingActionButton_login.setEnabled(true);
       }
     });
   }
