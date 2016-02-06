@@ -28,7 +28,6 @@ import core.async.AsyncPasswordLoader;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
-import core.exceptions.UserProviderException;
 
 public class PasswordOverviewActivity extends AppCompatActivity {
 

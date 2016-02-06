@@ -135,9 +135,8 @@ public class PasswordOverviewAdapter extends RecyclerView.Adapter<PasswordOvervi
 
     switch (filterFlags) {
       case 0: // IS_NOT_FILTERED
-        returnValue = program.contains(simpleQuery)
-            || passwordValue.contains(simpleQuery)
-            || username.contains(simpleQuery);
+        returnValue = PasswordProvider.getInstance(activity).isSafe() ? program.contains(simpleQuery)
+            : program.contains(simpleQuery) || passwordValue.contains(simpleQuery) || username.contains(simpleQuery);
         break;
       case 1: // IS_PASSWORD_FILTERED
         returnValue = passwordValue.contains(simpleQuery);

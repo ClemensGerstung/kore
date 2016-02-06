@@ -870,6 +870,12 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     quickSort(comparator, i + 1, high, flag);
   }
 
+  /**
+   * Swaps an item from a position to another
+   *
+   * @param from position
+   * @param to position
+   */
   protected void swap(int from, int to) {
     Element<K, V> temp = new Element<>(get(from));
     set(from, get(to));
