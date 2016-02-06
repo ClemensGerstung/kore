@@ -1,15 +1,12 @@
 package core.data;
 
 import android.content.Context;
-import android.os.Debug;
 import android.support.annotation.Nullable;
-import android.support.v4.util.DebugUtils;
 import android.util.Log;
 import core.DatabaseProvider;
 import core.Dictionary;
 import core.async.AsyncDatabasePipeline;
 import core.exceptions.PasswordProviderException;
-import core.exceptions.UserProviderException;
 import net.sqlcipher.Cursor;
 
 import java.lang.reflect.InvocationTargetException;

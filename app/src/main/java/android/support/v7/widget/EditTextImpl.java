@@ -15,6 +15,9 @@ import android.widget.*;
 
 public class EditTextImpl {
 
+  /**
+   * Sets the shadow for Android API >= 17
+   */
   public void initShadow() {
     RoundRectDrawableWithShadow.sRoundRectHelper
         = new RoundRectDrawableWithShadow.RoundRectHelper() {
@@ -26,6 +29,16 @@ public class EditTextImpl {
     };
   }
 
+  /**
+   * Initializes the shadow with all needed information
+   *
+   * @param view to set shadow at
+   * @param context of the app
+   * @param backgroundColor of the shadow
+   * @param radius of the shadow
+   * @param elevation of the shadow in rest state
+   * @param translationZ added to {@see elevation} if activated
+   */
   public void init(View view, Context context, int backgroundColor, float radius, float elevation, float translationZ) {
     RoundRectDrawableWithShadow background = new RoundRectDrawableWithShadow(context.getResources(), backgroundColor, radius, elevation, elevation + translationZ);
     background.setAddPaddingForCorners(false);
@@ -33,6 +46,11 @@ public class EditTextImpl {
     updatePadding(view);
   }
 
+  /**
+   * Updates the padding if view state changed
+   *
+   * @param view to update padding
+   */
   public void updatePadding(View view) {
     Rect shadowPadding = new Rect();
     getShadowBackground(view).getMaxShadowAndCornerPadding(shadowPadding);
@@ -46,15 +64,33 @@ public class EditTextImpl {
         shadowPadding.right, shadowPadding.bottom);
   }
 
+  /**
+   * Gets the minimum width needed for the view
+   *
+   * @param view to get width from
+   * @return the minimum width
+   */
   public float getMinWidth(View view) {
     return getShadowBackground(view).getMinWidth();
   }
 
+  /**
+   * Gets the minimum height needed for the view
+   *
+   * @param view to get height from
+   * @return the minimum height
+   */
   public float getMinHeight(View view) {
     return getShadowBackground(view).getMinHeight();
   }
 
-  RoundRectDrawableWithShadow getShadowBackground(View view) {
+  /**
+   * Gets the actual shadow background from the given view
+   *
+   * @param view to get shadow from
+   * @return the shadow
+   */
+  /*package*/ RoundRectDrawableWithShadow getShadowBackground(View view) {
     return ((RoundRectDrawableWithShadow) view.getBackground());
   }
 }
