@@ -18,19 +18,10 @@
                 android:clickable="true"
                 app:navigationIcon="@mipmap/arrow_back"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-        <android.support.design.widget.TabLayout
-                android:id="@+id/aboutlayout_tablayout_navigation"
-                app:tabIndicatorColor="#ffffff"
-                app:tabIndicatorHeight="2dp"
-                app:tabGravity="fill"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="?attr/actionBarSize"
-            android:id="@+id/aboutlayout_viewpager_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    <fragment android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/aboutlicenselayout_fragment_host"
+              android:name="com.typingsolutions.passwordmanager.fragments.AboutFragment"/>
 </android.support.design.widget.CoordinatorLayout>

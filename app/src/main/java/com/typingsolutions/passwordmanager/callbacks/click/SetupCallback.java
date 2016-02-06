@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks.click;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
@@ -56,6 +57,7 @@ public class SetupCallback extends BaseCallback {
     if(loginActivity.setupDatabase()) {
       Intent intent = new Intent(context, PasswordOverviewActivity.class);
       context.startActivity(intent);
+      ActivityCompat.finishAfterTransition(loginActivity);
     }
   }
 }

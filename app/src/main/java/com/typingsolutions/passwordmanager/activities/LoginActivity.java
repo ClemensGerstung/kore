@@ -136,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
       PasswordProvider.getInstance(LoginActivity.this).isSafe(isChecked);
     }
   };
+
   private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
