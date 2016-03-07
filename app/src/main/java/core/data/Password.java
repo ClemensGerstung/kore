@@ -48,10 +48,6 @@ public class Password {
     return username.equals(password.username) && program.equals(password.program);
   }
 
-  public boolean simpleEquals(Password password) {
-    return password.program.equals(program) && password.username.equals(username);
-  }
-
   @Override
   public int hashCode() {
     int result = id;
