@@ -11,7 +11,10 @@ import net.sqlcipher.Cursor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class PasswordProvider {
   private static PasswordProvider Instance;
@@ -46,21 +49,21 @@ public class PasswordProvider {
     if (passwords.size() == 0)
       return merged;
 
-    for (Password password : passwords) {
+    for (final Password password : passwords) {
       boolean exists = false;
       for (final Password existing : this.passwords) {
         if (password.getUsername().equals(existing.getUsername()) && password.getProgram().equals(existing.getProgram())) {
           for (final PasswordHistory history : password.getPasswordHistory().values()) {
-            if(existing.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
+            if (existing.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
               continue;
 
             AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
               @Override
               public void executed(Object... results) {
-                if(!(results[0] instanceof Long))
+                if (!(results[0] instanceof Long))
                   return;
 
-                int id = (Integer)results[0];
+                int id = (Integer) results[0];
                 existing.addPasswordHistoryItem(id, history);
               }
 
@@ -79,8 +82,51 @@ public class PasswordProvider {
         }
       }
 
-      if (!exists)
-        addPassword(password);
+      if (!exists) {
+        final int position = passwords.size() + 1;
+
+        AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
+          @Override
+          public void executed(Object... results) {
+            if (!(results[0] instanceof Long))
+              return;
+
+            final long passwordId = (Long)results[0];
+            if (passwordId < 0)
+              return;
+
+            for (final PasswordHistory history : password.getPasswordHistory().values()) {
+              // a callback in a callback ... not cool bro
+              AsyncDatabasePipeline.AsyncQueryListener historyListener = new AsyncDatabasePipeline.AsyncQueryListener() {
+                @Override
+                public void executed(Object... results) {
+                  if (!(results[0] instanceof Long))
+                    return;
+
+                  long historyId = (Long)results[0];
+
+                  Password passwordObject = new Password((int) passwordId, position, password.getUsername(), password.getProgram());
+                  passwordObject.addPasswordHistoryItem((int) historyId, history);
+                }
+
+                @Override
+                public void failed(String message) {
+
+                }
+              };
+
+              AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, historyListener, history.getValue(), history.getChangedDate(), password.getId());
+            }
+          }
+
+          @Override
+          public void failed(String message) {
+
+          }
+        };
+
+        AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_NEW_PASSWORD, listener, password.getUsername(), password.getProgram(), position);
+      }
     }
 
     return merged;
@@ -195,7 +241,6 @@ public class PasswordProvider {
   }
 
 
-
   public void editPassword(int id, @Nullable String program, @Nullable String username) {
     Password password = getById(id);
     password.setUsername(username);
@@ -280,6 +325,7 @@ public class PasswordProvider {
 
     password.orderHistoryByDate();
     passwords.add(password);
+    cursor.close();
 
     return passwords;
   }
