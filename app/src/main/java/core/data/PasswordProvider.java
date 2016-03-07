@@ -107,21 +107,23 @@ public class PasswordProvider {
 
                   Password passwordObject = new Password((int) passwordId, position, password.getUsername(), password.getProgram());
                   passwordObject.addPasswordHistoryItem((int) historyId, history);
+
+                  addPassword(passwordObject);
                 }
 
                 @Override
                 public void failed(String message) {
-
+                  Log.e(getClass().getSimpleName(), message);
                 }
               };
 
-              AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, historyListener, history.getValue(), history.getChangedDate(), password.getId());
+              AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, historyListener, history.getValue(), history.getChangedDate(), passwordId);
             }
           }
 
           @Override
           public void failed(String message) {
-
+            Log.e(getClass().getSimpleName(), message);
           }
         };
 
