@@ -28,11 +28,13 @@ import com.typingsolutions.passwordmanager.callbacks.click.LoadBackupCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.DatabaseProvider;
 import core.Utils;
+import core.data.Password;
 import core.data.PasswordProvider;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
+import java.util.List;
 
 
 public class BackupRestoreActivity extends AppCompatActivity {
@@ -144,7 +146,13 @@ public class BackupRestoreActivity extends AppCompatActivity {
           @Override
           public void open(SQLiteDatabase database) {
             Cursor cursor = database.rawQuery(DatabaseProvider.GET_PASSWORDS, null);
-            PasswordProvider.getInstance(BackupRestoreActivity.this).merge(cursor);
+            List<Password> passwords = PasswordProvider.getPasswords(cursor);
+
+            if (PasswordProvider.getInstance(BackupRestoreActivity.this).merge(passwords) > 0) {
+              Snackbar
+                  .make(BackupRestoreActivity.this.toolbar_actionbar, "Restore successful", Snackbar.LENGTH_LONG)
+                  .show();
+            }
 
             //noinspection ResultOfMethodCallIgnored
             tmp.delete();
