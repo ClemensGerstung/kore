@@ -24,6 +24,7 @@ import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallba
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
+import core.async.AsyncDatabasePipeline;
 import core.async.AsyncPasswordLoader;
 import core.data.Password;
 import core.data.PasswordHistory;
@@ -206,6 +207,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     if (logout) {
       PasswordProvider.logoutComplete();
       DatabaseProvider.logout();
+      AsyncDatabasePipeline.end();
       finish();
     }
     super.onStop();
