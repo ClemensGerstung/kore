@@ -40,58 +40,29 @@ public class PasswordProvider {
     return passwords.get(index);
   }
 
-  public int merge(Cursor cursor) {
+  public int merge(List<Password> passwords) {
     int merged = 0;
 
-    if (!cursor.moveToNext())
-      return 0;
-    Password password = Password.getFromCursor(cursor);
+    if (passwords.size() == 0)
+      return merged;
 
-    while (cursor.moveToNext()) {
-      Password nextPassword = Password.getFromCursor(cursor);
+    for (Password password : passwords) {
+      boolean add = false;
+      for (Password existing : this.passwords) {
+        if (password.getUsername().equals(existing.getUsername())
+            && password.getProgram().equals(existing.getProgram())) {
 
-      if (nextPassword.equals(password)) {
-        password.merge(nextPassword);
-      } else {
-        mergeOrAdd(password);
-
-        merged++;
-        password.orderHistoryByDate();
-        password = nextPassword;
+          add = true;
+          merged++;
+          break;
+        }
       }
-    }
 
-    mergeOrAdd(password);
-    merged++;
+      if (!add)
+        addPassword(password);
+    }
 
     return merged;
-  }
-
-  private void mergeOrAdd(Password password) {
-    boolean contains = false;
-
-    for (Password existingPassword : passwords) {
-      contains = false;
-      if (!existingPassword.simpleEquals(password))
-        continue;
-
-      Collection<PasswordHistory> values = password.getPasswordHistory().values();
-      for (PasswordHistory value : values) {
-        if (existingPassword.getPasswordHistory().containsValue(value, Dictionary.IterationOption.Forwards))
-          continue;
-        addHistoryItemAsync(existingPassword, value);
-      }
-      contains = true;
-      break;
-    }
-
-    if (!contains) {
-      addPassword(password);
-    }
-  }
-
-  private void addHistoryItemAsync(Password password, PasswordHistory item) {
-
   }
 
   public Password getById(int id) {
@@ -202,6 +173,8 @@ public class PasswordProvider {
     return 0;
   }
 
+
+
   public void editPassword(int id, @Nullable String program, @Nullable String username) {
     Password password = getById(id);
     password.setUsername(username);
@@ -262,6 +235,32 @@ public class PasswordProvider {
 
   public void isSafe(boolean safe) {
     this.safe = safe;
+  }
+
+  public static List<Password> getPasswords(Cursor cursor) {
+    List<Password> passwords = new ArrayList<>();
+    Password password = new Password(-1, -1, null, null);
+
+    if (cursor.moveToNext())
+      password = Password.getFromCursor(cursor);
+
+    while (cursor.moveToNext()) {
+      Password nextPassword = Password.getFromCursor(cursor);
+
+      if (nextPassword.equals(password)) {
+        password.merge(nextPassword);
+      } else {
+        password.orderHistoryByDate();
+        passwords.add(password);
+
+        password = nextPassword;
+      }
+    }
+
+    password.orderHistoryByDate();
+    passwords.add(password);
+
+    return passwords;
   }
 
   public interface PasswordActionListener {
