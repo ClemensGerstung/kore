@@ -47,18 +47,39 @@ public class PasswordProvider {
       return merged;
 
     for (Password password : passwords) {
-      boolean add = false;
-      for (Password existing : this.passwords) {
-        if (password.getUsername().equals(existing.getUsername())
-            && password.getProgram().equals(existing.getProgram())) {
+      boolean exists = false;
+      for (final Password existing : this.passwords) {
+        if (password.getUsername().equals(existing.getUsername()) && password.getProgram().equals(existing.getProgram())) {
+          for (final PasswordHistory history : password.getPasswordHistory().values()) {
+            if(existing.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
+              continue;
 
-          add = true;
+            AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
+              @Override
+              public void executed(Object... results) {
+                if(!(results[0] instanceof Long))
+                  return;
+
+                int id = (Integer)results[0];
+                existing.addPasswordHistoryItem(id, history);
+              }
+
+              @Override
+              public void failed(String message) {
+
+              }
+            };
+
+            AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, listener, history.getValue(), history.getChangedDate(), existing.getId());
+          }
+
+          exists = true;
           merged++;
           break;
         }
       }
 
-      if (!add)
+      if (!exists)
         addPassword(password);
     }
 
