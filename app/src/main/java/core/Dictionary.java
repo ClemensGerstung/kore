@@ -583,6 +583,8 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public Element<K,V> removeFirst() {
+    if(first == null) return null;
+
     Element<K,V> element = first.clone();
     if(first.hasNext()) {
       first = first.next;
