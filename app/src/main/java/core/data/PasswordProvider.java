@@ -1,20 +1,23 @@
 package core.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import core.DatabaseProvider;
 import core.Dictionary;
+import core.Utils;
 import core.async.AsyncDatabasePipeline;
+import core.async.SqlInsertTask;
 import core.exceptions.PasswordProviderException;
 import net.sqlcipher.Cursor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PasswordProvider {
   private static PasswordProvider Instance;
@@ -51,6 +54,7 @@ public class PasswordProvider {
 
     for (final Password password : passwords) {
       boolean exists = false;
+
       for (final Password existing : this.passwords) {
         if (password.getUsername().equals(existing.getUsername()) && password.getProgram().equals(existing.getProgram())) {
           for (final PasswordHistory history : password.getPasswordHistory().values()) {
@@ -73,7 +77,10 @@ public class PasswordProvider {
               }
             };
 
-            AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, listener, history.getValue(), history.getChangedDate(), existing.getId());
+            Date changedDate = history.getChangedDate();
+            DateFormat format = new SimpleDateFormat("YYYY-MM-DD", Locale.getDefault());
+            String date = format.format(changedDate);
+            AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, listener, history.getValue(), date, existing.getId());
           }
 
           exists = true;
@@ -83,7 +90,7 @@ public class PasswordProvider {
       }
 
       if (!exists) {
-        final int position = passwords.size() + 1;
+        final int position = this.passwords.size() + 1;
 
         AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
           @Override
@@ -117,7 +124,10 @@ public class PasswordProvider {
                 }
               };
 
-              AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, historyListener, history.getValue(), history.getChangedDate(), passwordId);
+              Date changedDate = history.getChangedDate();
+              DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+              String date = format.format(changedDate);
+              AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, historyListener, history.getValue(), date, passwordId);
             }
           }
 
@@ -238,6 +248,9 @@ public class PasswordProvider {
     };
 
     AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_NEW_HISTORY, listener, newPassword, id);
+
+
+
 
     return 0;
   }

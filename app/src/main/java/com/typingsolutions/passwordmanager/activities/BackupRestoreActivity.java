@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -148,14 +146,13 @@ public class BackupRestoreActivity extends AppCompatActivity {
             Cursor cursor = database.rawQuery(DatabaseProvider.GET_PASSWORDS, null);
             List<Password> passwords = PasswordProvider.getPasswords(cursor);
 
-            if (PasswordProvider.getInstance(BackupRestoreActivity.this).merge(passwords) > 0) {
-              Snackbar
-                  .make(BackupRestoreActivity.this.toolbar_actionbar, "Restore successful", Snackbar.LENGTH_LONG)
-                  .show();
-            }
+            PasswordProvider.getInstance(BackupRestoreActivity.this).merge(passwords);
+            Snackbar
+                .make(BackupRestoreActivity.this.toolbar_actionbar, "Restore successful", Snackbar.LENGTH_LONG)
+                .show();
 
             //noinspection ResultOfMethodCallIgnored
-            tmp.delete();
+            //tmp.delete();
             cursor.close();
             database.close();
           }
