@@ -7,6 +7,7 @@ import core.DatabaseProvider;
 import core.Dictionary;
 import net.sqlcipher.Cursor;
 
+@Deprecated
 public class AsyncDatabasePipeline {
   private Context context;
   private Dictionary<Pair<String, Object[]>, AsyncQueryListener> queries;
@@ -46,9 +47,6 @@ public class AsyncDatabasePipeline {
         }
 
         synchronized (AsyncDatabasePipeline.this.looper) {
-          if (!queries.hasElements())
-            break;
-
           element = queries.removeFirst();
           working = queries.hasElements();
         }
