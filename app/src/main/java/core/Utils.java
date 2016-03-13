@@ -49,6 +49,12 @@ public class Utils {
     return dateFormat.parse(date);
   }
 
+  public static String getToday() {
+    Date date = new Date();
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    return dateFormat.format(date);
+  }
+
   public static boolean isRooted() {
     String binaryName = "su";
 

@@ -15,7 +15,7 @@ public class Password {
   private core.Dictionary<Integer, PasswordHistory> passwordHistory;
 
 
-  Password(int id, int position, String username, String program) {
+  public Password(int id, int position, String username, String program) {
     this.id = id;
     this.position = position;
     this.username = username;

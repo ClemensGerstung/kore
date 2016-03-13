@@ -18,7 +18,7 @@ public class PasswordHistory {
   PasswordHistory() {
   }
 
-  PasswordHistory(String value, Date changedDate) {
+  public PasswordHistory(String value, Date changedDate) {
     this.value = value;
     this.changedDate = changedDate;
   }

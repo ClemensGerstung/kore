@@ -150,6 +150,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     return affectedRows;
   }
 
+  public SQLiteDatabase getDatabase() {
+    return getWritableDatabase(password);
+  }
+
   private void bindParams(SQLiteStatement compiled, Object[] args) {
     for (int i = 0; i < args.length; i++) {
       Object argument = args[i];

@@ -17,7 +17,7 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
   private String mTable;
   private String mSelection;
   private String[] mSelectionArgs;
-  private Loader<Cursor> mLoader = null;
+  private SqlTaskCallback callback = null;
 
   /**
    * Constructor if we don't need to notify a Loader of the change.
@@ -40,15 +40,14 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
    * @param table
    * @param selection
    * @param selectionArgs
-   * @param loader
    */
   public SqlDeleteTask(SQLiteDatabase db, String table,
-                       String selection, String[] selectionArgs, Loader<Cursor> loader) {
+                       String selection, String[] selectionArgs, SqlTaskCallback callback) {
     mDb = db;
     mTable = table;
     mSelection = selection;
     mSelectionArgs = selectionArgs;
-    mLoader = loader;
+    this.callback = callback;
   }
 
   @Override
@@ -57,6 +56,10 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
       return mDb.delete(mTable, mSelection, mSelectionArgs);
     } catch (Exception e) {
       Log.e(TAG, "Unable to delete data.", e);
+      if (callback != null) {
+        callback.failed(e.getMessage());
+      }
+
       return null;
     }
   }
@@ -66,8 +69,8 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
     super.onPostExecute(result);
     if (result != null && result > 0) {
       Log.i(TAG, "Successfully deleted "+result+" rows from table " + mTable);
-      if (mLoader != null) {
-        mLoader.onContentChanged();
+      if (callback != null) {
+        callback.executed(result);
       }
     } else {
       Log.i(TAG,"No rows deleted.");

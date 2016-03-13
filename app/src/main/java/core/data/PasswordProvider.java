@@ -3,14 +3,16 @@ package core.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import core.DatabaseProvider;
 import core.Dictionary;
 import core.Utils;
 import core.async.AsyncDatabasePipeline;
+import core.async.SqlDeleteTask;
 import core.async.SqlInsertTask;
-import core.exceptions.PasswordProviderException;
+import core.async.SqlUpdateTask;
+import core.callback.AddHistoryCallback;
+import core.callback.AddPasswordCallback;
 import net.sqlcipher.Cursor;
 
 import java.lang.reflect.InvocationTargetException;
@@ -98,7 +100,7 @@ public class PasswordProvider {
             if (!(results[0] instanceof Long))
               return;
 
-            final long passwordId = (Long)results[0];
+            final long passwordId = (Long) results[0];
             if (passwordId < 0)
               return;
 
@@ -110,7 +112,7 @@ public class PasswordProvider {
                   if (!(results[0] instanceof Long))
                     return;
 
-                  long historyId = (Long)results[0];
+                  long historyId = (Long) results[0];
 
                   Password passwordObject = new Password((int) passwordId, position, password.getUsername(), password.getProgram());
                   passwordObject.addPasswordHistoryItem((int) historyId, history);
@@ -195,25 +197,22 @@ public class PasswordProvider {
     }
   }
 
-  public Password addPassword(String program, String username, String password) throws Exception {
+  public void addPassword(String program, String username, String password) throws Exception {
     int position = passwords.size() + 1;
 
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
-    long passwordId = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, username, program, position);
-    if (passwordId < 0)
-      throw new PasswordProviderException("Couldn't insert your password");
+    AddPasswordCallback callback = new AddPasswordCallback(context, username, program, password, position);
 
-    long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY, password, passwordId);
-    if (historyId < 0)
-      throw new PasswordProviderException("Couldn't insert your password!");
+    ContentValues values = new ContentValues(3);
+    values.put("username", username);
+    values.put("program", program);
+    values.put("position", position);
 
-    Password passwordObject = new Password((int) passwordId, position, username, program);
-    passwordObject.addPasswordHistoryItem((int) historyId, PasswordHistory.createItem(password));
-
-    return addPassword(passwordObject);
+    SqlInsertTask insert = new SqlInsertTask(provider.getDatabase(), "passwords", "", values, callback);
+    insert.execute();
   }
 
-  public Password addPassword(Password password) {
+  public void addPassword(Password password) {
 
     password.orderHistoryByDate();
 
@@ -222,51 +221,36 @@ public class PasswordProvider {
 
     if (passwordActionListener != null)
       passwordActionListener.onPasswordAdded(password);
-
-    return password;
   }
 
-  public int editPassword(final int id, String newPassword) throws Exception {
-    final PasswordHistory history = PasswordHistory.createItem(newPassword);
+  public void editPassword(final int id, String newPassword) throws Exception {
+    AddHistoryCallback callback = new AddHistoryCallback(context, newPassword, this.getById(id));
 
-    AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
-      @Override
-      public void executed(Object... results) {
-        if (!(results[0] instanceof Long))
-          return;
+    ContentValues values = new ContentValues(3);
+    values.put("password", newPassword);
+    values.put("changed", Utils.getToday());
+    values.put("passwordId", id);
 
-        long historyId = (Long) results[0];
-        Password password = getById(id);
-        password.addPasswordHistoryItem((int) historyId, history);
-
-        editPassword(password);
-      }
-
-      @Override
-      public void failed(String message) {
-      }
-    };
-
-    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_NEW_HISTORY, listener, newPassword, id);
-
-
-
-
-    return 0;
+    SqlInsertTask insertTask = new SqlInsertTask(DatabaseProvider.getConnection(context).getDatabase(), "history", "", values, callback);
+    insertTask.execute();
   }
-
 
   public void editPassword(int id, @Nullable String program, @Nullable String username) {
     Password password = getById(id);
     password.setUsername(username);
     password.setProgram(program);
 
-    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.UPDATE_PASSWORD_BY_ID, null, program, username, id);
+    ContentValues contentValues = new ContentValues(2);
+    contentValues.put("username", username);
+    contentValues.put("program", program);
+
+    SqlUpdateTask updateTask = new SqlUpdateTask(DatabaseProvider.getConnection(context).getDatabase(), "passwords", contentValues, "id=?", new String[]{Integer.toString(id)});
+    updateTask.execute();
 
     editPassword(password);
   }
 
-  void editPassword(Password password) {
+  public void editPassword(Password password) {
     int index = passwords.indexOf(password);
     passwords.set(index, password);
 
@@ -283,13 +267,11 @@ public class PasswordProvider {
 
     List<Integer> list = new ArrayList<>(password.getPasswordIds());
     for (Integer i : list) {
-      AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.REMOVE_HISTORY_BY_ID, null, i);
-      //provider.remove(DatabaseProvider.REMOVE_HISTORY_BY_ID, i);
+      SqlDeleteTask deleteTask = new SqlDeleteTask(provider.getDatabase(), "history", "id=?", new String[]{i.toString()});
+      deleteTask.execute();
     }
 
-    //provider.remove(DatabaseProvider.REMOVE_PASSWORD_BY_ID, password.getId());
-
-    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.REMOVE_PASSWORD_BY_ID, null, password.getId());
+    SqlDeleteTask deleteTask = new SqlDeleteTask(provider.getDatabase(), "passwords", "id=?", new String[] {Integer.toString(password.getId())});
 
     passwords.remove(password);
 
@@ -304,6 +286,8 @@ public class PasswordProvider {
     Password fromPassword = get(from);
     Password toPassword = get(to);
     fromPassword.swapPositionWith(toPassword);
+
+    // TODO: update in database
   }
 
   public void setPasswordActionListener(PasswordActionListener passwordActionListener) {

@@ -207,7 +207,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     if (logout) {
       PasswordProvider.logoutComplete();
       DatabaseProvider.logout();
-      AsyncDatabasePipeline.end();
+      //AsyncDatabasePipeline.end();
       finish();
     }
     super.onStop();

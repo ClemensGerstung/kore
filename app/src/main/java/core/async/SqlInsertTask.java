@@ -2,9 +2,7 @@ package core.async;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
-import android.support.v4.content.Loader;
 import android.util.Log;
-import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 /**
@@ -14,11 +12,11 @@ public class SqlInsertTask extends AsyncTask<Void, Void, Long> {
 
   private static final String TAG = "SqlInsertTask";
 
-  private SQLiteDatabase mDb;
-  private String mTable;
-  private String mNullColumnHack;
-  private ContentValues mValues;
-  private Loader<Cursor> mLoader = null;
+  private SQLiteDatabase database;
+  private String table;
+  private String nullColumnHack;
+  private ContentValues values;
+  private SqlTaskCallback callback = null;
 
   /**
    * Constructor if we don't need to notify a Loader of the change.
@@ -40,14 +38,13 @@ public class SqlInsertTask extends AsyncTask<Void, Void, Long> {
    * @param table
    * @param nullColumnHack
    * @param values
-   * @param loader
    */
-  public SqlInsertTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, Loader<Cursor> loader) {
-    this.mDb = db;
-    this.mTable = table;
-    this.mNullColumnHack = nullColumnHack;
-    this.mValues = values;
-    this.mLoader = loader;
+  public SqlInsertTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, SqlTaskCallback callback) {
+    this.database = db;
+    this.table = table;
+    this.nullColumnHack = nullColumnHack;
+    this.values = values;
+    this.callback = callback;
   }
 
   @Override
@@ -58,9 +55,12 @@ public class SqlInsertTask extends AsyncTask<Void, Void, Long> {
 //      } catch (InterruptedException e) {
 //        e.printStackTrace();
 //      }
-      return mDb.insertOrThrow(mTable, mNullColumnHack, mValues);
+      return database.insertOrThrow(table, nullColumnHack, values);
     } catch (Exception e) {
       Log.e(TAG, "Unable to insert data.", e);
+      if(callback != null)
+        callback.failed(e.getMessage());
+
       return null;
     }
   }
@@ -68,12 +68,12 @@ public class SqlInsertTask extends AsyncTask<Void, Void, Long> {
   @Override
   protected void onPostExecute(Long result) {
     super.onPostExecute(result);
-    if (result != null && result > 0) {
-      Log.i(TAG, "Successfully added row with id=" + result + " to table " + mTable);
+    if (result == null || result <= 0)
+      return;
 
-      if (mLoader != null) {
-        mLoader.onContentChanged();
-      }
-    }
+    Log.i(TAG, "Successfully added row with id=" + result + " to table " + table);
+
+    if (callback != null)
+      callback.executed(result.intValue());
   }
 }
