@@ -24,6 +24,7 @@ public class Utils {
 
   /**
    * Hashes the data with the SHA1 algorithm
+   *
    * @param data to create hash from
    * @return the generated hash
    * @throws NoSuchAlgorithmException
@@ -47,6 +48,12 @@ public class Utils {
   public static Date getDateFromString(String date) throws ParseException {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     return dateFormat.parse(date);
+
+  }
+
+  public static String getStringFromDate(Date date) {
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    return dateFormat.format(date);
   }
 
   public static String getToday() {

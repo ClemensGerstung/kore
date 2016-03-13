@@ -12,6 +12,7 @@ import core.async.SqlDeleteTask;
 import core.async.SqlInsertTask;
 import core.async.SqlUpdateTask;
 import core.callback.AddHistoryCallback;
+import core.callback.AddNewHistoryCallback;
 import core.callback.AddPasswordCallback;
 import net.sqlcipher.Cursor;
 
@@ -54,92 +55,50 @@ public class PasswordProvider {
     if (passwords.size() == 0)
       return merged;
 
+    // iterate through all items in the list to merge
     for (final Password password : passwords) {
+
+      // is the password already existing?
       boolean exists = false;
 
+      // iterate through all existing passwords
       for (final Password existing : this.passwords) {
+
+        // equals the current iterator of the existing items the current iterator of the merging passwords?
         if (password.getUsername().equals(existing.getUsername()) && password.getProgram().equals(existing.getProgram())) {
+
+          // yes - iterate through all history items of the merging password and add them to the existing
           for (final PasswordHistory history : password.getPasswordHistory().values()) {
+
+            // current existing password already contains the merging history item
             if (existing.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
               continue;
 
-            AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
-              @Override
-              public void executed(Object... results) {
-                if (!(results[0] instanceof Long))
-                  return;
+            AddHistoryCallback historyCallback = new AddHistoryCallback(context, history.getValue(), existing, history.getChangedDate());
 
-                int id = (Integer) results[0];
-                existing.addPasswordHistoryItem(id, history);
-              }
+            ContentValues values = new ContentValues(3);
+            values.put("password", history.getValue());
+            values.put("changed", Utils.getStringFromDate(history.getChangedDate()));
+            values.put("passwordId", existing.getId());
 
-              @Override
-              public void failed(String message) {
-
-              }
-            };
-
-            Date changedDate = history.getChangedDate();
-            DateFormat format = new SimpleDateFormat("YYYY-MM-DD", Locale.getDefault());
-            String date = format.format(changedDate);
-            AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, listener, history.getValue(), date, existing.getId());
+            SqlInsertTask insertTask = new SqlInsertTask(DatabaseProvider.getConnection(context).getDatabase(), "history", "", values, historyCallback);
+            insertTask.execute();
           }
 
+          // password exists and doesn't need to be added separately
           exists = true;
           merged++;
           break;
         }
       }
 
+      // merging password doesn't exist in the existing list
       if (!exists) {
         final int position = this.passwords.size() + 1;
 
-        AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
-          @Override
-          public void executed(Object... results) {
-            if (!(results[0] instanceof Long))
-              return;
 
-            final long passwordId = (Long) results[0];
-            if (passwordId < 0)
-              return;
 
-            for (final PasswordHistory history : password.getPasswordHistory().values()) {
-              // a callback in a callback ... not cool bro
-              AsyncDatabasePipeline.AsyncQueryListener historyListener = new AsyncDatabasePipeline.AsyncQueryListener() {
-                @Override
-                public void executed(Object... results) {
-                  if (!(results[0] instanceof Long))
-                    return;
-
-                  long historyId = (Long) results[0];
-
-                  Password passwordObject = new Password((int) passwordId, position, password.getUsername(), password.getProgram());
-                  passwordObject.addPasswordHistoryItem((int) historyId, history);
-
-                  addPassword(passwordObject);
-                }
-
-                @Override
-                public void failed(String message) {
-                  Log.e(getClass().getSimpleName(), message);
-                }
-              };
-
-              Date changedDate = history.getChangedDate();
-              DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-              String date = format.format(changedDate);
-              AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_EXISTING_HISTORY, historyListener, history.getValue(), date, passwordId);
-            }
-          }
-
-          @Override
-          public void failed(String message) {
-            Log.e(getClass().getSimpleName(), message);
-          }
-        };
-
-        AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_NEW_PASSWORD, listener, password.getUsername(), password.getProgram(), position);
+        merged++;
       }
     }
 
