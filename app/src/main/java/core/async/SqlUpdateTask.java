@@ -20,7 +20,7 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
   private ContentValues mValues;
   private String mSelection;
   private String[] mSelectionArgs;
-  private Loader<Cursor> mLoader = null;
+  private SqlTaskCallback callback = null;
 
   /**
    * Constructor if we don't need to notify a Loader of the change.
@@ -44,16 +44,15 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
    * @param selection
    * @param selectionArgs
    * @param values
-   * @param loader
    */
   public SqlUpdateTask(SQLiteDatabase db, String table,
-                       ContentValues values, String selection, String[] selectionArgs, Loader<Cursor> loader) {
+                       ContentValues values, String selection, String[] selectionArgs, SqlTaskCallback callback) {
     mDb = db;
     mTable = table;
     mValues = values;
     mSelection = selection;
     mSelectionArgs = selectionArgs;
-    mLoader = loader;
+    this.callback = callback;
   }
 
   @Override
@@ -62,6 +61,11 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
       return mDb.update(mTable, mValues, mSelection, mSelectionArgs);
     } catch (Exception e) {
       Log.e(TAG, "Unable to update data.", e);
+
+      if (callback != null) {
+        callback.failed(e.getMessage());
+      }
+
       return null;
     }
   }
@@ -71,8 +75,8 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
     super.onPostExecute(result);
     if (result != null && result > 0) {
       Log.i(TAG, "Successfully changed " + result + " rows in table " + mTable);
-      if (mLoader != null) {
-        mLoader.onContentChanged();
+      if (callback != null) {
+        callback.executed(result);
       }
     } else {
       Log.i(TAG, "No rows changed.");
