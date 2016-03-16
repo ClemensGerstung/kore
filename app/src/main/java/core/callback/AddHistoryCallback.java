@@ -8,7 +8,7 @@ import core.data.PasswordProvider;
 
 import java.util.Date;
 
-public class AddHistoryCallback implements SqlTaskCallback {
+public class AddHistoryCallback implements SqlTaskCallback<Long> {
   private Context context;
   private String password;
   private Password object;
@@ -26,9 +26,9 @@ public class AddHistoryCallback implements SqlTaskCallback {
   }
 
   @Override
-  public void executed(int result) {
+  public void executed(Long result) {
     PasswordHistory history = new PasswordHistory(this.password, this.date);
-    this.object.addPasswordHistoryItem(result, history);
+    this.object.addPasswordHistoryItem(result.intValue(), history);
 
     PasswordProvider.getInstance(context).editPassword(this.object);
   }

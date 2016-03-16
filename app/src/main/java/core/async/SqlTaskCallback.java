@@ -1,7 +1,7 @@
 package core.async;
 
 
-public interface SqlTaskCallback {
-  void executed(int result);
+public interface SqlTaskCallback<TResult> {
+  void executed(TResult result);
   void failed(String message);
 }
