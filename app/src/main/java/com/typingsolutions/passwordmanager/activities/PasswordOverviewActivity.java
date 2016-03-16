@@ -30,9 +30,7 @@ import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
 
-public class PasswordOverviewActivity extends AppCompatActivity {
-
-  public static final String WRONGPASSWORD = "com.typingsolutions.passwordmanager.activitiesPasswordOverviewActivity.WRONGPASSWORD";
+public class PasswordOverviewActivity extends PasswordManagerActivity {
 
   private RecyclerView passwordRecyclerView;
   private Toolbar toolbar;
@@ -149,11 +147,11 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
 
     // get elements from XML-View
-    passwordRecyclerView = (RecyclerView) findViewById(R.id.passwordlistlayout_listview_passwords);
-    toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
-    addPasswordFloatingActionButton = (FloatingActionButton) findViewById(R.id.passwordlistlayout_floatingactionbutton_add);
-    noPasswordsTextView = (TextView) findViewById(R.id.passwordlistlayout_textview_nopasswords);
-    swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
+    passwordRecyclerView = findCastedViewById(R.id.passwordlistlayout_listview_passwords);
+    toolbar = findCastedViewById(R.id.passwordlistlayout_toolbar);
+    addPasswordFloatingActionButton = findCastedViewById(R.id.passwordlistlayout_floatingactionbutton_add);
+    noPasswordsTextView = findCastedViewById(R.id.passwordlistlayout_textview_nopasswords);
+    swipeRefreshLayout = findCastedViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
     swipeRefreshLayout.setEnabled(false);
     swipeRefreshLayout.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
 
@@ -184,19 +182,19 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     passwordLoader = new AsyncPasswordLoader(this);
     passwordLoader.execute();
 
-    registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    this.registerAutoRemoveReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
   }
 
   @Override
   protected void onResume() {
     super.onResume();
     if(!PasswordProvider.isLoggedIn()) {
-      finish();
-      Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-      startActivity(intent);
+//      finish();
+//      Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+//      startActivity(intent);
+      startActivity(LoginActivity.class, true);
       return;
     }
-
 
     logout = true;
   }
@@ -213,11 +211,11 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     super.onStop();
   }
 
-  @Override
-  protected void onDestroy() {
-    unregisterReceiver(screenOffReceiver);
-    super.onDestroy();
-  }
+//  @Override
+//  protected void onDestroy() {
+//    unregisterReceiver(screenOffReceiver);
+//    super.onDestroy();
+//  }
 
   @Override
   public void onBackPressed() {
@@ -241,12 +239,14 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     DatabaseProvider.logout();
     logout = false;
 
-    Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-    startActivity(intent);
+//    Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
+//    startActivity(intent);
 
-    PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//    PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     PasswordOverviewActivity.super.onBackPressed();
-    ActivityCompat.finishAfterTransition(this);
+//    ActivityCompat.finishAfterTransition(this);
+
+    this.startActivity(LoginActivity.class, true, R.anim.slide_in_left, R.anim.slide_out_right);
   }
 
   @Override
@@ -284,13 +284,13 @@ public class PasswordOverviewActivity extends AppCompatActivity {
         break;
       case R.id.passwordoverviewlayout_menuitem_about:
         logout = false;
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
+        startActivity(AboutActivity.class);
+//        startActivity(intent);
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
         logout = false;
-        intent = new Intent(this, BackupRestoreActivity.class);
-        startActivity(intent);
+        startActivity(BackupRestoreActivity.class);
+//        startActivity(intent);
         break;
     }
 
