@@ -1,9 +1,9 @@
 package com.typingsolutions.passwordmanager;
 
-public abstract class BaseCallback {
-  protected BaseActivity mActivity;
+public abstract class BaseCallback<TActivity extends BaseActivity> {
+  protected TActivity mActivity;
 
-  public BaseCallback(BaseActivity activity) {
+  public BaseCallback(TActivity activity) {
     this.mActivity = activity;
   }
 

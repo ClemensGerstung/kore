@@ -20,8 +20,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   private static boolean safeFlag;
   public static boolean debug = true;
 
-  private List<BroadcastReceiver> mRegisteredReceiver;
+  private List<BaseReceiver> mRegisteredReceiver;
 
   public BaseActivity() {
     this.mRegisteredReceiver = new ArrayList<>();
@@ -41,7 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     return safeFlag;
   }
 
-  protected synchronized static void setSafe(boolean safe) {
+  protected synchronized static void isSafe(boolean safe) {
     BaseActivity.safeFlag = safe;
   }
 
@@ -98,9 +100,16 @@ public abstract class BaseActivity extends AppCompatActivity {
    * @param filter   to listen at
    * @return the newly created {@see Intent} returned from the base class
    */
-  public Intent registerAutoRemoveReceiver(BroadcastReceiver receiver, IntentFilter filter) {
-    mRegisteredReceiver.add(receiver);
-    return super.registerReceiver(receiver, filter);
+  public Intent registerAutoRemoveReceiver(Class<? extends BaseReceiver> receiver, String filter) {
+    try {
+      BaseReceiver receiverObj = receiver.getDeclaredConstructor(this.getClass()).newInstance(this);
+
+      mRegisteredReceiver.add(receiverObj);
+      return super.registerReceiver(receiverObj, new IntentFilter(filter));
+    } catch (Exception e) {
+      this.showErrorLog(this.getClass(), e);
+    }
+    return null;
   }
 
   /**
@@ -164,7 +173,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     if (view.getVisibility() != View.VISIBLE) return;
 
-    Animation anim = android.view.animation.AnimationUtils.loadAnimation(this, animation);
+    Animation anim = AnimationUtils.loadAnimation(this, animation);
     anim.setInterpolator(new AccelerateInterpolator());
     anim.setDuration(FAST_ANIMATION_DURATION);
     anim.setAnimationListener(new LocalAnimationListener(view));
