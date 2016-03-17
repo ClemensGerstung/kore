@@ -1,9 +1,7 @@
 package core.async;
 
 import android.os.AsyncTask;
-import android.support.v4.content.Loader;
 import android.util.Log;
-import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 /**
@@ -17,7 +15,7 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
   private String mTable;
   private String mSelection;
   private String[] mSelectionArgs;
-  private SqlTaskCallback callback = null;
+  private ISqlTaskCallback mCallback = null;
 
   /**
    * Constructor if we don't need to notify a Loader of the change.
@@ -27,27 +25,24 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
    * @param selection
    * @param selectionArgs
    */
-  public SqlDeleteTask(SQLiteDatabase db, String table,
-                       String selection, String[] selectionArgs) {
+  public SqlDeleteTask(SQLiteDatabase db, String table, String selection, String[] selectionArgs) {
     this(db,table,selection,selectionArgs,null);
   }
 
   /**
-   * Constructor to add a Loader that should be notified, if the change has
-   * been successful.
+   * Constructor to add a Loader that should be notified, if the change has been successful.
    *
    * @param db
    * @param table
    * @param selection
    * @param selectionArgs
    */
-  public SqlDeleteTask(SQLiteDatabase db, String table,
-                       String selection, String[] selectionArgs, SqlTaskCallback callback) {
+  public SqlDeleteTask(SQLiteDatabase db, String table, String selection, String[] selectionArgs, ISqlTaskCallback callback) {
     mDb = db;
     mTable = table;
     mSelection = selection;
     mSelectionArgs = selectionArgs;
-    this.callback = callback;
+    this.mCallback = callback;
   }
 
   @Override
@@ -56,8 +51,8 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
       return mDb.delete(mTable, mSelection, mSelectionArgs);
     } catch (Exception e) {
       Log.e(TAG, "Unable to delete data.", e);
-      if (callback != null) {
-        callback.failed(e.getMessage());
+      if (mCallback != null) {
+        mCallback.failed(e.getMessage());
       }
 
       return null;
@@ -69,8 +64,8 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
     super.onPostExecute(result);
     if (result != null && result > 0) {
       Log.i(TAG, "Successfully deleted "+result+" rows from table " + mTable);
-      if (callback != null) {
-        callback.executed(result);
+      if (mCallback != null) {
+        mCallback.executed(result);
       }
     } else {
       Log.i(TAG,"No rows deleted.");

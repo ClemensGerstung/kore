@@ -10,7 +10,7 @@ import android.view.View;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 import core.DatabaseProvider;
 import core.exceptions.LoginException;
 

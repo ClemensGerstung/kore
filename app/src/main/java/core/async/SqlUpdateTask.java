@@ -1,11 +1,8 @@
 package core.async;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.content.Loader;
 import android.util.Log;
-import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 /**
@@ -20,7 +17,7 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
   private ContentValues mValues;
   private String mSelection;
   private String[] mSelectionArgs;
-  private SqlTaskCallback callback = null;
+  private ISqlTaskCallback callback = null;
 
   /**
    * Constructor if we don't need to notify a Loader of the change.
@@ -31,8 +28,7 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
    * @param selectionArgs
    * @param values
    */
-  public SqlUpdateTask(SQLiteDatabase db, String table,
-                       ContentValues values, String selection, String[] selectionArgs) {
+  public SqlUpdateTask(SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs) {
     this(db, table, values, selection, selectionArgs, null);
   }
 
@@ -45,8 +41,7 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
    * @param selectionArgs
    * @param values
    */
-  public SqlUpdateTask(SQLiteDatabase db, String table,
-                       ContentValues values, String selection, String[] selectionArgs, SqlTaskCallback callback) {
+  public SqlUpdateTask(SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs, ISqlTaskCallback callback) {
     mDb = db;
     mTable = table;
     mValues = values;
@@ -54,6 +49,8 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
     mSelectionArgs = selectionArgs;
     this.callback = callback;
   }
+
+
 
   @Override
   protected Integer doInBackground(Void... params) {

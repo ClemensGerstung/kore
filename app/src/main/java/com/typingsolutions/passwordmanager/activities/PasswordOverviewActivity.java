@@ -4,11 +4,9 @@ import android.content.*;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -17,6 +15,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
+import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
@@ -24,13 +23,12 @@ import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallba
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
-import core.async.AsyncDatabasePipeline;
 import core.async.AsyncPasswordLoader;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
 
-public class PasswordOverviewActivity extends PasswordManagerActivity {
+public class PasswordOverviewActivity extends BaseActivity {
 
   private RecyclerView passwordRecyclerView;
   private Toolbar toolbar;
@@ -156,7 +154,7 @@ public class PasswordOverviewActivity extends PasswordManagerActivity {
     swipeRefreshLayout.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
 
     // set onClick-event to add new passwords
-    addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
+    //addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
 
     // ...
     setSupportActionBar(toolbar);
@@ -175,8 +173,8 @@ public class PasswordOverviewActivity extends PasswordManagerActivity {
     itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
 
     // make secure
-    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-
+    if(!debug)
+      this.setSecurityFlags();
 
     // load passwords in background
     passwordLoader = new AsyncPasswordLoader(this);
@@ -192,7 +190,7 @@ public class PasswordOverviewActivity extends PasswordManagerActivity {
 //      finish();
 //      Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
 //      startActivity(intent);
-      startActivity(LoginActivity.class, true);
+      this.startActivity(LoginActivity.class, true);
       return;
     }
 
@@ -201,7 +199,7 @@ public class PasswordOverviewActivity extends PasswordManagerActivity {
 
   @Override
   protected void onStop() {
-    Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
+//    Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
     if (logout) {
       PasswordProvider.logoutComplete();
       DatabaseProvider.logout();
@@ -297,9 +295,9 @@ public class PasswordOverviewActivity extends PasswordManagerActivity {
     return true;
   }
 
-  public void makeSnackBar(String text) {
-    Snackbar.make(addPasswordFloatingActionButton, text, Snackbar.LENGTH_LONG).show();
-  }
+//  public void makeSnackBar(String text) {
+//    Snackbar.make(addPasswordFloatingActionButton, text, Snackbar.LENGTH_LONG).show();
+//  }
 
   public void setRefreshing(final boolean refreshing) {
     runOnUiThread(new Runnable() {
@@ -312,5 +310,10 @@ public class PasswordOverviewActivity extends PasswordManagerActivity {
 
   public void doNotLogout() {
     logout = false;
+  }
+
+  @Override
+  protected View getSnackbarRelatedView() {
+    return this.addPasswordFloatingActionButton;
   }
 }

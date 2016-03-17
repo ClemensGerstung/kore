@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

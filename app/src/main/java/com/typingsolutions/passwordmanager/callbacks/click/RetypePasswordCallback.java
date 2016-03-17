@@ -3,7 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks.click;
 import android.content.Context;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 
 public class RetypePasswordCallback extends BaseCallback {
   private LoginActivity loginActivity;

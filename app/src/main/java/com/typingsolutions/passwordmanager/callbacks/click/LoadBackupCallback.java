@@ -3,7 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks.click;
 import android.content.Intent;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 
 
 public class LoadBackupCallback extends BaseCallback {

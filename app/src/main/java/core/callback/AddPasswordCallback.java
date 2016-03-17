@@ -4,11 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import core.DatabaseProvider;
 import core.Utils;
+import core.async.ISqlTaskCallback;
 import core.async.SqlInsertTask;
-import core.async.SqlTaskCallback;
 import core.data.Password;
 
-public class AddPasswordCallback implements SqlTaskCallback {
+public class AddPasswordCallback implements ISqlTaskCallback<Long> {
 
   private Context context;
   private String username;
@@ -25,8 +25,8 @@ public class AddPasswordCallback implements SqlTaskCallback {
   }
 
   @Override
-  public void executed(int result) {
-    Password obj = new Password(result, position, username, program);
+  public void executed(Long result) {
+    Password obj = new Password(result.intValue(), position, username, program);
     AddNewHistoryCallback callback = new AddNewHistoryCallback(context, this.password, obj);
 
     ContentValues values = new ContentValues(3);

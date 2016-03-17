@@ -233,7 +233,7 @@ public class BackupRestoreActivity extends AppCompatActivity {
       // if set new password to copied database
       if (editText_repeatPassword.length() > 0 && editText_password.length() > 0) {
         // copy database to tmp-database and change password of this...
-        // unfortunately there is no better way to do this because I'm not able to access the recently copied file
+        // unfortunately there is no better way to do this because ISqlTaskCallback'm not able to access the recently copied file
         Utils.copyFile(source, tmp, Utils.Flag.Backup);
 
         String path = tmp.getPath();

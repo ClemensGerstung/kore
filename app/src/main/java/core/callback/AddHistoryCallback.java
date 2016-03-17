@@ -1,14 +1,14 @@
 package core.callback;
 
 import android.content.Context;
-import core.async.SqlTaskCallback;
+import core.async.ISqlTaskCallback;
 import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
 
 import java.util.Date;
 
-public class AddHistoryCallback implements SqlTaskCallback<Long> {
+public class AddHistoryCallback implements ISqlTaskCallback<Long> {
   private Context context;
   private String password;
   private Password object;
