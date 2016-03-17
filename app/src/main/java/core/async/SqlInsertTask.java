@@ -16,7 +16,7 @@ public class SqlInsertTask extends AsyncTask<Void, Void, Long> {
   private String table;
   private String nullColumnHack;
   private ContentValues values;
-  private SqlTaskCallback<Long> callback = null;
+  private ISqlTaskCallback<Long> callback = null;
 
   /**
    * Constructor if we don't need to notify a Loader of the change.
@@ -39,7 +39,7 @@ public class SqlInsertTask extends AsyncTask<Void, Void, Long> {
    * @param nullColumnHack
    * @param values
    */
-  public SqlInsertTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, SqlTaskCallback<Long> callback) {
+  public SqlInsertTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, ISqlTaskCallback<Long> callback) {
     this.database = db;
     this.table = table;
     this.nullColumnHack = nullColumnHack;

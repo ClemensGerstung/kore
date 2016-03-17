@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 import core.data.Password;
 import core.data.PasswordProvider;
 

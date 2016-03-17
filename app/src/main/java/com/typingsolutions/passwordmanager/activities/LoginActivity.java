@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
       editText_setupRepeated.addTextChangedListener(setupTextWatcher);
 
       editText_setupRepeated.setOnEditorActionListener(setupKeyBoardActionListener);
-      button_setup.setOnClickListener(new SetupCallback(this, this));
+      //button_setup.setOnClickListener(new SetupCallback(this, this));
       return;
     }
 
@@ -189,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
     boolean isSafe = preferences.getBoolean(SAFELOGIN, true);
 
     floatingActionButton_login.hide();
-    floatingActionButton_login.setOnClickListener(loginCallback);
+    //floatingActionButton_login.setOnClickListener(loginCallback);
     editText_password.addTextChangedListener(loginTextWatcher);
     checkBox_safeLogin.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
     checkBox_safeLogin.setChecked(isSafe);
@@ -232,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
     } else {
       Snackbar
           .make(coordinatorLayout_root, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG)
-          .setAction("RETYPE", new RetypePasswordCallback(this, this))
+          //.setAction("RETYPE", new RetypePasswordCallback(this, this))
           .show();
     }
     return false;

@@ -2,7 +2,7 @@ package com.typingsolutions.passwordmanager.callbacks.click;
 
 import android.app.Activity;
 import android.view.View;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 
 public class ToolbarNavigationCallback extends BaseCallback {
 

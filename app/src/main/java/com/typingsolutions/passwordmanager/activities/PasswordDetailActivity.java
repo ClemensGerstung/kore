@@ -14,6 +14,7 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.click.DeletePasswordCallback;
@@ -67,7 +68,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     TextView nohistory = (TextView) findViewById(R.id.passworddetaillayout_textview_nohistory);
 
     setSupportActionBar(toolbar);
-    toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
+    //toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 
     passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
     if (passwordId == -1) return;
@@ -78,7 +79,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     passwordHistory.setLayoutManager(layoutManager);
     passwordHistory.setAdapter(passwordHistoryAdapter);
 
-    button.setOnClickListener(new GeneratePasswordCallback(this, password));
+    //button.setOnClickListener(new GeneratePasswordCallback(this, password));
 
     String programString = currentPassword.getProgram();
     programTextWatcher = new AddPasswordTextWatcher(this, programString, true);
@@ -96,7 +97,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     password.addTextChangedListener(passwordTextWatcher);
 
     DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
-    delete.setOnClickListener(onClickListener);
+    //delete.setOnClickListener(onClickListener);
 
     //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 

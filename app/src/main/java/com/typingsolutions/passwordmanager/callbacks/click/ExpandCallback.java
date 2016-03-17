@@ -1,15 +1,13 @@
 package com.typingsolutions.passwordmanager.callbacks.click;
 
 import android.animation.Animator;
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseCallback;
 
 public class ExpandCallback extends BaseCallback {
 

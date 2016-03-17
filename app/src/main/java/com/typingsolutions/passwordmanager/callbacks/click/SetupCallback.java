@@ -8,8 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import com.typingsolutions.passwordmanager.callbacks.BaseCallback;
-import core.Utils;
+import com.typingsolutions.passwordmanager.BaseCallback;
 
 public class SetupCallback extends BaseCallback {
   private LoginActivity loginActivity;
