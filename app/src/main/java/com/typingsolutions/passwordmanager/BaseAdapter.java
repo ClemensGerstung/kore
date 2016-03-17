@@ -3,11 +3,13 @@ package com.typingsolutions.passwordmanager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
-public abstract class BaseAdapter<T extends BaseViewHolder> extends RecyclerView.Adapter<T> {
-  protected BaseActivity activity;
+public abstract class BaseAdapter<TViewHolder extends BaseViewHolder, TActivity extends BaseActivity>
+    extends RecyclerView.Adapter<TViewHolder> {
+
+  protected TActivity activity;
   protected LayoutInflater inflater;
 
-  public BaseAdapter(BaseActivity activity) {
+  public BaseAdapter(TActivity activity) {
     this.activity = activity;
     this.inflater = LayoutInflater.from(activity);
   }

@@ -21,6 +21,7 @@ import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
+import com.typingsolutions.passwordmanager.receiver.ScreenOffReceiver;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
 import core.async.AsyncPasswordLoader;
@@ -180,7 +181,7 @@ public class PasswordOverviewActivity extends BaseActivity {
     passwordLoader = new AsyncPasswordLoader(this);
     passwordLoader.execute();
 
-    this.registerAutoRemoveReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
   }
 
   @Override
