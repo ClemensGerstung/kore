@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class PasswordUpdateTask extends SqlAsyncTask<Integer> {
+public class PasswordUpdateTask extends SqlAsyncTask<Integer, BaseActivity> {
   public PasswordUpdateTask(BaseActivity activity, SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs) {
     super(activity, db, table, values, selection, selectionArgs);
   }
