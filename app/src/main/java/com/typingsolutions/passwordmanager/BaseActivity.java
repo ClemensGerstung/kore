@@ -4,10 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.app.Service;
+import android.content.*;
 import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.IdRes;
@@ -22,29 +20,20 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import com.typingsolutions.passwordmanager.services.LoginService;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
   public static final long FAST_ANIMATION_DURATION = 250;
-  private static boolean safeFlag;
   public static boolean debug = true;
 
   private List<BaseReceiver> mRegisteredReceiver;
 
   public BaseActivity() {
     this.mRegisteredReceiver = new ArrayList<>();
-  }
-
-  public synchronized static boolean isSafe() {
-    return safeFlag;
-  }
-
-  protected synchronized static void isSafe(boolean safe) {
-    BaseActivity.safeFlag = safe;
   }
 
   /**
@@ -91,6 +80,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     this.overridePendingTransition(enterAnim, exitAnim);
     if (finish) ActivityCompat.finishAfterTransition(this);
+  }
+
+  public void startAndBindService(Class<? extends Service> service, ServiceConnection conn, int flags) {
+    Intent intent = new Intent(this, service);
+
+    if (!isServiceRunning(LoginService.class))
+      this.startService(intent);
+
+    this.bindService(intent, conn, flags);
   }
 
   /**
@@ -149,11 +147,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     Snackbar.make(getSnackbarRelatedView(), message, Snackbar.LENGTH_LONG).show();
   }
 
-  public void showErrorLog(Class clazz, Exception e) {
-    Log.e(clazz.getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+  public static void showErrorLog(Class sender, Exception e) {
+    Log.e(sender.getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
   }
 
-  public synchronized void showView(@NonNull View view, @AnimRes int animation) {
+  public synchronized void showViewAnimated(@NonNull View view, @AnimRes int animation) {
     if (view == null)
       throw new IllegalArgumentException("Views Array cannot be null or empty");
 
@@ -168,7 +166,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
   }
 
-  public synchronized void hideView(@NonNull View view, @AnimRes int animation) {
+  public void showViewAnimatedOnUiThread(@NonNull final View view, @AnimRes final int animation) {
+    this.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        BaseActivity.this.showViewAnimated(view, animation);
+      }
+    });
+  }
+
+  public synchronized void hideViewAnimated(@NonNull View view, @AnimRes int animation) {
     if (view == null) return;
 
     if (view.getVisibility() != View.VISIBLE) return;
@@ -180,11 +187,29 @@ public abstract class BaseActivity extends AppCompatActivity {
     view.startAnimation(anim);
   }
 
-  protected synchronized void startAnimator(@NonNull View view, @AnimatorRes int res) {
+  public void hideViewAnimatedOnUiThread(@NonNull final View view, @AnimRes final int animation) {
+    this.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        BaseActivity.this.hideViewAnimated(view, animation);
+      }
+    });
+  }
+
+  public synchronized void startAnimator(@NonNull View view, @AnimatorRes int res) {
     Animator animator = AnimatorInflater.loadAnimator(this, res);
     animator.setTarget(view);
     animator.setDuration(FAST_ANIMATION_DURATION);
     animator.start();
+  }
+
+  public void startAnimatorOnUiThread(@NonNull final View view, @AnimatorRes final int res) {
+    this.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        BaseActivity.this.startAnimator(view, res);
+      }
+    });
   }
 
   private static class LocalAnimationListener implements Animation.AnimationListener {

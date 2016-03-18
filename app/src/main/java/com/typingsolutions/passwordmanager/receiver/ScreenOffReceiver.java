@@ -7,9 +7,6 @@ import com.typingsolutions.passwordmanager.BaseReceiver;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 
 public class ScreenOffReceiver extends BaseReceiver<BaseActivity> {
-
-
-
   public ScreenOffReceiver(BaseActivity activity) {
     super(activity);
   }

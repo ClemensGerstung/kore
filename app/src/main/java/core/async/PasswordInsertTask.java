@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class PasswordInsertTask extends SqlAsyncTask<Long> {
+public class PasswordInsertTask extends SqlAsyncTask<Long, BaseActivity> {
 
   public PasswordInsertTask(BaseActivity activity, SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
     super(activity, db, table, nullColumnHack, values);
