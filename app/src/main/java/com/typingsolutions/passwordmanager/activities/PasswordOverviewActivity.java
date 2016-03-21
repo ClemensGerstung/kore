@@ -3,7 +3,6 @@ package com.typingsolutions.passwordmanager.activities;
 import android.content.*;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseActivity;
@@ -20,7 +18,6 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
-import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.receiver.ScreenOffReceiver;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
@@ -31,16 +28,16 @@ import core.data.PasswordProvider;
 
 public class PasswordOverviewActivity extends BaseActivity {
 
-  private RecyclerView passwordRecyclerView;
-  private Toolbar toolbar;
-  private FloatingActionButton addPasswordFloatingActionButton;
-  private TextView noPasswordsTextView;
-  private MenuItem searchItem;
-  private SwipeRefreshLayout swipeRefreshLayout;
+  private RecyclerView mRecyclerViewAsPasswordsList;
+  private Toolbar mToolbarAsActionBar;
+  private FloatingActionButton mFloatingActionButtonAsAddPassword;
+  private TextView mTextViewAsNoPasswordsYet;
+  private MenuItem mMenuItemAsSearchViewWrapper;
+  private SwipeRefreshLayout mSwipeRefreshLayoutAsLoadingIndication;
+  private SearchView mSearchViewAsSearchView;
 
   private boolean logout = true;
 
-  private SearchView searchView;
   private PasswordOverviewAdapter passwordOverviewAdapter;
   private AsyncPasswordLoader passwordLoader;
 
@@ -67,8 +64,8 @@ public class PasswordOverviewActivity extends BaseActivity {
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          if (noPasswordsTextView.getVisibility() == View.VISIBLE)
-            noPasswordsTextView.setVisibility(View.INVISIBLE);
+          if (mTextViewAsNoPasswordsYet.getVisibility() == View.VISIBLE)
+            mTextViewAsNoPasswordsYet.setVisibility(View.INVISIBLE);
 
           passwordOverviewAdapter.notifyDataSetChanged();
         }
@@ -87,8 +84,8 @@ public class PasswordOverviewActivity extends BaseActivity {
       if (PasswordProvider.getInstance(PasswordOverviewActivity.this).size() > 0)
         return;
 
-      if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
-        noPasswordsTextView.setVisibility(View.VISIBLE);
+      if (mTextViewAsNoPasswordsYet.getVisibility() == View.INVISIBLE)
+        mTextViewAsNoPasswordsYet.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -146,32 +143,32 @@ public class PasswordOverviewActivity extends BaseActivity {
     PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
 
     // get elements from XML-View
-    passwordRecyclerView = findCastedViewById(R.id.passwordlistlayout_listview_passwords);
-    toolbar = findCastedViewById(R.id.passwordlistlayout_toolbar);
-    addPasswordFloatingActionButton = findCastedViewById(R.id.passwordlistlayout_floatingactionbutton_add);
-    noPasswordsTextView = findCastedViewById(R.id.passwordlistlayout_textview_nopasswords);
-    swipeRefreshLayout = findCastedViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
-    swipeRefreshLayout.setEnabled(false);
-    swipeRefreshLayout.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
+    mRecyclerViewAsPasswordsList = findCastedViewById(R.id.passwordlistlayout_listview_passwords);
+    mToolbarAsActionBar = findCastedViewById(R.id.passwordlistlayout_toolbar);
+    mFloatingActionButtonAsAddPassword = findCastedViewById(R.id.passwordlistlayout_floatingactionbutton_add);
+    mTextViewAsNoPasswordsYet = findCastedViewById(R.id.passwordlistlayout_textview_nopasswords);
+    mSwipeRefreshLayoutAsLoadingIndication = findCastedViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
+    mSwipeRefreshLayoutAsLoadingIndication.setEnabled(false);
+    mSwipeRefreshLayoutAsLoadingIndication.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
 
     // set onClick-event to add new passwords
-    //addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
+    //mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
 
     // ...
-    setSupportActionBar(toolbar);
+    setSupportActionBar(mToolbarAsActionBar);
 
     // init and set adapter
     passwordOverviewAdapter = new PasswordOverviewAdapter(this);
     layoutManager = new LinearLayoutManager(this);
-    passwordRecyclerView.setAdapter(passwordOverviewAdapter);
-    passwordRecyclerView.setLayoutManager(layoutManager);
+    mRecyclerViewAsPasswordsList.setAdapter(passwordOverviewAdapter);
+    mRecyclerViewAsPasswordsList.setLayoutManager(layoutManager);
 
     PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
-    //passwordRecyclerView.setItemAnimator(animator);
+    //mRecyclerViewAsPasswordsList.setItemAnimator(animator);
 
     SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);
-    itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
+    itemTouchHelper.attachToRecyclerView(mRecyclerViewAsPasswordsList);
 
     // make secure
     if(!debug)
@@ -254,10 +251,10 @@ public class PasswordOverviewActivity extends BaseActivity {
     inflater.inflate(R.menu.passwordoverviewlayout_menu, menu);
 
     // init searchview
-    searchItem = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
-    searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-    searchView.setOnQueryTextListener(onQueryTextListener);
-    MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
+    mMenuItemAsSearchViewWrapper = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
+    mSearchViewAsSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemAsSearchViewWrapper);
+    mSearchViewAsSearchView.setOnQueryTextListener(onQueryTextListener);
+    MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, onSearchViewOpen);
 
     return true;
   }
@@ -297,14 +294,14 @@ public class PasswordOverviewActivity extends BaseActivity {
   }
 
 //  public void makeSnackBar(String text) {
-//    Snackbar.make(addPasswordFloatingActionButton, text, Snackbar.LENGTH_LONG).show();
+//    Snackbar.make(mFloatingActionButtonAsAddPassword, text, Snackbar.LENGTH_LONG).show();
 //  }
 
   public void setRefreshing(final boolean refreshing) {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        swipeRefreshLayout.setRefreshing(refreshing);
+        mSwipeRefreshLayoutAsLoadingIndication.setRefreshing(refreshing);
       }
     });
   }
@@ -315,6 +312,6 @@ public class PasswordOverviewActivity extends BaseActivity {
 
   @Override
   protected View getSnackbarRelatedView() {
-    return this.addPasswordFloatingActionButton;
+    return this.mFloatingActionButtonAsAddPassword;
   }
 }

@@ -2,24 +2,23 @@ package com.typingsolutions.passwordmanager.callbacks.service;
 
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import core.IServiceCallback;
 import ui.OutlinedImageView;
 
 public class ServiceCallbackImplementation extends IServiceCallback.Stub {
-  private LoginActivity loginActivity;
+  private LoginActivity mActivity;
 
   public ServiceCallbackImplementation(@NonNull LoginActivity loginActivity) {
-    this.loginActivity = loginActivity;
+    this.mActivity = loginActivity;
   }
 
   @Override
   public void getLockTime(int time, int completeTime) throws RemoteException {
-    final OutlinedImageView background = loginActivity.getBackground();
+    final OutlinedImageView background = mActivity.getBackground();
     background.update(time, completeTime);
 
-    loginActivity.runOnUiThread(new Runnable() {
+    mActivity.runOnUiThread(new Runnable() {
       @Override
       public void run() {
         background.invalidate();
@@ -29,11 +28,10 @@ public class ServiceCallbackImplementation extends IServiceCallback.Stub {
 
   @Override
   public void onStart() throws RemoteException {
-    loginActivity.hideInput();
+    mActivity.hideInput();
   }
-
   @Override
   public void onFinish() throws RemoteException {
-    loginActivity.showInput();
+    mActivity.showInput();
   }
 }

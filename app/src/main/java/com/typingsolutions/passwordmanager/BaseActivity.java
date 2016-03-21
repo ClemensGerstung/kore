@@ -13,7 +13,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
@@ -127,6 +129,16 @@ public abstract class BaseActivity extends AppCompatActivity {
    */
   protected void setSecurityFlags() {
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+  }
+
+  public void setMenuItemEnabled(Toolbar toolbar, int index, boolean enable) {
+    try {
+      MenuItem item =  toolbar.getMenu().getItem(index);
+      item.setEnabled(enable);
+      item.getIcon().setAlpha(enable ? 255 : 64);
+    } catch (Exception e) {
+      showErrorLog(this.getClass(), e);
+    }
   }
 
   public boolean isServiceRunning(Class<?> serviceClass) {
