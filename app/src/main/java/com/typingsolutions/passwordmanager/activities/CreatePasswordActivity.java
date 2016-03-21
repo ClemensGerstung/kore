@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,33 +11,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
 import core.data.PasswordProvider;
 
-public class CreatePasswordActivity extends AppCompatActivity {
+public class CreatePasswordActivity extends BaseActivity {
 
-  private static final int[] COLORS =
-      {
-          R.color.createpassword_red,
-          R.color.createpassword_yellow,
-          R.color.createpassword_green,
-          R.color.createpassword_purple,
-          R.color.createpassword_lime,
-          R.color.createpassword_orange,
-          R.color.createpassword_grey
-      };
-
-  private Toolbar toolbar;
-  private AppBarLayout appBarLayout;
-  private EditText program;
-  private NestedScrollView nestedScrollView;
-  private EditText username;
-  private EditText password;
-  private Button generatePassword;
+  private Toolbar mToolbarAsActionBar;
+  private AppBarLayout mAppBarLayoutAsWrapperForToolbarAsActionBar;
+  private EditText mEditTextAsProgram;
+  private NestedScrollView mNestedScrollViewAsWrapperForInput;
+  private EditText mEditTextAsUsername;
+  private EditText mEditTextAsPassword;
+  private Button mButtonAsGenerateRandomPassword;
 
   private final TextWatcher switchTextWatcher = new TextWatcher() {
     @Override
@@ -48,9 +36,9 @@ public class CreatePasswordActivity extends AppCompatActivity {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-      boolean result = program.length() > 0
-          && password.length() > 0;
-      switchMenuState(result);
+      boolean result = mEditTextAsProgram.length() > 0
+          && mEditTextAsPassword.length() > 0;
+      setMenuItemEnabled(mToolbarAsActionBar, 0, result);
     }
 
     @Override
@@ -69,7 +57,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
         elevation = CreatePasswordActivity.this.getResources().getDimension(R.dimen.zero);
       }
 
-      ViewCompat.setElevation(appBarLayout, elevation);
+      ViewCompat.setElevation(mAppBarLayoutAsWrapperForToolbarAsActionBar, elevation);
     }
   };
 
@@ -78,31 +66,31 @@ public class CreatePasswordActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.create_password_layout);
 
-    appBarLayout = (AppBarLayout) findViewById(R.id.createpasswordlayout_appbar_wrapper);
-    toolbar = (Toolbar) appBarLayout.findViewById(R.id.createpasswordlayout_toolbar_actionbar);
-    program = (EditText) appBarLayout.findViewById(R.id.createpasswordlayout_edittext_program);
-    nestedScrollView = (NestedScrollView) findViewById(R.id.createpasswordlayout_nestedscrollview_wrapper);
-    username = (EditText) nestedScrollView.findViewById(R.id.createpasswordlayout_edittext_username);
-    password = (EditText) nestedScrollView.findViewById(R.id.createpasswordlayout_edittext_password);
-    generatePassword = (Button) nestedScrollView.findViewById(R.id.createpasswordlayout_button_generatepassword);
+    mAppBarLayoutAsWrapperForToolbarAsActionBar = (AppBarLayout) findViewById(R.id.createpasswordlayout_appbar_wrapper);
+    mToolbarAsActionBar = (Toolbar) mAppBarLayoutAsWrapperForToolbarAsActionBar.findViewById(R.id.createpasswordlayout_toolbar_actionbar);
+    mEditTextAsProgram = (EditText) mAppBarLayoutAsWrapperForToolbarAsActionBar.findViewById(R.id.createpasswordlayout_edittext_program);
+    mNestedScrollViewAsWrapperForInput = (NestedScrollView) findViewById(R.id.createpasswordlayout_nestedscrollview_wrapper);
+    mEditTextAsUsername = (EditText) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_edittext_username);
+    mEditTextAsPassword = (EditText) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_edittext_password);
+    mButtonAsGenerateRandomPassword = (Button) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_button_generatepassword);
 
-    setSupportActionBar(toolbar);
-    toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
+    setSupportActionBar(mToolbarAsActionBar);
+//    mToolbarAsActionBar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 
-    program.addTextChangedListener(switchTextWatcher);
-    password.addTextChangedListener(switchTextWatcher);
+    mEditTextAsProgram.addTextChangedListener(switchTextWatcher);
+    mEditTextAsPassword.addTextChangedListener(switchTextWatcher);
 
-    generatePassword.setOnClickListener(new GeneratePasswordCallback(this, password));
+//    mButtonAsGenerateRandomPassword.setOnClickListener(new GeneratePasswordCallback(this, mEditTextAsPassword));
 
-    nestedScrollView.setOnScrollChangeListener(scrollChangeListener);
-    nestedScrollView.requestFocus();
+    mNestedScrollViewAsWrapperForInput.setOnScrollChangeListener(scrollChangeListener);
+    mNestedScrollViewAsWrapperForInput.requestFocus();
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.create_password_menu, menu);
-    switchMenuState(false);
+    setMenuItemEnabled(this.mToolbarAsActionBar, 0, false);
     return true;
   }
 
@@ -112,9 +100,9 @@ public class CreatePasswordActivity extends AppCompatActivity {
 
     if (id != R.id.createusermenu_item_done) return false;
 
-    String program = this.program.getText().toString();
-    String username = this.username.getText().toString();
-    String password = this.password.getText().toString();
+    String program = this.mEditTextAsProgram.getText().toString();
+    String username = this.mEditTextAsUsername.getText().toString();
+    String password = this.mEditTextAsPassword.getText().toString();
 
     try {
       PasswordProvider.getInstance(this).addPassword(program, username, password);
@@ -132,13 +120,8 @@ public class CreatePasswordActivity extends AppCompatActivity {
     finish();
   }
 
-  private void switchMenuState(boolean state) {
-    try {
-      MenuItem item = toolbar.getMenu().getItem(0);
-      item.setEnabled(state);
-      item.getIcon().setAlpha(state ? 255 : 64);
-    } catch (Exception e) {
-      // ignored
-    }
+  @Override
+  protected View getSnackbarRelatedView() {
+    return this.mToolbarAsActionBar;
   }
 }
