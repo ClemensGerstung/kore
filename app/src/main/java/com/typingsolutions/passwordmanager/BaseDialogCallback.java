@@ -2,7 +2,7 @@ package com.typingsolutions.passwordmanager;
 
 import android.content.DialogInterface;
 
-public class BaseDialogCallback<TActivity extends BaseActivity> extends BaseCallback<TActivity>
+public abstract class BaseDialogCallback<TActivity extends BaseActivity> extends BaseCallback<TActivity>
     implements DialogInterface.OnClickListener, DialogInterface.OnShowListener {
 
   public BaseDialogCallback(TActivity activity) {

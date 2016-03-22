@@ -1,11 +1,9 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,17 +15,14 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
-import com.typingsolutions.passwordmanager.callbacks.click.DeletePasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.click.GeneratePasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.click.ToolbarNavigationCallback;
-import com.typingsolutions.passwordmanager.callbacks.textwatcher.AddPasswordTextWatcher;
+import com.typingsolutions.passwordmanager.callbacks.AddPasswordTextWatcher;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordProvider;
 
-public class PasswordDetailActivity extends AppCompatActivity {
+public class PasswordDetailActivity extends BaseActivity {
 
   public static final String START_DETAIL_INDEX = "com.typingsolutions.passwordmanager.activities.PasswordDetailActivity.START_DETAIL_INDEX";
 
@@ -96,7 +91,7 @@ public class PasswordDetailActivity extends AppCompatActivity {
     password.setText(passwordString);
     password.addTextChangedListener(passwordTextWatcher);
 
-    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
+//    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
     //delete.setOnClickListener(onClickListener);
 
     //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
@@ -179,5 +174,10 @@ public class PasswordDetailActivity extends AppCompatActivity {
     } catch (Exception e) {
       // ignored
     }
+  }
+
+  @Override
+  protected View getSnackbarRelatedView() {
+    return null;
   }
 }

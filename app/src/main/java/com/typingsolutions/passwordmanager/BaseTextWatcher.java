@@ -3,7 +3,7 @@ package com.typingsolutions.passwordmanager;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-public class BaseTextWatcher<TActivity extends BaseActivity> extends BaseCallback<TActivity>
+public abstract class BaseTextWatcher<TActivity extends BaseActivity> extends BaseCallback<TActivity>
     implements TextWatcher {
 
   public BaseTextWatcher(TActivity activity) {

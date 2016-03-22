@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.callbacks.click;
+package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.Intent;
 import android.os.Build;
@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.View;
+import com.typingsolutions.passwordmanager.BaseClickCallback;
 import com.typingsolutions.passwordmanager.activities.CreatePasswordActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.BaseCallback;
 
 
-public class AddPasswordCallback extends BaseCallback {
-    private PasswordOverviewActivity passwordOverviewActivity;
+public class AddPasswordCallback extends BaseClickCallback<PasswordOverviewActivity> {
 
     public AddPasswordCallback(PasswordOverviewActivity passwordOverviewActivity) {
         super(passwordOverviewActivity);
-        this.passwordOverviewActivity = passwordOverviewActivity;
     }
 
     @Override
@@ -25,8 +24,8 @@ public class AddPasswordCallback extends BaseCallback {
 
     @Override
     public void onClick(View view) {
-        passwordOverviewActivity.doNotLogout();
-        Intent intent = new Intent(context, CreatePasswordActivity.class);
+        mActivity.doNotLogout();
+        Intent intent = new Intent(mActivity, CreatePasswordActivity.class);
         Bundle bundle;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Log.d(getClass().getSimpleName(), "override");
@@ -34,13 +33,13 @@ public class AddPasswordCallback extends BaseCallback {
             //    .makeCustomAnimation(context, R.anim.activity_open_animation, R.anim.no_animation)
             //    .toBundle();
 
-            ActivityOptionsCompat.makeSceneTransitionAnimation(passwordOverviewActivity, view, "asdf");
+            ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, view, "asdf");
 
-            context.startActivity(intent);
+            mActivity.startActivity(intent);
             //passwordOverviewActivity.overridePendingTransition(R.anim.activity_open_animation, R.anim.no_animation);
 
         } else {
-            context.startActivity(intent);
+            mActivity.startActivity(intent);
         }
 
     }

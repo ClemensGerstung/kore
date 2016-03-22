@@ -17,4 +17,12 @@
         ready.\nIf you have any idea for additional values YOU want to configure for an password, please tell me so I can
         add them soon.
     </string>
+    <string name="next_password_hint">Click Next to setup Your main password.\nThis password should be easy to remember
+        but also be strong enough so no one can break it.
+    </string>
+    <string name="welcome_message">This app offers You simple, easy and most of all a secure way to store your
+        passwords.\nAlways with You and no drawbacks!
+    </string>
+    <string name="welcome">Hello and Welcome</string>
+    <string name="next">Next</string>
 </resources>

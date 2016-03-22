@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.callbacks.textwatcher;
+package com.typingsolutions.passwordmanager.callbacks;
 
 import android.support.annotation.Nullable;
 import android.text.Editable;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:id="@+id/setuplayout_coordinatorlayout_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/Base.AppTheme.Setup"
+        android:fitsSystemWindows="true"
+        android:padding="0dp">
+
+    <ImageView android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:adjustViewBounds="true"
+               android:scaleType="centerCrop"
+               android:src="@mipmap/setup_background"/>
+
+    <fragment android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="bottom"
+              android:id="@+id/setuplayout_fragment_wrapper"
+              android:name="com.typingsolutions.passwordmanager.fragments.SetupWelcomeFragment"
+              tools:layout="@layout/setup_1_layout"/>
+</android.support.design.widget.CoordinatorLayout>
