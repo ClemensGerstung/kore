@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.callbacks.service;
+package com.typingsolutions.passwordmanager.callbacks;
 
 import android.os.RemoteException;
 import android.support.annotation.NonNull;

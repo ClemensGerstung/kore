@@ -10,11 +10,6 @@ public abstract class BaseClickCallback<TActivity extends BaseActivity> extends 
   }
 
   @Override
-  public void onClick(View v) {
-
-  }
-
-  @Override
   public void setValues(Object... values) {
 
   }

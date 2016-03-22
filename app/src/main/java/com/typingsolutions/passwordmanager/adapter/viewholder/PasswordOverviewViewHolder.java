@@ -114,6 +114,6 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
   @Override
   public void refused() {
     activity.setRefreshing(false);
-    activity.makeSnackBar("Your passwords do not match");
+    activity.makeSnackbar("Your passwords do not match");
   }
 }

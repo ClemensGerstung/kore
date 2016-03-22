@@ -12,9 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.EditText;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
@@ -24,10 +22,7 @@ import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseTextWatcher;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.callbacks.click.LoginCallback;
-import com.typingsolutions.passwordmanager.callbacks.click.SetupCallback;
-import com.typingsolutions.passwordmanager.callbacks.service.ServiceCallbackImplementation;
-import com.typingsolutions.passwordmanager.services.LoginService;
+import com.typingsolutions.passwordmanager.callbacks.ServiceCallbackImplementation;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.DatabaseProvider;
 import core.Utils;
@@ -55,8 +50,8 @@ public class LoginActivity extends BaseActivity {
   private ILoginServiceRemote loginServiceRemote;
   private DatabaseProvider databaseProvider;
 
-  private LoginCallback loginCallback = new LoginCallback(this, this);
-  private SetupCallback setupCallback = new SetupCallback(this, this);
+//  private LoginCallback loginCallback = new LoginCallback(this, this);
+//  private SetupCallback setupCallback = new SetupCallback(this, this);
 
   private final ServiceConnection loginServiceConnection = new ServiceConnection() {
     @Override
@@ -98,10 +93,10 @@ public class LoginActivity extends BaseActivity {
     public void onTextChanged(CharSequence s, int start, int before, int count) {
       if (s.length() == 0) {
         mFloatingActionButtonAsLogin.hide();
-        loginCallback.setValues("", mCheckBoxAsSafeLoginFlag.isChecked());
+//        loginCallback.setValues("", mCheckBoxAsSafeLoginFlag.isChecked());
       } else {
         mFloatingActionButtonAsLogin.show();
-        loginCallback.setValues(s.toString(), mCheckBoxAsSafeLoginFlag.isChecked());
+//        loginCallback.setValues(s.toString(), mCheckBoxAsSafeLoginFlag.isChecked());
       }
     }
   };
@@ -119,7 +114,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
       if (actionId != EditorInfo.IME_ACTION_DONE) return false;
-      setupCallback.onClick(null);
+//      setupCallback.onClick(null);
       return true;
     }
   };
@@ -128,23 +123,23 @@ public class LoginActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    databaseProvider = DatabaseProvider.getConnection(this);
-    boolean needSetup = databaseProvider.needSetup();
-    if (needSetup) {
-      setContentView(R.layout.setup_layout);
-
-      mButtonAsSetupButton = findCastedViewById(R.id.setuplayout_button_setup);
-      mEditTextAsRepeatSetupPassword = findCastedViewById(R.id.setuplayout_edittext_password);
-      mEditTextAsSetupPassword = findCastedViewById(R.id.setuplayout_edittext_repeatpassword);
-      mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
-
-      mEditTextAsRepeatSetupPassword.addTextChangedListener(setupTextWatcher);
-      mEditTextAsSetupPassword.addTextChangedListener(setupTextWatcher);
-
-      mEditTextAsSetupPassword.setOnEditorActionListener(setupKeyBoardActionListener);
-      //mButtonAsSetupButton.setOnClickListener(new SetupCallback(this, this));
-      return;
-    }
+//    databaseProvider = DatabaseProvider.getConnection(this);
+//    boolean needSetup = databaseProvider.needSetup();
+//    if (needSetup) {
+//      setContentView(R.layout.setup_main_layout);
+//
+//      mButtonAsSetupButton = findCastedViewById(R.id.setuplayout_button_setup);
+//      mEditTextAsRepeatSetupPassword = findCastedViewById(R.id.setuplayout_edittext_password);
+//      mEditTextAsSetupPassword = findCastedViewById(R.id.setuplayout_edittext_repeatpassword);
+//      mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
+//
+//      mEditTextAsRepeatSetupPassword.addTextChangedListener(setupTextWatcher);
+//      mEditTextAsSetupPassword.addTextChangedListener(setupTextWatcher);
+//
+//      mEditTextAsSetupPassword.setOnEditorActionListener(setupKeyBoardActionListener);
+//      //mButtonAsSetupButton.setOnClickListener(new SetupCallback(this, this));
+//      return;
+//    }
 
     // no setup -> login
     setContentView(R.layout.login_layout);
@@ -152,12 +147,12 @@ public class LoginActivity extends BaseActivity {
     mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
     setSupportActionBar(mToolbarAsActionBar);
 
-    mFloatingActionButtonAsLogin =findCastedViewById(R.id.loginlayout_floatingactionbutton_login);
+    mFloatingActionButtonAsLogin = findCastedViewById(R.id.loginlayout_floatingactionbutton_login);
     mEditTextAsLoginPassword = findCastedViewById(R.id.loginlayout_edittext_password);
     mCheckBoxAsSafeLoginFlag = findCastedViewById(R.id.loginlayout_checkbox_safelogin);
     mOutlinedImageViewAsLockedBackground = findCastedViewById(R.id.loginlayout_outlinedimageview_background);
     mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.loginlayout_coordinatorlayout_root);
-    mProgressBarAsLoadingIndicator =findCastedViewById(R.id.loginlayout_progressbar_waiter);
+    mProgressBarAsLoadingIndicator = findCastedViewById(R.id.loginlayout_progressbar_waiter);
     mImageViewAsBackground = findCastedViewById(R.id.loginlayout_imageview_background);
     mTextViewAsHintForRootedDevices = findCastedViewById(R.id.loginlayout_textview_rootedindicator);
     if (!Utils.isRooted())
@@ -178,7 +173,7 @@ public class LoginActivity extends BaseActivity {
   protected void onResume() {
     super.onResume();
 
-    startAndBindService(LoginService.class, loginServiceConnection, Context.BIND_AUTO_CREATE);
+//    startAndBindService(LoginService.class, loginServiceConnection, Context.BIND_AUTO_CREATE);
 //    Intent intent = new Intent(this, LoginService.class);
 //    if (!isServiceRunning(LoginService.class))
 //      startService(intent);
@@ -188,7 +183,7 @@ public class LoginActivity extends BaseActivity {
 
   @Override
   protected void onStop() {
-    unbindService(loginServiceConnection);
+//    unbindService(loginServiceConnection);
     super.onStop();
   }
 
