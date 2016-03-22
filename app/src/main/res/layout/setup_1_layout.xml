@@ -5,15 +5,14 @@
                                     android:layout_height="wrap_content"
                                     app:cardElevation="@dimen/dimen_sm"
                                     app:cardCornerRadius="@dimen/zero"
-                                    app:contentPadding="@dimen/dimen_lg"
-                                    android:layout_gravity="bottom">
+                                    app:contentPadding="@dimen/dimen_lg">
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
         <TextView android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:textColor="@color/darkgrey"
-                  android:layout_marginBottom="@dimen/dimen_sm"
+                  android:layout_marginBottom="@dimen/dimen_md"
                   style="?android:attr/textAppearanceMedium"
                   android:text="@string/welcome"/>
 
