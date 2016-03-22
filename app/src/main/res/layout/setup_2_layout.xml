@@ -9,10 +9,11 @@
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
+
         <TextView android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:textColor="#424242"
-                  android:layout_marginBottom="@dimen/dimen_sm"
+                  android:layout_marginBottom="@dimen/dimen_md"
                   style="?android:attr/textAppearanceMedium"
                   android:text="Let's setup Your main password"/>
 
@@ -62,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:text="Setup"
-                    android:id="@+id/setuplayout_button_setup"
+                    android:id="@+id/setuplayout_button_setuppassword"
                     android:layout_marginTop="@dimen/dimen_sm"
                     style="?attr/borderlessButtonStyle"
                     android:layout_gravity="end"

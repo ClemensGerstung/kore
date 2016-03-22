@@ -51,7 +51,7 @@ public class LoginActivity extends BaseActivity {
   private DatabaseProvider databaseProvider;
 
 //  private LoginCallback loginCallback = new LoginCallback(this, this);
-//  private SetupCallback setupCallback = new SetupCallback(this, this);
+//  private SetupPasswordCallback setupCallback = new SetupPasswordCallback(this, this);
 
   private final ServiceConnection loginServiceConnection = new ServiceConnection() {
     @Override
@@ -137,7 +137,7 @@ public class LoginActivity extends BaseActivity {
 //      mEditTextAsSetupPassword.addTextChangedListener(setupTextWatcher);
 //
 //      mEditTextAsSetupPassword.setOnEditorActionListener(setupKeyBoardActionListener);
-//      //mButtonAsSetupButton.setOnClickListener(new SetupCallback(this, this));
+//      //mButtonAsSetupButton.setOnClickListener(new SetupPasswordCallback(this, this));
 //      return;
 //    }
 

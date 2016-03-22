@@ -1,25 +1,15 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.AnimRes;
+import android.support.annotation.IdRes;
 import android.view.View;
-import com.typingsolutions.passwordmanager.BaseClickCallback;
-import com.typingsolutions.passwordmanager.activities.LoginActivity;
-import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import com.typingsolutions.passwordmanager.BaseCallback;
+import com.typingsolutions.passwordmanager.BaseFragment;
+import com.typingsolutions.passwordmanager.activities.SetupActivity;
 
-public class SetupCallback extends BaseClickCallback<LoginActivity> {
+public class SetupPasswordCallback extends SwitchFragmentCallback {
 
-  public SetupCallback(LoginActivity loginActivity) {
-    super(loginActivity);
-  }
-
-  @Override
-  public void setValues(Object... values) {
-
+  public SetupPasswordCallback(SetupActivity activity, @IdRes int oldFragment, BaseFragment<SetupActivity> fragment, @AnimRes int inAnim, @AnimRes int outAnim) {
+    super(activity, oldFragment, fragment, inAnim, outAnim);
   }
 
   @Override
@@ -49,6 +39,8 @@ public class SetupCallback extends BaseClickCallback<LoginActivity> {
 //    }
 //
 //    setup();
+
+    super.onClick(v);
   }
 
   private void setup() {

@@ -6,14 +6,15 @@ import android.view.View;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseClickCallback;
 import com.typingsolutions.passwordmanager.BaseFragment;
+import com.typingsolutions.passwordmanager.activities.SetupActivity;
 
-public class SwitchFragmentCallback extends BaseClickCallback<BaseActivity> {
-  private BaseFragment mFragment;
+public class SwitchFragmentCallback extends BaseClickCallback<SetupActivity> {
+  private BaseFragment<SetupActivity> mFragment;
   private int mOutAnim;
   private int mInAnim;
   private int mOldFragment;
 
-  public SwitchFragmentCallback(BaseActivity activity, @IdRes int oldFragment, BaseFragment fragment, @AnimRes int inAnim, @AnimRes int outAnim) {
+  public SwitchFragmentCallback(SetupActivity activity, @IdRes int oldFragment, BaseFragment<SetupActivity> fragment, @AnimRes int inAnim, @AnimRes int outAnim) {
     super(activity);
     this.mFragment = fragment;
     this.mInAnim = inAnim;
