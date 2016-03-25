@@ -25,4 +25,15 @@
     </string>
     <string name="welcome">Hello and Welcome</string>
     <string name="next">Next</string>
+    <string name="pim_hin">To provide even more security, You have to enter additional number.\nThis number enhances the
+        encryption on the database so these bad boys out there will have a bad time.
+    </string>
+    <string name="pim_instructions">This number should be easy to remember and somewhere above 485.</string>
+    <string name="password_hint">Your main password is used to log into this app. This password should be easily to
+        remember but also hard to guess.\nRecommend is to use at least a length of 8. Also use upper and lower case
+        letters, numbers and some special characters!
+    </string>
+    <string name="done_message">Now You entered your main password and Your personal magic number so let\'s perform a
+        login and continue with the app!
+    </string>
 </resources>

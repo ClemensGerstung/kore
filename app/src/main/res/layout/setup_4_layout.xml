@@ -9,13 +9,12 @@
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
-
         <TextView android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:textColor="@color/darkgrey"
                   android:layout_marginBottom="@dimen/dimen_md"
                   style="?android:attr/textAppearanceMedium"
-                  android:text="Let's setup Your main password"/>
+                  android:text="Done!"/>
 
         <TextView android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -23,7 +22,7 @@
                   android:layout_marginTop="@dimen/dimen_sm"
                   android:layout_marginBottom="@dimen/dimen_sm"
                   style="?android:attr/textAppearanceSmall"
-                  android:text="@string/password_hint"/>
+                  android:text="@string/done_message"/>
 
         <android.support.design.widget.TextInputLayout
                 android:id="@+id/setuplayout_textinputlayout_passwordwrapper"
@@ -35,22 +34,20 @@
                       android:layout_height="wrap_content"
                       android:textColor="@color/black"
                       android:textColorHint="@color/darkgrey"
-                      android:hint="Enter Your password"
+                      android:hint="Your password"
                       android:inputType="textPassword"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-                android:id="@+id/setuplayout_textinputlayout_passwordrepeatwrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-            <EditText android:id="@+id/setuplayout_edittext_repeatpassword"
-                      android:layout_width="match_parent"
+            <EditText android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/black"
                       android:textColorHint="@color/darkgrey"
-                      android:inputType="textPassword"
-                      android:hint="Repeat your password"/>
+                      android:inputType="numberPassword"
+                      android:hint="Your secret number"/>
         </android.support.design.widget.TextInputLayout>
 
         <GridLayout android:layout_width="match_parent"
@@ -70,7 +67,7 @@
             <Button android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_column="1"
-                    android:text="Setup"
+                    android:text="Login"
                     android:id="@+id/setuplayout_button_setuppassword"
                     android:layout_marginTop="@dimen/dimen_sm"
                     style="?attr/borderlessButtonStyle"
