@@ -1,53 +1,54 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
-import android.support.annotation.AnimRes;
-import android.support.annotation.IdRes;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.View;
-import com.typingsolutions.passwordmanager.BaseFragment;
+import com.typingsolutions.passwordmanager.BaseClickCallback;
 import com.typingsolutions.passwordmanager.activities.SetupActivity;
+import com.typingsolutions.passwordmanager.fragments.SetupPasswordFragment;
 
-public class SetupPasswordCallback extends SwitchFragmentCallback {
+public class SetupPasswordCallback extends BaseClickCallback<SetupActivity> {
 
-  public SetupPasswordCallback(SetupActivity activity, @IdRes int oldFragment, BaseFragment<SetupActivity> fragment, @AnimRes int inAnim, @AnimRes int outAnim) {
-    super(activity, oldFragment, fragment, inAnim, outAnim);
+  private SetupPasswordFragment mSender;
+
+  public SetupPasswordCallback(SetupActivity activity, SetupPasswordFragment sender) {
+    super(activity);
+    this.mSender = sender;
   }
 
   @Override
   public void onClick(View v) {
-//    if (!loginActivity.isPasswordSafe()) {
-//      AlertDialog alertDialog = new AlertDialog.Builder(context)
-//          .setTitle("Your password doesn't seem to be safe")
-//          .setMessage("We recommend to use lower and upper letters, digits, some special characters and at least 8 characters. Do you want to keep it anyway?")
-//          .setPositiveButton("GOT IT", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//              dialog.dismiss();
-//              setup();
-//            }
-//          })
-//          .setNegativeButton("CHANGE", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//              dialog.dismiss();
-//              loginActivity.retypePassword();
-//            }
-//          })
-//          .create();
-//
-//      alertDialog.show();
-//      return;
-//    }
-//
-//    setup();
+    if (!this.mSender.checkPasswordsMatch()) {
+      mActivity.makeSnackbar("The entered password don't match!");
+      return;
+    }
 
-    super.onClick(v);
-  }
+    if(!this.mSender.checkPasswordSafety()) {
+      AlertDialog alertDialog = new AlertDialog.Builder(mActivity)
+          .setTitle("Your password doesn't seem to be safe")
+          .setMessage("We recommend to use lower and upper letters, digits, some special characters and at least 8 characters. Do you want to keep it anyway?")
+          .setPositiveButton("GOT IT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              dialog.dismiss();
+              mActivity.moveToNextPage();
+              mActivity.setPassword(mSender.getPassword());
+            }
+          })
+          .setNegativeButton("CHANGE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              dialog.dismiss();
+              mSender.retypePassword();
+            }
+          })
+          .create();
 
-  private void setup() {
-//    if(loginActivity.setupDatabase()) {
-//      Intent intent = new Intent(context, PasswordOverviewActivity.class);
-//      context.startActivity(intent);
-//      ActivityCompat.finishAfterTransition(loginActivity);
-//    }
+      alertDialog.show();
+    } else {
+      mActivity.moveToNextPage();
+    }
+
+
   }
 }

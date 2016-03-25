@@ -12,7 +12,6 @@ import com.typingsolutions.passwordmanager.activities.SetupActivity;
 import com.typingsolutions.passwordmanager.callbacks.SwitchFragmentCallback;
 
 public class SetupWelcomeFragment extends BaseFragment<SetupActivity> {
-  private static final SetupPasswordFragment SETUP_PASSWORD_FRAGMENT = new SetupPasswordFragment();
 
   private Button mButtonAsNext;
   private SwitchFragmentCallback mCallbackAsNext;
@@ -22,7 +21,7 @@ public class SetupWelcomeFragment extends BaseFragment<SetupActivity> {
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.setup_1_layout, container, false);
 
-    mCallbackAsNext = new SwitchFragmentCallback(getSupportActivity(), R.id.setuplayout_fragment_wrapper, SETUP_PASSWORD_FRAGMENT, R.anim.slide_in_right, R.anim.slide_out_left);
+    mCallbackAsNext = new SwitchFragmentCallback(getSupportActivity(), SwitchFragmentCallback.Direction.Next);
     mButtonAsNext = (Button) view.findViewById(R.id.setuplayout_button_nextToPassword);
     mButtonAsNext.setOnClickListener(mCallbackAsNext);
 
