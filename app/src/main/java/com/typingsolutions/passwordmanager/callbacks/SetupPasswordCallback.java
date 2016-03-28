@@ -18,6 +18,11 @@ public class SetupPasswordCallback extends BaseClickCallback<SetupActivity> {
 
   @Override
   public void onClick(View v) {
+    if(!this.mSender.arePasswordsEntered()){
+      mActivity.makeSnackbar("You must enter a password to continue!");
+      return;
+    }
+
     if (!this.mSender.checkPasswordsMatch()) {
       mActivity.makeSnackbar("The entered password don't match!");
       return;
