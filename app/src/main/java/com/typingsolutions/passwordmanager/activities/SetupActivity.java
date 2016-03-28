@@ -1,16 +1,19 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.animation.ObjectAnimator;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.view.Display;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.SetupPagerAdapter;
+import com.typingsolutions.passwordmanager.utils.ViewUtils;
 
 public class SetupActivity extends BaseActivity {
 
@@ -21,8 +24,26 @@ public class SetupActivity extends BaseActivity {
   private CoordinatorLayout mCoordinatorLayoutAsRootLayout;
   private ui.ViewPager mViewPagerAsFragmentHost;
   private ImageView mImageViewAsBackground;
+  private ImageSwitcher mImageSwitcherAsIcon;
 
   private SetupPagerAdapter mSetupPagerAdapter;
+
+  private final int[] imageResources = {R.mipmap.clear, R.mipmap.add, R.mipmap.verified, R.mipmap.done};
+
+  private final ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
+    @Override
+    public boolean onPreDraw() {
+      float[] matrix = new float[9];
+      mImageViewAsBackground.getImageMatrix().getValues(matrix);
+      float entryPoint = matrix[2];
+
+      mImageViewAsBackground.setScrollX((int) entryPoint);
+      mScrollWidth = (int) ((entryPoint * -2) / (mSetupPagerAdapter.getCount() - 1));
+
+      mImageViewAsBackground.getViewTreeObserver().removeOnPreDrawListener(this);
+      return true;
+    }
+  };
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +53,7 @@ public class SetupActivity extends BaseActivity {
     mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
     mViewPagerAsFragmentHost = findCastedViewById(R.id.setuplayout_viewpager_content);
     mImageViewAsBackground = findCastedViewById(R.id.setuplayout_image_background);
+    mImageSwitcherAsIcon = findCastedViewById(R.id.setuplayout_imageswitcher_wrapper);
 
     mSetupPagerAdapter = new SetupPagerAdapter(getSupportFragmentManager());
 
@@ -39,16 +61,10 @@ public class SetupActivity extends BaseActivity {
     mViewPagerAsFragmentHost.setOffscreenPageLimit(3);
     mViewPagerAsFragmentHost.canSwipe(false);
 
-    int imageWidth = mImageViewAsBackground.getDrawable().getMinimumWidth();
+    mImageViewAsBackground.getViewTreeObserver().addOnPreDrawListener(onPreDrawListener);
 
-    Display display = getWindowManager().getDefaultDisplay();
-    Point size = new Point();
-    display.getSize(size);
-    int windowWidth = size.x;
-
-    mScrollWidth = (imageWidth - windowWidth * 2) / mSetupPagerAdapter.getCount();
-
-    mImageViewAsBackground.setScrollX(((imageWidth / 2) - windowWidth) * -1);
+    mImageSwitcherAsIcon.setFactory(ViewUtils.getSimpleViewFactory(this));
+    mImageSwitcherAsIcon.setImageResource(imageResources[0]);
   }
 
   @Override
@@ -65,6 +81,10 @@ public class SetupActivity extends BaseActivity {
     if (index < mSetupPagerAdapter.getCount()) {
       mViewPagerAsFragmentHost.setCurrentItem(index + 1, true);
 
+      mImageSwitcherAsIcon.setOutAnimation(this, R.anim.zoom_slide_out_left);
+      mImageSwitcherAsIcon.setInAnimation(this, R.anim.zoom_slide_in_right);
+      mImageSwitcherAsIcon.setImageResource(imageResources[index + 1]);
+
       int x = mImageViewAsBackground.getScrollX();
 
       ObjectAnimator anim = ObjectAnimator.ofInt(mImageViewAsBackground, "scrollX", x, x + mScrollWidth);
@@ -78,6 +98,10 @@ public class SetupActivity extends BaseActivity {
     int index = mViewPagerAsFragmentHost.getCurrentItem();
     if (index > 0) {
       mViewPagerAsFragmentHost.setCurrentItem(index - 1, true);
+
+      mImageSwitcherAsIcon.setOutAnimation(this, R.anim.zoom_slide_out_right);
+      mImageSwitcherAsIcon.setInAnimation(this, R.anim.zoom_slide_in_left);
+      mImageSwitcherAsIcon.setImageResource(imageResources[index - 1]);
 
       ObjectAnimator anim = ObjectAnimator.ofInt(mImageViewAsBackground, "scrollX", mImageViewAsBackground.getScrollX(), mImageViewAsBackground.getScrollX() - mScrollWidth);
       anim.setDuration(250);

@@ -12,12 +12,29 @@
                android:layout_height="match_parent"
                android:adjustViewBounds="true"
                android:scaleType="centerCrop"
+               android:padding="@dimen/zero"
                android:id="@+id/setuplayout_image_background"
-               android:src="@drawable/setup_background"/>
+               android:src="@mipmap/setup_background"/>
 
-    <ui.ViewPager
-            android:id="@+id/setuplayout_viewpager_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"/>
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+        <ui.ViewPager
+                android:id="@+id/setuplayout_viewpager_content"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"/>
+
+        <ImageSwitcher android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:outAnimation="@anim/zoom_slide_out_left"
+                       android:inAnimation="@anim/zoom_slide_in_right"
+                       android:layout_gravity="center"
+                       android:id="@+id/setuplayout_imageswitcher_wrapper"
+                       android:layout_above="@id/setuplayout_viewpager_content">
+            <!--<ImageView android:layout_width="match_parent"-->
+                       <!--android:layout_height="match_parent"-->
+                       <!--android:src="@mipmap/clear"/>-->
+        </ImageSwitcher>
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>

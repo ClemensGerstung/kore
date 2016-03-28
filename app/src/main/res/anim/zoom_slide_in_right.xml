@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale android:fromXScale="@dimen/zoom_small"
+           android:toXScale="1"
+           android:fromYScale="@dimen/zoom_small"
+           android:toYScale="1"
+           android:startOffset="@integer/animation_duration"
+           android:duration="100"/>
+    <translate android:fromXDelta="100%p"
+               android:toXDelta="0"
+               android:duration="@integer/animation_duration"/>
+    <alpha android:fromAlpha="0.0"
+           android:toAlpha="1.0"
+           android:duration="50"/>
+</set>

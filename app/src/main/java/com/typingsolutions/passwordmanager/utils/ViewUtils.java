@@ -3,12 +3,18 @@ package com.typingsolutions.passwordmanager.utils;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.AnimRes;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 import com.typingsolutions.passwordmanager.R;
 import core.Utils;
 
@@ -74,6 +80,18 @@ public final class ViewUtils {
     } catch (Exception e) {
       Log.e(ViewUtils.class.getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }
+  }
+
+  public static ViewSwitcher.ViewFactory getSimpleViewFactory(final Context context) {
+    return new ViewSwitcher.ViewFactory() {
+      @Override
+      public View makeView() {
+        ImageView imageView = new ImageView(context);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setLayoutParams(new ImageSwitcher.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return imageView;
+      }
+    };
   }
 
   private static class LocalAnimationListener implements Animation.AnimationListener {

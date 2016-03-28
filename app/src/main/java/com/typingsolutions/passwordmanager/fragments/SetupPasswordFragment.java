@@ -61,6 +61,10 @@ public class SetupPasswordFragment extends BaseFragment<SetupActivity> {
     return Utils.isSafe(mEditTextAsEnterPassword.getText().toString());
   }
 
+  public boolean arePasswordsEntered() {
+    return mEditTextAsEnterPassword.length() > 0 && mEditTextAsRepeatPassword.length() > 0;
+  }
+
   public String getPassword() {
     return mEditTextAsEnterPassword.getText().toString();
   }
