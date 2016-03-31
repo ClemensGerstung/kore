@@ -1,13 +1,12 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.animation.ObjectAnimator;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import com.typingsolutions.passwordmanager.BaseActivity;
@@ -28,7 +27,7 @@ public class SetupActivity extends BaseActivity {
 
   private SetupPagerAdapter mSetupPagerAdapter;
 
-  private final int[] imageResources = {R.mipmap.clear, R.mipmap.add, R.mipmap.verified, R.mipmap.done};
+  private final int[] imageResources = {R.drawable.android, R.mipmap.security, R.mipmap.pim, R.mipmap.setup_done};
 
   private final ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
     @Override
@@ -49,6 +48,10 @@ public class SetupActivity extends BaseActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.setup_main_layout);
+
+    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+    if(Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x00FFFFFF);
 
     mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
     mViewPagerAsFragmentHost = findCastedViewById(R.id.setuplayout_viewpager_content);
