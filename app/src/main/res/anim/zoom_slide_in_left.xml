@@ -4,6 +4,8 @@
            android:toXScale="1"
            android:fromYScale="@dimen/zoom_small"
            android:toYScale="1"
+           android:pivotX="50%p"
+           android:pivotY="50%p"
            android:startOffset="@integer/animation_duration"
            android:duration="100"/>
     <translate android:fromXDelta="-100%p"
