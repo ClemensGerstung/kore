@@ -23,6 +23,7 @@ import com.typingsolutions.passwordmanager.BaseTextWatcher;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.ServiceCallbackImplementation;
+import com.typingsolutions.passwordmanager.services.LoginService;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.DatabaseProvider;
 import core.Utils;
@@ -37,15 +38,12 @@ public class LoginActivity extends BaseActivity {
   private Toolbar mToolbarAsActionBar;
   private FloatingActionButton mFloatingActionButtonAsLogin;
   private EditText mEditTextAsLoginPassword;
-  private android.widget.EditText mEditTextAsSetupPassword;       // for setuplayout
-  private android.widget.EditText mEditTextAsRepeatSetupPassword; // for setuplayout
   private CheckBox mCheckBoxAsSafeLoginFlag;
   private OutlinedImageView mOutlinedImageViewAsLockedBackground;
   private CoordinatorLayout mCoordinatorLayoutAsRootLayout;
   private ProgressBar mProgressBarAsLoadingIndicator;
   private ImageView mImageViewAsBackground;
   private TextView mTextViewAsHintForRootedDevices;
-  private Button mButtonAsSetupButton;
 
   private ILoginServiceRemote loginServiceRemote;
   private DatabaseProvider databaseProvider;
@@ -84,7 +82,7 @@ public class LoginActivity extends BaseActivity {
   private final TextWatcher setupTextWatcher = new BaseTextWatcher<LoginActivity>(this) {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-      mButtonAsSetupButton.setEnabled(mEditTextAsRepeatSetupPassword.getText().equals(mEditTextAsSetupPassword.getText()));
+//      mButtonAsSetupButton.setEnabled(mEditTextAsRepeatSetupPassword.getText().equals(mEditTextAsSetupPassword.getText()));
     }
   };
 
@@ -123,25 +121,11 @@ public class LoginActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-//    databaseProvider = DatabaseProvider.getConnection(this);
-//    boolean needSetup = databaseProvider.needSetup();
-//    if (needSetup) {
-//      setContentView(R.layout.setup_main_layout);
-//
-//      mButtonAsSetupButton = findCastedViewById(R.id.setuplayout_button_setup);
-//      mEditTextAsRepeatSetupPassword = findCastedViewById(R.id.setuplayout_edittext_password);
-//      mEditTextAsSetupPassword = findCastedViewById(R.id.setuplayout_edittext_repeatpassword);
-//      mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
-//
-//      mEditTextAsRepeatSetupPassword.addTextChangedListener(setupTextWatcher);
-//      mEditTextAsSetupPassword.addTextChangedListener(setupTextWatcher);
-//
-//      mEditTextAsSetupPassword.setOnEditorActionListener(setupKeyBoardActionListener);
-//      //mButtonAsSetupButton.setOnClickListener(new SetupPasswordCallback(this, this));
-//      return;
-//    }
+    if(DatabaseProvider.getConnection(this).needSetup()) {
+      startActivity(SetupActivity.class, true);
+      return;
+    }
 
-    // no setup -> login
     setContentView(R.layout.login_layout);
 
     mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
@@ -173,7 +157,7 @@ public class LoginActivity extends BaseActivity {
   protected void onResume() {
     super.onResume();
 
-//    startAndBindService(LoginService.class, loginServiceConnection, Context.BIND_AUTO_CREATE);
+    startAndBindService(LoginService.class, loginServiceConnection, Context.BIND_AUTO_CREATE);
 //    Intent intent = new Intent(this, LoginService.class);
 //    if (!isServiceRunning(LoginService.class))
 //      startService(intent);
@@ -187,51 +171,51 @@ public class LoginActivity extends BaseActivity {
     super.onStop();
   }
 
-  public boolean setupDatabase() {
-    databaseProvider.setOnSetupListener(new DatabaseProvider.OnSetupListener() {
-      @Override
-      public String onSetup() {
-        return mEditTextAsRepeatSetupPassword.getText().toString();
-      }
-    });
-    String password = mEditTextAsRepeatSetupPassword.getText().toString();
-    String repeated = mEditTextAsSetupPassword.getText().toString();
+//  public boolean setupDatabase() {
+//    databaseProvider.setOnSetupListener(new DatabaseProvider.OnSetupListener() {
+//      @Override
+//      public String onSetup() {
+//        return mEditTextAsRepeatSetupPassword.getText().toString();
+//      }
+//    });
+//    String password = mEditTextAsRepeatSetupPassword.getText().toString();
+//    String repeated = mEditTextAsSetupPassword.getText().toString();
+//
+//    if (password.equals(repeated)) {
+//      if (!databaseProvider.setup()) {
+//        Snackbar.make(mCoordinatorLayoutAsRootLayout, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
+//      } else {
+//        return true;
+//      }
+//    } else {
+//      Snackbar
+//          .make(mCoordinatorLayoutAsRootLayout, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG)
+//          //.setAction("RETYPE", new RetypePasswordCallback(this, this))
+//          .show();
+//    }
+//    return false;
+//  }
 
-    if (password.equals(repeated)) {
-      if (!databaseProvider.setup()) {
-        Snackbar.make(mCoordinatorLayoutAsRootLayout, "Sorry, something went wrong", Snackbar.LENGTH_LONG).show();
-      } else {
-        return true;
-      }
-    } else {
-      Snackbar
-          .make(mCoordinatorLayoutAsRootLayout, "Sorry, your passwords don't match!", Snackbar.LENGTH_LONG)
-          //.setAction("RETYPE", new RetypePasswordCallback(this, this))
-          .show();
-    }
-    return false;
-  }
+//  public boolean isPasswordSafe() {
+//    String password = mEditTextAsRepeatSetupPassword.getText().toString();
+//    return Utils.isSafe(password);
+//  }
 
-  public boolean isPasswordSafe() {
-    String password = mEditTextAsRepeatSetupPassword.getText().toString();
-    return Utils.isSafe(password);
-  }
-
-  public void retypePassword() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        if (mEditTextAsRepeatSetupPassword != null) {
-          mEditTextAsRepeatSetupPassword.setText("");
-          mEditTextAsRepeatSetupPassword.requestFocus();
-        }
-        if (mEditTextAsSetupPassword != null)
-          mEditTextAsSetupPassword.setText("");
-        if (mEditTextAsLoginPassword != null)
-          mEditTextAsLoginPassword.setText("");
-      }
-    });
-  }
+//  public void retypePassword() {
+//    runOnUiThread(new Runnable() {
+//      @Override
+//      public void run() {
+//        if (mEditTextAsRepeatSetupPassword != null) {
+//          mEditTextAsRepeatSetupPassword.setText("");
+//          mEditTextAsRepeatSetupPassword.requestFocus();
+//        }
+//        if (mEditTextAsSetupPassword != null)
+//          mEditTextAsSetupPassword.setText("");
+//        if (mEditTextAsLoginPassword != null)
+//          mEditTextAsLoginPassword.setText("");
+//      }
+//    });
+//  }
 
   public ILoginServiceRemote getLoginServiceRemote() {
     return loginServiceRemote;

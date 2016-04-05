@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,5 +39,22 @@ public class SetupPimFragment extends BaseFragment<SetupActivity> {
     mButtonAsDone.setOnClickListener(mSetupPimCallback);
 
     return view;
+  }
+
+  public boolean hasPim() {
+    return mEditTextAsPim.length() > 0;
+  }
+
+  public void copyPimToParentActivity() {
+    int pim = Integer.parseInt(mEditTextAsPim.getText().toString());
+    getSupportActivity().setPim(pim);
+  }
+
+  public boolean isPimHighEnough() {
+    return Integer.parseInt(mEditTextAsPim.getText().toString()) >= 485;
+  }
+
+  public void retypePim() {
+    mEditTextAsPim.setText("");
   }
 }

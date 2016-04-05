@@ -10,10 +10,12 @@ import com.typingsolutions.passwordmanager.fragments.SetupPasswordFragment;
 public class SetupPasswordCallback extends BaseClickCallback<SetupActivity> {
 
   private SetupPasswordFragment mSender;
+  private SetupPasswordDialogCallback mPasswordDialogCallback;
 
   public SetupPasswordCallback(SetupActivity activity, SetupPasswordFragment sender) {
     super(activity);
     this.mSender = sender;
+    this.mPasswordDialogCallback = new SetupPasswordDialogCallback(activity, sender);
   }
 
   @Override
@@ -32,28 +34,14 @@ public class SetupPasswordCallback extends BaseClickCallback<SetupActivity> {
       AlertDialog alertDialog = new AlertDialog.Builder(mActivity)
           .setTitle("Your password doesn't seem to be safe")
           .setMessage("We recommend to use lower and upper letters, digits, some special characters and at least 8 characters. Do you want to keep it anyway?")
-          .setPositiveButton("GOT IT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-              dialog.dismiss();
-              mActivity.moveToNextPage();
-              mActivity.setPassword(mSender.getPassword());
-            }
-          })
-          .setNegativeButton("CHANGE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-              dialog.dismiss();
-              mSender.retypePassword();
-            }
-          })
+          .setPositiveButton("GOT IT", mPasswordDialogCallback)
+          .setNegativeButton("CHANGE", mPasswordDialogCallback)
           .create();
 
       alertDialog.show();
     } else {
       mActivity.moveToNextPage();
+      mSender.copyPasswordToParentActivity();
     }
-
-
   }
 }

@@ -65,8 +65,8 @@ public class SetupPasswordFragment extends BaseFragment<SetupActivity> {
     return mEditTextAsEnterPassword.length() > 0 && mEditTextAsRepeatPassword.length() > 0;
   }
 
-  public String getPassword() {
-    return mEditTextAsEnterPassword.getText().toString();
+  public void copyPasswordToParentActivity() {
+    getSupportActivity().setPassword(mEditTextAsEnterPassword.getText().toString());
   }
 
   public void retypePassword() {

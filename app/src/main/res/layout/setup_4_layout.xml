@@ -25,11 +25,10 @@
                   android:text="@string/done_message"/>
 
         <android.support.design.widget.TextInputLayout
-                android:id="@+id/setuplayout_textinputlayout_passwordwrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-            <EditText android:id="@+id/setuplayout_edittext_password"
+            <EditText android:id="@+id/setuplayout_edittext_loginpassword"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/black"
@@ -45,6 +44,7 @@
             <EditText android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:textColor="@color/black"
+                      android:id="@+id/setuplayout_edittext_loginpim"
                       android:textColorHint="@color/darkgrey"
                       android:inputType="numberPassword"
                       android:hint="Your secret number"/>
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:text="Back"
-                    android:id="@+id/setuplayout_button_prev"
+                    android:id="@+id/setuplayout_button_loginprev"
                     android:layout_marginTop="@dimen/dimen_sm"
                     style="?attr/borderlessButtonStyle"
                     android:layout_gravity="end"
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:text="Login"
-                    android:id="@+id/setuplayout_button_setuppassword"
+                    android:id="@+id/setuplayout_button_loginpassword"
                     android:layout_marginTop="@dimen/dimen_sm"
                     style="?attr/borderlessButtonStyle"
                     android:layout_gravity="end"

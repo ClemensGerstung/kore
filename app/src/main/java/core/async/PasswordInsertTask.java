@@ -5,14 +5,14 @@ import android.content.ContentValues;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class PasswordInsertTask extends SqlAsyncTask<Long, BaseActivity> {
+public class PasswordInsertTask extends SqlAsyncTask<Long> {
 
-  public PasswordInsertTask(BaseActivity activity, SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
-    super(activity, db, table, nullColumnHack, values);
+  public PasswordInsertTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+    super(db, table, nullColumnHack, values);
   }
 
-  public PasswordInsertTask(BaseActivity activity, SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, ISqlTaskCallback<Long> callback) {
-    super(activity, db, table, nullColumnHack, values, callback);
+  public PasswordInsertTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, ISqlTaskCallback<Long> callback) {
+    super(db, table, nullColumnHack, values, callback);
   }
 
   @Override
