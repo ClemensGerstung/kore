@@ -61,8 +61,8 @@ public abstract class BaseDatabaseConnection<TActivity extends BaseActivity> ext
   }
 
   public static SQLiteDatabaseHook getDatabaseHook(int pim) {
-    if(pim <= 485)
-      throw new IllegalArgumentException("pim must be greater than 485");
+//    if(pim <= 485)
+//      throw new IllegalArgumentException("pim must be greater than 485");
 
     final String iterations = Integer.toString(15000 + (pim * 1000));
 

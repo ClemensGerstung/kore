@@ -10,8 +10,21 @@ public abstract class BaseDialogCallback<TActivity extends BaseActivity> extends
   }
 
   @Override
-  public void onClick(DialogInterface dialog, int which) {
-
+  public final void onClick(DialogInterface dialog, int which) {
+    switch (which) {
+      case DialogInterface.BUTTON_POSITIVE:
+        OnPositiveButtonPressed(dialog);
+        break;
+      case DialogInterface.BUTTON_NEGATIVE:
+        OnNegativeButtonPressed(dialog);
+        break;
+      case DialogInterface.BUTTON_NEUTRAL:
+        OnNeutralButtonPressed(dialog);
+        break;
+      default:
+        mActivity.makeSnackbar("Unknown Dialog Button pressed!");
+        break;
+    }
   }
 
   @Override
@@ -23,4 +36,10 @@ public abstract class BaseDialogCallback<TActivity extends BaseActivity> extends
   public void setValues(Object... values) {
 
   }
+
+  public abstract void OnPositiveButtonPressed(DialogInterface dialog);
+
+  public void OnNegativeButtonPressed(DialogInterface dialog) {  }
+
+  public void OnNeutralButtonPressed(DialogInterface dialog) {  }
 }

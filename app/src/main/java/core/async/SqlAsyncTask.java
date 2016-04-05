@@ -5,9 +5,7 @@ import android.os.AsyncTask;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import net.sqlcipher.database.SQLiteDatabase;
 
-// TODO: remove SQLiteDatabase-parameter from constructor parameter list
-public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> extends AsyncTask<Void, Void, TResult> {
-  protected TActivity mActivity;
+public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResult> {
   protected SQLiteDatabase mDatabase;
   protected String mTable;
   protected ContentValues mValues;
@@ -24,8 +22,8 @@ public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> exte
    * @param nullColumnHack
    * @param values
    */
-  public SqlAsyncTask(TActivity activity, SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
-    this(activity, db, table, nullColumnHack, values, null);
+  public SqlAsyncTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+    this(db, table, nullColumnHack, values, null);
   }
 
   /**
@@ -36,8 +34,8 @@ public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> exte
    * @param nullColumnHack
    * @param values
    */
-  public SqlAsyncTask(TActivity activity, SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, ISqlTaskCallback<TResult> callback) {
-    this(activity, db, table, values, null, null, callback);
+  public SqlAsyncTask(SQLiteDatabase db, String table, String nullColumnHack, ContentValues values, ISqlTaskCallback<TResult> callback) {
+    this(db, table, values, null, null, callback);
     this.mNullColumnHack = nullColumnHack;
   }
 
@@ -49,8 +47,8 @@ public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> exte
    * @param selection
    * @param selectionArgs
    */
-  public SqlAsyncTask(TActivity activity, SQLiteDatabase db, String table, String selection, String[] selectionArgs) {
-    this(activity, db, table, selection, selectionArgs, null);
+  public SqlAsyncTask(SQLiteDatabase db, String table, String selection, String[] selectionArgs) {
+    this(db, table, selection, selectionArgs, null);
   }
 
   /**
@@ -61,8 +59,8 @@ public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> exte
    * @param selection
    * @param selectionArgs
    */
-  public SqlAsyncTask(TActivity activity, SQLiteDatabase db, String table, String selection, String[] selectionArgs, ISqlTaskCallback<TResult> callback) {
-    this(activity, db, table, null, selection, selectionArgs, callback);
+  public SqlAsyncTask(SQLiteDatabase db, String table, String selection, String[] selectionArgs, ISqlTaskCallback<TResult> callback) {
+    this(db, table, null, selection, selectionArgs, callback);
   }
 
   /**
@@ -74,8 +72,8 @@ public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> exte
    * @param selectionArgs
    * @param values
    */
-  public SqlAsyncTask(TActivity activity, SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs) {
-    this(activity, db, table, values, selection, selectionArgs, null);
+  public SqlAsyncTask(SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs) {
+    this(db, table, values, selection, selectionArgs, null);
   }
 
   /**
@@ -87,8 +85,7 @@ public abstract class SqlAsyncTask<TResult, TActivity extends BaseActivity> exte
    * @param selectionArgs
    * @param values
    */
-  public SqlAsyncTask(TActivity activity, SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs, ISqlTaskCallback<TResult> callback) {
-    this.mActivity = activity;
+  public SqlAsyncTask(SQLiteDatabase db, String table, ContentValues values, String selection, String[] selectionArgs, ISqlTaskCallback<TResult> callback) {
     this.mDatabase = db;
     this.mTable = table;
     this.mValues = values;

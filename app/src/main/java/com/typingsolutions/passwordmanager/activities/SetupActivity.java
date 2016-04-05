@@ -79,6 +79,11 @@ public class SetupActivity extends BaseActivity {
     }
   }
 
+  @Override
+  protected View getSnackbarRelatedView() {
+    return mCoordinatorLayoutAsRootLayout;
+  }
+
   public void moveToNextPage() {
     int index = mViewPagerAsFragmentHost.getCurrentItem();
     if (index < mSetupPagerAdapter.getCount()) {
@@ -112,9 +117,8 @@ public class SetupActivity extends BaseActivity {
     }
   }
 
-  @Override
-  protected View getSnackbarRelatedView() {
-    return mCoordinatorLayoutAsRootLayout;
+  public void setupDatabase() {
+
   }
 
   public void setPim(int mPim) {
@@ -123,5 +127,13 @@ public class SetupActivity extends BaseActivity {
 
   public void setPassword(String mPassword) {
     this.mPassword = mPassword;
+  }
+
+  public int getPim() {
+    return mPim;
+  }
+
+  public String getPassword() {
+    return mPassword;
   }
 }

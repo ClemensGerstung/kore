@@ -3,13 +3,13 @@ package core.async;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class PasswordRemoveTask extends SqlAsyncTask<Long, BaseActivity> {
-  public PasswordRemoveTask(BaseActivity activity, SQLiteDatabase db, String table, String selection, String[] selectionArgs, ISqlTaskCallback<Long> callback) {
-    super(activity, db, table, selection, selectionArgs, callback);
+public class PasswordRemoveTask extends SqlAsyncTask<Long> {
+  public PasswordRemoveTask(SQLiteDatabase db, String table, String selection, String[] selectionArgs, ISqlTaskCallback<Long> callback) {
+    super(db, table, selection, selectionArgs, callback);
   }
 
-  public PasswordRemoveTask(BaseActivity activity, SQLiteDatabase db, String table, String selection, String[] selectionArgs) {
-    super(activity, db, table, selection, selectionArgs);
+  public PasswordRemoveTask(SQLiteDatabase db, String table, String selection, String[] selectionArgs) {
+    super(db, table, selection, selectionArgs);
   }
 
   @Override
