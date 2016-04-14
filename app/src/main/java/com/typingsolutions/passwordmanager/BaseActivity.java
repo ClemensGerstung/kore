@@ -107,7 +107,7 @@ public abstract class BaseActivity extends AppCompatActivity {
       mRegisteredReceiver.add(receiverObj);
       return super.registerReceiver(receiverObj, new IntentFilter(filter));
     } catch (Exception e) {
-      this.showErrorLog(this.getClass(), e);
+      showErrorLog(this.getClass(), e);
     }
     return null;
   }
