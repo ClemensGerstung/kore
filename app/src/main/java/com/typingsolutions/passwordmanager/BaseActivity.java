@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.*;
+import android.os.Bundle;
 import android.support.annotation.AnimRes;
 import android.support.annotation.AnimatorRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -58,6 +60,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     this.startActivity(activity, false);
   }
 
+  public void startActivity(Class<? extends Activity> activity, Bundle bundle) {
+    startActivity(activity, bundle, false);
+  }
+
   /**
    * Starts an activity
    *
@@ -66,6 +72,14 @@ public abstract class BaseActivity extends AppCompatActivity {
    */
   public void startActivity(Class<? extends Activity> activity, boolean finish) {
     this.startActivity(activity, finish, 0, 0);
+  }
+
+  public void startActivity(Class<? extends Activity> activity, Bundle bundle, boolean finish) {
+    Intent intent = new Intent(this, activity);
+    intent.replaceExtras(bundle);
+
+    startActivity(intent);
+    if (finish) ActivityCompat.finishAfterTransition(this);
   }
 
   /**
@@ -78,9 +92,9 @@ public abstract class BaseActivity extends AppCompatActivity {
    */
   public void startActivity(Class<? extends Activity> activity, boolean finish, @AnimRes int enterAnim, @AnimRes int exitAnim) {
     Intent intent = new Intent(this, activity);
-    this.startActivity(intent);
+    startActivity(intent);
 
-    this.overridePendingTransition(enterAnim, exitAnim);
+    overridePendingTransition(enterAnim, exitAnim);
     if (finish) ActivityCompat.finishAfterTransition(this);
   }
 
