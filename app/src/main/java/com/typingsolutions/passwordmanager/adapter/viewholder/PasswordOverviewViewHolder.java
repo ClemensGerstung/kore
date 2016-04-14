@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
@@ -100,14 +101,12 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
   }
 
 
-  /**
-   * @hide
-   */
   private void startDetailActivity() {
     Intent intent = new Intent(activity, PasswordDetailActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
     intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
-    activity.doNotLogout();
+
+    BaseDatabaseActivity.logout = false;
     activity.startActivity(intent);
   }
 

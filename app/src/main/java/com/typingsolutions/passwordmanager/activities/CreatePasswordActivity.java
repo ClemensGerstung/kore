@@ -15,10 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.BaseActivity;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import core.data.PasswordProvider;
 
-public class CreatePasswordActivity extends BaseActivity {
+public class CreatePasswordActivity extends BaseDatabaseActivity {
 
   private Toolbar mToolbarAsActionBar;
   private AppBarLayout mAppBarLayoutAsWrapperForToolbarAsActionBar;
@@ -107,10 +108,11 @@ public class CreatePasswordActivity extends BaseActivity {
     try {
       PasswordProvider.getInstance(this).addPassword(program, username, password);
     } catch (Exception e) {
-      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+      showErrorLog(this.getClass(), e);
     } finally {
       onBackPressed();
     }
+
     return true;
   }
 

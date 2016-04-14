@@ -26,7 +26,7 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String INSERT_EXISTING_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (?, ?, ?);";
 
-  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId ORDER BY p.id;";
+  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId ORDER BY p.position;";
 
   public static final String UPDATE_PASSWORD_BY_ID = "UPDATE passwords SET program = ?, username = ? WHERE id = ?;";
 

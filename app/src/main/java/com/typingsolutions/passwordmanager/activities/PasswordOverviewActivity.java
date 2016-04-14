@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.content.*;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -11,13 +12,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
-import com.typingsolutions.passwordmanager.BaseActivity;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
+import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import com.typingsolutions.passwordmanager.receiver.ScreenOffReceiver;
 import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
 import core.DatabaseProvider;
@@ -26,7 +31,7 @@ import core.data.Password;
 import core.data.PasswordHistory;
 import core.data.PasswordProvider;
 
-public class PasswordOverviewActivity extends BaseActivity {
+public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   private RecyclerView mRecyclerViewAsPasswordsList;
   private Toolbar mToolbarAsActionBar;
@@ -36,78 +41,11 @@ public class PasswordOverviewActivity extends BaseActivity {
   private SwipeRefreshLayout mSwipeRefreshLayoutAsLoadingIndication;
   private SearchView mSearchViewAsSearchView;
 
-  private boolean logout = true;
-
   private PasswordOverviewAdapter passwordOverviewAdapter;
   private AsyncPasswordLoader passwordLoader;
 
   private RecyclerView.LayoutManager layoutManager;
 
-  private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      if (!PasswordProvider.isLoggedIn())
-        return;
-
-      PasswordProvider.logoutComplete();
-
-      Intent loginIntent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-      startActivity(loginIntent);
-
-      PasswordOverviewActivity.this.finish();
-    }
-  };
-
-  private PasswordProvider.PasswordActionListener passwordActionListener = new PasswordProvider.PasswordActionListener() {
-    @Override
-    public void onPasswordAdded(Password password) {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          if (mTextViewAsNoPasswordsYet.getVisibility() == View.VISIBLE)
-            mTextViewAsNoPasswordsYet.setVisibility(View.INVISIBLE);
-
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-    }
-
-    @Override
-    public void onPasswordRemoved(Password password) {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-
-      if (PasswordProvider.getInstance(PasswordOverviewActivity.this).size() > 0)
-        return;
-
-      if (mTextViewAsNoPasswordsYet.getVisibility() == View.INVISIBLE)
-        mTextViewAsNoPasswordsYet.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onPasswordEdited(Password password, PasswordHistory history) {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-    }
-
-    @Override
-    public void onOrder() {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-    }
-  };
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -138,9 +76,10 @@ public class PasswordOverviewActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
+    //getIntent().getExtras()
 
     // set action listener for passwordprovider
-    PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
+    //PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
 
     // get elements from XML-View
     mRecyclerViewAsPasswordsList = findCastedViewById(R.id.passwordlistlayout_listview_passwords);
@@ -163,7 +102,7 @@ public class PasswordOverviewActivity extends BaseActivity {
     mRecyclerViewAsPasswordsList.setAdapter(passwordOverviewAdapter);
     mRecyclerViewAsPasswordsList.setLayoutManager(layoutManager);
 
-    PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
+    //PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
     //mRecyclerViewAsPasswordsList.setItemAnimator(animator);
 
     SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
@@ -171,7 +110,7 @@ public class PasswordOverviewActivity extends BaseActivity {
     itemTouchHelper.attachToRecyclerView(mRecyclerViewAsPasswordsList);
 
     // make secure
-    if(!debug)
+    if (!debug)
       this.setSecurityFlags();
 
     // load passwords in background
@@ -180,38 +119,6 @@ public class PasswordOverviewActivity extends BaseActivity {
 
     this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
   }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    if(!PasswordProvider.isLoggedIn()) {
-//      finish();
-//      Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-//      startActivity(intent);
-      this.startActivity(LoginActivity.class, true);
-      return;
-    }
-
-    logout = true;
-  }
-
-  @Override
-  protected void onStop() {
-//    Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
-    if (logout) {
-      PasswordProvider.logoutComplete();
-      DatabaseProvider.logout();
-      //AsyncDatabasePipeline.end();
-      finish();
-    }
-    super.onStop();
-  }
-
-//  @Override
-//  protected void onDestroy() {
-//    unregisterReceiver(screenOffReceiver);
-//    super.onDestroy();
-//  }
 
   @Override
   public void onBackPressed() {
@@ -232,17 +139,12 @@ public class PasswordOverviewActivity extends BaseActivity {
 
   private void logout() {
     PasswordProvider.logoutComplete();
-    DatabaseProvider.logout();
+    //DatabaseProvider.logout();
     logout = false;
 
-//    Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-//    startActivity(intent);
+    super.onBackPressed();
 
-//    PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    PasswordOverviewActivity.super.onBackPressed();
-//    ActivityCompat.finishAfterTransition(this);
-
-    this.startActivity(LoginActivity.class, true, R.anim.slide_in_left, R.anim.slide_out_right);
+    startActivity(LoginActivity.class, true, R.anim.slide_in_left, R.anim.slide_out_right);
   }
 
   @Override
@@ -281,21 +183,15 @@ public class PasswordOverviewActivity extends BaseActivity {
       case R.id.passwordoverviewlayout_menuitem_about:
         logout = false;
         startActivity(AboutActivity.class);
-//        startActivity(intent);
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
         logout = false;
         startActivity(BackupRestoreActivity.class);
-//        startActivity(intent);
         break;
     }
 
     return true;
   }
-
-//  public void makeSnackBar(String text) {
-//    Snackbar.make(mFloatingActionButtonAsAddPassword, text, Snackbar.LENGTH_LONG).show();
-//  }
 
   public void setRefreshing(final boolean refreshing) {
     runOnUiThread(new Runnable() {
@@ -304,10 +200,6 @@ public class PasswordOverviewActivity extends BaseActivity {
         mSwipeRefreshLayoutAsLoadingIndication.setRefreshing(refreshing);
       }
     });
-  }
-
-  public void doNotLogout() {
-    logout = false;
   }
 
   @Override

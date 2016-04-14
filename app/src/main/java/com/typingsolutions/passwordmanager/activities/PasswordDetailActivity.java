@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseActivity;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordTextWatcher;
@@ -22,7 +23,7 @@ import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordProvider;
 
-public class PasswordDetailActivity extends BaseActivity {
+public class PasswordDetailActivity extends BaseDatabaseActivity {
 
   public static final String START_DETAIL_INDEX = "com.typingsolutions.passwordmanager.activities.PasswordDetailActivity.START_DETAIL_INDEX";
 
@@ -112,15 +113,6 @@ public class PasswordDetailActivity extends BaseActivity {
     button.requestFocus();
   }
 
-  @Override
-  protected void onStop() {
-    if (exitApp) {
-      PasswordProvider.logoutComplete();
-      DatabaseProvider.logout();
-      finish();
-    }
-    super.onStop();
-  }
 
   @Override
   public void onBackPressed() {
