@@ -6,7 +6,6 @@ import com.typingsolutions.passwordmanager.BaseClickCallback;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.activities.SetupActivity;
 import com.typingsolutions.passwordmanager.fragments.SetupLoginFragment;
-;
 
 public class SetupLoginCallback extends BaseClickCallback<SetupActivity> {
   private SetupLoginFragment mFragment;

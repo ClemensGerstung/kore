@@ -9,8 +9,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.EditText;
 import android.support.v7.widget.Toolbar;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -252,9 +250,10 @@ public class LoginActivity extends BaseActivity {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        mEditTextAsLoginPassword.show();
+        //mEditTextAsLoginPassword.show();
         ViewUtils.show(LoginActivity.this, mCheckBoxAsSafeLoginFlag, R.anim.checkbox_show);
         ViewUtils.show(LoginActivity.this, mTextViewAsHintForRootedDevices, android.support.design.R.anim.design_fab_in);
+        ViewUtils.show(LoginActivity.this, mEditTextAsLoginPassword, android.support.design.R.anim.design_fab_in);
 
         startAnimator(mImageViewAsBackground, R.animator.flip_left_in);
         startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_left_out);
@@ -266,9 +265,10 @@ public class LoginActivity extends BaseActivity {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        mEditTextAsLoginPassword.hide();
+        //mEditTextAsLoginPassword.hide();
         ViewUtils.hide(LoginActivity.this, mCheckBoxAsSafeLoginFlag, R.anim.checkbox_hide);
         ViewUtils.hide(LoginActivity.this, mTextViewAsHintForRootedDevices, android.support.design.R.anim.design_fab_out);
+        ViewUtils.hide(LoginActivity.this, mEditTextAsLoginPassword, android.support.design.R.anim.design_fab_out);
 
         startAnimator(mImageViewAsBackground, R.animator.flip_right_out);
         startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_right_in);

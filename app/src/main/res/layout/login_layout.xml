@@ -37,12 +37,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dimen_sm"
         app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-      <android.support.v7.widget.EditText
+      <EditText
           android:id="@+id/loginlayout_edittext_password"
           android:layout_width="@dimen/loginlayout_edittext_width"
           android:layout_height="wrap_content"
-          app:support_elevation="2dp"
-          app:support_translationZ="3dp"
           android:textColor="#000"
           android:background="@drawable/roundedrechtangle"
           android:inputType="textPassword"
