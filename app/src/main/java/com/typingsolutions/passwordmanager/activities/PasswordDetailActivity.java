@@ -124,7 +124,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.password_detail_menu, menu);
-    switchMenuState(false);
+    setMenuItemEnabled(toolbar, 0, false);
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -140,7 +140,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
       newProgram = program.getText().toString();
       newPassword = passwordTextWatcher.needUpdate() ? password.getText().toString() : null;
     } catch (Exception e) {
-      // ignored
+      showErrorLog(getClass(), e);
     }
 
     try {
@@ -150,7 +150,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
       PasswordProvider.getInstance(this).editPassword(passwordId, newProgram, newUsername);
     } catch (Exception e) {
-      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+      showErrorLog(getClass(), e);
     }
 
     onBackPressed();
@@ -158,15 +158,6 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  public void switchMenuState(boolean state) {
-    try {
-      MenuItem item = toolbar.getMenu().getItem(0);
-      item.setEnabled(state);
-      item.getIcon().setAlpha(state ? 255 : 64);
-    } catch (Exception e) {
-      // ignored
-    }
-  }
 
   @Override
   protected View getSnackbarRelatedView() {

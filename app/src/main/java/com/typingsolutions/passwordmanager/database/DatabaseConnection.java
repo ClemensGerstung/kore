@@ -2,7 +2,10 @@ package com.typingsolutions.passwordmanager.database;
 
 import android.content.Context;
 import com.typingsolutions.passwordmanager.BaseDatabaseConnection;
+import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
+import net.sqlcipher.database.SQLiteDatabase;
 
+import java.sql.SQLDataException;
 import java.util.HashMap;
 
 public class DatabaseConnection extends BaseDatabaseConnection {
@@ -44,9 +47,12 @@ public class DatabaseConnection extends BaseDatabaseConnection {
       " JOIN " + HISTORY_TABLE_NAME + " h ON p." + TABLE_ID + " = h." + PASSWORD_ID +
       " ORDER BY p." + POSITION + ";";
 
+  public DatabaseConnection(Context context, int pim) {
+    this(context, null, pim);
+  }
 
-  protected DatabaseConnection(Context context, int pim) {
-    super(context, NAME, VERSION, pim);
+  public DatabaseConnection(Context context, String password, int pim) {
+    super(context, NAME, VERSION, password, pim);
   }
 
   @Override

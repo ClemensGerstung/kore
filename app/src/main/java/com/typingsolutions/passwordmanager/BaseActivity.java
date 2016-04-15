@@ -71,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity {
    * @param finish   {@code true} finishes the current activity
    */
   public void startActivity(Class<? extends Activity> activity, boolean finish) {
-    this.startActivity(activity, finish, 0, 0);
+    startActivity(activity, finish, 0, 0);
   }
 
   public void startActivity(Class<? extends Activity> activity, Bundle bundle, boolean finish) {
