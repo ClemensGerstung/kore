@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager;
 
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteDatabaseHook;
@@ -25,6 +26,7 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper {
 
   protected BaseDatabaseConnection(Context context, String name, int version, String password, int pim) {
     super(context, name, null, pim, BaseDatabaseConnection.getDatabaseHook(pim));
+    SQLiteDatabase.loadLibs(context);
     this.mVersion = version;
     this.mName = name;
     this.mContext = context;
@@ -51,14 +53,11 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper {
     return mPassword != null;
   }
 
+  @Nullable
+  public SQLiteDatabase getDatabase() {
+    if(mPassword == null || mPassword.length() == 0) return null;
 
-  public SQLiteDatabase getDatabase(String password) {
-    if(password == null && mPassword == null) return null;
-
-    //OpenDatabaseTask task = new OpenDatabaseTask();
-    //task.execute(this);
-
-    return super.getWritableDatabase(mPassword);
+    return getWritableDatabase(mPassword);
   }
 
   @Override

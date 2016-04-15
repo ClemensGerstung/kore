@@ -10,7 +10,9 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
     if(params.length == 0 || params[0] == null) return false;
 
     DatabaseConnection connection = params[0];
-    SQLiteDatabase database = connection.getDatabase(null);
+    SQLiteDatabase database = connection.getDatabase();
+    if(database == null) return false;
+
     boolean result = database.isOpen();
     database.close();
 
@@ -22,7 +24,7 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
     if(result) {
       raiseCallbacks(result);
     } else {
-      raiseCallbacks(1, "could not open database");
+      raiseCallbacks(1, "Could not open database");
     }
   }
 }

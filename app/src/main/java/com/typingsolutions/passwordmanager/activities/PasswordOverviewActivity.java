@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
+import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
@@ -42,9 +43,12 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   private SearchView mSearchViewAsSearchView;
 
   private PasswordOverviewAdapter passwordOverviewAdapter;
-  private AsyncPasswordLoader passwordLoader;
 
   private RecyclerView.LayoutManager layoutManager;
+
+  static {
+    logout = false;
+  }
 
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
@@ -114,8 +118,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
       this.setSecurityFlags();
 
     // load passwords in background
-    passwordLoader = new AsyncPasswordLoader(this);
-    passwordLoader.execute();
+    LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
+
 
     this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
   }
