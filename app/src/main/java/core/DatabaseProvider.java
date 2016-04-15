@@ -9,6 +9,7 @@ import net.sqlcipher.database.*;
 
 import java.io.File;
 
+@Deprecated
 public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String DATABASE_NAME = "password.manager.database.db";
@@ -60,12 +61,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   }
 
   public boolean needSetup() {
-    try {
-      File database = context.getDatabasePath(DATABASE_NAME);
-      return !database.exists();
-    } catch (Exception e) {
-      return true;
-    }
+    return false;
+
   }
 
   public boolean setup() {

@@ -2,14 +2,11 @@ package com.typingsolutions.passwordmanager.database;
 
 import android.content.Context;
 import com.typingsolutions.passwordmanager.BaseDatabaseConnection;
-import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
-import net.sqlcipher.database.SQLiteDatabase;
 
-import java.sql.SQLDataException;
 import java.util.HashMap;
 
 public class DatabaseConnection extends BaseDatabaseConnection {
-  static final String NAME = "database.db";
+  public static final String DATABASE_NAME = "database.db";
 
   static final int VERSION = 0x01;
 
@@ -52,7 +49,7 @@ public class DatabaseConnection extends BaseDatabaseConnection {
   }
 
   public DatabaseConnection(Context context, String password, int pim) {
-    super(context, NAME, VERSION, password, pim);
+    super(context, DATABASE_NAME, VERSION, password, pim);
   }
 
   @Override

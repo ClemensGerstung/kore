@@ -23,7 +23,7 @@ import java.util.Iterator;
  *
  * @param <K> the type of the key
  * @param <V> the type of the value
- */
+ */@Deprecated
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
 
   /**
