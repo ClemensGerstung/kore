@@ -27,6 +27,8 @@ public class SetupLoginCallback extends BaseClickCallback<SetupActivity> {
       return;
     }
 
-    mActivity.startActivity(PasswordOverviewActivity.class, mFragment.getBundle(), true);
+    mFragment.copyPimToParentActivity();
+    mActivity.setupDatabase();
+    mActivity.startActivity(PasswordOverviewActivity.class, true);
   }
 }

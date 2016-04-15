@@ -53,10 +53,8 @@ public class SetupLoginFragment extends BaseFragment<SetupActivity> {
     return currentPim == getSupportActivity().getPim();
   }
 
-  public Bundle getBundle() {
-    Bundle bundle = new Bundle();
+  public void copyPimToParentActivity() {
     int currentPim = Integer.parseInt(mEditTextAsPim.getText().toString());
-    bundle.putInt("pim", currentPim);
-    return bundle;
+    getSupportActivity().setPim(currentPim);
   }
 }

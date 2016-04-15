@@ -9,12 +9,14 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import com.typingsolutions.passwordmanager.BaseActivity;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.SetupPagerAdapter;
+import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
+import net.sqlcipher.database.SQLiteDatabase;
 
-public class SetupActivity extends BaseActivity {
+public class SetupActivity extends BaseDatabaseActivity {
 
   private int mPim;
   private String mPassword;
@@ -44,6 +46,10 @@ public class SetupActivity extends BaseActivity {
     }
   };
 
+  static {
+    logout = false;
+  }
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -51,7 +57,7 @@ public class SetupActivity extends BaseActivity {
 
     getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-    if(Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x00FFFFFF);
+    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x00FFFFFF);
 
     mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
     mViewPagerAsFragmentHost = findCastedViewById(R.id.setuplayout_viewpager_content);
@@ -69,6 +75,8 @@ public class SetupActivity extends BaseActivity {
     mImageSwitcherAsIcon.setFactory(ViewUtils.getSimpleViewFactory(this));
     mImageSwitcherAsIcon.setImageResource(imageResources[0]);
   }
+
+
 
   @Override
   public void onBackPressed() {
@@ -118,7 +126,12 @@ public class SetupActivity extends BaseActivity {
   }
 
   public void setupDatabase() {
-
+    DatabaseConnection connection = new DatabaseConnection(getApplicationContext(), mPassword, mPim);
+    SQLiteDatabase database = connection.getWritableDatabase(mPassword);
+    if (!database.isOpen()) {
+      makeSnackbar("Couldn't create database");
+    }
+    database.close();
   }
 
   public void setPim(int mPim) {

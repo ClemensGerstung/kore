@@ -51,10 +51,10 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
   private final NestedScrollView.OnScrollChangeListener scrollChangeListener = new NestedScrollView.OnScrollChangeListener() {
     @Override
     public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-      float elevation=0;
-      if(scrollY > 0) {
+      float elevation = 0;
+      if (scrollY > 0) {
         elevation = CreatePasswordActivity.this.getResources().getDimension(R.dimen.dimen_sm);
-      } else if(scrollY <= 0) {
+      } else if (scrollY <= 0) {
         elevation = CreatePasswordActivity.this.getResources().getDimension(R.dimen.zero);
       }
 
@@ -67,10 +67,10 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.create_password_layout);
 
-    mAppBarLayoutAsWrapperForToolbarAsActionBar = (AppBarLayout) findViewById(R.id.createpasswordlayout_appbar_wrapper);
+    mAppBarLayoutAsWrapperForToolbarAsActionBar = findCastedViewById(R.id.createpasswordlayout_appbar_wrapper);
     mToolbarAsActionBar = (Toolbar) mAppBarLayoutAsWrapperForToolbarAsActionBar.findViewById(R.id.createpasswordlayout_toolbar_actionbar);
     mEditTextAsProgram = (EditText) mAppBarLayoutAsWrapperForToolbarAsActionBar.findViewById(R.id.createpasswordlayout_edittext_program);
-    mNestedScrollViewAsWrapperForInput = (NestedScrollView) findViewById(R.id.createpasswordlayout_nestedscrollview_wrapper);
+    mNestedScrollViewAsWrapperForInput = findCastedViewById(R.id.createpasswordlayout_nestedscrollview_wrapper);
     mEditTextAsUsername = (EditText) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_edittext_username);
     mEditTextAsPassword = (EditText) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_edittext_password);
     mButtonAsGenerateRandomPassword = (Button) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_button_generatepassword);
@@ -91,7 +91,7 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.create_password_menu, menu);
-    setMenuItemEnabled(this.mToolbarAsActionBar, 0, false);
+    setMenuItemEnabled(mToolbarAsActionBar, 0, false);
     return true;
   }
 
@@ -101,14 +101,14 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
 
     if (id != R.id.createusermenu_item_done) return false;
 
-    String program = this.mEditTextAsProgram.getText().toString();
-    String username = this.mEditTextAsUsername.getText().toString();
-    String password = this.mEditTextAsPassword.getText().toString();
+    String program = mEditTextAsProgram.getText().toString();
+    String username = mEditTextAsUsername.getText().toString();
+    String password = mEditTextAsPassword.getText().toString();
 
     try {
       PasswordProvider.getInstance(this).addPassword(program, username, password);
     } catch (Exception e) {
-      showErrorLog(this.getClass(), e);
+      showErrorLog(getClass(), e);
     } finally {
       onBackPressed();
     }

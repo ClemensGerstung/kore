@@ -8,6 +8,7 @@ import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordProvider;
 
+@Deprecated
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
   private Context context;
   private net.sqlcipher.Cursor cursor;

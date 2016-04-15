@@ -11,7 +11,7 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
   protected void onResume() {
     super.onResume();
 
-    if (connection == null) {
+    if (connection == null && logout) {
       this.startActivity(LoginActivity.class, true);
       return;
     }
