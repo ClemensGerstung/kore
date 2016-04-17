@@ -116,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity {
    */
   public Intent registerAutoRemoveReceiver(Class<? extends BaseReceiver> receiver, String filter) {
     try {
-      BaseReceiver receiverObj = receiver.getDeclaredConstructor(this.getClass()).newInstance(this);
+      BaseReceiver receiverObj = receiver.getDeclaredConstructor(BaseActivity.class).newInstance(this);
 
       mRegisteredReceiver.add(receiverObj);
       return super.registerReceiver(receiverObj, new IntentFilter(filter));
@@ -133,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   protected void onDestroy() {
     super.onDestroy();
 
-    for (BroadcastReceiver receiver : this.mRegisteredReceiver) {
+    for (BroadcastReceiver receiver : mRegisteredReceiver) {
       super.unregisterReceiver(receiver);
     }
   }
@@ -155,7 +155,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
   }
 
-  public boolean isServiceRunning(Class<?> serviceClass) {
+  protected boolean isServiceRunning(Class<?> serviceClass) {
     ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
       if (serviceClass.getName().equals(service.service.getClassName())) {
@@ -179,12 +179,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   public synchronized void showViewAnimated(@NonNull View view, @AnimRes int animation) {
     if (view == null)
-      throw new IllegalArgumentException("Views Array cannot be null or empty");
+      throw new IllegalArgumentException("View cannot be null");
 
     if (view.getVisibility() != View.VISIBLE) {
       view.clearAnimation();
       view.setVisibility(View.VISIBLE);
-      Animation anim = android.view.animation.AnimationUtils.loadAnimation(this, animation);
+      Animation anim = AnimationUtils.loadAnimation(this, animation);
       anim.setDuration(FAST_ANIMATION_DURATION);
       anim.setInterpolator(new DecelerateInterpolator());
 

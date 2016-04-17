@@ -17,6 +17,10 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="Base.AlertDialog.LoginStyle" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AlertDialog.ButtonBar.PositiveButton</item>
+    </style>
+
     <style name="Base.AppTheme.Detail" parent="Base.AppTheme">
         <item name="android:itemTextAppearance">@style/CustomMenu.Light</item>
     </style>
@@ -66,12 +70,16 @@
         <item name="android:textSize">@dimen/createpassword_program_textsize</item>
     </style>
 
-    <style name="CreatePassword.Button" parent="android:Widget.Holo.Button.Borderless.Small">
+    <style name="CreatePassword.Button" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/font_sm</item>
         <item name="android:padding">@dimen/dimen_md</item>
         <item name="android:minHeight">@dimen/dimen_xl</item>
         <item name="android:radius">@dimen/dimen_sm</item>
+    </style>
+
+    <style name="AlertDialog.ButtonBar.PositiveButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/primary</item>
     </style>
 
 
