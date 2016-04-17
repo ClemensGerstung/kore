@@ -50,7 +50,6 @@ public class LoginActivity extends BaseActivity {
   private ILoginServiceRemote loginServiceRemote;
 
   private LoginCallback loginCallback = new LoginCallback(this);
-//  private SetupPasswordCallback setupCallback = new SetupPasswordCallback(this, this);
 
   private final ServiceConnection loginServiceConnection = new ServiceConnection() {
     @Override
@@ -135,6 +134,7 @@ public class LoginActivity extends BaseActivity {
     mProgressBarAsLoadingIndicator = findCastedViewById(R.id.loginlayout_progressbar_waiter);
     mImageViewAsBackground = findCastedViewById(R.id.loginlayout_imageview_background);
     mTextViewAsHintForRootedDevices = findCastedViewById(R.id.loginlayout_textview_rootedindicator);
+
     if (!Utils.isRooted())
       ((ViewManager) mTextViewAsHintForRootedDevices.getParent()).removeView(mTextViewAsHintForRootedDevices);
 
@@ -162,15 +162,15 @@ public class LoginActivity extends BaseActivity {
 //    bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
   }
 
-  @Override
-  protected void onStop() {
+//  @Override
+//  protected void onStop() {
 //    unbindService(loginServiceConnection);
-    super.onStop();
-  }
+//    super.onStop();
+//  }
 
-  public ILoginServiceRemote getLoginServiceRemote() {
-    return loginServiceRemote;
-  }
+//  public ILoginServiceRemote getLoginServiceRemote() {
+//    return loginServiceRemote;
+//  }
 
   public OutlinedImageView getBackground() {
     return mOutlinedImageViewAsLockedBackground;
