@@ -121,7 +121,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
     LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
 
 
-    this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
+    //this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
   }
 
   @Override

@@ -57,7 +57,7 @@ public class SetupActivity extends BaseDatabaseActivity {
 
     getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x00FFFFFF);
+    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x44000000);
 
     mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
     mViewPagerAsFragmentHost = findCastedViewById(R.id.setuplayout_viewpager_content);

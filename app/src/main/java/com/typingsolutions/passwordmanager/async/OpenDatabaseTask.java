@@ -10,11 +10,16 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
     if(params.length == 0 || params[0] == null) return false;
 
     DatabaseConnection connection = params[0];
-    SQLiteDatabase database = connection.getDatabase();
-    if(database == null) return false;
+    boolean result = false;
+    try {
+      SQLiteDatabase database = connection.getDatabase();
+      if (database == null) return false;
 
-    boolean result = database.isOpen();
-    database.close();
+      result = database.isOpen();
+      database.close();
+    } catch (Exception e) {
+      result = false;
+    }
 
     return result;
   }
