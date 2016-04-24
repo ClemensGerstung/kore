@@ -98,46 +98,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     if (finish) ActivityCompat.finishAfterTransition(this);
   }
 
-  public void startAndBindService(Class<? extends Service> service, ServiceConnection conn, int flags) {
-    Intent intent = new Intent(this, service);
-
-    if (!isServiceRunning(LoginService.class))
-      this.startService(intent);
-
-    this.bindService(intent, conn, flags);
-  }
-
-  /**
-   * Registers a {@see BroadcastReceiver} which will be automatically be removed if the {@see BaseActivity} is destroyed
-   *
-   * @param receiver the {@see BroadcastReceiver} to listen
-   * @param filter   to listen at
-   * @return the newly created {@see Intent} returned from the base class
-   */
-  public Intent registerAutoRemoveReceiver(Class<? extends BaseReceiver> receiver, String filter) {
-    try {
-      BaseReceiver receiverObj = receiver.getDeclaredConstructor(BaseActivity.class).newInstance(this);
-
-      mRegisteredReceiver.add(receiverObj);
-      return super.registerReceiver(receiverObj, new IntentFilter(filter));
-    } catch (Exception e) {
-      showErrorLog(this.getClass(), e);
-    }
-    return null;
-  }
-
-  /**
-   * Will be called if the {@see Activity} will be destroyed (completely finished)
-   */
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-
-    for (BroadcastReceiver receiver : mRegisteredReceiver) {
-      super.unregisterReceiver(receiver);
-    }
-  }
-
   /**
    * Sets flags so the user cannot take screenshots or screen recordings
    */

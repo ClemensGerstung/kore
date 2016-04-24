@@ -31,6 +31,7 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper {
     this.mName = name;
     this.mContext = context;
     this.mPim = pim;
+    this.mPassword = password;
   }
 
   protected abstract String[] getCreationSqlQueries();

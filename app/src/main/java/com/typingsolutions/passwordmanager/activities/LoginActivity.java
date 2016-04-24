@@ -1,26 +1,22 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.BaseActivity;
-import com.typingsolutions.passwordmanager.BaseTextWatcher;
+import com.typingsolutions.passwordmanager.BaseAsyncTask;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.ServiceCallbackImplementation;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
@@ -35,7 +31,9 @@ import java.io.File;
 public class LoginActivity extends BaseActivity {
 
   public static final String SAFE_LOGIN = "safelogin";
-  private ServiceCallbackImplementation serviceCallback = new ServiceCallbackImplementation(this);
+  private ServiceCallbackImplementation mServiceCallback = new ServiceCallbackImplementation(this);
+  private LoginCallback mLoginCallback = new LoginCallback(this);
+  private ILoginServiceRemote mLoginServiceRemote;
 
   private Toolbar mToolbarAsActionBar;
   private FloatingActionButton mFloatingActionButtonAsLogin;
@@ -47,19 +45,15 @@ public class LoginActivity extends BaseActivity {
   private ImageView mImageViewAsBackground;
   private TextView mTextViewAsHintForRootedDevices;
 
-  private ILoginServiceRemote loginServiceRemote;
-
-  private LoginCallback loginCallback = new LoginCallback(this);
-
-  private final ServiceConnection loginServiceConnection = new ServiceConnection() {
+  private final ServiceConnection mLoginServiceConnection = new ServiceConnection() {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-      loginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
+      mLoginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
 
       try {
-        loginServiceRemote.registerCallback(serviceCallback);
+        mLoginServiceRemote.registerCallback(mServiceCallback);
 
-        if (loginServiceRemote.isBlocked()) {
+        if (mLoginServiceRemote.isBlocked()) {
           hideInput();
         }
       } catch (RemoteException e) {
@@ -71,23 +65,10 @@ public class LoginActivity extends BaseActivity {
     public void onServiceDisconnected(ComponentName name) {
       try {
 //        Log.d(getClass().getSimpleName(), "Service disconnect");
-        loginServiceRemote.unregisterCallback(serviceCallback);
-        loginServiceRemote = null;
+        mLoginServiceRemote.unregisterCallback(mServiceCallback);
+        mLoginServiceRemote = null;
       } catch (RemoteException e) {
         BaseActivity.showErrorLog(getClass(), e);
-      }
-    }
-  };
-
-  private final TextWatcher loginTextWatcher = new BaseTextWatcher<LoginActivity>(this) {
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-      if (s.length() == 0) {
-        mFloatingActionButtonAsLogin.hide();
-//        loginCallback.setValues("", mCheckBoxAsSafeLoginFlag.isChecked());
-      } else {
-        mFloatingActionButtonAsLogin.show();
-//        loginCallback.setValues(s.toString(), mCheckBoxAsSafeLoginFlag.isChecked());
       }
     }
   };
@@ -105,7 +86,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
       if (actionId != EditorInfo.IME_ACTION_DONE) return false;
-//      setupCallback.onClick(null);
+      mLoginCallback.onClick(null);
       return true;
     }
   };
@@ -142,61 +123,73 @@ public class LoginActivity extends BaseActivity {
     boolean isSafe = preferences.getBoolean(SAFE_LOGIN, true);
 
     mFloatingActionButtonAsLogin.hide();
-    mFloatingActionButtonAsLogin.setOnClickListener(loginCallback);
-    mEditTextAsLoginPassword.addTextChangedListener(loginTextWatcher);
+    mFloatingActionButtonAsLogin.setOnClickListener(mLoginCallback);
+//    mEditTextAsLoginPassword.addTextChangedListener(loginTextWatcher);
     mCheckBoxAsSafeLoginFlag.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
     mCheckBoxAsSafeLoginFlag.setChecked(isSafe);
-
-    ViewCompat.setElevation(mEditTextAsLoginPassword, getResources().getDimension(R.dimen.dimen_xs));
+    mEditTextAsLoginPassword.setOnEditorActionListener(setupKeyBoardActionListener);
   }
 
   @Override
   protected void onResume() {
     super.onResume();
 
-    startAndBindService(LoginService.class, loginServiceConnection, Context.BIND_AUTO_CREATE);
-//    Intent intent = new Intent(this, LoginService.class);
-//    if (!isServiceRunning(LoginService.class))
-//      startService(intent);
-//
-//    bindService(intent, loginServiceConnection, Context.BIND_AUTO_CREATE);
+    Intent intent = new Intent(this, LoginService.class);
+    if (!isServiceRunning(LoginService.class))
+      startService(intent);
+
+    bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
   }
 
-//  @Override
-//  protected void onStop() {
-//    unbindService(loginServiceConnection);
-//    super.onStop();
-//  }
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    unbindService(mLoginServiceConnection);
+  }
 
-//  public ILoginServiceRemote getLoginServiceRemote() {
-//    return loginServiceRemote;
-//  }
+  public void login(String pim) {
+    DatabaseConnection connection = null;
+
+    if(pim == null || pim.length() == 0) {
+      makeSnackbar("You have to enter Your magic number");
+      return;
+    }
+
+    try {
+      showViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_in);
+
+      if(mLoginServiceRemote.isBlocked())
+        makeSnackbar("Sorry, but You're currently blocked!");
+
+      String password = mEditTextAsLoginPassword.getText().toString();
+      connection = new DatabaseConnection(this, password, Integer.parseInt(pim));
+
+      OpenDatabaseTask openDatabaseTask = new OpenDatabaseTask();
+      openDatabaseTask.registerCallback(new BaseAsyncTask.IExecutionCallback<Boolean>() {
+        @Override
+        public void executed(Boolean aBoolean) {
+          startActivity(PasswordOverviewActivity.class, true);
+        }
+
+        @Override
+        public void failed(int code, String message) {
+          makeSnackbar(message);
+        }
+      });
+      openDatabaseTask.execute(connection);
+
+    } catch (Exception e) {
+      makeSnackbar("Sorry, something went wrong");
+    } finally {
+      if(connection != null) {
+        connection.close();
+      }
+      hideViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_out);
+    }
+  }
 
   public OutlinedImageView getBackground() {
     return mOutlinedImageViewAsLockedBackground;
-  }
-
-  public View getRootView() {
-    return mCoordinatorLayoutAsRootLayout;
-  }
-
-  public synchronized void showWaiter() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        ViewUtils.show(LoginActivity.this, mProgressBarAsLoadingIndicator, android.R.anim.fade_in);
-      }
-    });
-  }
-
-  public synchronized void hideWaiter() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        ViewUtils.hide(LoginActivity.this, mProgressBarAsLoadingIndicator, android.R.anim.fade_out);
-        mFloatingActionButtonAsLogin.setEnabled(true);
-      }
-    });
   }
 
   public void showInput() {
@@ -228,7 +221,6 @@ public class LoginActivity extends BaseActivity {
       }
     });
   }
-
 
   @Override
   protected View getSnackbarRelatedView() {
