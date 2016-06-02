@@ -29,16 +29,12 @@ import com.typingsolutions.passwordmanager.services.LoginService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
   public static final long FAST_ANIMATION_DURATION = 250;
   public static boolean debug = true;
-
-  private List<BaseReceiver> mRegisteredReceiver;
-
-  public BaseActivity() {
-    this.mRegisteredReceiver = new ArrayList<>();
-  }
 
   /**
    * Finds a {@see View} by it's id
@@ -76,10 +72,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   public void startActivity(Class<? extends Activity> activity, Bundle bundle, boolean finish) {
     Intent intent = new Intent(this, activity);
+    intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
     intent.replaceExtras(bundle);
 
-    startActivity(intent);
     if (finish) ActivityCompat.finishAfterTransition(this);
+    startActivity(intent);
   }
 
   /**
@@ -92,10 +89,11 @@ public abstract class BaseActivity extends AppCompatActivity {
    */
   public void startActivity(Class<? extends Activity> activity, boolean finish, @AnimRes int enterAnim, @AnimRes int exitAnim) {
     Intent intent = new Intent(this, activity);
-    startActivity(intent);
-
+    intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
     overridePendingTransition(enterAnim, exitAnim);
     if (finish) ActivityCompat.finishAfterTransition(this);
+
+    startActivity(intent);
   }
 
   /**
