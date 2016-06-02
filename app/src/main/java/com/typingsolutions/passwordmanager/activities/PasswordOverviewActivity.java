@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -78,6 +79,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Log.d(getClass().getSimpleName(), "onCreate BEGIN");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
     //getIntent().getExtras()
@@ -98,7 +100,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
     //mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
 
     // ...
-    setSupportActionBar(mToolbarAsActionBar);
+//    setSupportActionBar(mToolbarAsActionBar);
 
     // init and set adapter
     passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -122,6 +124,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
 
     //this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
+    Log.d(getClass().getSimpleName(), "onCreate END");
   }
 
   @Override

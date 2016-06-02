@@ -1,5 +1,6 @@
 package com.typingsolutions.passwordmanager.async;
 
+import android.util.Log;
 import com.typingsolutions.passwordmanager.BaseAsyncTask;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import net.sqlcipher.database.SQLiteDatabase;

@@ -7,6 +7,7 @@ import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
@@ -18,6 +19,7 @@ import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
+import com.typingsolutions.passwordmanager.callbacks.OpenDatabaseAsyncCallback;
 import com.typingsolutions.passwordmanager.callbacks.ServiceCallbackImplementation;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import com.typingsolutions.passwordmanager.services.LoginService;
@@ -34,6 +36,7 @@ public class LoginActivity extends BaseActivity {
   private ServiceCallbackImplementation mServiceCallback = new ServiceCallbackImplementation(this);
   private LoginCallback mLoginCallback = new LoginCallback(this);
   private ILoginServiceRemote mLoginServiceRemote;
+  private boolean mServiceIsRegistered = false;
 
   private Toolbar mToolbarAsActionBar;
   private FloatingActionButton mFloatingActionButtonAsLogin;
@@ -97,7 +100,7 @@ public class LoginActivity extends BaseActivity {
     // check if database exists
     // if false, it needs to be setup
     File database = getDatabasePath(DatabaseConnection.DATABASE_NAME);
-    if(!database.exists()) {
+    if (!database.exists()) {
       startActivity(SetupActivity.class, true);
       return;
     }
@@ -139,18 +142,23 @@ public class LoginActivity extends BaseActivity {
       startService(intent);
 
     bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
+    mServiceIsRegistered = true;
   }
 
   @Override
   protected void onDestroy() {
+    Log.d(getClass().getSimpleName(), "onDestroy");
     super.onDestroy();
-    unbindService(mLoginServiceConnection);
+    if (mServiceIsRegistered) {
+      unbindService(mLoginServiceConnection);
+      mServiceIsRegistered = false;
+    }
   }
 
   public void login(String pim) {
     DatabaseConnection connection = null;
 
-    if(pim == null || pim.length() == 0) {
+    if (pim == null || pim.length() == 0) {
       makeSnackbar("You have to enter Your magic number");
       return;
     }
@@ -158,33 +166,22 @@ public class LoginActivity extends BaseActivity {
     try {
       showViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_in);
 
-      if(mLoginServiceRemote.isBlocked())
+      if (mLoginServiceRemote.isBlocked())
         makeSnackbar("Sorry, but You're currently blocked!");
 
       String password = mEditTextAsLoginPassword.getText().toString();
       connection = new DatabaseConnection(this, password, Integer.parseInt(pim));
 
       OpenDatabaseTask openDatabaseTask = new OpenDatabaseTask();
-      openDatabaseTask.registerCallback(new BaseAsyncTask.IExecutionCallback<Boolean>() {
-        @Override
-        public void executed(Boolean aBoolean) {
-          startActivity(PasswordOverviewActivity.class, true);
-        }
-
-        @Override
-        public void failed(int code, String message) {
-          makeSnackbar(message);
-        }
-      });
+      openDatabaseTask.registerCallback(new OpenDatabaseAsyncCallback(this));
       openDatabaseTask.execute(connection);
 
     } catch (Exception e) {
       makeSnackbar("Sorry, something went wrong");
     } finally {
-      if(connection != null) {
+      if (connection != null) {
         connection.close();
       }
-      hideViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_out);
     }
   }
 
@@ -220,6 +217,10 @@ public class LoginActivity extends BaseActivity {
         startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_right_in);
       }
     });
+  }
+
+  public void hideWaiter() {
+    hideViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_out);
   }
 
   @Override
