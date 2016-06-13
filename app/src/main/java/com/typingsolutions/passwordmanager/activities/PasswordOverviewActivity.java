@@ -17,11 +17,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
+import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
@@ -42,6 +44,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   private MenuItem mMenuItemAsSearchViewWrapper;
   private SwipeRefreshLayout mSwipeRefreshLayoutAsLoadingIndication;
   private SearchView mSearchViewAsSearchView;
+  private ImageView mImageViewAsBackground;
 
   private PasswordOverviewAdapter passwordOverviewAdapter;
 
@@ -79,7 +82,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    Log.d(getClass().getSimpleName(), "onCreate BEGIN");
+    //Log.d(getClass().getSimpleName(), "onCreate BEGIN");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
     //getIntent().getExtras()
@@ -93,14 +96,17 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
     mFloatingActionButtonAsAddPassword = findCastedViewById(R.id.passwordlistlayout_floatingactionbutton_add);
     mTextViewAsNoPasswordsYet = findCastedViewById(R.id.passwordlistlayout_textview_nopasswords);
     mSwipeRefreshLayoutAsLoadingIndication = findCastedViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
+    mImageViewAsBackground = findCastedViewById(R.id.passwordlistlayout_imageview_background);
+
+
     mSwipeRefreshLayoutAsLoadingIndication.setEnabled(false);
     mSwipeRefreshLayoutAsLoadingIndication.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
 
     // set onClick-event to add new passwords
-    //mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
+    mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
 
     // ...
-//    setSupportActionBar(mToolbarAsActionBar);
+    setSupportActionBar(mToolbarAsActionBar);
 
     // init and set adapter
     passwordOverviewAdapter = new PasswordOverviewAdapter(this);
@@ -120,11 +126,10 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
       this.setSecurityFlags();
 
     // load passwords in background
-    LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
+    //LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
 
-
-    //this.registerAutoRemoveReceiver(ScreenOffReceiver.class, Intent.ACTION_SCREEN_OFF);
-    Log.d(getClass().getSimpleName(), "onCreate END");
+    mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.lock_large, 1, 0.75f));
+    mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
   }
 
   @Override
@@ -145,7 +150,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   }
 
   private void logout() {
-    PasswordProvider.logoutComplete();
+    //PasswordProvider.logoutComplete();
     //DatabaseProvider.logout();
     logout = false;
 
@@ -160,10 +165,10 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
     inflater.inflate(R.menu.passwordoverviewlayout_menu, menu);
 
     // init searchview
-    mMenuItemAsSearchViewWrapper = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
+    /*mMenuItemAsSearchViewWrapper = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
     mSearchViewAsSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemAsSearchViewWrapper);
     mSearchViewAsSearchView.setOnQueryTextListener(onQueryTextListener);
-    MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, onSearchViewOpen);
+    MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, onSearchViewOpen);*/
 
     return true;
   }

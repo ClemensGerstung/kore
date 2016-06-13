@@ -32,5 +32,7 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
     } else {
       raiseCallbacks(1, "Could not open database");
     }
+
+    //releaseCallbacks();
   }
 }
