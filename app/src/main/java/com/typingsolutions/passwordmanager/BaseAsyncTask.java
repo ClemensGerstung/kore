@@ -33,6 +33,10 @@ public abstract class BaseAsyncTask<Progress, Result> extends AsyncTask<Database
     }
   }
 
+  protected void releaseCallbacks() {
+    mCallbacks.clear();
+  }
+
   public interface IExecutionCallback<Result> {
     void executed(Result result);
     void failed(int code, String message);

@@ -4,22 +4,24 @@ import com.typingsolutions.passwordmanager.BaseAsyncTask;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 
+import java.lang.ref.WeakReference;
+
 public class OpenDatabaseAsyncCallback implements BaseAsyncTask.IExecutionCallback<Boolean> {
-  private LoginActivity mActivity;
+  private WeakReference<LoginActivity> mActivity;
 
   public OpenDatabaseAsyncCallback(LoginActivity activity) {
-    this.mActivity = activity;
+    this.mActivity = new WeakReference<>(activity);
   }
 
   @Override
   public void executed(Boolean aBoolean) {
-    mActivity.startActivity(PasswordOverviewActivity.class, true);
-    mActivity.hideWaiter();
+    mActivity.get().startActivity(PasswordOverviewActivity.class, true);
+    //mActivity.get().hideWaiter();
   }
 
   @Override
   public void failed(int code, String message) {
-    mActivity.makeSnackbar(message);
-    mActivity.hideWaiter();
+    mActivity.get().makeSnackbar(message);
+    //mActivity.get().hideWaiter();
   }
 }

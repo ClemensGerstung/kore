@@ -1,11 +1,15 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.*;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.graphics.BitmapCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -81,7 +85,7 @@ public class LoginActivity extends BaseActivity {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
       final SharedPreferences preferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
       preferences.edit().putBoolean(LoginActivity.SAFE_LOGIN, isChecked).apply();
-      PasswordProvider.getInstance(LoginActivity.this).isSafe(isChecked);
+      //PasswordProvider.getInstance(LoginActivity.this).isSafe(isChecked);
     }
   };
 
@@ -89,7 +93,9 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
       if (actionId != EditorInfo.IME_ACTION_DONE) return false;
-      mLoginCallback.onClick(null);
+      mLoginCallback.onClick(mFloatingActionButtonAsLogin);
+      //LoginActivity.this.startActivity(PasswordOverviewActivity.class, true);
+      //Runtime.getRuntime().gc();
       return true;
     }
   };
@@ -126,18 +132,36 @@ public class LoginActivity extends BaseActivity {
     boolean isSafe = preferences.getBoolean(SAFE_LOGIN, true);
 
     mFloatingActionButtonAsLogin.hide();
+
     mFloatingActionButtonAsLogin.setOnClickListener(mLoginCallback);
 //    mEditTextAsLoginPassword.addTextChangedListener(loginTextWatcher);
     mCheckBoxAsSafeLoginFlag.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
     mCheckBoxAsSafeLoginFlag.setChecked(isSafe);
     mEditTextAsLoginPassword.setOnEditorActionListener(setupKeyBoardActionListener);
+
+    mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.verified, 2, 1));
+    mOutlinedImageViewAsLockedBackground.setImageBitmap(getBitmap(this, R.mipmap.unverified, 2, 1));
+  }
+
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    Log.d(getClass().getSimpleName(), "onConfigurationChanged");
+
+    // Checks whether a hardware keyboard is available
+    if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+      Toast.makeText(this, "keyboard visible", Toast.LENGTH_SHORT).show();
+    } else if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
+      Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
+    }
   }
 
   @Override
   protected void onResume() {
     super.onResume();
 
-    Intent intent = new Intent(this, LoginService.class);
+    Intent intent = new Intent(this.getApplicationContext(), LoginService.class);
     if (!isServiceRunning(LoginService.class))
       startService(intent);
 
@@ -147,12 +171,18 @@ public class LoginActivity extends BaseActivity {
 
   @Override
   protected void onDestroy() {
-    Log.d(getClass().getSimpleName(), "onDestroy");
-    super.onDestroy();
+    //Log.d(getClass().getSimpleName(), "onDestroy");
+
     if (mServiceIsRegistered) {
       unbindService(mLoginServiceConnection);
       mServiceIsRegistered = false;
     }
+    //mImageViewAsBackground.destroyDrawingCache();
+    //mOutlinedImageViewAsLockedBackground.destroyDrawingCache();
+
+
+
+    super.onDestroy();
   }
 
   public void login(String pim) {
@@ -170,7 +200,7 @@ public class LoginActivity extends BaseActivity {
         makeSnackbar("Sorry, but You're currently blocked!");
 
       String password = mEditTextAsLoginPassword.getText().toString();
-      connection = new DatabaseConnection(this, password, Integer.parseInt(pim));
+      connection = new DatabaseConnection(this.getBaseContext(), password, Integer.parseInt(pim));
 
       OpenDatabaseTask openDatabaseTask = new OpenDatabaseTask();
       openDatabaseTask.registerCallback(new OpenDatabaseAsyncCallback(this));
@@ -181,6 +211,7 @@ public class LoginActivity extends BaseActivity {
     } finally {
       if (connection != null) {
         connection.close();
+        connection = null;
       }
     }
   }
