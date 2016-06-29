@@ -16,12 +16,14 @@ public class OpenDatabaseAsyncCallback implements BaseAsyncTask.IExecutionCallba
   @Override
   public void executed(Boolean aBoolean) {
     mActivity.get().startActivity(PasswordOverviewActivity.class, true);
-    //mActivity.get().hideWaiter();
+    mActivity.get().hideWaiter();
+    mActivity.get().stopLoginService();
   }
 
   @Override
   public void failed(int code, String message) {
-    mActivity.get().makeSnackbar(message);
-    //mActivity.get().hideWaiter();
+    mActivity.get().makeSnackbar(message + " " + mActivity.get().getRemainingTries() + " tries left.");
+    mActivity.get().hideWaiter();
+    mActivity.get().increaseTries();
   }
 }

@@ -10,8 +10,8 @@
               style="?attr/titleTextAppearance"
               android:text="Please enter your secret random number:"/>
 
-    <android.support.v7.widget.EditText android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:id="@+id/loginlayout_edittext_pim"
-                                        android:inputType="numberPassword"/>
+    <EditText android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/loginlayout_edittext_pim"
+              android:inputType="numberPassword"/>
 </LinearLayout>

@@ -1,24 +1,18 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.content.*;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.graphics.BitmapCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.BaseActivity;
-import com.typingsolutions.passwordmanager.BaseAsyncTask;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
@@ -29,7 +23,6 @@ import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import com.typingsolutions.passwordmanager.services.LoginService;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.Utils;
-import core.data.PasswordProvider;
 import ui.OutlinedImageView;
 
 import java.io.File;
@@ -144,20 +137,6 @@ public class LoginActivity extends BaseActivity {
   }
 
   @Override
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-
-    Log.d(getClass().getSimpleName(), "onConfigurationChanged");
-
-    // Checks whether a hardware keyboard is available
-    if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
-      Toast.makeText(this, "keyboard visible", Toast.LENGTH_SHORT).show();
-    } else if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
-      Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
-    }
-  }
-
-  @Override
   protected void onResume() {
     super.onResume();
 
@@ -179,8 +158,6 @@ public class LoginActivity extends BaseActivity {
     }
     //mImageViewAsBackground.destroyDrawingCache();
     //mOutlinedImageViewAsLockedBackground.destroyDrawingCache();
-
-
 
     super.onDestroy();
   }
@@ -252,6 +229,31 @@ public class LoginActivity extends BaseActivity {
 
   public void hideWaiter() {
     hideViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_out);
+  }
+
+  public void increaseTries() {
+    try {
+      mLoginServiceRemote.increaseTries();
+    } catch (RemoteException e) {
+      showErrorLog(getClass(), e);
+    }
+  }
+
+  public int getRemainingTries() {
+    try {
+      return mLoginServiceRemote.getRemainingTries();
+    } catch (RemoteException e) {
+      showErrorLog(getClass(), e);
+    }
+    return -1;
+  }
+
+  public void stopLoginService() {
+    try {
+      mLoginServiceRemote.stop();
+    } catch (RemoteException e) {
+      showErrorLog(getClass(), e);
+    }
   }
 
   @Override

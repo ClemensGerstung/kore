@@ -5,7 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.*;
 
 public class EditTextImpl {
 
