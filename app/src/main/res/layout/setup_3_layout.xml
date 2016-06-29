@@ -34,13 +34,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-            <android.support.v7.widget.EditText android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:textColor="@color/black"
-                                                android:id="@+id/setuplayout_edittext_pim"
-                                                android:textColorHint="@color/darkgrey"
-                                                android:inputType="numberPassword"
-                                                android:hint="Your secret number"/>
+            <EditText android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:id="@+id/setuplayout_edittext_pim"
+                      android:textColorHint="@color/darkgrey"
+                      android:inputType="numberPassword"
+                      android:hint="Your secret number"/>
         </android.support.design.widget.TextInputLayout>
 
 

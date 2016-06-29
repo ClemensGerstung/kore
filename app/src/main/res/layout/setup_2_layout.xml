@@ -30,13 +30,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-            <android.support.v7.widget.EditText android:id="@+id/setuplayout_edittext_password"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:textColor="@color/black"
-                                                android:textColorHint="@color/darkgrey"
-                                                android:hint="Enter Your password"
-                                                android:inputType="textPassword"/>
+            <EditText android:id="@+id/setuplayout_edittext_password"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textColorHint="@color/darkgrey"
+                      android:hint="Enter Your password"
+                      android:inputType="textPassword"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -44,13 +44,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
-            <android.support.v7.widget.EditText android:id="@+id/setuplayout_edittext_repeatpassword"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:textColor="@color/black"
-                                                android:textColorHint="@color/darkgrey"
-                                                android:inputType="textPassword"
-                                                android:hint="Repeat your password"/>
+            <EditText android:id="@+id/setuplayout_edittext_repeatpassword"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:textColorHint="@color/darkgrey"
+                      android:inputType="textPassword"
+                      android:hint="Repeat your password"/>
         </android.support.design.widget.TextInputLayout>
 
         <GridLayout android:layout_width="match_parent"

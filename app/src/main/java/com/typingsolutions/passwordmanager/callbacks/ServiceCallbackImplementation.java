@@ -3,7 +3,7 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
-import core.IServiceCallback;
+import com.typingsolutions.passwordmanager.IServiceCallback;
 import ui.OutlinedImageView;
 
 public class ServiceCallbackImplementation extends IServiceCallback.Stub {

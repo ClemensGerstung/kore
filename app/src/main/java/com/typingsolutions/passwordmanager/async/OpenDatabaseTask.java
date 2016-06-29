@@ -30,7 +30,7 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
     if(result) {
       raiseCallbacks(result);
     } else {
-      raiseCallbacks(1, "Could not open database");
+      raiseCallbacks(1, "Wrong password.");
     }
 
     //releaseCallbacks();
