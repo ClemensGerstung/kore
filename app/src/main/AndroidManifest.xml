@@ -16,11 +16,8 @@
 
         <service android:name=".services.LoginService"
                  android:process=":Service"
+                 android:stopWithTask="false"
                  tools:ignore="ExportedService">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </service>
 
         <receiver android:name=".receiver.BootReceiver"

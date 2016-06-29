@@ -141,17 +141,13 @@ public class LoginActivity extends BaseActivity {
     super.onResume();
 
     Intent intent = new Intent(this.getApplicationContext(), LoginService.class);
-    if (!isServiceRunning(LoginService.class))
-      startService(intent);
-
+    startService(intent);
     bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
     mServiceIsRegistered = true;
   }
 
   @Override
   protected void onDestroy() {
-    //Log.d(getClass().getSimpleName(), "onDestroy");
-
     if (mServiceIsRegistered) {
       unbindService(mLoginServiceConnection);
       mServiceIsRegistered = false;
