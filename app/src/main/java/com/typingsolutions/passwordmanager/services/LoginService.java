@@ -60,6 +60,7 @@ public class LoginService extends Service {
     mTries = prefs.getInt("mTries", 0);
     mCurrentLockTime = prefs.getInt("mCurrentLockTime", 0);
     mCurrentMaxLockTime = prefs.getInt("mCurrentMaxLockTime", 0);
+    Log.d(getClass().getSimpleName(), mTries + " " + mCurrentLockTime + " " + mCurrentMaxLockTime);
 
     prefs.edit().clear().apply();
 
@@ -81,6 +82,7 @@ public class LoginService extends Service {
     editor.putInt("mCurrentLockTime", mCurrentLockTime);
     editor.putInt("mCurrentMaxLockTime", mCurrentMaxLockTime);
     editor.apply();
+    Log.d(getClass().getSimpleName(), mTries + " " + mCurrentLockTime + " " + mCurrentMaxLockTime);
   }
 
   @Override
