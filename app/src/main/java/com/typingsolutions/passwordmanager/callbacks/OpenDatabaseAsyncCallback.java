@@ -15,7 +15,7 @@ public class OpenDatabaseAsyncCallback implements BaseAsyncTask.IExecutionCallba
 
   @Override
   public void executed(Boolean aBoolean) {
-    mActivity.get().startActivity(PasswordOverviewActivity.class, true);
+    mActivity.get().startActivity(PasswordOverviewActivity.class);
     mActivity.get().hideWaiter();
     mActivity.get().stopLoginService();
   }

@@ -1,39 +1,27 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
-import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
-import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
-import com.typingsolutions.passwordmanager.database.DatabaseConnection;
-import com.typingsolutions.passwordmanager.receiver.ScreenOffReceiver;
-import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
-import core.DatabaseProvider;
-import core.async.AsyncPasswordLoader;
-import core.data.Password;
-import core.data.PasswordHistory;
-import core.data.PasswordProvider;
 
 public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
@@ -134,19 +122,19 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   @Override
   public void onBackPressed() {
-    AlertDialog alertDialog = new AlertDialog.Builder(this)
+    // TODO: set onKeyListener for alertdialog on back pressed
+    AlertBuilder.create(this)
         .setTitle("Logout")
         .setMessage("Are you sure to logout?")
-        .setNegativeButton("Discard", null)
-        .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+        .setNegativeButton("Discard")
+        .setPositiveButton("Logout")
+        .setCallback(new BaseDialogCallback<BaseActivity>(this) {
           @Override
-          public void onClick(DialogInterface dialog, int which) {
+          public void OnPositiveButtonPressed(DialogInterface dialog) {
             logout();
           }
         })
-        .create();
-    // TODO: set onKeyListener for alertdialog on back pressed
-    alertDialog.show();
+        .show();
   }
 
   private void logout() {

@@ -95,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity {
    */
   public void startActivity(Class<? extends Activity> activity, boolean finish, @AnimRes int enterAnim, @AnimRes int exitAnim) {
     Intent intent = new Intent(this, activity);
-    intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
+    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
     overridePendingTransition(enterAnim, exitAnim);
     if (finish) ActivityCompat.finishAfterTransition(this);
 
@@ -142,9 +142,6 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   public synchronized void showViewAnimated(@NonNull View view, @AnimRes int animation) {
-    if (view == null)
-      throw new IllegalArgumentException("View cannot be null");
-
     if (view.getVisibility() != View.VISIBLE) {
       view.clearAnimation();
       view.setVisibility(View.VISIBLE);
@@ -166,8 +163,6 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   public synchronized void hideViewAnimated(@NonNull View view, @AnimRes int animation) {
-    if (view == null) return;
-
     if (view.getVisibility() != View.VISIBLE) return;
 
     Animation anim = AnimationUtils.loadAnimation(this, animation);
