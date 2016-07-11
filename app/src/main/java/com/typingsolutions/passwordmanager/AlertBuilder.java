@@ -95,6 +95,10 @@ public class AlertBuilder {
     return this;
   }
 
+  public AlertDialog getDialog() {
+    return mAlertDialog;
+  }
+
   public void show() {
     mAlertDialog.show();
   }
