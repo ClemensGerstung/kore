@@ -45,33 +45,8 @@ public class LoginActivity extends BaseActivity {
   private ImageView mImageViewAsBackground;
   private TextView mTextViewAsHintForRootedDevices;
 
-  private final ServiceConnection mLoginServiceConnection = new ServiceConnection() {
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-      mLoginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
-
-      try {
-        mLoginServiceRemote.registerCallback(mServiceCallback);
-
-        if (mLoginServiceRemote.isBlocked()) {
-          hideInput();
-        }
-      } catch (RemoteException e) {
-        BaseActivity.showErrorLog(getClass(), e);
-      }
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-      try {
-//        Log.d(getClass().getSimpleName(), "Service disconnect");
-        mLoginServiceRemote.unregisterCallback(mServiceCallback);
-        mLoginServiceRemote = null;
-      } catch (RemoteException e) {
-        BaseActivity.showErrorLog(getClass(), e);
-      }
-    }
-  };
+  private final ServiceConnection mLoginServiceConnection = new LoginServiceConnection();
+  private OpenDatabaseAsyncCallback openDatabaseAsyncCallback = new OpenDatabaseAsyncCallback(this);
 
   private final CompoundButton.OnCheckedChangeListener safeLoginCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
     @Override
@@ -81,14 +56,12 @@ public class LoginActivity extends BaseActivity {
       //PasswordProvider.getInstance(LoginActivity.this).isSafe(isChecked);
     }
   };
-
   private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
       if (actionId != EditorInfo.IME_ACTION_DONE) return false;
       mLoginCallback.onClick(mFloatingActionButtonAsLogin);
       //LoginActivity.this.startActivity(PasswordOverviewActivity.class, true);
-      //Runtime.getRuntime().gc();
       return true;
     }
   };
@@ -176,7 +149,8 @@ public class LoginActivity extends BaseActivity {
       connection = new DatabaseConnection(this.getBaseContext(), password, Integer.parseInt(pim));
 
       OpenDatabaseTask openDatabaseTask = new OpenDatabaseTask();
-      openDatabaseTask.registerCallback(new OpenDatabaseAsyncCallback(this));
+
+      openDatabaseTask.registerCallback(openDatabaseAsyncCallback);
       openDatabaseTask.execute(connection);
 
     } catch (Exception e) {
@@ -255,5 +229,33 @@ public class LoginActivity extends BaseActivity {
   @Override
   protected View getSnackbarRelatedView() {
     return mFloatingActionButtonAsLogin;
+  }
+
+  private class LoginServiceConnection implements ServiceConnection {
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+      mLoginServiceRemote = ILoginServiceRemote.Stub.asInterface(service);
+
+      try {
+        mLoginServiceRemote.registerCallback(mServiceCallback);
+
+        if (mLoginServiceRemote.isBlocked()) {
+          hideInput();
+        }
+      } catch (RemoteException e) {
+        BaseActivity.showErrorLog(getClass(), e);
+      }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+      try {
+//        Log.d(getClass().getSimpleName(), "Service disconnect");
+        mLoginServiceRemote.unregisterCallback(mServiceCallback);
+        mLoginServiceRemote = null;
+      } catch (RemoteException e) {
+        BaseActivity.showErrorLog(getClass(), e);
+      }
+    }
   }
 }
