@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Password.Manager</string>
+    <string name="app_name">Kore</string>
     <string name="hidden">hidden</string>
     <array name="order_options">
         <item>username ascending</item>

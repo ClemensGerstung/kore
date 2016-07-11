@@ -1,7 +1,7 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.BaseDialogCallback;
 import com.typingsolutions.passwordmanager.R;
