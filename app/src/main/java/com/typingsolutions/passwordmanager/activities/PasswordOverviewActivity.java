@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -10,12 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
@@ -124,13 +123,25 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   @Override
   public void onBackPressed() {
-    AlertBuilder.create(this)
+    AlertBuilder builder = AlertBuilder.create(this)
         .setTitle("Logout")
         .setMessage("Are you sure to logout?")
         .setNegativeButton("Discard")
         .setPositiveButton("Logout")
-        .setCallback(mLogoutDialogCallback)
-        .show();
+        .setCallback(mLogoutDialogCallback);
+
+    AlertDialog dialog = builder.getDialog();
+    dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+      @Override
+      public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+          startActivity(LoginActivity.class, false, R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+        return false;
+      }
+    });
+
+    builder.show();
   }
 
   public void logout() {
@@ -140,7 +151,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
     super.onBackPressed();
 
-    startActivity(LoginActivity.class, true, R.anim.slide_in_left, R.anim.slide_out_right);
+    startActivity(LoginActivity.class, false, R.anim.slide_in_left, R.anim.slide_out_right);
   }
 
   @Override
