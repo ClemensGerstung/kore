@@ -20,7 +20,7 @@ public class AlertBuilder {
 
 
   public static AlertBuilder create(Context context) {
-    return create(context, 0);
+    return create(context, R.style.Base_AlertDialog_LoginStyle);
   }
 
   public static AlertBuilder create(Context context, @StyleRes int theme) {
@@ -30,11 +30,6 @@ public class AlertBuilder {
 
   public static AlertDialog getLastCreated() {
     return builder.mAlertDialog;
-  }
-
-  private AlertBuilder setButton(int which, CharSequence text) {
-    mAlertDialog.setButton(which, text, (DialogInterface.OnClickListener) null);
-    return this;
   }
 
   public AlertBuilder setPositiveButton(CharSequence text) {

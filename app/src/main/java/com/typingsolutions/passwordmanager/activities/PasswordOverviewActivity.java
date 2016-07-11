@@ -1,7 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -20,7 +19,8 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
+import com.typingsolutions.passwordmanager.callbacks.LogoutDialogCallback;
+import com.typingsolutions.passwordmanager.callbacks.OrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 
 public class PasswordOverviewActivity extends BaseDatabaseActivity {
@@ -35,6 +35,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   private ImageView mImageViewAsBackground;
 
   private PasswordOverviewAdapter passwordOverviewAdapter;
+  private LogoutDialogCallback mLogoutDialogCallback = new LogoutDialogCallback(this);
+  private OrderDialogShowCallback mOrderDialogCallback = new OrderDialogShowCallback(this);
 
   private RecyclerView.LayoutManager layoutManager;
 
@@ -116,31 +118,25 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
     // load passwords in background
     //LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
 
-    mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.lock_large, 1, 0.75f));
+    //mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.lock_large, 1, 0.75f));
     mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
   }
 
   @Override
   public void onBackPressed() {
-    // TODO: set onKeyListener for alertdialog on back pressed
     AlertBuilder.create(this)
         .setTitle("Logout")
         .setMessage("Are you sure to logout?")
         .setNegativeButton("Discard")
         .setPositiveButton("Logout")
-        .setCallback(new BaseDialogCallback<BaseActivity>(this) {
-          @Override
-          public void OnPositiveButtonPressed(DialogInterface dialog) {
-            logout();
-          }
-        })
+        .setCallback(mLogoutDialogCallback)
         .show();
   }
 
-  private void logout() {
+  public void logout() {
     //PasswordProvider.logoutComplete();
     //DatabaseProvider.logout();
-    logout = false;
+    logout = true;
 
     super.onBackPressed();
 
@@ -167,15 +163,12 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
     switch (id) {
       case R.id.passwordoverviewlayout_menuitem_order:
-
-        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+        AlertBuilder.create(this)
             .setView(R.layout.order_layout)
-            .setNegativeButton("discard", null)
-            .setPositiveButton("order", null)
-            .create();
-
-        alertDialog.setOnShowListener(new OnOrderDialogShowCallback(this));
-        alertDialog.show();
+            .setPositiveButton("order")
+            .setNegativeButton("discard")
+            .setCallback(mOrderDialogCallback)
+            .show();
         break;
       case R.id.passwordoverviewlayout_menuitem_logout:
         onBackPressed();

@@ -20,7 +20,7 @@ public class LoginCallback extends BaseClickCallback<LoginActivity> {
   @Override
   public void onClick(View v) {
     AlertBuilder
-        .create(mActivity, R.style.Base_AlertDialog_LoginStyle)
+        .create(mActivity)
         .setView(R.layout.pim_login_layout)
         .setPositiveButton("Login")
         .setNegativeButton("Cancel")
