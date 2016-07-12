@@ -85,6 +85,36 @@ public class PasswordContainer {
     return container;
   }
 
+  public void update(int position, String program, String username) {
+    SQLiteDatabase database = BaseDatabaseActivity.getDatabase();
+    if (database == null) return;
+
+    String[] where = {"" + mId};
+    ContentValues values = new ContentValues();
+    if (position >= 0 && position != mPosition) {
+      mPosition = position;
+      values.put(DatabaseConnection.POSITION, position);
+    }
+    if (program != null && !program.equals(mProgram)) {
+      mProgram = program;
+      values.put(DatabaseConnection.PROGRAM, program);
+    }
+    if (username != null && !username.equals(mUsername)) {
+      mUsername = username;
+      values.put(DatabaseConnection.USERNAME, username);
+    }
+
+    try {
+      database.beginTransaction();
+
+      database.update(DatabaseConnection.PASSWORDS_TABLE_NAME, values, "id", where);
+
+      database.setTransactionSuccessful();
+    } finally {
+      database.endTransaction();
+    }
+  }
+
   public boolean delete() {
     SQLiteDatabase database = BaseDatabaseActivity.getDatabase();
     if (database == null) return false;
@@ -112,5 +142,40 @@ public class PasswordContainer {
     mUsername = null;
 
     return result;
+  }
+
+  public int getId() {
+    return mId;
+  }
+
+  public String getProgram() {
+    return mProgram;
+  }
+
+  public void setProgram(String program) {
+    mProgram = program;
+    update(Integer.MIN_VALUE, program, null);
+  }
+
+  public String getUsername() {
+    return mUsername;
+  }
+
+  public void setUsername(String username) {
+    this.mUsername = username;
+    update(Integer.MIN_VALUE, null, username);
+  }
+
+  public int getPosition() {
+    return mPosition;
+  }
+
+  public void setPosition(int position) {
+    this.mPosition = position;
+    update(position, null, null);
+  }
+
+  public SparseArray<PasswordItem> getPasswordItems() {
+    return mPasswordItems;
   }
 }
