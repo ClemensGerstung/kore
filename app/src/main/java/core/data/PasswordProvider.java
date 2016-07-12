@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Deprecated
 public class PasswordProvider {
   private static PasswordProvider Instance;
 
