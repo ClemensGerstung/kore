@@ -10,15 +10,15 @@ public class DatabaseConnection extends BaseDatabaseConnection {
 
   static final int VERSION = 0x01;
 
-  static final String PASSWORDS_TABLE_NAME = "passwords";
-  static final String HISTORY_TABLE_NAME = "history";
-  static final String TABLE_ID = "id";
-  static final String USERNAME = "username";
-  static final String PROGRAM = "program";
-  static final String POSITION = "position";
-  static final String PASSWORD = "password";
-  static final String CHANGED = "changed";
-  static final String PASSWORD_ID = "passwordId";
+  public static final String PASSWORDS_TABLE_NAME = "passwords";
+  public static final String HISTORY_TABLE_NAME = "history";
+  public static final String TABLE_ID = "id";
+  public static final String USERNAME = "username";
+  public static final String PROGRAM = "program";
+  public static final String POSITION = "position";
+  public static final String PASSWORD = "password";
+  public static final String CHANGED = "changed";
+  public static final String PASSWORD_ID = "passwordId";
 
   static final String CREATE_PASSWORDS_TABLE = "CREATE TABLE " + PASSWORDS_TABLE_NAME + " (" +
       TABLE_ID + " INTEGER PRIMARY KEY, " +

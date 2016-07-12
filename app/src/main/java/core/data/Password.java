@@ -7,6 +7,7 @@ import core.Dictionary;
 import java.util.Collection;
 import java.util.Comparator;
 
+@Deprecated
 public class Password {
   private int id;
   private int position;
