@@ -39,10 +39,6 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   private RecyclerView.LayoutManager layoutManager;
 
-  static {
-    logout = false;
-  }
-
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -71,10 +67,9 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    //Log.d(getClass().getSimpleName(), "onCreate BEGIN");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
-    //getIntent().getExtras()
+    logout = false;
 
     // set action listener for passwordprovider
     //PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
@@ -112,7 +107,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
     // make secure
     if (!debug)
-      this.setSecurityFlags();
+      setSecurityFlags();
 
     // load passwords in background
     //LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
@@ -131,15 +126,17 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
         .setCallback(mLogoutDialogCallback);
 
     AlertDialog dialog = builder.getDialog();
-    dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-      @Override
-      public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-          startActivity(LoginActivity.class, false, R.anim.slide_in_left, R.anim.slide_out_right);
-        }
-        return false;
-      }
-    });
+//    TODO: fix somehow
+//    dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+//      @Override
+//      public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+//        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+//          dialog.dismiss();
+//          startActivity(LoginActivity.class, false, R.anim.slide_in_left, R.anim.slide_out_right);
+//        }
+//        return true;
+//      }
+//    });
 
     builder.show();
   }
@@ -147,7 +144,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   public void logout() {
     //PasswordProvider.logoutComplete();
     //DatabaseProvider.logout();
-    logout = true;
+    BaseDatabaseActivity.logout = false;
 
     super.onBackPressed();
 

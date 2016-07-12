@@ -16,7 +16,7 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
       return;
     }
 
-    logout = true;
+//    BaseDatabaseActivity.logout = true;
   }
 
   @Override
@@ -24,8 +24,6 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     if (logout && connection != null) {
       connection.close();
       connection = null;
-
-      finish();
     }
     super.onStop();
   }
