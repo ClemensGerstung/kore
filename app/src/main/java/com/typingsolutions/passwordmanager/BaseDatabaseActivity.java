@@ -1,7 +1,9 @@
 package com.typingsolutions.passwordmanager;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
+import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import net.sqlcipher.database.SQLiteDatabase;
 
 public abstract class BaseDatabaseActivity extends BaseActivity {
@@ -11,7 +13,7 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
 
   @Nullable
   public static SQLiteDatabase getDatabase() {
-    return connection == null ? null : connection.getDatabase();
+    return connection != null ? connection.getDatabase() : null;
   }
 
   @Override

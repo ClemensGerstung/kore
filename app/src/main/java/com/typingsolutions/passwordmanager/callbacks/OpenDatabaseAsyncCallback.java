@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import com.typingsolutions.passwordmanager.BaseAsyncTask;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 
