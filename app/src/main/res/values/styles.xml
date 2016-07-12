@@ -67,7 +67,7 @@
     <style name="CreatePassword.EditText.Header" parent="standardEditText">
         <item name="colorControlActivated">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColorHint">#88FFFFFF</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/createpassword_program_textsize</item>

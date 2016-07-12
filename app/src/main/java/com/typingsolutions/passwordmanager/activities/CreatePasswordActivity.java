@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
 import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends BaseDatabaseActivity {
@@ -66,6 +67,7 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.create_password_layout);
+    logout = false;
 
     mAppBarLayoutAsWrapperForToolbarAsActionBar = findCastedViewById(R.id.createpasswordlayout_appbar_wrapper);
     mToolbarAsActionBar = (Toolbar) mAppBarLayoutAsWrapperForToolbarAsActionBar.findViewById(R.id.createpasswordlayout_toolbar_actionbar);
@@ -76,7 +78,7 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
     mButtonAsGenerateRandomPassword = (Button) mNestedScrollViewAsWrapperForInput.findViewById(R.id.createpasswordlayout_button_generatepassword);
 
     setSupportActionBar(mToolbarAsActionBar);
-//    mToolbarAsActionBar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
+    mToolbarAsActionBar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 
     mEditTextAsProgram.addTextChangedListener(switchTextWatcher);
     mEditTextAsPassword.addTextChangedListener(switchTextWatcher);
@@ -114,12 +116,6 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
     }
 
     return true;
-  }
-
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    finish();
   }
 
   @Override

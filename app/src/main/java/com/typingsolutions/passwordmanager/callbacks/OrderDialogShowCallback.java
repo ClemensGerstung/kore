@@ -12,7 +12,6 @@ import core.data.PasswordProvider;
 
 public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverviewActivity> {
 
-  private Context context;
   private CheckBox inverse;
   private RadioGroup group;
 
@@ -42,6 +41,6 @@ public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverview
             (checkedId == R.id.orderlayout_radiobutton_program ? 4 : 0)))
         + (invert ? 1 : 0);
 
-    PasswordProvider.getInstance(context).order(order);
+//    PasswordProvider.getInstance(context).order(order);
   }
 }

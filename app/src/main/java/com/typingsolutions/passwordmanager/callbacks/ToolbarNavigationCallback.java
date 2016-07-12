@@ -10,12 +10,7 @@ public class ToolbarNavigationCallback extends BaseClickCallback<BaseActivity> {
   }
 
   @Override
-  public void setValues(Object... values) {
-
-  }
-
-  @Override
   public void onClick(View v) {
-//    activity.onBackPressed();
+    mActivity.onBackPressed();
   }
 }

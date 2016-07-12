@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.*;
 import android.support.design.widget.Snackbar;
@@ -113,7 +114,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     try {
       MenuItem item = toolbar.getMenu().getItem(index);
       item.setEnabled(enable);
-      item.getIcon().setAlpha(enable ? 255 : 64);
+      Drawable icon = item.getIcon();
+      if(icon != null) {
+        icon.setAlpha(enable ? 255 : 64);
+      }
     } catch (Exception e) {
       showErrorLog(this.getClass(), e);
     }
