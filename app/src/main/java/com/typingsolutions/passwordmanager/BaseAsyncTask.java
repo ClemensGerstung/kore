@@ -6,7 +6,7 @@ import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseAsyncTask<Progress, Result> extends AsyncTask<DatabaseConnection, Progress, Result> {
+public abstract class BaseAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
   private List<IExecutionCallback<Result>> mCallbacks;
 
   public BaseAsyncTask() {
