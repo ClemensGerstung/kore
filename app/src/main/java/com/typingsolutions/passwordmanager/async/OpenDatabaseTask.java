@@ -2,10 +2,11 @@ package com.typingsolutions.passwordmanager.async;
 
 import android.util.Log;
 import com.typingsolutions.passwordmanager.BaseAsyncTask;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
+public class OpenDatabaseTask extends BaseAsyncTask<DatabaseConnection, Void, Boolean> {
   @Override
   protected Boolean doInBackground(DatabaseConnection... params) {
     if(params.length == 0 || params[0] == null) return false;
@@ -18,6 +19,10 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
 
       result = database.isOpen();
       database.close();
+
+      if(result) {
+        BaseDatabaseActivity.useEstablishedConnection(connection);
+      }
     } catch (Exception e) {
       result = false;
     }
@@ -33,6 +38,6 @@ public class OpenDatabaseTask extends BaseAsyncTask<Void, Boolean> {
       raiseCallbacks(1, "Wrong password.");
     }
 
-    //releaseCallbacks();
+    releaseCallbacks();
   }
 }

@@ -18,6 +18,7 @@ import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
+import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends BaseDatabaseActivity {
@@ -107,13 +108,10 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
     String username = mEditTextAsUsername.getText().toString();
     String password = mEditTextAsPassword.getText().toString();
 
-    try {
-      PasswordProvider.getInstance(this).addPassword(program, username, password);
-    } catch (Exception e) {
-      showErrorLog(getClass(), e);
-    } finally {
-      onBackPressed();
-    }
+    PasswordContainer container = PasswordContainer.create(program, username, password);
+    addContainerItem(container);
+
+    onBackPressed();
 
     return true;
   }

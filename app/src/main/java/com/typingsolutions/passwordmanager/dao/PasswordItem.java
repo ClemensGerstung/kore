@@ -2,12 +2,9 @@ package com.typingsolutions.passwordmanager.dao;
 
 import android.content.ContentValues;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
-import com.typingsolutions.passwordmanager.BaseDatabaseConnection;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import core.Utils;
 import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteStatement;
-import net.sqlcipher.database.SQLiteTransactionListener;
 
 import java.util.Date;
 

@@ -10,7 +10,8 @@ import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.util.*;
 
-public abstract class BaseDatabaseConnection extends SQLiteOpenHelper {
+public abstract class BaseDatabaseConnection extends SQLiteOpenHelper
+    implements Cloneable {
   protected int mVersion;
   protected int mPim;
   private String mPassword;
@@ -56,7 +57,7 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper {
 
   @Nullable
   public SQLiteDatabase getDatabase() {
-    if(mPassword == null || mPassword.length() == 0) return null;
+    if (mPassword == null || mPassword.length() == 0) return null;
 
     return getWritableDatabase(mPassword);
   }
@@ -86,10 +87,13 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper {
     }
   }
 
-  public Cursor execute(String rawQuery, String... selectionArgs) {
-    Cursor cursor = getReadableDatabase(mPassword).rawQuery(rawQuery, selectionArgs);
-
-    return cursor;
+  @Override
+  protected Object clone() {
+    try {
+      return super.clone();
+    } catch (CloneNotSupportedException e) {
+      return null;
+    }
   }
 
   public static SQLiteDatabaseHook getDatabaseHook(int pim) {

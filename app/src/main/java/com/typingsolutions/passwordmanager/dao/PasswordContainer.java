@@ -3,10 +3,11 @@ package com.typingsolutions.passwordmanager.dao;
 import android.content.ContentValues;
 import android.util.SparseArray;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
+import com.typingsolutions.passwordmanager.IContainer;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class PasswordContainer {
+public class PasswordContainer implements IContainer {
   public static int HighestPosition = 1;
 
   private int mId;
