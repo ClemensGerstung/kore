@@ -67,7 +67,7 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     return items.get(index);
   }
 
-  public void clearContainer() {
+  public void clearContainerItems() {
     items.clear();
   }
 

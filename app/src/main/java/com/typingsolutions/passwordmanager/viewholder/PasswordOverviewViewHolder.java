@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.adapter.viewholder;
+package com.typingsolutions.passwordmanager.viewholder;
 
 import android.content.Intent;
 import android.view.View;
@@ -20,7 +20,7 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
   public final TextView mTextViewAsUsername;
   public final TextView mTextViewAsPassword;
   public final TextView mTextViewAsIcon;
-  public int id;
+  public int mCurrentId;
   private boolean safe = false;
 
   public PasswordOverviewViewHolder(final PasswordOverviewActivity activity, final View itemView) {
@@ -76,7 +76,7 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
   private void startDetailActivity() {
     Intent intent = new Intent(mActivity, PasswordDetailActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-    intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
+    intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, mCurrentId);
 
     BaseDatabaseActivity.logout = false;
     mActivity.startActivity(intent);

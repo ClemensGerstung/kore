@@ -23,8 +23,6 @@ import com.typingsolutions.passwordmanager.callbacks.OrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
-import java.util.List;
-
 public class PasswordOverviewActivity extends BaseDatabaseActivity
     implements IListChangedListener<IContainer> {
 
@@ -171,7 +169,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   public void logout() {
     //PasswordProvider.logoutComplete();
     //DatabaseProvider.logout();
-    BaseDatabaseActivity.logout = false;
+    BaseDatabaseActivity.logout = true;
 
     super.onBackPressed();
 
@@ -184,7 +182,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     inflater.inflate(R.menu.passwordoverviewlayout_menu, menu);
 
     // init searchview
-    /*mMenuItemAsSearchViewWrapper = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
+    /*mMenuItemAsSearchViewWrapper = menu.findItem(R.mCurrentId.passwordoverviewlayout_menuitem_search);
     mSearchViewAsSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemAsSearchViewWrapper);
     mSearchViewAsSearchView.setOnQueryTextListener(onQueryTextListener);
     MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, onSearchViewOpen);*/
@@ -240,7 +238,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     if(logout) {
       mRecyclerViewAsPasswordsList.removeAllViews();
       mRecyclerViewAsPasswordsList.destroyDrawingCache();
-      clearContainer();
+      clearContainerItems();
       clearChangeListener();
     }
   }
