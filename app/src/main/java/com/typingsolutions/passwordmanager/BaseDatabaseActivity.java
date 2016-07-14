@@ -32,6 +32,10 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     itemsChangedListener.remove(listener);
   }
 
+  protected void clearChangeListener() {
+    itemsChangedListener.clear();
+  }
+
   public void addContainerItem(IContainer container) {
     items.add(container);
     for (IListChangedListener<IContainer> listener : itemsChangedListener) {
@@ -61,6 +65,10 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
 
   public IContainer getContainerAt(int index) {
     return items.get(index);
+  }
+
+  public void clearContainer() {
+    items.clear();
   }
 
   @Override

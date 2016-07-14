@@ -132,7 +132,7 @@ public class BackupRestoreActivity extends BaseActivity {
         String path = getDatabasePath(DatabaseProvider.DATABASE_NAME).getPath();
         path = path.substring(0, path.lastIndexOf("/"));
 
-        // temporary file to copy and change password.
+        // temporary file to copy and change mTextViewAsPassword.
         final File tmp = new File(path, "tmp.db");
 
         String password = mEditTextAsRestorePassword.getText().toString();
@@ -185,7 +185,7 @@ public class BackupRestoreActivity extends BaseActivity {
       final ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "w");
       File source = getDatabasePath(DatabaseProvider.DATABASE_NAME);
 
-      // temporary file to copy and change password.
+      // temporary file to copy and change mTextViewAsPassword.
       final File tmp = new File(source.getPath().substring(0, source.getPath().lastIndexOf("/")), "tmp.db");
 
       //noinspection ResultOfMethodCallIgnored
@@ -196,7 +196,7 @@ public class BackupRestoreActivity extends BaseActivity {
           = new DatabaseProvider.OnChangePasswordListener() {
         @Override
         public void changed() {
-          // copy database with changed password to new location
+          // copy database with changed mTextViewAsPassword to new location
           Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor(), Utils.Flag.Backup);
           getContentResolver().takePersistableUriPermission(uri, flags);
           Snackbar.make(mToolbarAsActionbar, "Your backup and changing password of this was successful!", Snackbar.LENGTH_LONG).show();
@@ -207,7 +207,7 @@ public class BackupRestoreActivity extends BaseActivity {
 
         @Override
         public void failed() {
-          // copy database with unchanged password
+          // copy database with unchanged mTextViewAsPassword
           Utils.copyFile(tmp, parcelFileDescriptor.getFileDescriptor(), Utils.Flag.Backup);
           getContentResolver().takePersistableUriPermission(uri, flags);
           Snackbar.make(mToolbarAsActionbar, "Your backup was successful but the password is your current password!", Snackbar.LENGTH_LONG).show();
@@ -227,16 +227,16 @@ public class BackupRestoreActivity extends BaseActivity {
         }
       };
 
-      // if set new password to copied database
+      // if set new mTextViewAsPassword to copied database
       if (mEditTextAsRepeatedBackupPassword.length() > 0 && mEditTextAsBackupPassword.length() > 0) {
-        // copy database to tmp-database and change password of this...
+        // copy database to tmp-database and change mTextViewAsPassword of this...
         // unfortunately there is no better way to do this because ISqlTaskCallback'm not able to access the recently copied file
         Utils.copyFile(source, tmp, Utils.Flag.Backup);
 
         String path = tmp.getPath();
         DatabaseProvider.changePassword(path, mEditTextAsBackupPassword.getText().toString(), changePasswordListener);
       } else {
-        // simply copy database with current master password
+        // simply copy database with current master mTextViewAsPassword
         Utils.copyFile(source, parcelFileDescriptor.getFileDescriptor(), Utils.Flag.Backup);
 
         getContentResolver().takePersistableUriPermission(uri, flags);
@@ -265,5 +265,10 @@ public class BackupRestoreActivity extends BaseActivity {
   @Override
   protected View getSnackbarRelatedView() {
     return this.mToolbarAsActionbar;
+  }
+
+  @Override
+  protected void onActivityChange() {
+
   }
 }

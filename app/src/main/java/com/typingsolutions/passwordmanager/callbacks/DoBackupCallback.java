@@ -32,7 +32,7 @@ public class DoBackupCallback extends BaseClickCallback {
 //    intent.addCategory(Intent.CATEGORY_OPENABLE);
 //
 //    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-//    String fileName = String.format("password-manager-backup-%s.encrypt", dateFormat.format(new Date()));
+//    String fileName = String.format("mTextViewAsPassword-manager-backup-%s.encrypt", dateFormat.format(new Date()));
 //    intent.putExtra(Intent.EXTRA_TITLE, fileName);
 //    intent.setType("*/*");
 //    ((Activity) context).startActivityForResult(intent, BackupRestoreActivity.BACKUP_REQUEST_CODE);

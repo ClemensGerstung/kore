@@ -120,4 +120,9 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
   protected View getSnackbarRelatedView() {
     return mToolbarAsActionBar;
   }
+
+  @Override
+  protected void onActivityChange() {
+
+  }
 }

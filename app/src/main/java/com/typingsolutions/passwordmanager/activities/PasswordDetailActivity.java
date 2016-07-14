@@ -75,7 +75,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     passwordHistory.setLayoutManager(layoutManager);
     passwordHistory.setAdapter(passwordHistoryAdapter);
 
-    //button.setOnClickListener(new GeneratePasswordCallback(this, password));
+    //button.setOnClickListener(new GeneratePasswordCallback(this, mTextViewAsPassword));
 
     String programString = currentPassword.getProgram();
     programTextWatcher = new AddPasswordTextWatcher(this, programString, true);
@@ -162,5 +162,10 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   @Override
   protected View getSnackbarRelatedView() {
     return null;
+  }
+
+  @Override
+  protected void onActivityChange() {
+
   }
 }

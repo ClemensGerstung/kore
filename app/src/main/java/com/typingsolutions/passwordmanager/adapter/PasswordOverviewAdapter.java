@@ -1,6 +1,7 @@
 package com.typingsolutions.passwordmanager.adapter;
 
 import android.content.DialogInterface;
+import android.content.res.TypedArray;
 import android.support.v7.app.AlertDialog;
 import android.view.*;
 import com.typingsolutions.passwordmanager.BaseAdapter;
@@ -9,7 +10,6 @@ import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import com.typingsolutions.passwordmanager.adapter.viewholder.PasswordOverviewViewHolder;
-import core.data.PasswordProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,16 +51,16 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     PasswordContainer password = (PasswordContainer) mActivity.getContainerAt(position);
 
     if (!safe) {
-      viewHolder.password.setText(password.getDefaultPassword());
-      viewHolder.username.setText(password.getUsername());
+      viewHolder.mTextViewAsPassword.setText(password.getDefaultPassword());
+      viewHolder.mTextViewAsUsername.setText(password.getUsername());
     }
 
-    viewHolder.program.setText(password.getProgram());
+    viewHolder.mTextViewAsProgram.setText(password.getProgram());
     viewHolder.id = password.getId();
     String upperCase = password.getProgram().toUpperCase();
-    viewHolder.icon.setText(upperCase.toCharArray(), 0, 1);
+    viewHolder.mTextViewAsIcon.setText(upperCase.toCharArray(), 0, 1);
 
-    ViewUtils.setColor(viewHolder.icon, password.getProgram(), password.getDefaultPassword());
+    ViewUtils.setColor(viewHolder.mTextViewAsIcon, password.getProgram(), password.getDefaultPassword());
   }
 
   @Override

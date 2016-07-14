@@ -25,4 +25,9 @@ public class AboutActivity extends BaseActivity {
   protected View getSnackbarRelatedView() {
     return this.mToolbarAsActionbar;
   }
+
+  @Override
+  protected void onActivityChange() {
+
+  }
 }

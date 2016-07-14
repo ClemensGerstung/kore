@@ -43,6 +43,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     images = new LruCache<>(4 * 1024 * 1024);
   }
 
+  @Override
+  protected void onPause() {
+    super.onPause();
+    onActivityChange();
+  }
+
   /**
    * Finds a {@see View} by it's id
    *
@@ -107,7 +113,7 @@ public abstract class BaseActivity extends AppCompatActivity {
    * Sets flags so the user cannot take screenshots or screen recordings
    */
   protected void setSecurityFlags() {
-    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
   }
 
   public void setMenuItemEnabled(Toolbar toolbar, int index, boolean enable) {
@@ -119,7 +125,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         icon.setAlpha(enable ? 255 : 64);
       }
     } catch (Exception e) {
-      showErrorLog(this.getClass(), e);
+      showErrorLog(getClass(), e);
     }
   }
 
@@ -134,6 +140,8 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   protected abstract View getSnackbarRelatedView();
+
+  protected abstract void onActivityChange();
 
   public void makeSnackbar(String message) {
     if (getSnackbarRelatedView() == null) return;
