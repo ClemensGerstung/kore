@@ -61,7 +61,7 @@ public class OutlinedImageView extends ImageView {
     super.onDraw(canvas);
   }
 
-  public void reset() {
+  private void reset() {
     maxBlockTime = 0;
     remainingBlockTime = Integer.MAX_VALUE;
     blocked = false;

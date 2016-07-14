@@ -1,123 +1,52 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.content.*;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
+import android.widget.ImageView;
 import android.widget.TextView;
-import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
-import com.typingsolutions.passwordmanager.callbacks.OnOrderDialogShowCallback;
+import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
+import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.LogoutDialogCallback;
+import com.typingsolutions.passwordmanager.callbacks.OrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
-import com.typingsolutions.passwordmanager.callbacks.click.AddPasswordCallback;
-import com.typingsolutions.passwordmanager.utils.PasswordOverviewItemAnimator;
-import core.DatabaseProvider;
-import core.async.AsyncPasswordLoader;
-import core.data.Password;
-import core.data.PasswordHistory;
-import core.data.PasswordProvider;
-import core.exceptions.UserProviderException;
+import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
-public class PasswordOverviewActivity extends AppCompatActivity {
+import java.util.List;
 
-  public static final String WRONGPASSWORD = "com.typingsolutions.passwordmanager.activitiesPasswordOverviewActivity.WRONGPASSWORD";
+public class PasswordOverviewActivity extends BaseDatabaseActivity
+    implements IListChangedListener<IContainer> {
 
-  private RecyclerView passwordRecyclerView;
-  private Toolbar toolbar;
-  private FloatingActionButton addPasswordFloatingActionButton;
-  private TextView noPasswordsTextView;
-  private MenuItem searchItem;
-  private SwipeRefreshLayout swipeRefreshLayout;
+  private RecyclerView mRecyclerViewAsPasswordsList;
+  private Toolbar mToolbarAsActionBar;
+  private FloatingActionButton mFloatingActionButtonAsAddPassword;
+  private TextView mTextViewAsNoPasswordsYet;
+  private MenuItem mMenuItemAsSearchViewWrapper;
+  private SwipeRefreshLayout mSwipeRefreshLayoutAsLoadingIndication;
+  private SearchView mSearchViewAsSearchView;
+  private ImageView mImageViewAsBackground;
 
-  private boolean logout = true;
-
-  private SearchView searchView;
-  private PasswordOverviewAdapter passwordOverviewAdapter;
-  private AsyncPasswordLoader passwordLoader;
+  private PasswordOverviewAdapter mPasswordOverviewAdapter;
+  private LogoutDialogCallback mLogoutDialogCallback = new LogoutDialogCallback(this);
+  private OrderDialogShowCallback mOrderDialogCallback = new OrderDialogShowCallback(this);
 
   private RecyclerView.LayoutManager layoutManager;
 
-  private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      if (!PasswordProvider.isLoggedIn())
-        return;
-
-      PasswordProvider.logoutComplete();
-
-      Intent loginIntent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-      startActivity(loginIntent);
-
-      PasswordOverviewActivity.this.finish();
-    }
-  };
-
-  private PasswordProvider.PasswordActionListener passwordActionListener = new PasswordProvider.PasswordActionListener() {
-    @Override
-    public void onPasswordAdded(Password password) {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          if (noPasswordsTextView.getVisibility() == View.VISIBLE)
-            noPasswordsTextView.setVisibility(View.INVISIBLE);
-
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-    }
-
-    @Override
-    public void onPasswordRemoved(Password password) {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-
-      if (PasswordProvider.getInstance(PasswordOverviewActivity.this).size() > 0)
-        return;
-
-      if (noPasswordsTextView.getVisibility() == View.INVISIBLE)
-        noPasswordsTextView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onPasswordEdited(Password password, PasswordHistory history) {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-    }
-
-    @Override
-    public void onOrder() {
-      runOnUiThread(new Runnable() {
-        @Override
-        public void run() {
-          passwordOverviewAdapter.notifyDataSetChanged();
-        }
-      });
-    }
-  };
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
-      passwordOverviewAdapter.resetFilter();
+//      mPasswordOverviewAdapter.resetFilter();
       return true;
     }
 
@@ -135,7 +64,7 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onQueryTextChange(String newText) {
-      passwordOverviewAdapter.filter(newText);
+//      mPasswordOverviewAdapter.filter(newText);
       return false;
     }
   };
@@ -144,108 +73,109 @@ public class PasswordOverviewActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
+    logout = false;
 
     // set action listener for passwordprovider
-    PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
+    //PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
 
     // get elements from XML-View
-    passwordRecyclerView = (RecyclerView) findViewById(R.id.passwordlistlayout_listview_passwords);
-    toolbar = (Toolbar) findViewById(R.id.passwordlistlayout_toolbar);
-    addPasswordFloatingActionButton = (FloatingActionButton) findViewById(R.id.passwordlistlayout_floatingactionbutton_add);
-    noPasswordsTextView = (TextView) findViewById(R.id.passwordlistlayout_textview_nopasswords);
-    swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
-    swipeRefreshLayout.setEnabled(false);
-    swipeRefreshLayout.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
+    mRecyclerViewAsPasswordsList = findCastedViewById(R.id.passwordlistlayout_listview_passwords);
+    mToolbarAsActionBar = findCastedViewById(R.id.passwordlistlayout_toolbar);
+    mFloatingActionButtonAsAddPassword = findCastedViewById(R.id.passwordlistlayout_floatingactionbutton_add);
+    mTextViewAsNoPasswordsYet = findCastedViewById(R.id.passwordlistlayout_textview_nopasswords);
+    mSwipeRefreshLayoutAsLoadingIndication = findCastedViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
+    mImageViewAsBackground = findCastedViewById(R.id.passwordlistlayout_imageview_background);
+
+
+    mSwipeRefreshLayoutAsLoadingIndication.setEnabled(false);
+    mSwipeRefreshLayoutAsLoadingIndication.setColorSchemeColors(
+        ContextCompat.getColor(this, R.color.orange),
+        ContextCompat.getColor(this, R.color.green),
+        ContextCompat.getColor(this, R.color.blue));
 
     // set onClick-event to add new passwords
-    addPasswordFloatingActionButton.setOnClickListener(new AddPasswordCallback(this));
+    mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
 
     // ...
-    setSupportActionBar(toolbar);
+    setSupportActionBar(mToolbarAsActionBar);
 
     // init and set adapter
-    passwordOverviewAdapter = new PasswordOverviewAdapter(this);
+    mPasswordOverviewAdapter = new PasswordOverviewAdapter(this);
     layoutManager = new LinearLayoutManager(this);
-    passwordRecyclerView.setAdapter(passwordOverviewAdapter);
-    passwordRecyclerView.setLayoutManager(layoutManager);
+    mRecyclerViewAsPasswordsList.setAdapter(mPasswordOverviewAdapter);
+    mRecyclerViewAsPasswordsList.setLayoutManager(layoutManager);
 
-    PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
-    //passwordRecyclerView.setItemAnimator(animator);
+    //PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
+    //mRecyclerViewAsPasswordsList.setItemAnimator(animator);
 
-    SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
+    SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, mPasswordOverviewAdapter);
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);
-    itemTouchHelper.attachToRecyclerView(passwordRecyclerView);
+    itemTouchHelper.attachToRecyclerView(mRecyclerViewAsPasswordsList);
+
+    registerListChangedListener(this);
 
     // make secure
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-
+    if (!debug) {
+      setSecurityFlags();
+    }
 
     // load passwords in background
-    passwordLoader = new AsyncPasswordLoader(this);
-    passwordLoader.execute();
+    LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
+    loadPasswords.registerCallback(new BaseAsyncTask.IExecutionCallback<PasswordContainer>() {
+      @Override
+      public void executed(final PasswordContainer result) {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            addContainerItem(result);
+          }
+        });
+      }
 
-    registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-  }
+      @Override
+      public void failed(int code, String message) {
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    if(!PasswordProvider.isLoggedIn()) {
-      finish();
-      Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-      startActivity(intent);
-      return;
-    }
+      }
+    });
+    loadPasswords.execute();
 
-
-    logout = true;
-  }
-
-  @Override
-  protected void onStop() {
-    Log.d(getClass().getSimpleName(), String.format("Logout: %s", logout));
-    if (logout) {
-      PasswordProvider.logoutComplete();
-      DatabaseProvider.logout();
-      finish();
-    }
-    super.onStop();
-  }
-
-  @Override
-  protected void onDestroy() {
-    unregisterReceiver(screenOffReceiver);
-    super.onDestroy();
+    //mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.lock_large, 1, 0.75f));
+    mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
   }
 
   @Override
   public void onBackPressed() {
-    AlertDialog alertDialog = new AlertDialog.Builder(this)
+    AlertBuilder builder = AlertBuilder.create(this)
         .setTitle("Logout")
         .setMessage("Are you sure to logout?")
-        .setNegativeButton("Discard", null)
-        .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            logout();
-          }
-        })
-        .create();
-    // TODO: set onKeyListener for alertdialog on back pressed
-    alertDialog.show();
+        .setNegativeButton("Discard")
+        .setPositiveButton("Logout")
+        .setCallback(mLogoutDialogCallback);
+
+    AlertDialog dialog = builder.getDialog();
+//    TODO: fix somehow
+//    dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+//      @Override
+//      public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+//        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+//          dialog.dismiss();
+//          startActivity(LoginActivity.class, false, R.anim.slide_in_left, R.anim.slide_out_right);
+//        }
+//        return true;
+//      }
+//    });
+
+    builder.show();
   }
 
-  private void logout() {
-    PasswordProvider.logoutComplete();
-    DatabaseProvider.logout();
-    logout = false;
+  public void logout() {
+    //PasswordProvider.logoutComplete();
+    //DatabaseProvider.logout();
+    BaseDatabaseActivity.logout = false;
 
-    Intent intent = new Intent(PasswordOverviewActivity.this, LoginActivity.class);
-    startActivity(intent);
+    super.onBackPressed();
 
-    PasswordOverviewActivity.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    PasswordOverviewActivity.super.onBackPressed();
-    ActivityCompat.finishAfterTransition(this);
+    startActivity(LoginActivity.class, false, R.anim.slide_in_left, R.anim.slide_out_right);
   }
 
   @Override
@@ -254,10 +184,10 @@ public class PasswordOverviewActivity extends AppCompatActivity {
     inflater.inflate(R.menu.passwordoverviewlayout_menu, menu);
 
     // init searchview
-    searchItem = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
-    searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-    searchView.setOnQueryTextListener(onQueryTextListener);
-    MenuItemCompat.setOnActionExpandListener(searchItem, onSearchViewOpen);
+    /*mMenuItemAsSearchViewWrapper = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
+    mSearchViewAsSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemAsSearchViewWrapper);
+    mSearchViewAsSearchView.setOnQueryTextListener(onQueryTextListener);
+    MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, onSearchViewOpen);*/
 
     return true;
   }
@@ -268,48 +198,71 @@ public class PasswordOverviewActivity extends AppCompatActivity {
 
     switch (id) {
       case R.id.passwordoverviewlayout_menuitem_order:
-
-        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+        AlertBuilder.create(this)
             .setView(R.layout.order_layout)
-            .setNegativeButton("discard", null)
-            .setPositiveButton("order", null)
-            .create();
-
-        alertDialog.setOnShowListener(new OnOrderDialogShowCallback(this));
-        alertDialog.show();
+            .setPositiveButton("order")
+            .setNegativeButton("discard")
+            .setCallback(mOrderDialogCallback)
+            .show();
         break;
       case R.id.passwordoverviewlayout_menuitem_logout:
         onBackPressed();
         break;
       case R.id.passwordoverviewlayout_menuitem_about:
         logout = false;
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
+        startActivity(AboutActivity.class);
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
         logout = false;
-        intent = new Intent(this, BackupRestoreActivity.class);
-        startActivity(intent);
+        startActivity(BackupRestoreActivity.class);
         break;
     }
 
     return true;
   }
 
-  public void makeSnackBar(String text) {
-    Snackbar.make(addPasswordFloatingActionButton, text, Snackbar.LENGTH_LONG).show();
-  }
-
   public void setRefreshing(final boolean refreshing) {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        swipeRefreshLayout.setRefreshing(refreshing);
+        mSwipeRefreshLayoutAsLoadingIndication.setRefreshing(refreshing);
       }
     });
   }
 
-  public void doNotLogout() {
-    logout = false;
+  @Override
+  protected View getSnackbarRelatedView() {
+    return this.mFloatingActionButtonAsAddPassword;
+  }
+
+  @Override
+  protected void onActivityChange() {
+    if(logout) {
+      mRecyclerViewAsPasswordsList.removeAllViews();
+      mRecyclerViewAsPasswordsList.destroyDrawingCache();
+      clearContainer();
+      clearChangeListener();
+    }
+  }
+
+  @Override
+  public void onItemAdded(int index, IContainer item) {
+    mPasswordOverviewAdapter.notifyDataSetChanged();
+    if(mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
+      mTextViewAsNoPasswordsYet.setVisibility(View.GONE);
+    }
+  }
+
+  @Override
+  public void onItemRemoved(int index, IContainer item) {
+    mPasswordOverviewAdapter.notifyItemRemoved(index);
+    if(mTextViewAsNoPasswordsYet.getVisibility() == View.GONE && containerCount() == 0) {
+      mTextViewAsNoPasswordsYet.setVisibility(View.VISIBLE);
+    }
+  }
+
+  @Override
+  public void onItemChanged(int index, IContainer oldItem, IContainer newItem) {
+
   }
 }

@@ -1,7 +1,7 @@
 // ILoginServiceRemote.aidl
 package com.typingsolutions.passwordmanager;
 
-import core.IServiceCallback;
+import com.typingsolutions.passwordmanager.IServiceCallback;
 
 interface ILoginServiceRemote {
     void increaseTries();
@@ -9,6 +9,8 @@ interface ILoginServiceRemote {
 
     int getRemainingTries();
     boolean isBlocked();
+
+    void stop();
 
     void registerCallback(IServiceCallback callback);
     void unregisterCallback(IServiceCallback callback);

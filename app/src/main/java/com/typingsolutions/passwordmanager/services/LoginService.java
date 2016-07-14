@@ -3,137 +3,192 @@ package com.typingsolutions.passwordmanager.services;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.IBinder;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
-import android.os.SystemClock;
-import android.util.JsonReader;
-import android.util.JsonWriter;
+import android.os.*;
 import android.util.Log;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
-import core.IServiceCallback;
-import core.Utils;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
+import com.typingsolutions.passwordmanager.IServiceCallback;
 
 
 public class LoginService extends Service {
 
-  public static final int SLEEP_TIME = 1000;
+  private static final int SLEEP_TIME = 1000;
 
-  // tries until block
-  public static final int TRIES_FOR_SMALL_BLOCK = 3;
-  public static final int TRIES_FOR_MEDIUM_BLOCK = 6;
-  public static final int TRIES_FOR_LARGE_BLOCK = 9;
-  public static final int TRIES_FOR_FINAL_BLOCK = 12;
+  private final RemoteCallbackList<IServiceCallback> mCallbacks = new RemoteCallbackList<>();
 
-  // block times in ms
-  public static final int SMALL_BLOCK_TIME = 30000;    // 0.5 minutes
-  public static final int MEDIUM_BLOCK_TIME = 60000;   // 1 minute
-  public static final int LARGE_BLOCK_TIME = 150000;   // 2.5 minutes
-  public static final int FINAL_BLOCK_TIME = 300000;   // 5 minutes
+  private int mTries;
+  private int mCurrentLockTime;
+  private int mCurrentMaxLockTime;
+  private volatile Looper mServiceLooper;
+  private volatile ServiceHandler mServiceHandler;
 
-  private final RemoteCallbackList<IServiceCallback> callbacks = new RemoteCallbackList<>();
+  private final ILoginServiceRemote.Stub mBinder = new LoginServiceBinder();
 
-  private int tries;
-  private int currentLockTime;
-  private int currentMaxLockTime;
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    HandlerThread thread = new HandlerThread("IntentService[" + "LoginThread" + "]");
+    thread.start();
+
+    mServiceLooper = thread.getLooper();
+    mServiceHandler = new ServiceHandler(mServiceLooper);
+  }
+
+  @Override
+  public IBinder onBind(Intent intent) {
+    Log.d(getClass().getSimpleName(), "onBind");
+
+    if (mTries != 0) {
+      Message msg = mServiceHandler.obtainMessage();
+      mServiceHandler.sendMessage(msg);
+    }
+
+    return mBinder;
+  }
+
+  @Override
+  public boolean onUnbind(Intent intent) {
+    Log.d(getClass().getSimpleName(), "onUnbind");
+    return true;
+  }
+
+  @Override
+  public int onStartCommand(Intent intent, int flags, int startId) {
+    Log.d(getClass().getSimpleName(), "onStartCommand");
+    int startCommand = super.onStartCommand(intent, flags, startId);
+
+    SharedPreferences prefs = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
+    mTries = prefs.getInt("mTries", 0);
+    mCurrentLockTime = prefs.getInt("mCurrentLockTime", 0);
+    mCurrentMaxLockTime = prefs.getInt("mCurrentMaxLockTime", 0);
+    Log.d(getClass().getSimpleName(), mTries + " " + mCurrentLockTime + " " + mCurrentMaxLockTime);
+
+    prefs.edit().clear().apply();
+
+    if (mTries == 0 && intent == null) {
+      startCommand = START_NOT_STICKY;
+      stopSelf();
+    }
 
 
-  private final Runnable blockRunnable = new Runnable() {
+    return startCommand;
+  }
+
+  @Override
+  public void onTaskRemoved(Intent rootIntent) {
+    super.onTaskRemoved(rootIntent);
+    Log.d(getClass().getSimpleName(), "onTaskRemoved");
+    SharedPreferences.Editor editor = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE).edit();
+    editor.putInt("mTries", mTries);
+    editor.putInt("mCurrentLockTime", mCurrentLockTime);
+    editor.putInt("mCurrentMaxLockTime", mCurrentMaxLockTime);
+    editor.apply();
+    Log.d(getClass().getSimpleName(), mTries + " " + mCurrentLockTime + " " + mCurrentMaxLockTime);
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    mServiceLooper.quit();
+    mCallbacks.kill();
+    Log.d(getClass().getSimpleName(), "onDestroy");
+  }
+
+  private class ServiceHandler extends Handler {
+    ServiceHandler(Looper looper) {
+      super(looper);
+    }
+
     @Override
-    public void run() {
+    public void handleMessage(Message msg) {
       try {
         long lastTime = SystemClock.elapsedRealtime();
 
-        int size = callbacks.beginBroadcast();
+        int size = mCallbacks.beginBroadcast();
 
         for (int i = 0; i < size; i++)
-          callbacks.getBroadcastItem(i).onStart();
+          mCallbacks.getBroadcastItem(i).onStart();
 
-        callbacks.finishBroadcast();
+        mCallbacks.finishBroadcast();
 
         do {
           long time = SystemClock.elapsedRealtime();
           long diff = time - lastTime;
           lastTime = time;
 
-          currentLockTime -= diff;
+          mCurrentLockTime -= diff;
 
-          size = callbacks.beginBroadcast();
+          size = mCallbacks.beginBroadcast();
 
           for (int i = 0; i < size; i++) {
-            callbacks.getBroadcastItem(i).getLockTime(currentLockTime, currentMaxLockTime);
+            mCallbacks.getBroadcastItem(i).getLockTime(mCurrentLockTime, mCurrentMaxLockTime);
           }
 
-          callbacks.finishBroadcast();
+          mCallbacks.finishBroadcast();
 
           SystemClock.sleep(SLEEP_TIME);
-        } while (currentLockTime > 0);
+        } while (mCurrentLockTime > 0);
 
-        size = callbacks.beginBroadcast();
+        size = mCallbacks.beginBroadcast();
 
         for (int i = 0; i < size; i++)
-          callbacks.getBroadcastItem(i).onFinish();
+          mCallbacks.getBroadcastItem(i).onFinish();
 
-        callbacks.finishBroadcast();
+        mCallbacks.finishBroadcast();
       } catch (RemoteException e) {
         Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
       }
     }
-  };
+  }
 
-  private final ILoginServiceRemote.Stub binder = new ILoginServiceRemote.Stub() {
+  private class LoginServiceBinder extends ILoginServiceRemote.Stub {
     @Override
     public void increaseTries() throws RemoteException {
-      tries++;
+      mTries++;
       boolean start = false;
-      if (tries == TRIES_FOR_SMALL_BLOCK) {
-        currentMaxLockTime = SMALL_BLOCK_TIME;
-        currentLockTime = currentMaxLockTime;
+      if (mTries == 3) {
+        mCurrentMaxLockTime = 30 * 1000;
+        mCurrentLockTime = mCurrentMaxLockTime;
         start = true;
-      } else if (tries == TRIES_FOR_MEDIUM_BLOCK) {
-        currentMaxLockTime = MEDIUM_BLOCK_TIME;
-        currentLockTime = currentMaxLockTime;
+      } else if (mTries == 6) {
+        mCurrentMaxLockTime = 60 * 1000;
+        mCurrentLockTime = mCurrentMaxLockTime;
         start = true;
-      } else if (tries == TRIES_FOR_LARGE_BLOCK) {
-        currentMaxLockTime = LARGE_BLOCK_TIME;
-        currentLockTime = currentMaxLockTime;
+      } else if (mTries == 9) {
+        mCurrentMaxLockTime = 15 * 1000;
+        mCurrentLockTime = mCurrentMaxLockTime;
         start = true;
-      } else if (tries == TRIES_FOR_FINAL_BLOCK) {
-        currentMaxLockTime = FINAL_BLOCK_TIME;
-        currentLockTime = currentMaxLockTime;
+      } else if (mTries == 12) {
+        mCurrentMaxLockTime = 30 * 1000;
+        mCurrentLockTime = mCurrentMaxLockTime;
         start = true;
-      } else if (tries > TRIES_FOR_FINAL_BLOCK && tries % TRIES_FOR_SMALL_BLOCK == 0) {
-        currentMaxLockTime = FINAL_BLOCK_TIME;
-        currentLockTime = currentMaxLockTime;
+      } else if (mTries > 12 && mTries % 12 == 0) {
+        mCurrentMaxLockTime = 30 * 1000;
+        mCurrentLockTime = mCurrentMaxLockTime;
         start = true;
       }
 
       if (start) {
-        new Thread(blockRunnable).start();
+        Message msg = mServiceHandler.obtainMessage();
+        mServiceHandler.sendMessage(msg);
       }
     }
 
     @Override
     public void resetTries() throws RemoteException {
-      tries = 0;
+      mTries = 0;
     }
 
     @Override
     public int getRemainingTries() throws RemoteException {
-      if (tries < TRIES_FOR_SMALL_BLOCK) {
-        return TRIES_FOR_SMALL_BLOCK - tries - 1;
-      } else if (tries < TRIES_FOR_MEDIUM_BLOCK) {
-        return TRIES_FOR_MEDIUM_BLOCK - tries - 1;
-      } else if (tries < TRIES_FOR_LARGE_BLOCK) {
-        return TRIES_FOR_LARGE_BLOCK - tries - 1;
-      } else if (tries < TRIES_FOR_FINAL_BLOCK) {
-        return TRIES_FOR_FINAL_BLOCK - tries - 1;
-      } else if (tries >= TRIES_FOR_FINAL_BLOCK) {
+      if (mTries < 3) {
+        return 3 - mTries - 1;
+      } else if (mTries < 6) {
+        return 6 - mTries - 1;
+      } else if (mTries < 9) {
+        return 9 - mTries - 1;
+      } else if (mTries < 12) {
+        return 12 - mTries - 1;
+      } else if (mTries >= 12) {
         return 1;
       }
       return 0;
@@ -141,135 +196,27 @@ public class LoginService extends Service {
 
     @Override
     public boolean isBlocked() throws RemoteException {
-      return currentLockTime > 0;
+      return mCurrentLockTime > 0;
+    }
+
+    @Override
+    public void stop() throws RemoteException {
+      stopSelf();
     }
 
 
     @Override
     public void registerCallback(IServiceCallback callback) throws RemoteException {
       if (callback != null) {
-        callbacks.register(callback);
+        mCallbacks.register(callback);
       }
     }
 
     @Override
     public void unregisterCallback(IServiceCallback callback) throws RemoteException {
       if (callback != null) {
-        callbacks.unregister(callback);
+        mCallbacks.unregister(callback);
       }
     }
-  };
-
-  @Override
-  public IBinder onBind(Intent intent) {
-    load();
-    return binder;
   }
-
-  @Override
-  public void onRebind(Intent intent) {
-    load();
-  }
-
-  @Override
-  public boolean onUnbind(Intent intent) {
-    Log.d(getClass().getSimpleName(), "Service -> unbind/stop");
-
-    write();
-
-    return true;
-  }
-
-  @Override
-  public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(getClass().getSimpleName(), "Service -> start");
-    load();
-    return START_STICKY;
-  }
-
-  @Override
-  public void onDestroy() {
-    Log.d(getClass().getSimpleName(), "Service -> destroy");
-    write();
-  }
-
-  private void load() {
-    SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
-    String json = preferences.getString("json", "");
-    String hash = preferences.getString("hash", "");
-
-    if (json.equals("") && hash.equals(""))
-      return;
-
-    try {
-      String computedHash = Utils.getHashedString(json);
-
-      if (!computedHash.equals(hash)) {
-        tries = TRIES_FOR_SMALL_BLOCK;
-        currentMaxLockTime = FINAL_BLOCK_TIME;
-        currentLockTime = currentMaxLockTime;
-        return;
-      }
-
-      StringReader reader = new StringReader(json);
-      JsonReader jsonReader = new JsonReader(reader);
-
-      jsonReader.beginObject();
-      while (jsonReader.hasNext()) {
-        String name = jsonReader.nextName();
-        if (name.equals("tries")) {
-          tries = jsonReader.nextInt();
-        } else if (name.equals("time")) {
-          currentLockTime = jsonReader.nextInt();
-        } else if (name.equals("maxTime")) {
-          currentMaxLockTime = jsonReader.nextInt();
-        }
-      }
-      jsonReader.endObject();
-      reader.close();
-      jsonReader.close();
-
-      if (currentLockTime > 0) {
-        Thread thread = new Thread(blockRunnable);
-        thread.start();
-      }
-    } catch (NoSuchAlgorithmException | IOException e) {
-      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-    } finally {
-      preferences.edit().clear().apply();
-    }
-  }
-
-  private void write() {
-    StringWriter writer = new StringWriter();
-    JsonWriter jsonWriter = new JsonWriter(writer);
-
-    try {
-      jsonWriter.beginObject();
-      jsonWriter.name("tries").value(tries);
-      jsonWriter.name("time").value(currentLockTime);
-      jsonWriter.name("maxTime").value(currentMaxLockTime);
-      jsonWriter.endObject();
-
-      String json = writer.toString();
-      writer.flush();
-      writer.close();
-      jsonWriter.flush();
-      jsonWriter.close();
-
-      String hash = Utils.getHashedString(json);
-
-      SharedPreferences preferences = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE);
-      SharedPreferences.Editor editor = preferences.edit();
-
-      editor.putString("json", json)
-          .putString("hash", hash)
-          .apply();
-
-
-    } catch (IOException | NoSuchAlgorithmException e) {
-      Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
-    }
-  }
-
 }

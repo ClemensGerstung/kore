@@ -1,5 +1,6 @@
 package core;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -8,6 +9,7 @@ import net.sqlcipher.database.*;
 
 import java.io.File;
 
+@Deprecated
 public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String DATABASE_NAME = "password.manager.database.db";
@@ -23,7 +25,9 @@ public class DatabaseProvider extends SQLiteOpenHelper {
 
   public static final String INSERT_NEW_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (?, DATE('now'), ?);";
 
-  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId ORDER BY p.id;";
+  public static final String INSERT_EXISTING_HISTORY = "INSERT INTO history(password, changed, passwordId) VALUES (?, ?, ?);";
+
+  public static final String GET_PASSWORDS = "SELECT p.id, p.username, p.program, p.position, h.id, h.password, h.changed FROM passwords p JOIN history h ON p.id = h.passwordId ORDER BY p.position;";
 
   public static final String UPDATE_PASSWORD_BY_ID = "UPDATE passwords SET program = ?, username = ? WHERE id = ?;";
 
@@ -57,12 +61,8 @@ public class DatabaseProvider extends SQLiteOpenHelper {
   }
 
   public boolean needSetup() {
-    try {
-      File database = context.getDatabasePath(DATABASE_NAME);
-      return !database.exists();
-    } catch (Exception e) {
-      return true;
-    }
+    return false;
+
   }
 
   public boolean setup() {
@@ -145,6 +145,10 @@ public class DatabaseProvider extends SQLiteOpenHelper {
     }
 
     return affectedRows;
+  }
+
+  public SQLiteDatabase getDatabase() {
+    return getWritableDatabase(password);
   }
 
   private void bindParams(SQLiteStatement compiled, Object[] args) {

@@ -6,3 +6,7 @@
 /app/build
 *.iml
 gradlew*
+*.apk
+app/gen/
+captures/
+local.properties
