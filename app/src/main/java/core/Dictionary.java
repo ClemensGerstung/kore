@@ -23,7 +23,7 @@ import java.util.Iterator;
  *
  * @param <K> the type of the key
  * @param <V> the type of the value
- */
+ */@Deprecated
 public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<Dictionary.Element>, Cloneable {
 
   /**
@@ -583,6 +583,8 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
   }
 
   public Element<K,V> removeFirst() {
+    if(first == null) return null;
+
     Element<K,V> element = first.clone();
     if(first.hasNext()) {
       first = first.next;
@@ -870,6 +872,12 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     quickSort(comparator, i + 1, high, flag);
   }
 
+  /**
+   * Swaps an item from a position to another
+   *
+   * @param from position
+   * @param to position
+   */
   protected void swap(int from, int to) {
     Element<K, V> temp = new Element<>(get(from));
     set(from, get(to));

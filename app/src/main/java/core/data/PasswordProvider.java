@@ -1,21 +1,28 @@
 package core.data;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.os.Debug;
 import android.support.annotation.Nullable;
-import android.support.v4.util.DebugUtils;
 import android.util.Log;
 import core.DatabaseProvider;
 import core.Dictionary;
+import core.Utils;
 import core.async.AsyncDatabasePipeline;
-import core.exceptions.PasswordProviderException;
-import core.exceptions.UserProviderException;
+import core.async.SqlDeleteTask;
+import core.async.SqlInsertTask;
+import core.async.SqlUpdateTask;
+import core.callback.AddHistoryCallback;
+import core.callback.AddNewHistoryCallback;
+import core.callback.AddPasswordCallback;
 import net.sqlcipher.Cursor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Deprecated
 public class PasswordProvider {
   private static PasswordProvider Instance;
 
@@ -43,58 +50,60 @@ public class PasswordProvider {
     return passwords.get(index);
   }
 
-  public int merge(Cursor cursor) {
+  public int merge(List<Password> passwords) {
     int merged = 0;
 
-    if (!cursor.moveToNext())
-      return 0;
-    Password password = Password.getFromCursor(cursor);
+    if (passwords.size() == 0)
+      return merged;
 
-    while (cursor.moveToNext()) {
-      Password nextPassword = Password.getFromCursor(cursor);
+    // iterate through all items in the list to merge
+    for (final Password password : passwords) {
 
-      if (nextPassword.equals(password)) {
-        password.merge(nextPassword);
-      } else {
-        mergeOrAdd(password);
+      // is the mTextViewAsPassword already existing?
+      boolean exists = false;
+
+      // iterate through all existing passwords
+      for (final Password existing : this.passwords) {
+
+        // equals the current iterator of the existing items the current iterator of the merging passwords?
+        if (password.getUsername().equals(existing.getUsername()) && password.getProgram().equals(existing.getProgram())) {
+
+          // yes - iterate through all history items of the merging mTextViewAsPassword and add them to the existing
+          for (final PasswordHistory history : password.getPasswordHistory().values()) {
+
+            // current existing mTextViewAsPassword already contains the merging history item
+            if (existing.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
+              continue;
+
+            AddHistoryCallback historyCallback = new AddHistoryCallback(context, history.getValue(), existing, history.getChangedDate());
+
+            ContentValues values = new ContentValues(3);
+            values.put("password", history.getValue());
+            values.put("changed", Utils.getStringFromDate(history.getChangedDate()));
+            values.put("passwordId", existing.getId());
+
+            SqlInsertTask insertTask = new SqlInsertTask(DatabaseProvider.getConnection(context).getDatabase(), "history", "", values, historyCallback);
+            insertTask.execute();
+          }
+
+          // mTextViewAsPassword exists and doesn't need to be added separately
+          exists = true;
+          merged++;
+          break;
+        }
+      }
+
+      // merging mTextViewAsPassword doesn't exist in the existing list
+      if (!exists) {
+        final int position = this.passwords.size() + 1;
+
+
 
         merged++;
-        password.orderHistoryByDate();
-        password = nextPassword;
       }
     }
-
-    mergeOrAdd(password);
-    merged++;
 
     return merged;
-  }
-
-  private void mergeOrAdd(Password password) {
-    boolean contains = false;
-
-    for (Password existingPassword : passwords) {
-      contains = false;
-      if (!existingPassword.simpleEquals(password))
-        continue;
-
-      Collection<PasswordHistory> values = password.getPasswordHistory().values();
-      for (PasswordHistory value : values) {
-        if (existingPassword.getPasswordHistory().containsValue(value, Dictionary.IterationOption.Forwards))
-          continue;
-        addHistoryItemAsync(existingPassword, value);
-      }
-      contains = true;
-      break;
-    }
-
-    if (!contains) {
-      addPassword(password);
-    }
-  }
-
-  private void addHistoryItemAsync(Password password, PasswordHistory item) {
-
   }
 
   public Password getById(int id) {
@@ -126,17 +135,17 @@ public class PasswordProvider {
   public void order(int which) {
     Comparator<Password> comparator = null;
 
-    if (which == 0) {           // order by username ascending
+    if (which == 0) {           // order by mTextViewAsUsername ascending
       comparator = new PasswordComparator("getUsername", false);
-    } else if (which == 1) {    // order by username descending
+    } else if (which == 1) {    // order by mTextViewAsUsername descending
       comparator = new PasswordComparator("getUsername", true);
-    } else if (which == 2) {    // order by password ascending
+    } else if (which == 2) {    // order by mTextViewAsPassword ascending
       comparator = new PasswordComparator("getFirstItem", false);
-    } else if (which == 3) {    // order by password descending
+    } else if (which == 3) {    // order by mTextViewAsPassword descending
       comparator = new PasswordComparator("getFirstItem", true);
-    } else if (which == 4) {    // order by program ascending
+    } else if (which == 4) {    // order by mTextViewAsProgram ascending
       comparator = new PasswordComparator("getProgram", false);
-    } else if (which == 5) {    // order by program descending
+    } else if (which == 5) {    // order by mTextViewAsProgram descending
       comparator = new PasswordComparator("getProgram", true);
     }
 
@@ -148,25 +157,22 @@ public class PasswordProvider {
     }
   }
 
-  public Password addPassword(String program, String username, String password) throws Exception {
+  public void addPassword(String program, String username, String password) throws Exception {
     int position = passwords.size() + 1;
 
     DatabaseProvider provider = DatabaseProvider.getConnection(context);
-    long passwordId = provider.insert(DatabaseProvider.INSERT_NEW_PASSWORD, username, program, position);
-    if (passwordId < 0)
-      throw new PasswordProviderException("Couldn't insert your password");
+    AddPasswordCallback callback = new AddPasswordCallback(context, username, program, password, position);
 
-    long historyId = provider.insert(DatabaseProvider.INSERT_NEW_HISTORY, password, passwordId);
-    if (historyId < 0)
-      throw new PasswordProviderException("Couldn't insert your password!");
+    ContentValues values = new ContentValues(3);
+    values.put("username", username);
+    values.put("program", program);
+    values.put("position", position);
 
-    Password passwordObject = new Password((int) passwordId, position, username, program);
-    passwordObject.addPasswordHistoryItem((int) historyId, PasswordHistory.createItem(password));
-
-    return addPassword(passwordObject);
+    SqlInsertTask insert = new SqlInsertTask(provider.getDatabase(), "passwords", "", values, callback);
+    insert.execute();
   }
 
-  public Password addPassword(Password password) {
+  public void addPassword(Password password) {
 
     password.orderHistoryByDate();
 
@@ -175,34 +181,18 @@ public class PasswordProvider {
 
     if (passwordActionListener != null)
       passwordActionListener.onPasswordAdded(password);
-
-    return password;
   }
 
-  public int editPassword(final int id, String newPassword) throws Exception {
-    final PasswordHistory history = PasswordHistory.createItem(newPassword);
+  public void editPassword(final int id, String newPassword) throws Exception {
+    AddHistoryCallback callback = new AddHistoryCallback(context, newPassword, this.getById(id));
 
-    AsyncDatabasePipeline.AsyncQueryListener listener = new AsyncDatabasePipeline.AsyncQueryListener() {
-      @Override
-      public void executed(Object... results) {
-        if (!(results[0] instanceof Long))
-          return;
+    ContentValues values = new ContentValues(3);
+    values.put("password", newPassword);
+    values.put("changed", Utils.getToday());
+    values.put("passwordId", id);
 
-        long historyId = (Long) results[0];
-        Password password = getById(id);
-        password.addPasswordHistoryItem((int) historyId, history);
-
-        editPassword(password);
-      }
-
-      @Override
-      public void failed(String message) {
-      }
-    };
-
-    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.INSERT_NEW_HISTORY, listener, newPassword, id);
-
-    return 0;
+    SqlInsertTask insertTask = new SqlInsertTask(DatabaseProvider.getConnection(context).getDatabase(), "history", "", values, callback);
+    insertTask.execute();
   }
 
   public void editPassword(int id, @Nullable String program, @Nullable String username) {
@@ -210,12 +200,17 @@ public class PasswordProvider {
     password.setUsername(username);
     password.setProgram(program);
 
-    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.UPDATE_PASSWORD_BY_ID, null, program, username, id);
+    ContentValues contentValues = new ContentValues(2);
+    contentValues.put("username", username);
+    contentValues.put("program", program);
+
+    SqlUpdateTask updateTask = new SqlUpdateTask(DatabaseProvider.getConnection(context).getDatabase(), "passwords", contentValues, "id=?", new String[]{Integer.toString(id)});
+    updateTask.execute();
 
     editPassword(password);
   }
 
-  void editPassword(Password password) {
+  public void editPassword(Password password) {
     int index = passwords.indexOf(password);
     passwords.set(index, password);
 
@@ -232,13 +227,11 @@ public class PasswordProvider {
 
     List<Integer> list = new ArrayList<>(password.getPasswordIds());
     for (Integer i : list) {
-      AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.REMOVE_HISTORY_BY_ID, null, i);
-      //provider.remove(DatabaseProvider.REMOVE_HISTORY_BY_ID, i);
+      SqlDeleteTask deleteTask = new SqlDeleteTask(provider.getDatabase(), "history", "id=?", new String[]{i.toString()});
+      deleteTask.execute();
     }
 
-    //provider.remove(DatabaseProvider.REMOVE_PASSWORD_BY_ID, password.getId());
-
-    AsyncDatabasePipeline.getPipeline(context).addQuery(DatabaseProvider.REMOVE_PASSWORD_BY_ID, null, password.getId());
+    SqlDeleteTask deleteTask = new SqlDeleteTask(provider.getDatabase(), "passwords", "id=?", new String[] {Integer.toString(password.getId())});
 
     passwords.remove(password);
 
@@ -253,6 +246,8 @@ public class PasswordProvider {
     Password fromPassword = get(from);
     Password toPassword = get(to);
     fromPassword.swapPositionWith(toPassword);
+
+    // TODO: update in database
   }
 
   public void setPasswordActionListener(PasswordActionListener passwordActionListener) {
@@ -265,6 +260,33 @@ public class PasswordProvider {
 
   public void isSafe(boolean safe) {
     this.safe = safe;
+  }
+
+  public static List<Password> getPasswords(Cursor cursor) {
+    List<Password> passwords = new ArrayList<>();
+    Password password = new Password(-1, -1, null, null);
+
+    if (cursor.moveToNext())
+      password = Password.getFromCursor(cursor);
+
+    while (cursor.moveToNext()) {
+      Password nextPassword = Password.getFromCursor(cursor);
+
+      if (nextPassword.equals(password)) {
+        password.merge(nextPassword);
+      } else {
+        password.orderHistoryByDate();
+        passwords.add(password);
+
+        password = nextPassword;
+      }
+    }
+
+    password.orderHistoryByDate();
+    passwords.add(password);
+    cursor.close();
+
+    return passwords;
   }
 
   public interface PasswordActionListener {

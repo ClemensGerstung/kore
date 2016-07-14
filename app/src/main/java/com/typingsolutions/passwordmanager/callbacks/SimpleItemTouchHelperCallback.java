@@ -4,17 +4,19 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import com.typingsolutions.passwordmanager.adapter.IItemTouchHelperAdapter;
-import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
+import android.util.Log;
+import com.typingsolutions.passwordmanager.BaseAdapter;
+import com.typingsolutions.passwordmanager.BaseViewHolder;
 import com.typingsolutions.passwordmanager.adapter.viewholder.IItemTouchHelperViewHolder;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
-  private Context context;
-  private IItemTouchHelperAdapter adapter;
+  private Context mContext;
+  private BaseAdapter mAdapter;
+  private BaseViewHolder mViewHolder;
 
-  public SimpleItemTouchHelperCallback(Context context, IItemTouchHelperAdapter adapter) {
-    this.context = context;
-    this.adapter = adapter;
+  public SimpleItemTouchHelperCallback(Context context, BaseAdapter adapter) {
+    this.mContext = context;
+    this.mAdapter = adapter;
   }
 
   @Override
@@ -36,28 +38,33 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
   @Override
   public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
-    adapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+    mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
     return true;
   }
 
   @Override
   public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-    adapter.onItemDismiss(viewHolder.getAdapterPosition());
+    mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
   }
 
   @Override
   public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
     super.clearView(recyclerView, viewHolder);
 
-    IItemTouchHelperViewHolder itemViewHolder = (IItemTouchHelperViewHolder) viewHolder;
+    BaseViewHolder itemViewHolder = (BaseViewHolder) viewHolder;
     itemViewHolder.onItemClear();
   }
 
   @Override
   public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+    // TODO: check why onItemSelected isn't called the first time when dragged
+    if(viewHolder != null && actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+      mViewHolder = (BaseViewHolder) viewHolder;
+    }
     if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-      IItemTouchHelperViewHolder itemViewHolder = (IItemTouchHelperViewHolder) viewHolder;
-      itemViewHolder.onItemSelected();
+      mViewHolder.onItemSelected();
+    } else {
+      mViewHolder.onItemReleased();
     }
 
     super.onSelectedChanged(viewHolder, actionState);

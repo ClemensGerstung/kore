@@ -7,6 +7,7 @@ import core.Dictionary;
 import java.util.Collection;
 import java.util.Comparator;
 
+@Deprecated
 public class Password {
   private int id;
   private int position;
@@ -15,7 +16,7 @@ public class Password {
   private core.Dictionary<Integer, PasswordHistory> passwordHistory;
 
 
-  Password(int id, int position, String username, String program) {
+  public Password(int id, int position, String username, String program) {
     this.id = id;
     this.position = position;
     this.username = username;
@@ -46,10 +47,6 @@ public class Password {
     if (id != password.id) return false;
     if (position != password.position) return false;
     return username.equals(password.username) && program.equals(password.program);
-  }
-
-  public boolean simpleEquals(Password password) {
-    return password.program.equals(program) && password.username.equals(username);
   }
 
   @Override

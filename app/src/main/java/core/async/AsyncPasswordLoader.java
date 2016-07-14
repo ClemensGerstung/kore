@@ -8,6 +8,7 @@ import core.DatabaseProvider;
 import core.data.Password;
 import core.data.PasswordProvider;
 
+@Deprecated
 public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
   private Context context;
   private net.sqlcipher.Cursor cursor;
@@ -31,11 +32,11 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
       if (!cursor.moveToNext())
         return null;
       Password password = Password.getFromCursor(cursor);
-      //Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", password.getId(), password.getProgram(), password.getUsername(), password.getFirstItem()));
+      Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", password.getId(), password.getProgram(), password.getUsername(), password.getFirstItem()));
 
       while (cursor.moveToNext()) {
         Password nextPassword = Password.getFromCursor(cursor);
-        //Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", nextPassword.getId(), nextPassword.getProgram(), nextPassword.getUsername(), nextPassword.getFirstItem()));
+        Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", nextPassword.getId(), nextPassword.getProgram(), nextPassword.getUsername(), nextPassword.getFirstItem()));
         if (nextPassword.equals(password)) {
           password.merge(nextPassword);
         } else {
@@ -45,11 +46,12 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
       }
 
       PasswordProvider.getInstance(context).addPassword(password);
-      cursor.close();
-      provider.close();
 
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
+    } finally {
+      cursor.close();
+      provider.close();
     }
 
     return null;

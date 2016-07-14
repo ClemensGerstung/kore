@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:cardElevation="@dimen/dimen_sm"
+                                    app:cardCornerRadius="@dimen/zero"
+                                    app:contentPadding="@dimen/dimen_lg">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/darkgrey"
+                  android:layout_marginBottom="@dimen/dimen_md"
+                  style="?android:attr/textAppearanceMedium"
+                  android:text="Almost done..."/>
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/black"
+                  android:layout_marginTop="@dimen/dimen_sm"
+                  android:layout_marginBottom="@dimen/dimen_sm"
+                  style="?android:attr/textAppearanceSmall"
+                  android:text="@string/pim_hin"/>
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/black"
+                  android:layout_marginTop="@dimen/dimen_sm"
+                  android:layout_marginBottom="@dimen/dimen_sm"
+                  style="?android:attr/textAppearanceSmall"
+                  android:text="@string/pim_instructions"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">
+            <EditText android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/black"
+                      android:id="@+id/setuplayout_edittext_pim"
+                      android:textColorHint="@color/darkgrey"
+                      android:inputType="numberPassword"
+                      android:hint="Your secret number"/>
+        </android.support.design.widget.TextInputLayout>
+
+
+        <GridLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="1">
+            <Button android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:text="Back"
+                    android:id="@+id/setuplayout_button_pimprev"
+                    android:layout_marginTop="@dimen/dimen_sm"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_gravity="end"
+                    android:textColor="@color/mediumgrey"/>
+
+            <Button android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="Done"
+                    android:id="@+id/setuplayout_button_setuppim"
+                    android:layout_marginTop="@dimen/dimen_sm"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_gravity="end"
+                    android:textColor="@color/black"/>
+        </GridLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

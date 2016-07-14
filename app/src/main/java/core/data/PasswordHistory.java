@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.Date;
 
+@Deprecated
 public class PasswordHistory {
   private String value;
   private Date changedDate;
@@ -18,7 +19,7 @@ public class PasswordHistory {
   PasswordHistory() {
   }
 
-  PasswordHistory(String value, Date changedDate) {
+  public PasswordHistory(String value, Date changedDate) {
     this.value = value;
     this.changedDate = changedDate;
   }
