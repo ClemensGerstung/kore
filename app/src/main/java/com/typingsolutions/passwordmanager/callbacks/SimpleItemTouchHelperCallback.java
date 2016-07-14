@@ -4,6 +4,7 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import com.typingsolutions.passwordmanager.BaseAdapter;
 import com.typingsolutions.passwordmanager.BaseViewHolder;
 import com.typingsolutions.passwordmanager.adapter.viewholder.IItemTouchHelperViewHolder;
@@ -11,6 +12,7 @@ import com.typingsolutions.passwordmanager.adapter.viewholder.IItemTouchHelperVi
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   private Context mContext;
   private BaseAdapter mAdapter;
+  private BaseViewHolder mViewHolder;
 
   public SimpleItemTouchHelperCallback(Context context, BaseAdapter adapter) {
     this.mContext = context;
@@ -55,9 +57,14 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
   @Override
   public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+    // TODO: check why onItemSelected isn't called the first time when dragged
+    if(viewHolder != null && actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+      mViewHolder = (BaseViewHolder) viewHolder;
+    }
     if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-      BaseViewHolder itemViewHolder = (BaseViewHolder) viewHolder;
-      itemViewHolder.onItemSelected();
+      mViewHolder.onItemSelected();
+    } else {
+      mViewHolder.onItemReleased();
     }
 
     super.onSelectedChanged(viewHolder, actionState);
