@@ -25,6 +25,12 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
 
   public PasswordOverviewViewHolder(final PasswordOverviewActivity activity, final View itemView) {
     super(activity, itemView);
+    itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        startDetailActivity();
+      }
+    });
 
     this.mActivity = activity;
 

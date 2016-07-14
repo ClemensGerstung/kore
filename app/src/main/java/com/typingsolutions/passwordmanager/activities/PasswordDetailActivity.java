@@ -17,6 +17,8 @@ import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordTextWatcher;
+import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
+import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.DatabaseProvider;
@@ -64,11 +66,19 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     TextView nohistory = (TextView) findViewById(R.id.passworddetaillayout_textview_nohistory);
 
     setSupportActionBar(toolbar);
-    //toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
+    toolbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 
     passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
     if (passwordId == -1) return;
-    Password currentPassword = PasswordProvider.getInstance(this).getById(passwordId);
+    PasswordContainer currentPassword = null;
+
+    for(int i = 0; i < containerCount(); i++) {
+      PasswordContainer iterator = (PasswordContainer) getContainerAt(i);
+      if(iterator.getId() == passwordId) {
+        currentPassword = iterator;
+        break;
+      }
+    }
 
     layoutManager = new LinearLayoutManager(this);
     passwordHistoryAdapter = new PasswordHistoryAdapter(this, passwordId);
@@ -87,7 +97,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     username.setText(usernameString);
     username.addTextChangedListener(usernameTextWatcher);
 
-    String passwordString = currentPassword.getFirstItem();
+    String passwordString = currentPassword.getDefaultPassword();
     passwordTextWatcher = new AddPasswordTextWatcher(this, passwordString, true);
     password.setText(passwordString);
     password.addTextChangedListener(passwordTextWatcher);
@@ -103,7 +113,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     ViewUtils.setColor(header, programString, passwordString);
 
-    if (currentPassword.getHistoryCount() > 1) {
+    if (currentPassword.getPasswordItems().size() > 1) {
       nohistory.setVisibility(View.GONE);
       passwordHistory.setVisibility(View.VISIBLE);
       passwordHistory.setNestedScrollingEnabled(false);
