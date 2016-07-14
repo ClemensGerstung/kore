@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 public abstract class BaseAdapter<TViewHolder extends BaseViewHolder, TActivity extends BaseActivity>
     extends RecyclerView.Adapter<TViewHolder> {
 
-  protected TActivity activity;
+  protected TActivity mActivity;
   protected LayoutInflater inflater;
 
   public BaseAdapter(TActivity activity) {
-    this.activity = activity;
+    this.mActivity = activity;
     this.inflater = LayoutInflater.from(activity);
   }
 

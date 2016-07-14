@@ -1,9 +1,9 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,15 +14,19 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
+import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.LogoutDialogCallback;
 import com.typingsolutions.passwordmanager.callbacks.OrderDialogShowCallback;
 import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
+import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
-public class PasswordOverviewActivity extends BaseDatabaseActivity {
+import java.util.List;
+
+public class PasswordOverviewActivity extends BaseDatabaseActivity
+    implements IListChangedListener<IContainer> {
 
   private RecyclerView mRecyclerViewAsPasswordsList;
   private Toolbar mToolbarAsActionBar;
@@ -33,7 +37,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   private SearchView mSearchViewAsSearchView;
   private ImageView mImageViewAsBackground;
 
-  private PasswordOverviewAdapter passwordOverviewAdapter;
+  private PasswordOverviewAdapter mPasswordOverviewAdapter;
   private LogoutDialogCallback mLogoutDialogCallback = new LogoutDialogCallback(this);
   private OrderDialogShowCallback mOrderDialogCallback = new OrderDialogShowCallback(this);
 
@@ -42,7 +46,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
     public boolean onMenuItemActionCollapse(MenuItem item) {
-      passwordOverviewAdapter.resetFilter();
+//      mPasswordOverviewAdapter.resetFilter();
       return true;
     }
 
@@ -60,7 +64,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
     @Override
     public boolean onQueryTextChange(String newText) {
-      passwordOverviewAdapter.filter(newText);
+//      mPasswordOverviewAdapter.filter(newText);
       return false;
     }
   };
@@ -84,7 +88,10 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
 
 
     mSwipeRefreshLayoutAsLoadingIndication.setEnabled(false);
-    mSwipeRefreshLayoutAsLoadingIndication.setColorSchemeColors(R.color.orange, R.color.green, R.color.blue);
+    mSwipeRefreshLayoutAsLoadingIndication.setColorSchemeColors(
+        ContextCompat.getColor(this, R.color.orange),
+        ContextCompat.getColor(this, R.color.green),
+        ContextCompat.getColor(this, R.color.blue));
 
     // set onClick-event to add new passwords
     mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
@@ -93,24 +100,44 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
     setSupportActionBar(mToolbarAsActionBar);
 
     // init and set adapter
-    passwordOverviewAdapter = new PasswordOverviewAdapter(this);
+    mPasswordOverviewAdapter = new PasswordOverviewAdapter(this);
     layoutManager = new LinearLayoutManager(this);
-    mRecyclerViewAsPasswordsList.setAdapter(passwordOverviewAdapter);
+    mRecyclerViewAsPasswordsList.setAdapter(mPasswordOverviewAdapter);
     mRecyclerViewAsPasswordsList.setLayoutManager(layoutManager);
 
     //PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
     //mRecyclerViewAsPasswordsList.setItemAnimator(animator);
 
-    SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, passwordOverviewAdapter);
+    SimpleItemTouchHelperCallback simpleItemTouchHelperCallback = new SimpleItemTouchHelperCallback(this, mPasswordOverviewAdapter);
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchHelperCallback);
     itemTouchHelper.attachToRecyclerView(mRecyclerViewAsPasswordsList);
 
+    registerListChangedListener(this);
+
     // make secure
-    if (!debug)
+    if (!debug) {
       setSecurityFlags();
+    }
 
     // load passwords in background
-    //LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
+    LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
+    loadPasswords.registerCallback(new BaseAsyncTask.IExecutionCallback<PasswordContainer>() {
+      @Override
+      public void executed(final PasswordContainer result) {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            addContainerItem(result);
+          }
+        });
+      }
+
+      @Override
+      public void failed(int code, String message) {
+
+      }
+    });
+    loadPasswords.execute();
 
     //mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.lock_large, 1, 0.75f));
     mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
@@ -206,5 +233,26 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity {
   @Override
   protected View getSnackbarRelatedView() {
     return this.mFloatingActionButtonAsAddPassword;
+  }
+
+  @Override
+  public void onItemAdded(int index, IContainer item) {
+    mPasswordOverviewAdapter.notifyDataSetChanged();
+    if(mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
+      mTextViewAsNoPasswordsYet.setVisibility(View.GONE);
+    }
+  }
+
+  @Override
+  public void onItemRemoved(int index, IContainer item) {
+    mPasswordOverviewAdapter.notifyItemRemoved(index);
+    if(mTextViewAsNoPasswordsYet.getVisibility() == View.GONE && containerCount() == 0) {
+      mTextViewAsNoPasswordsYet.setVisibility(View.VISIBLE);
+    }
+  }
+
+  @Override
+  public void onItemChanged(int index, IContainer oldItem, IContainer newItem) {
+
   }
 }

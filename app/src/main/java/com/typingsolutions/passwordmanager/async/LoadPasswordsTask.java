@@ -1,8 +1,11 @@
 package com.typingsolutions.passwordmanager.async;
 
+import android.util.Log;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseAsyncTask;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
+import com.typingsolutions.passwordmanager.dao.PasswordContainer;
+import com.typingsolutions.passwordmanager.dao.PasswordItem;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import core.Utils;
 import core.data.Password;
@@ -10,14 +13,16 @@ import core.data.PasswordHistory;
 import net.sqlcipher.Cursor;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, Void> {
+public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContainer> {
 
   private Cursor mCursor;
 
   @Override
-  protected Void doInBackground(Void... params) {
+  protected PasswordContainer doInBackground(Void... params) {
     if (params == null) return null;
 
     try {
@@ -26,20 +31,22 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, Void> {
       if (!mCursor.moveToNext())
         return null;
 
-      Password password = getPassword();
-      //Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", password.getId(), password.getProgram(), password.getUsername(), password.getFirstItem()));
+      PasswordContainer password = getPassword();
+//      Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", password.getId(), password.getProgram(), password.getUsername(), password.getDefaultPassword()));
 
       while (mCursor.moveToNext()) {
-        Password nextPassword = getPassword();
-        //Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", nextPassword.getId(), nextPassword.getProgram(), nextPassword.getUsername(), nextPassword.getFirstItem()));
+        PasswordContainer nextPassword = getPassword();
+//        Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", nextPassword.getId(), nextPassword.getProgram(), nextPassword.getUsername(), nextPassword.getDefaultPassword()));
 
         if (nextPassword.equals(password)) {
           password.merge(nextPassword);
         } else {
-          // TODO: add password somewhere
+          raiseCallbacks(password);
           password = nextPassword;
         }
       }
+
+      raiseCallbacks(password); // add last read password
 
     } catch (Exception e) {
       BaseActivity.showErrorLog(getClass(), e);
@@ -53,27 +60,27 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, Void> {
     return null;
   }
 
-  private Password getPassword() {
+  private PasswordContainer getPassword() {
     int id = mCursor.getInt(0);
     String username = mCursor.getString(1);
     String program = mCursor.getString(2);
     int position = mCursor.getInt(3);
     int historyId = mCursor.getInt(4);
 
-    Password password = new Password(id, position, username, program);
+    PasswordContainer password = new PasswordContainer(id, position, program, username);
 
-    PasswordHistory history = getHistory();
-    password.addPasswordHistoryItem(historyId, history);
+    PasswordItem history = getHistory(historyId);
+    password.addItem(history);
 
     return password;
   }
 
-  private PasswordHistory getHistory() {
+  private PasswordItem getHistory(int id) {
     try {
       String value = mCursor.getString(5);
       String dateString = mCursor.getString(6);
       Date changed = Utils.getDateFromString(dateString);
-      return new PasswordHistory(value, changed);
+      return new PasswordItem(id, value, changed);
     } catch (ParseException e) {
       return null;
     }
