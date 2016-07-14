@@ -9,15 +9,14 @@ import android.view.ViewManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
+import com.typingsolutions.passwordmanager.BaseViewHolder;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import core.DatabaseProvider;
 
 
-public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
-    implements View.OnClickListener, DialogInterface.OnClickListener,
-    IItemTouchHelperViewHolder, DatabaseProvider.OnOpenListener {
+public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewActivity> {
 
   private PasswordOverviewActivity activity;
 
@@ -29,7 +28,7 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
   private boolean safe = false;
 
   public PasswordOverviewViewHolder(final PasswordOverviewActivity activity, final View itemView) {
-    super(itemView);
+    super(activity, itemView);
 
     this.activity = activity;
 
@@ -46,8 +45,6 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
         dialog.show();
       }
     });
-
-    itemView.setOnClickListener(this);
   }
 
   public void makeSafe() {
@@ -56,32 +53,6 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
     parent.removeView(username);
 
     safe = true;
-  }
-
-  @Override
-  public void onClick(View v) {
-    if (safe) {
-      AlertDialog dialog = new AlertDialog.Builder(activity)
-          .setTitle("Reenter your password")
-          .setView(R.layout.reenter_password_layout)
-          .setPositiveButton("OK", this)
-          .create();
-      dialog.show();
-    } else {
-      startDetailActivity();
-    }
-  }
-
-  @Override
-  public void onClick(DialogInterface dialog, int which) {
-    AlertDialog alert = (AlertDialog) dialog;
-    EditText editText = (EditText) alert.findViewById(R.id.reenterpasswordlayout_edittext_password);
-    String password = editText.getText().toString();
-
-    activity.setRefreshing(true);
-    DatabaseProvider.getConnection(activity).tryOpen(password, this);
-
-    alert.dismiss();
   }
 
   @Override
@@ -94,13 +65,6 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
     itemView.setBackgroundColor(0x00FAFAFA);
   }
 
-  @Override
-  public void open() {
-    activity.setRefreshing(false);
-    startDetailActivity();
-  }
-
-
   private void startDetailActivity() {
     Intent intent = new Intent(activity, PasswordDetailActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -110,9 +74,4 @@ public class PasswordOverviewViewHolder extends RecyclerView.ViewHolder
     activity.startActivity(intent);
   }
 
-  @Override
-  public void refused() {
-    activity.setRefreshing(false);
-    activity.makeSnackbar("Your passwords do not match");
-  }
 }

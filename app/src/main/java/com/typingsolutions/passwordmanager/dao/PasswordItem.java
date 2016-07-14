@@ -13,7 +13,7 @@ public class PasswordItem {
   private String mPassword;
   private Date mDate;
 
-  PasswordItem(int id, String password, Date date) {
+  public PasswordItem(int id, String password, Date date) {
     mId = id;
     mPassword = password;
     mDate = date;

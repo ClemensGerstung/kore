@@ -42,7 +42,7 @@ public class DatabaseConnection extends BaseDatabaseConnection {
       ", h." + CHANGED +
       " FROM " + PASSWORDS_TABLE_NAME + " p" +
       " JOIN " + HISTORY_TABLE_NAME + " h ON p." + TABLE_ID + " = h." + PASSWORD_ID +
-      " ORDER BY p." + POSITION + ";";
+      " ORDER BY p." + POSITION + ", p." + TABLE_ID + ", h." + CHANGED;
 
   public DatabaseConnection(Context context, int pim) {
     this(context, null, pim);

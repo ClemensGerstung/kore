@@ -36,7 +36,6 @@
             android:padding="26dp"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:layout_centerInParent="true"
             android:id="@+id/loginlayout_outlinedimageview_background"/>
 
     <RelativeLayout android:layout_width="wrap_content"

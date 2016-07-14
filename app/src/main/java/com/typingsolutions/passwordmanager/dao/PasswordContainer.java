@@ -24,6 +24,14 @@ public class PasswordContainer implements IContainer {
     mPasswordItems = new SparseArray<>();
   }
 
+  private PasswordContainer(PasswordContainer other)  {
+    mId = other.mId;
+    mProgram = other.mProgram;
+    mUsername = other.mUsername;
+    mPosition = other.mPosition;
+    mPasswordItems = other.mPasswordItems.clone();
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -53,6 +61,10 @@ public class PasswordContainer implements IContainer {
   public void addItem(String password) {
     PasswordItem item = PasswordItem.create(password, mId);
     if (item == null) return;
+    mPasswordItems.append(item.getId(), item);
+  }
+
+  public void addItem(PasswordItem item) {
     mPasswordItems.append(item.getId(), item);
   }
 
@@ -178,5 +190,15 @@ public class PasswordContainer implements IContainer {
 
   public SparseArray<PasswordItem> getPasswordItems() {
     return mPasswordItems;
+  }
+
+  public String getDefaultPassword() {
+    return mPasswordItems.valueAt(0).getPassword();
+  }
+
+  @SuppressWarnings("CloneDoesntCallSuperClone")
+  @Override
+  public IContainer clone() {
+    return new PasswordContainer(this);
   }
 }
