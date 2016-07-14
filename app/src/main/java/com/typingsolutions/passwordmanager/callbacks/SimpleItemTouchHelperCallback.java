@@ -4,10 +4,8 @@ package com.typingsolutions.passwordmanager.callbacks;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import com.typingsolutions.passwordmanager.BaseAdapter;
 import com.typingsolutions.passwordmanager.BaseViewHolder;
-import com.typingsolutions.passwordmanager.adapter.viewholder.IItemTouchHelperViewHolder;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   private Context mContext;

@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   /**
-   * Finds a {@see View} by it's id
+   * Finds a {@see View} by it's mCurrentId
    *
    * @param id  of {@see View} to find
    * @param <T> Type of {@see View} to find

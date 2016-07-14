@@ -1,7 +1,6 @@
 package com.typingsolutions.passwordmanager.adapter;
 
 import android.content.DialogInterface;
-import android.content.res.TypedArray;
 import android.support.v7.app.AlertDialog;
 import android.view.*;
 import com.typingsolutions.passwordmanager.BaseAdapter;
@@ -9,7 +8,7 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
-import com.typingsolutions.passwordmanager.adapter.viewholder.PasswordOverviewViewHolder;
+import com.typingsolutions.passwordmanager.viewholder.PasswordOverviewViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +55,7 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     }
 
     viewHolder.mTextViewAsProgram.setText(password.getProgram());
-    viewHolder.id = password.getId();
+    viewHolder.mCurrentId = password.getId();
     String upperCase = password.getProgram().toUpperCase();
     viewHolder.mTextViewAsIcon.setText(upperCase.toCharArray(), 0, 1);
 

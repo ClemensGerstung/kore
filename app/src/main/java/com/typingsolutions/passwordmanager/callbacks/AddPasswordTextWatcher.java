@@ -1,50 +1,38 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
+import com.typingsolutions.passwordmanager.BaseTextWatcher;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 
-public class AddPasswordTextWatcher implements TextWatcher {
+public class AddPasswordTextWatcher extends BaseTextWatcher<PasswordDetailActivity> {
 
-  private PasswordDetailActivity passwordDetailActivity;
-  private String preValue;
-  private boolean update;
-  private boolean checkHasText;
+  private String mInitialValue;
+  private boolean mUpdate;
+  private boolean mCheckHasText;
 
 
-  public AddPasswordTextWatcher(PasswordDetailActivity passwordDetailActivity, @Nullable String preValue, boolean checkHasText) {
-    this.passwordDetailActivity = passwordDetailActivity;
-    this.preValue = preValue;
-    this.checkHasText = checkHasText;
-  }
-
-  @Override
-  public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+  public AddPasswordTextWatcher(PasswordDetailActivity activity, @Nullable String initialValue, boolean checkHasText) {
+    super(activity);
+    this.mInitialValue = initialValue;
+    this.mCheckHasText = checkHasText;
   }
 
   @Override
   public void onTextChanged(CharSequence s, int start, int before, int count) {
-    update = !s.toString().equals(preValue);
-    /*if (update) {
-      if (checkHasText) {
-        passwordDetailActivity.switchMenuState(s.length() > 0);
-        update = update & s.length() > 0;
+    mUpdate = !s.toString().equals(mInitialValue);
+    if (mUpdate) {
+      if (mCheckHasText) {
+        mActivity.enableSave(s.length() > 0);
+        mUpdate &= s.length() > 0;
       } else {
-        passwordDetailActivity.switchMenuState(true);
+        mActivity.enableSave(true);
       }
     } else {
-      passwordDetailActivity.switchMenuState(false);
-    }*/
-  }
-
-  @Override
-  public void afterTextChanged(Editable s) {
-
+      mActivity.enableSave(false);
+    }
   }
 
   public boolean needUpdate() {
-    return update;
+    return mUpdate;
   }
 }
