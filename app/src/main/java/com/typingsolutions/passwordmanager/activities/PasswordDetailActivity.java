@@ -44,14 +44,12 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private AddPasswordTextWatcher passwordTextWatcher;
 
   private int passwordId;
-  private boolean exitApp;
   private CollapsingToolbarLayout collapsingToolbarLayout;
   private TextView header;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    exitApp = true;
     setContentView(R.layout.password_detail_layout);
 
     toolbar = (Toolbar) findViewById(R.id.passworddetaillayout_toolbar_actionbar);
@@ -121,13 +119,6 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     }
 
     button.requestFocus();
-  }
-
-
-  @Override
-  public void onBackPressed() {
-    exitApp = false;
-    super.onBackPressed();
   }
 
   @Override
