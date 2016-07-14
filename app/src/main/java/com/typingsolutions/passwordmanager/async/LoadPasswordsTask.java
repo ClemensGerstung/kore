@@ -32,7 +32,7 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContain
         return null;
 
       PasswordContainer password = getPassword();
-//      Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", password.getId(), password.getProgram(), password.getUsername(), password.getDefaultPassword()));
+//      Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", mTextViewAsPassword.getId(), mTextViewAsPassword.getProgram(), mTextViewAsPassword.getUsername(), mTextViewAsPassword.getDefaultPassword()));
 
       while (mCursor.moveToNext()) {
         PasswordContainer nextPassword = getPassword();
@@ -46,7 +46,7 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContain
         }
       }
 
-      raiseCallbacks(password); // add last read password
+      raiseCallbacks(password); // add last read mTextViewAsPassword
 
     } catch (Exception e) {
       BaseActivity.showErrorLog(getClass(), e);

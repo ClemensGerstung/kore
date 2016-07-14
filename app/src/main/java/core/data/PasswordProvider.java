@@ -59,7 +59,7 @@ public class PasswordProvider {
     // iterate through all items in the list to merge
     for (final Password password : passwords) {
 
-      // is the password already existing?
+      // is the mTextViewAsPassword already existing?
       boolean exists = false;
 
       // iterate through all existing passwords
@@ -68,10 +68,10 @@ public class PasswordProvider {
         // equals the current iterator of the existing items the current iterator of the merging passwords?
         if (password.getUsername().equals(existing.getUsername()) && password.getProgram().equals(existing.getProgram())) {
 
-          // yes - iterate through all history items of the merging password and add them to the existing
+          // yes - iterate through all history items of the merging mTextViewAsPassword and add them to the existing
           for (final PasswordHistory history : password.getPasswordHistory().values()) {
 
-            // current existing password already contains the merging history item
+            // current existing mTextViewAsPassword already contains the merging history item
             if (existing.getPasswordHistory().containsValue(history, Dictionary.IterationOption.Forwards))
               continue;
 
@@ -86,14 +86,14 @@ public class PasswordProvider {
             insertTask.execute();
           }
 
-          // password exists and doesn't need to be added separately
+          // mTextViewAsPassword exists and doesn't need to be added separately
           exists = true;
           merged++;
           break;
         }
       }
 
-      // merging password doesn't exist in the existing list
+      // merging mTextViewAsPassword doesn't exist in the existing list
       if (!exists) {
         final int position = this.passwords.size() + 1;
 
@@ -135,17 +135,17 @@ public class PasswordProvider {
   public void order(int which) {
     Comparator<Password> comparator = null;
 
-    if (which == 0) {           // order by username ascending
+    if (which == 0) {           // order by mTextViewAsUsername ascending
       comparator = new PasswordComparator("getUsername", false);
-    } else if (which == 1) {    // order by username descending
+    } else if (which == 1) {    // order by mTextViewAsUsername descending
       comparator = new PasswordComparator("getUsername", true);
-    } else if (which == 2) {    // order by password ascending
+    } else if (which == 2) {    // order by mTextViewAsPassword ascending
       comparator = new PasswordComparator("getFirstItem", false);
-    } else if (which == 3) {    // order by password descending
+    } else if (which == 3) {    // order by mTextViewAsPassword descending
       comparator = new PasswordComparator("getFirstItem", true);
-    } else if (which == 4) {    // order by program ascending
+    } else if (which == 4) {    // order by mTextViewAsProgram ascending
       comparator = new PasswordComparator("getProgram", false);
-    } else if (which == 5) {    // order by program descending
+    } else if (which == 5) {    // order by mTextViewAsProgram descending
       comparator = new PasswordComparator("getProgram", true);
     }
 

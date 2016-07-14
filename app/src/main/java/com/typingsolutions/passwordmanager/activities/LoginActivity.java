@@ -7,11 +7,14 @@ import android.os.RemoteException;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
+import com.typingsolutions.passwordmanager.AlertBuilder;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
@@ -26,6 +29,7 @@ import core.Utils;
 import ui.OutlinedImageView;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 public class LoginActivity extends BaseActivity {
 
@@ -121,10 +125,7 @@ public class LoginActivity extends BaseActivity {
 
   @Override
   protected void onDestroy() {
-    if (mServiceIsRegistered) {
-      unbindService(mLoginServiceConnection);
-      mServiceIsRegistered = false;
-    }
+
     //mImageViewAsBackground.destroyDrawingCache();
     //mOutlinedImageViewAsLockedBackground.destroyDrawingCache();
 
@@ -229,6 +230,36 @@ public class LoginActivity extends BaseActivity {
   @Override
   protected View getSnackbarRelatedView() {
     return mFloatingActionButtonAsLogin;
+  }
+
+  @Override
+  protected void onActivityChange() {
+    try {
+      char[] chars = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+      Editable text = mEditTextAsLoginPassword.getText();
+      Field field = text.getClass().getDeclaredFields()[11];
+      field.setAccessible(true);
+      field.set(text, chars);
+      mEditTextAsLoginPassword.setText("");
+
+
+      EditText alertEditText = (EditText) AlertBuilder.getLastCreated().findViewById(R.id.loginlayout_edittext_pim);
+      if (alertEditText != null) {
+        text = alertEditText.getText();
+        field = text.getClass().getDeclaredFields()[11];
+        field.setAccessible(true);
+        field.set(text, chars);
+        alertEditText.setText("");
+      }
+
+      if (mServiceIsRegistered) {
+        unbindService(mLoginServiceConnection);
+        mServiceIsRegistered = false;
+      }
+    } catch (IllegalAccessException e) {
+      showErrorLog(getClass(), e);
+    }
   }
 
   private class LoginServiceConnection implements ServiceConnection {

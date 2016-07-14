@@ -92,6 +92,11 @@ public class SetupActivity extends BaseDatabaseActivity {
     return mCoordinatorLayoutAsRootLayout;
   }
 
+  @Override
+  protected void onActivityChange() {
+
+  }
+
   public void moveToNextPage() {
     int index = mViewPagerAsFragmentHost.getCurrentItem();
     if (index < mSetupPagerAdapter.getCount()) {

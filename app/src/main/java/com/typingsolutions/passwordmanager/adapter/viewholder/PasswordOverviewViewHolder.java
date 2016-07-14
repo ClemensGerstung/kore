@@ -1,71 +1,65 @@
 package com.typingsolutions.passwordmanager.adapter.viewholder;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ViewUtils;
 import android.view.View;
 import android.view.ViewManager;
-import android.widget.EditText;
 import android.widget.TextView;
+import com.typingsolutions.passwordmanager.AlertBuilder;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.BaseViewHolder;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import core.DatabaseProvider;
 
 
 public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewActivity> {
 
-  private PasswordOverviewActivity activity;
+  private PasswordOverviewActivity mActivity;
 
-  public final TextView program;
-  public final TextView username;
-  public final TextView password;
-  public final TextView icon;
+  public final TextView mTextViewAsProgram;
+  public final TextView mTextViewAsUsername;
+  public final TextView mTextViewAsPassword;
+  public final TextView mTextViewAsIcon;
   public int id;
   private boolean safe = false;
 
   public PasswordOverviewViewHolder(final PasswordOverviewActivity activity, final View itemView) {
     super(activity, itemView);
 
-    this.activity = activity;
+    this.mActivity = activity;
 
-    program = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
-    username = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
-    password = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
-    icon = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_icon);
-    icon.setOnClickListener(new View.OnClickListener() {
+    mTextViewAsProgram = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_program);
+    mTextViewAsUsername = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_username);
+    mTextViewAsPassword = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_password);
+    mTextViewAsIcon = (TextView) itemView.findViewById(R.id.passwordlistitemlayout_textview_icon);
+    mTextViewAsIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        AlertDialog dialog = new AlertDialog.Builder(activity)
-            .setTitle("asdf")
-            .create();
-        dialog.show();
+        AlertBuilder.create(activity)
+            .setTitle("Icon")
+            .setMessage("Here should be some icons")
+            .show();
       }
     });
   }
 
   public void makeSafe() {
-    ViewManager parent = (ViewManager) password.getParent();
-    parent.removeView(password);
-    parent.removeView(username);
+    ViewManager parent = (ViewManager) mTextViewAsPassword.getParent();
+    parent.removeView(mTextViewAsPassword);
+    parent.removeView(mTextViewAsUsername);
 
     safe = true;
   }
 
   @Override
   public void onItemSelected() {
-    itemView.setBackgroundColor(0xFFFFFFFF);
-    ViewCompat.setElevation(itemView, 10.f);
+//    itemView.setBackgroundColor(0xFFFFFFFF);
+//    ViewCompat.setElevation(itemView, 10.f);
   }
 
   @Override
   public void onItemReleased() {
-    ViewCompat.setElevation(itemView, 0.f);
+//    ViewCompat.setElevation(itemView, 0.f);
   }
 
   @Override
@@ -74,12 +68,12 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
   }
 
   private void startDetailActivity() {
-    Intent intent = new Intent(activity, PasswordDetailActivity.class);
+    Intent intent = new Intent(mActivity, PasswordDetailActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
     intent.putExtra(PasswordDetailActivity.START_DETAIL_INDEX, id);
 
     BaseDatabaseActivity.logout = false;
-    activity.startActivity(intent);
+    mActivity.startActivity(intent);
   }
 
 }

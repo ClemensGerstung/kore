@@ -27,8 +27,8 @@ public class DeletePasswordCallback extends BaseClickCallback<PasswordDetailActi
     @Override
     public void onClick(View v) {
 //        AlertDialog dialog = new AlertDialog.Builder(mActivity)
-//                .setTitle("Delete password")
-//                .setMessage("Are you sure to delete this password?")
+//                .setTitle("Delete mTextViewAsPassword")
+//                .setMessage("Are you sure to delete this mTextViewAsPassword?")
 //                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {

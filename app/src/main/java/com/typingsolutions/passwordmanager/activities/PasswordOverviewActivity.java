@@ -236,6 +236,16 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   }
 
   @Override
+  protected void onActivityChange() {
+    if(logout) {
+      mRecyclerViewAsPasswordsList.removeAllViews();
+      mRecyclerViewAsPasswordsList.destroyDrawingCache();
+      clearContainer();
+      clearChangeListener();
+    }
+  }
+
+  @Override
   public void onItemAdded(int index, IContainer item) {
     mPasswordOverviewAdapter.notifyDataSetChanged();
     if(mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
