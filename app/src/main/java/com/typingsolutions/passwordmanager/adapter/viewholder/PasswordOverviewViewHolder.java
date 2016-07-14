@@ -2,8 +2,10 @@ package com.typingsolutions.passwordmanager.adapter.viewholder;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ViewUtils;
 import android.view.View;
 import android.view.ViewManager;
 import android.widget.EditText;
@@ -57,12 +59,18 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
 
   @Override
   public void onItemSelected() {
-    itemView.setBackgroundColor(0x99FAFAFA);
+    itemView.setBackgroundColor(0xFFFFFFFF);
+    ViewCompat.setElevation(itemView, 10.f);
+  }
+
+  @Override
+  public void onItemReleased() {
+    ViewCompat.setElevation(itemView, 0.f);
   }
 
   @Override
   public void onItemClear() {
-    itemView.setBackgroundColor(0x00FAFAFA);
+
   }
 
   private void startDetailActivity() {
