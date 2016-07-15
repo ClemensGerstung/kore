@@ -21,7 +21,7 @@ public class DatabaseConnection extends BaseDatabaseConnection {
   public static final String PASSWORD_ID = "passwordId";
 
   static final String CREATE_PASSWORDS_TABLE = "CREATE TABLE " + PASSWORDS_TABLE_NAME + " (" +
-      TABLE_ID + " INTEGER PRIMARY KEY, " +
+      TABLE_ID + " INT PRIMARY KEY, " +
       USERNAME + " TEXT, " +
       PROGRAM + " TEXT, " +
       POSITION + " INT);";

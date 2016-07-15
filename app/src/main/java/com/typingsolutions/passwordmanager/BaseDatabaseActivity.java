@@ -47,15 +47,17 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     int index = items.indexOf(container);
     items.remove(index);
     for (IListChangedListener<IContainer> listener : itemsChangedListener) {
-      listener.onItemRemoved(index, container.clone());
+      listener.onItemRemoved(index, container);
     }
   }
 
   public void changeContainerItem(int index, IContainer container) {
     IContainer old = items.get(index);
-    items.set(index, container);
+    if(container != old) {  // jep only check reference equality
+      items.set(index, container);
+    }
     for (IListChangedListener<IContainer> listener : itemsChangedListener) {
-      listener.onItemChanged(index, old.clone(), container);
+      listener.onItemChanged(index, old, container);
     }
   }
 
@@ -69,6 +71,10 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
 
   public void clearContainerItems() {
     items.clear();
+  }
+
+  public int indexOfContainer(IContainer container) {
+    return items.indexOf(container);
   }
 
   @Override

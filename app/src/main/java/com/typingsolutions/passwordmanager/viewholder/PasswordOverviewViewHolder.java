@@ -1,5 +1,6 @@
 package com.typingsolutions.passwordmanager.viewholder;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewManager;
@@ -41,10 +42,15 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
     mTextViewAsIcon.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        AlertBuilder.create(activity)
-            .setTitle("Icon")
-            .setMessage("Here should be some icons")
-            .show();
+//        AlertBuilder.create(activity)
+//            .setTitle("Icon")
+//            .setMessage("Here should be some icons")
+//            .show();
+
+        AlertDialog dialog = new AlertDialog.Builder(activity)
+            .setTitle("asdf")
+            .create();
+        dialog.show();
       }
     });
   }

@@ -36,8 +36,7 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
 
     safe = false; // TODO: read is Safe
 
-    PasswordOverviewViewHolder passwordOverviewViewHolder
-        = new PasswordOverviewViewHolder(mActivity, view);
+    PasswordOverviewViewHolder passwordOverviewViewHolder = new PasswordOverviewViewHolder(mActivity, view);
     if (safe) {
       passwordOverviewViewHolder.makeSafe();
     }

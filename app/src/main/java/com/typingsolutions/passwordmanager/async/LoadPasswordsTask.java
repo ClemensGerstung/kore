@@ -23,8 +23,6 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContain
 
   @Override
   protected PasswordContainer doInBackground(Void... params) {
-    if (params == null) return null;
-
     try {
       mCursor = BaseDatabaseActivity.getDatabase().rawQuery(DatabaseConnection.GET_PASSWORDS, null);
 
@@ -32,11 +30,11 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContain
         return null;
 
       PasswordContainer password = getPassword();
-//      Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", mTextViewAsPassword.getId(), mTextViewAsPassword.getProgram(), mTextViewAsPassword.getUsername(), mTextViewAsPassword.getDefaultPassword()));
+      Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", password.getId(), password.getProgram(), password.getUsername(), password.getDefaultPassword()));
 
       while (mCursor.moveToNext()) {
         PasswordContainer nextPassword = getPassword();
-//        Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", nextPassword.getId(), nextPassword.getProgram(), nextPassword.getUsername(), nextPassword.getDefaultPassword()));
+        Log.d(getClass().getSimpleName(), String.format("%s: %s - %s - %s", nextPassword.getId(), nextPassword.getProgram(), nextPassword.getUsername(), nextPassword.getDefaultPassword()));
 
         if (nextPassword.equals(password)) {
           password.merge(nextPassword);

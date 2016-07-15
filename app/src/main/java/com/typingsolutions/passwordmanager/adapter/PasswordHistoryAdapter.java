@@ -1,8 +1,5 @@
 package com.typingsolutions.passwordmanager.adapter;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.typingsolutions.passwordmanager.BaseAdapter;
@@ -11,9 +8,6 @@ import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.dao.PasswordItem;
 import com.typingsolutions.passwordmanager.viewholder.PasswordHistoryViewHolder;
-import core.data.Password;
-import core.data.PasswordHistory;
-import core.data.PasswordProvider;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,9 +17,9 @@ public class PasswordHistoryAdapter extends BaseAdapter<PasswordHistoryViewHolde
 
   private PasswordContainer mPassword;
 
-  public PasswordHistoryAdapter(PasswordDetailActivity activity, int passwordIndex) {
+  public PasswordHistoryAdapter(PasswordDetailActivity activity, PasswordContainer container) {
     super(activity);
-    mPassword = (PasswordContainer) activity.getContainerAt(passwordIndex);
+    mPassword = container;
   }
 
   @Override
