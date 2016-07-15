@@ -234,31 +234,19 @@ public class LoginActivity extends BaseActivity {
 
   @Override
   protected void onActivityChange() {
-    try {
-      char[] chars = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-      Editable text = mEditTextAsLoginPassword.getText();
-      Field field = text.getClass().getDeclaredFields()[11];
-      field.setAccessible(true);
-      field.set(text, chars);
-      mEditTextAsLoginPassword.setText("");
+    clearText(mEditTextAsLoginPassword);
 
+    EditText alertEditText = (EditText) AlertBuilder.getLastCreated().findViewById(R.id.loginlayout_edittext_pim);
+    clearText(alertEditText);
+  }
 
-      EditText alertEditText = (EditText) AlertBuilder.getLastCreated().findViewById(R.id.loginlayout_edittext_pim);
-      if (alertEditText != null) {
-        text = alertEditText.getText();
-        field = text.getClass().getDeclaredFields()[11];
-        field.setAccessible(true);
-        field.set(text, chars);
-        alertEditText.setText("");
-      }
-
-      if (mServiceIsRegistered) {
-        unbindService(mLoginServiceConnection);
-        mServiceIsRegistered = false;
-      }
-    } catch (IllegalAccessException e) {
-      showErrorLog(getClass(), e);
+  @Override
+  protected void onStop() {
+    super.onStop();
+    if (mServiceIsRegistered) {
+      unbindService(mLoginServiceConnection);
+      mServiceIsRegistered = false;
     }
   }
 

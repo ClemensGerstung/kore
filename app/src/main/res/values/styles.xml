@@ -22,6 +22,8 @@
         <item name="colorControlActivated">@color/primary</item>
         <item name="colorControlHighlight">@color/primaryLight</item>
         <item name="android:buttonBarButtonStyle">@style/AlertDialog.ButtonBar.PositiveButton</item>
+        <item name="windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
+        <item name="windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
     </style>
 
     <style name="Base.AppTheme.Detail" parent="Base.AppTheme">

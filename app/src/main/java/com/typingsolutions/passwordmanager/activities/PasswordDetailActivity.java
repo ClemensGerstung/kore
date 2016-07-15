@@ -7,6 +7,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +38,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private AddPasswordTextWatcher mUsernameTextWatcher;
   private AddPasswordTextWatcher mProgramTextWatcher;
   private AddPasswordTextWatcher mPasswordTextWatcher;
-  private int mPasswordId;
+  private PasswordContainer mCurrentPassword;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -58,39 +59,38 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     setSupportActionBar(mToolbarAsActionbar);
     mToolbarAsActionbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
 
-    mPasswordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
-    if (mPasswordId == -1) return;
-    PasswordContainer currentPassword = null;
+    int passwordId = getIntent().getIntExtra(START_DETAIL_INDEX, -1);
+    if (passwordId == -1) return;
 
     for (int i = 0; i < containerCount(); i++) {
       PasswordContainer iterator = (PasswordContainer) getContainerAt(i);
-      if (iterator.getId() == mPasswordId) {
-        currentPassword = iterator;
+      if (iterator.getId() == passwordId) {
+        mCurrentPassword = iterator;
         break;
       }
     }
 
     mRecyclerviewAsPasswordHistory.setLayoutManager(new LinearLayoutManager(this));
-    mRecyclerviewAsPasswordHistory.setAdapter(new PasswordHistoryAdapter(this, mPasswordId));
+    mRecyclerviewAsPasswordHistory.setAdapter(new PasswordHistoryAdapter(this, mCurrentPassword));
 
     //button.setOnClickListener(new GeneratePasswordCallback(this, mTextViewAsPassword));
 
-    String programString = currentPassword.getProgram();
+    String programString = mCurrentPassword.getProgram();
     mProgramTextWatcher = new AddPasswordTextWatcher(this, programString, true);
     mEditTextAsProgram.setText(programString);
     mEditTextAsProgram.addTextChangedListener(mProgramTextWatcher);
 
-    String usernameString = currentPassword.getUsername();
+    String usernameString = mCurrentPassword.getUsername();
     mUsernameTextWatcher = new AddPasswordTextWatcher(this, usernameString, false);
     mEditTextAsUsername.setText(usernameString);
     mEditTextAsUsername.addTextChangedListener(mUsernameTextWatcher);
 
-    String passwordString = currentPassword.getDefaultPassword();
+    String passwordString = mCurrentPassword.getDefaultPassword();
     mPasswordTextWatcher = new AddPasswordTextWatcher(this, passwordString, true);
     mEditTextAsPassword.setText(passwordString);
     mEditTextAsPassword.addTextChangedListener(mPasswordTextWatcher);
 
-//    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, currentPassword, this);
+//    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, mCurrentPassword, this);
     //mCardviewAsDelete.setOnClickListener(onClickListener);
 
     if (!debug)
@@ -102,7 +102,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     ViewUtils.setColor(mTextViewAsHeader, programString, passwordString);
 
-    if (currentPassword.getPasswordItems().size() > 1) {
+    if (mCurrentPassword.getPasswordItems().size() > 1) {
       nohistory.setVisibility(View.GONE);
       mRecyclerviewAsPasswordHistory.setVisibility(View.VISIBLE);
       mRecyclerviewAsPasswordHistory.setNestedScrollingEnabled(false);
@@ -124,23 +124,13 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() != R.id.createusermenu_item_done) return false;
 
-    String newUsername = null;
-    String newProgram = null;
-    String newPassword = null;
     try {
-      newUsername = mEditTextAsUsername.getText().toString();
-      newProgram = mEditTextAsProgram.getText().toString();
-      newPassword = mPasswordTextWatcher.needUpdate() ? mEditTextAsPassword.getText().toString() : null;
-    } catch (Exception e) {
-      showErrorLog(getClass(), e);
-    }
-
-    try {
-      if (newPassword != null) {
-        PasswordProvider.getInstance(this).editPassword(mPasswordId, newPassword);
+      if (mPasswordTextWatcher.needUpdate()) {
+        mCurrentPassword.addItem(mEditTextAsPassword.getText().toString());
+        changeContainerItem(indexOfContainer(mCurrentPassword), mCurrentPassword);
       }
 
-      PasswordProvider.getInstance(this).editPassword(mPasswordId, newProgram, newUsername);
+//      PasswordProvider.getInstance(this).editPassword(mPasswordId, newProgram, newUsername);
     } catch (Exception e) {
       showErrorLog(getClass(), e);
     }
@@ -159,6 +149,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   @Override
   protected void onActivityChange() {
 
+    Log.d(getClass().getSimpleName(), "asdf");
   }
 
   public void enableSave(boolean enable){

@@ -112,11 +112,6 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
     registerListChangedListener(this);
 
-    // make secure
-    if (!debug) {
-      setSecurityFlags();
-    }
-
     // load passwords in background
     LoadPasswordsTask loadPasswords = new LoadPasswordsTask();
     loadPasswords.registerCallback(new BaseAsyncTask.IExecutionCallback<PasswordContainer>() {
@@ -169,7 +164,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   public void logout() {
     //PasswordProvider.logoutComplete();
     //DatabaseProvider.logout();
-    BaseDatabaseActivity.logout = true;
+    logout = true;
 
     super.onBackPressed();
 
@@ -236,10 +231,11 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   @Override
   protected void onActivityChange() {
     if(logout) {
-      mRecyclerViewAsPasswordsList.removeAllViews();
-      mRecyclerViewAsPasswordsList.destroyDrawingCache();
+//      mRecyclerViewAsPasswordsList.removeAllViews();
       clearContainerItems();
       clearChangeListener();
+      mPasswordOverviewAdapter.notifyDataSetChanged();
+      mRecyclerViewAsPasswordsList.destroyDrawingCache();
     }
   }
 
@@ -261,6 +257,6 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
   @Override
   public void onItemChanged(int index, IContainer oldItem, IContainer newItem) {
-
+    mPasswordOverviewAdapter.notifyItemChanged(index);
   }
 }

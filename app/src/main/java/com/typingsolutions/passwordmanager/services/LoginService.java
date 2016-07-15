@@ -100,6 +100,7 @@ public class LoginService extends Service {
 
     @Override
     public void handleMessage(Message msg) {
+      Log.d(getClass().getSimpleName(), "handleMessage: START");
       try {
         long lastTime = SystemClock.elapsedRealtime();
 
@@ -137,6 +138,7 @@ public class LoginService extends Service {
       } catch (RemoteException e) {
         Log.e(getClass().getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
       }
+      Log.d(getClass().getSimpleName(), "handleMessage: START");
     }
   }
 

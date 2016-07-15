@@ -18,6 +18,7 @@ import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +27,10 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.TextView;
 import com.typingsolutions.passwordmanager.services.LoginService;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   public static final long FAST_ANIMATION_DURATION = 250;
   public static boolean debug = true;
   private static LruCache<Integer, Bitmap> images;
+  private static final char[] CHARS = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
   static {
     images = new LruCache<>(4 * 1024 * 1024);
@@ -47,6 +51,14 @@ public abstract class BaseActivity extends AppCompatActivity {
   protected void onPause() {
     super.onPause();
     onActivityChange();
+  }
+
+  @Override
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if(!debug) {
+      setSecurityFlags();
+    }
   }
 
   /**
@@ -121,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
       MenuItem item = toolbar.getMenu().getItem(index);
       item.setEnabled(enable);
       Drawable icon = item.getIcon();
-      if(icon != null) {
+      if (icon != null) {
         icon.setAlpha(enable ? 255 : 64);
       }
     } catch (Exception e) {
@@ -197,7 +209,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     synchronized (images) {
       Bitmap bitmap = images.get(image);
 
-      if(bitmap == null) {
+      if (bitmap == null) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = sampleSize;
         options.inScaled = true;
@@ -226,6 +238,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         BaseActivity.this.startAnimator(view, res);
       }
     });
+  }
+
+  protected <T extends TextView> void clearText(@Nullable T v) {
+    if(v == null) return;
+    try {
+      CharSequence text = v.getText();
+      Field field = text.getClass().getDeclaredField("mText");
+      field.setAccessible(true);
+      field.set(text, CHARS);
+      v.setText("");
+    } catch (IllegalAccessException | NoSuchFieldException e) {
+      showErrorLog(getClass(), e);
+    }
   }
 
   private static class LocalAnimationListener implements Animation.AnimationListener {

@@ -52,9 +52,8 @@ public class PasswordContainer implements IContainer {
 
   public void merge(PasswordContainer other) {
     for (int i = 0; i < other.mPasswordItems.size(); i++) {
-      int key = other.mPasswordItems.keyAt(i);
-      PasswordItem current = other.mPasswordItems.get(key);
-      mPasswordItems.append(key, current);
+      PasswordItem current = other.mPasswordItems.valueAt(i);
+      mPasswordItems.append(current.getId(), current);
     }
   }
 
