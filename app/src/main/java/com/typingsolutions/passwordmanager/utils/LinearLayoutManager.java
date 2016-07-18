@@ -65,6 +65,8 @@ public class LinearLayoutManager extends android.support.v7.widget.LinearLayoutM
 
   private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,
                                  int heightSpec, int[] measuredDimension) {
+    if(recycler.getScrapList().size() == 0) return;
+
     View view = recycler.getViewForPosition(position);
     if (view != null) {
       RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();

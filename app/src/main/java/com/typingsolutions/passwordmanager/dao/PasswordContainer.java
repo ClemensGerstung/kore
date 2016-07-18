@@ -8,7 +8,7 @@ import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import net.sqlcipher.database.SQLiteDatabase;
 
 public class PasswordContainer implements IContainer {
-  public static int HighestPosition = 1;
+  public static int HighestPosition = 0;
 
   private int mId;
   private String mProgram;
@@ -192,7 +192,7 @@ public class PasswordContainer implements IContainer {
   }
 
   public String getDefaultPassword() {
-    return mPasswordItems.valueAt(0).getPassword();
+    return mPasswordItems.valueAt(mPasswordItems.size() - 1).getPassword();
   }
 
   @SuppressWarnings("CloneDoesntCallSuperClone")

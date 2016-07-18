@@ -1,5 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +41,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private AddPasswordTextWatcher mProgramTextWatcher;
   private AddPasswordTextWatcher mPasswordTextWatcher;
   private PasswordContainer mCurrentPassword;
+  private int mPasswordColor;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -93,14 +96,14 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 //    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, mCurrentPassword, this);
     //mCardviewAsDelete.setOnClickListener(onClickListener);
 
-    if (!debug)
-      getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
 
-    ViewUtils.setColor(mTextViewAsHeader, programString, passwordString);
+    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
+    mPasswordColor = ViewUtils.setColor(mTextViewAsHeader, programString, passwordString);
+
+
+    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0xFF000000 | mPasswordColor);
 
     if (mCurrentPassword.getPasswordItems().size() > 1) {
       nohistory.setVisibility(View.GONE);

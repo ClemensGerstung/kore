@@ -21,13 +21,13 @@ public class DatabaseConnection extends BaseDatabaseConnection {
   public static final String PASSWORD_ID = "passwordId";
 
   static final String CREATE_PASSWORDS_TABLE = "CREATE TABLE " + PASSWORDS_TABLE_NAME + " (" +
-      TABLE_ID + " INT PRIMARY KEY, " +
+      TABLE_ID + " INTEGER PRIMARY KEY, " +
       USERNAME + " TEXT, " +
       PROGRAM + " TEXT, " +
       POSITION + " INT);";
 
   static final String CREATE_HISTORY_TABLE = "CREATE TABLE " + HISTORY_TABLE_NAME + " (" +
-      TABLE_ID + " INT PRIMARY KEY, " +
+      TABLE_ID + " INTEGER PRIMARY KEY, " +
       PASSWORD + " TEXT, " +
       CHANGED + " DATE, " +
       PASSWORD_ID + " INT, " +
