@@ -19,4 +19,11 @@ public class LoginDialogCallback extends BaseDialogCallback<LoginActivity> {
 
     mActivity.login(editText.getText().toString());
   }
+
+  @Override
+  public void onShow(DialogInterface dialog) {
+    AlertDialog alert = (AlertDialog) dialog;
+    EditText editText = (EditText) alert.findViewById(R.id.loginlayout_edittext_pim);
+    editText.requestFocus();
+  }
 }

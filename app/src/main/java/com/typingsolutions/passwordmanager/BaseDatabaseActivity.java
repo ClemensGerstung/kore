@@ -82,7 +82,7 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     super.onResume();
 
     if (connection == null && logout) {
-      this.startActivity(LoginActivity.class, true);
+      startActivity(LoginActivity.class, true);
     }
   }
 

@@ -64,22 +64,24 @@ public final class ViewUtils {
     view.startAnimation(anim);
   }
 
-  public static void setColor(TextView textView, String first, String second) {
+  public static int setColor(TextView textView, String first, String second) {
+    int hexColor = 0;
     try {
       String programHash = Utils.getHashedString(first).substring(0, 6);
       String passwordHash = Utils.getHashedString(second).substring(0, 6);
 
-      int hexColor = Integer.parseInt(programHash, 16)
+      hexColor = Integer.parseInt(programHash, 16)
           & Integer.parseInt(passwordHash, 16);
 
       hexColor += 0x333333;
 
       textView.getBackground()
-          .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.MULTIPLY);
+          .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.DARKEN);
       textView.setText(first.toCharArray(), 0, 1);
     } catch (Exception e) {
       Log.e(ViewUtils.class.getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }
+    return hexColor;
   }
 
   public static ViewSwitcher.ViewFactory getSimpleViewFactory(final Context context) {

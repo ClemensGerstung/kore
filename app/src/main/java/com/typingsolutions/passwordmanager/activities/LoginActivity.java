@@ -117,7 +117,7 @@ public class LoginActivity extends BaseActivity {
   protected void onResume() {
     super.onResume();
 
-    Intent intent = new Intent(this.getApplicationContext(), LoginService.class);
+    Intent intent = new Intent(getApplicationContext(), LoginService.class);
     startService(intent);
     bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
     mServiceIsRegistered = true;
