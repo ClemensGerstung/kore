@@ -101,7 +101,7 @@ public class LoginActivity extends BaseActivity {
     SharedPreferences preferences = getPreferences(MODE_PRIVATE);
     boolean isSafe = preferences.getBoolean(SAFE_LOGIN, true);
 
-    mFloatingActionButtonAsLogin.hide();
+//    mFloatingActionButtonAsLogin.hide();
 
     mFloatingActionButtonAsLogin.setOnClickListener(mLoginCallback);
 //    mEditTextAsLoginPassword.addTextChangedListener(loginTextWatcher);

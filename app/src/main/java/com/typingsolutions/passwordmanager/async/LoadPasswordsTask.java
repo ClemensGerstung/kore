@@ -39,12 +39,12 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContain
         if (nextPassword.equals(password)) {
           password.merge(nextPassword);
         } else {
-          raiseCallbacks(password);
+          addPassword(password);
           password = nextPassword;
         }
       }
 
-      raiseCallbacks(password); // add last read mTextViewAsPassword
+      addPassword(password);
 
     } catch (Exception e) {
       BaseActivity.showErrorLog(getClass(), e);
@@ -56,6 +56,13 @@ public class LoadPasswordsTask extends BaseAsyncTask<Void, Void, PasswordContain
     }
 
     return null;
+  }
+
+  private void addPassword(PasswordContainer password) {
+    if(password.getPosition() > PasswordContainer.HighestPosition) {
+      PasswordContainer.HighestPosition = password.getPosition();
+    }
+    raiseCallbacks(password);
   }
 
   private PasswordContainer getPassword() {

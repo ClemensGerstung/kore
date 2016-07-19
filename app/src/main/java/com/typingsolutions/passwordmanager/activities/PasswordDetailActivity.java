@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager.activities;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -29,6 +30,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   public static final String START_DETAIL_INDEX = "com.typingsolutions.passwordmanager.activities.PasswordDetailActivity.START_DETAIL_INDEX";
 
   private Toolbar mToolbarAsActionbar;
+  private AppBarLayout mAppBarLayoutAsWrapper;
   private EditText mEditTextAsProgram;
   private EditText mEditTextAsUsername;
   private EditText mEditTextAsPassword;
@@ -48,16 +50,17 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_detail_layout);
 
-    mToolbarAsActionbar = (Toolbar) findViewById(R.id.passworddetaillayout_toolbar_actionbar);
-    mEditTextAsProgram = (EditText) findViewById(R.id.passworddetaillayout_edittext_program);
-    mEditTextAsUsername = (EditText) findViewById(R.id.passworddetaillayout_edittext_username);
-    mEditTextAsPassword = (EditText) findViewById(R.id.passworddetaillayout_edittext_password);
-    mTextViewAsHeader = (TextView) findViewById(R.id.passworddetaillayout_textview_header);
-    mCardviewAsDelete = (CardView) findViewById(R.id.passworddetaillayout_cardview_delete);
-    mRecyclerviewAsPasswordHistory = (RecyclerView) findViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
-    mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
-    Button button = (Button) findViewById(R.id.passworddetaillayout_button_generatepassword);
-    TextView nohistory = (TextView) findViewById(R.id.passworddetaillayout_textview_nohistory);
+    mToolbarAsActionbar = findCastedViewById(R.id.passworddetaillayout_toolbar_actionbar);
+    mEditTextAsProgram = findCastedViewById(R.id.passworddetaillayout_edittext_program);
+    mEditTextAsUsername = findCastedViewById(R.id.passworddetaillayout_edittext_username);
+    mEditTextAsPassword = findCastedViewById(R.id.passworddetaillayout_edittext_password);
+    mTextViewAsHeader = findCastedViewById(R.id.passworddetaillayout_textview_header);
+    mCardviewAsDelete = findCastedViewById(R.id.passworddetaillayout_cardview_delete);
+    mAppBarLayoutAsWrapper = findCastedViewById(R.id.passworddetaillayout_appbarlayout_wrapper);
+    mRecyclerviewAsPasswordHistory = findCastedViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
+    mCollapsingToolbarLayout = findCastedViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
+    Button button = findCastedViewById(R.id.passworddetaillayout_button_generatepassword);
+    TextView nohistory = findCastedViewById(R.id.passworddetaillayout_textview_nohistory);
 
     setSupportActionBar(mToolbarAsActionbar);
     mToolbarAsActionbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
@@ -98,12 +101,12 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
+    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
 
     ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
     mPasswordColor = ViewUtils.setColor(mTextViewAsHeader, programString, passwordString);
 
-
-    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0xFF000000 | mPasswordColor);
+//    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0xFF000000 | mPasswordColor);
 
     if (mCurrentPassword.getPasswordItems().size() > 1) {
       nohistory.setVisibility(View.GONE);
