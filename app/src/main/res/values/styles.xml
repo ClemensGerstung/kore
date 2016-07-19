@@ -17,11 +17,13 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="Base.AlertDialog.LoginStyle" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+    <style name="Base.AlertDialog.LoginStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorControlNormal">@color/primary</item>
         <item name="colorControlActivated">@color/primary</item>
-        <item name="colorControlHighlight">@color/primaryLight</item>
+        <!--<item name="colorControlHighlight">@color/primaryLight</item>-->
         <item name="android:buttonBarButtonStyle">@style/AlertDialog.ButtonBar.PositiveButton</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
     </style>
 
     <style name="Base.AppTheme.Detail" parent="Base.AppTheme">

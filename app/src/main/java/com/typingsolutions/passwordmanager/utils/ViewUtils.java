@@ -73,7 +73,7 @@ public final class ViewUtils {
       hexColor = Integer.parseInt(programHash, 16)
           & Integer.parseInt(passwordHash, 16);
 
-      hexColor += 0x333333;
+      hexColor += 0x0000FF;
 
       textView.getBackground()
           .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.DARKEN);
