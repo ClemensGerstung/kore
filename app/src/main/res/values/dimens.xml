@@ -29,4 +29,5 @@
     <dimen name="createpassword_body_minheight">500dp</dimen>
     <dimen name="separator_height">1dp</dimen>
     <dimen name="floatingactionbutton_translatz_elevation">6dp</dimen>
+    <item name="card_tablet_width" type="dimen">65%</item>
 </resources>

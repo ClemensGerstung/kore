@@ -6,10 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.*;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.*;
 import android.widget.ImageView;
@@ -99,8 +96,10 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
     // init and set adapter
     mPasswordOverviewAdapter = new PasswordOverviewAdapter(this);
-    layoutManager = new LinearLayoutManager(this);
     mRecyclerViewAsPasswordsList.setAdapter(mPasswordOverviewAdapter);
+
+    layoutManager = new LinearLayoutManager(this);
+
     mRecyclerViewAsPasswordsList.setLayoutManager(layoutManager);
 
     //PasswordOverviewItemAnimator animator = new PasswordOverviewItemAnimator(this);
@@ -242,7 +241,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   @Override
   public void onItemAdded(int index, IContainer item) {
     mPasswordOverviewAdapter.notifyDataSetChanged();
-    if(mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
+
+    if(mTextViewAsNoPasswordsYet != null && mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
       mTextViewAsNoPasswordsYet.setVisibility(View.GONE);
     }
   }
