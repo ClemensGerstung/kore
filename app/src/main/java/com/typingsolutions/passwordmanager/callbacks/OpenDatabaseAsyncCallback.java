@@ -1,5 +1,6 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
+import android.os.Bundle;
 import com.typingsolutions.passwordmanager.BaseAsyncTask;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
@@ -16,7 +17,9 @@ public class OpenDatabaseAsyncCallback implements BaseAsyncTask.IExecutionCallba
 
   @Override
   public void executed(Boolean aBoolean) {
-    mActivity.get().startActivity(PasswordOverviewActivity.class);
+    Bundle b = new Bundle();
+    b.putBoolean(LoginActivity.SAFE_LOGIN, mActivity.get().safeLogin());
+    mActivity.get().startActivity(PasswordOverviewActivity.class, b);
     mActivity.get().hideWaiter();
     mActivity.get().stopLoginService();
   }

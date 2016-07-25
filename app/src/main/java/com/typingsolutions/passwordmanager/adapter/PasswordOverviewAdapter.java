@@ -1,10 +1,12 @@
 package com.typingsolutions.passwordmanager.adapter;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.*;
 import com.typingsolutions.passwordmanager.BaseAdapter;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
@@ -24,7 +26,6 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   private static final int IS_PASSWORD_FILTERED = 1;
   private static final int IS_USERNAME_FILTERED = 2;
   private static final int IS_PROGRAM_FILTERED = 4;
-  private boolean safe;
 
   public PasswordOverviewAdapter(PasswordOverviewActivity activity) {
     super(activity);
@@ -34,10 +35,9 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   public PasswordOverviewViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
     View view = inflater.inflate(R.layout.password_list_item_layout, viewGroup, false);
 
-    safe = false; // TODO: read is Safe
 
     PasswordOverviewViewHolder passwordOverviewViewHolder = new PasswordOverviewViewHolder(mActivity, view);
-    if (safe) {
+    if (mActivity.isSafe()) {
       passwordOverviewViewHolder.makeSafe();
     }
 
@@ -48,10 +48,8 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   public void onBindViewHolder(PasswordOverviewViewHolder viewHolder, int position) {
     PasswordContainer password = (PasswordContainer) mActivity.getContainerAt(position);
 
-    if (!safe) {
-      viewHolder.mTextViewAsPassword.setText(password.getDefaultPassword());
-      viewHolder.mTextViewAsUsername.setText(password.getUsername());
-    }
+    viewHolder.mTextViewAsPassword.setText(password.getDefaultPassword());
+    viewHolder.mTextViewAsUsername.setText(password.getUsername());
 
     viewHolder.mTextViewAsProgram.setText(password.getProgram());
     viewHolder.mCurrentId = password.getId();
@@ -93,4 +91,6 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     dialog.show();
 
   }
+
+
 }
