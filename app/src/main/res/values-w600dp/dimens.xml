@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="card_tablet_width_sm" type="dimen">429dp</item>
+    <item name="card_tablet_width_md" type="dimen">666dp</item>
+</resources>

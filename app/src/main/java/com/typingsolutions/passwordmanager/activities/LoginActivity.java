@@ -1,5 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -237,7 +238,9 @@ public class LoginActivity extends BaseActivity {
 
     clearText(mEditTextAsLoginPassword);
 
-    EditText alertEditText = (EditText) AlertBuilder.getLastCreated().findViewById(R.id.loginlayout_edittext_pim);
+    AlertDialog lastCreated = AlertBuilder.getLastCreated();
+    if(lastCreated == null) return;
+    EditText alertEditText = (EditText) lastCreated.findViewById(R.id.loginlayout_edittext_pim);
     clearText(alertEditText);
   }
 

@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager.utils;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.AnimRes;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import com.typingsolutions.passwordmanager.R;
 import core.Utils;
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 
@@ -64,7 +66,7 @@ public final class ViewUtils {
     view.startAnimation(anim);
   }
 
-  public static int setColor(TextView textView, String first, String second) {
+  public static int setColor(@Nullable View view, String first, String second) {
     int hexColor = 0;
     try {
       String programHash = Utils.getHashedString(first).substring(0, 6);
@@ -75,9 +77,14 @@ public final class ViewUtils {
 
       hexColor += 0x0000FF;
 
-      textView.getBackground()
-          .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.DARKEN);
-      textView.setText(first.toCharArray(), 0, 1);
+      if(view !=null) {
+        view.getBackground()
+            .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.DARKEN);
+
+        if (view instanceof TextView) {
+          ((TextView) view).setText(first.toCharArray(), 0, 1);
+        }
+      }
     } catch (Exception e) {
       Log.e(ViewUtils.class.getSimpleName(), String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
     }

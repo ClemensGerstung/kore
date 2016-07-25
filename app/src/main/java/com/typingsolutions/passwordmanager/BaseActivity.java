@@ -47,6 +47,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     images = new LruCache<>(4 * 1024 * 1024);
   }
 
+  private boolean isTablet = false;
+
+  protected boolean isTablet() {
+    return isTablet;
+  }
+
   @Override
   protected void onPause() {
     super.onPause();
@@ -59,6 +65,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     if(!debug) {
       setSecurityFlags();
     }
+    isTablet = getResources().getBoolean(R.bool.is_tablet);
   }
 
   /**
