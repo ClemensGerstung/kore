@@ -104,8 +104,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
   public void startActivity(Class<? extends Activity> activity, Bundle bundle, boolean finish) {
     Intent intent = new Intent(this, activity);
-    intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
-    intent.replaceExtras(bundle);
+//    intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP);
+    intent.putExtras(bundle);
 
     if (finish) ActivityCompat.finishAfterTransition(this);
     startActivity(intent);

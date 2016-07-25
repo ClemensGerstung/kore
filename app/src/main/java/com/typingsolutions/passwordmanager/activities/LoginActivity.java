@@ -21,6 +21,7 @@ import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
 import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
+import com.typingsolutions.passwordmanager.callbacks.LoginSafeLoginCheckBoxChangeCallback;
 import com.typingsolutions.passwordmanager.callbacks.OpenDatabaseAsyncCallback;
 import com.typingsolutions.passwordmanager.callbacks.ServiceCallbackImplementation;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
@@ -52,15 +53,9 @@ public class LoginActivity extends BaseActivity {
 
   private final ServiceConnection mLoginServiceConnection = new LoginServiceConnection();
   private OpenDatabaseAsyncCallback openDatabaseAsyncCallback = new OpenDatabaseAsyncCallback(this);
+  private LoginSafeLoginCheckBoxChangeCallback safeLoginCheckedChangeListener = new LoginSafeLoginCheckBoxChangeCallback(this);
 
-  private final CompoundButton.OnCheckedChangeListener safeLoginCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-      final SharedPreferences preferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
-      preferences.edit().putBoolean(LoginActivity.SAFE_LOGIN, isChecked).apply();
-      //PasswordProvider.getInstance(LoginActivity.this).isSafe(isChecked);
-    }
-  };
+
   private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -228,6 +223,10 @@ public class LoginActivity extends BaseActivity {
     }
   }
 
+  public boolean safeLogin() {
+    return mCheckBoxAsSafeLoginFlag.isChecked();
+  }
+
   @Override
   protected View getSnackbarRelatedView() {
     return mFloatingActionButtonAsLogin;
@@ -239,7 +238,7 @@ public class LoginActivity extends BaseActivity {
     clearText(mEditTextAsLoginPassword);
 
     AlertDialog lastCreated = AlertBuilder.getLastCreated();
-    if(lastCreated == null) return;
+    if (lastCreated == null) return;
     EditText alertEditText = (EditText) lastCreated.findViewById(R.id.loginlayout_edittext_pim);
     clearText(alertEditText);
   }

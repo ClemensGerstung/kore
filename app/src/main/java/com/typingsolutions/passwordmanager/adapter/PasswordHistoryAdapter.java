@@ -31,7 +31,7 @@ public class PasswordHistoryAdapter extends BaseAdapter<PasswordHistoryViewHolde
 
   @Override
   public void onBindViewHolder(PasswordHistoryViewHolder holder, int position) {
-    PasswordItem history = mPassword.getPasswordItems().valueAt(position + 1);
+    PasswordItem history = mPassword.getPasswordItems().valueAt(position);
 
     DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault());
     String date = dateFormat.format(history.getDate());

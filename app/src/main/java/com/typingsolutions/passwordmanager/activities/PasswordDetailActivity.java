@@ -50,6 +50,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private RecyclerView mRecyclerviewAsPasswordHistory;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
+
   private AddPasswordTextWatcher mUsernameTextWatcher;
   private AddPasswordTextWatcher mProgramTextWatcher;
   private AddPasswordTextWatcher mPasswordTextWatcher;
@@ -70,7 +71,6 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mCollapsingToolbarLayout = findCastedViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
     Button button = findCastedViewById(R.id.passworddetaillayout_button_generatepassword);
     TextView nohistory = findCastedViewById(R.id.passworddetaillayout_textview_nohistory);
-
 
     setSupportActionBar(mToolbarAsActionbar);
     mToolbarAsActionbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
@@ -181,4 +181,6 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   public void enableSave(boolean enable) {
     setMenuItemEnabled(mToolbarAsActionbar, 0, enable);
   }
+
+
 }

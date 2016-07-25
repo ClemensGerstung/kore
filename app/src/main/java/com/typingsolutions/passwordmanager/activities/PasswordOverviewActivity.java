@@ -37,6 +37,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   private OrderDialogShowCallback mOrderDialogCallback = new OrderDialogShowCallback(this);
 
   private RecyclerView.LayoutManager layoutManager;
+  private boolean mSafe = false;
 
   private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
     @Override
@@ -69,9 +70,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
     logout = true;
-
-    // set action listener for passwordprovider
-    //PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
+    mSafe = getIntent().getBooleanExtra(LoginActivity.SAFE_LOGIN, true);
 
     // get elements from XML-View
     mRecyclerViewAsPasswordsList = findCastedViewById(R.id.passwordlistlayout_listview_passwords);
@@ -220,6 +219,10 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
         mSwipeRefreshLayoutAsLoadingIndication.setRefreshing(refreshing);
       }
     });
+  }
+
+  public boolean isSafe() {
+    return mSafe;
   }
 
   @Override
