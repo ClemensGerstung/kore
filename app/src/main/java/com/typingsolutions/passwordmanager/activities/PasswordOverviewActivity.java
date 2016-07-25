@@ -1,6 +1,9 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -14,10 +17,7 @@ import android.widget.TextView;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
-import com.typingsolutions.passwordmanager.callbacks.AddPasswordCallback;
-import com.typingsolutions.passwordmanager.callbacks.LogoutDialogCallback;
-import com.typingsolutions.passwordmanager.callbacks.OrderDialogShowCallback;
-import com.typingsolutions.passwordmanager.callbacks.SimpleItemTouchHelperCallback;
+import com.typingsolutions.passwordmanager.callbacks.*;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
 public class PasswordOverviewActivity extends BaseDatabaseActivity
@@ -35,35 +35,12 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   private PasswordOverviewAdapter mPasswordOverviewAdapter;
   private LogoutDialogCallback mLogoutDialogCallback = new LogoutDialogCallback(this);
   private OrderDialogShowCallback mOrderDialogCallback = new OrderDialogShowCallback(this);
+  private SearchViewExpandCallback searchViewExpandCallback = new SearchViewExpandCallback(this);
+  private SearchViewQueryCallback onQueryTextListener = new SearchViewQueryCallback(this);
 
   private RecyclerView.LayoutManager layoutManager;
+
   private boolean mSafe = false;
-
-  private MenuItemCompat.OnActionExpandListener onSearchViewOpen = new MenuItemCompat.OnActionExpandListener() {
-    @Override
-    public boolean onMenuItemActionCollapse(MenuItem item) {
-//      mPasswordOverviewAdapter.resetFilter();
-      return true;
-    }
-
-    @Override
-    public boolean onMenuItemActionExpand(MenuItem item) {
-      return true;
-    }
-  };
-
-  private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-      return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-//      mPasswordOverviewAdapter.filter(newText);
-      return false;
-    }
-  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -175,10 +152,10 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     inflater.inflate(R.menu.passwordoverviewlayout_menu, menu);
 
     // init searchview
-    /*mMenuItemAsSearchViewWrapper = menu.findItem(R.mCurrentId.passwordoverviewlayout_menuitem_search);
+    mMenuItemAsSearchViewWrapper = menu.findItem(R.id.passwordoverviewlayout_menuitem_search);
     mSearchViewAsSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemAsSearchViewWrapper);
     mSearchViewAsSearchView.setOnQueryTextListener(onQueryTextListener);
-    MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, onSearchViewOpen);*/
+    MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, searchViewExpandCallback);
 
     return true;
   }
@@ -232,7 +209,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
   @Override
   protected void onActivityChange() {
-    if(logout) {
+    if (logout) {
 //      mRecyclerViewAsPasswordsList.removeAllViews();
       clearContainerItems();
       clearChangeListener();
@@ -245,7 +222,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   public void onItemAdded(int index, IContainer item) {
     mPasswordOverviewAdapter.notifyDataSetChanged();
 
-    if(mTextViewAsNoPasswordsYet != null && mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
+    if (mTextViewAsNoPasswordsYet != null && mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
       mTextViewAsNoPasswordsYet.setVisibility(View.GONE);
     }
   }
@@ -253,7 +230,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   @Override
   public void onItemRemoved(int index, IContainer item) {
     mPasswordOverviewAdapter.notifyItemRemoved(index);
-    if(mTextViewAsNoPasswordsYet.getVisibility() == View.GONE && containerCount() == 0) {
+    if (mTextViewAsNoPasswordsYet.getVisibility() == View.GONE && containerCount() == 0) {
       mTextViewAsNoPasswordsYet.setVisibility(View.VISIBLE);
     }
   }
@@ -261,5 +238,9 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   @Override
   public void onItemChanged(int index, IContainer oldItem, IContainer newItem) {
     mPasswordOverviewAdapter.notifyItemChanged(index);
+  }
+
+  public void search(String query) {
+    mPasswordOverviewAdapter.search(query);
   }
 }
