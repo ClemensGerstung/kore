@@ -68,7 +68,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.password_list_layout);
-    logout = false;
+    logout = true;
 
     // set action listener for passwordprovider
     //PasswordProvider.getInstance(this).setPasswordActionListener(passwordActionListener);
@@ -140,7 +140,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     AlertBuilder builder = AlertBuilder.create(this)
         .setTitle("Logout")
         .setMessage("Are you sure to logout?")
-        .setNegativeButton("Discard")
+        .setNegativeButton("Cancel")
         .setPositiveButton("Logout")
         .setCallback(mLogoutDialogCallback);
 
@@ -193,7 +193,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
         AlertBuilder.create(this)
             .setView(R.layout.order_layout)
             .setPositiveButton("order")
-            .setNegativeButton("discard")
+            .setNegativeButton("cancel")
             .setCallback(mOrderDialogCallback)
             .show();
         break;

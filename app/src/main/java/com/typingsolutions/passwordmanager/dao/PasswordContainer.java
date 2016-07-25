@@ -119,7 +119,7 @@ public class PasswordContainer implements IContainer {
     try {
       database.beginTransaction();
 
-      database.update(DatabaseConnection.PASSWORDS_TABLE_NAME, values, "id", where);
+      database.update(DatabaseConnection.PASSWORDS_TABLE_NAME, values, "id=?", where);
 
       database.setTransactionSuccessful();
     } finally {

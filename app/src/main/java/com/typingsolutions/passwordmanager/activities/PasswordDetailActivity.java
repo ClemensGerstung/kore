@@ -1,11 +1,19 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.ArcShape;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +22,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
@@ -24,6 +33,9 @@ import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import core.data.PasswordProvider;
+import ui.MaterialView;
+
+import java.util.Random;
 
 public class PasswordDetailActivity extends BaseDatabaseActivity {
 
@@ -37,13 +49,11 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private CardView mCardviewAsDelete;
   private RecyclerView mRecyclerviewAsPasswordHistory;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
-  private TextView mTextViewAsHeader;
 
   private AddPasswordTextWatcher mUsernameTextWatcher;
   private AddPasswordTextWatcher mProgramTextWatcher;
   private AddPasswordTextWatcher mPasswordTextWatcher;
   private PasswordContainer mCurrentPassword;
-  private int mPasswordColor;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +64,13 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mEditTextAsProgram = findCastedViewById(R.id.passworddetaillayout_edittext_program);
     mEditTextAsUsername = findCastedViewById(R.id.passworddetaillayout_edittext_username);
     mEditTextAsPassword = findCastedViewById(R.id.passworddetaillayout_edittext_password);
-    mTextViewAsHeader = findCastedViewById(R.id.passworddetaillayout_textview_header);
     mCardviewAsDelete = findCastedViewById(R.id.passworddetaillayout_cardview_delete);
     mAppBarLayoutAsWrapper = findCastedViewById(R.id.passworddetaillayout_appbarlayout_wrapper);
     mRecyclerviewAsPasswordHistory = findCastedViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
     mCollapsingToolbarLayout = findCastedViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
     Button button = findCastedViewById(R.id.passworddetaillayout_button_generatepassword);
     TextView nohistory = findCastedViewById(R.id.passworddetaillayout_textview_nohistory);
+
 
     setSupportActionBar(mToolbarAsActionbar);
     mToolbarAsActionbar.setNavigationOnClickListener(new ToolbarNavigationCallback(this));
@@ -101,12 +111,16 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
+//    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
+//    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
 
-    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
-    mPasswordColor = ViewUtils.setColor(mTextViewAsHeader, programString, passwordString);
-
-//    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0xFF000000 | mPasswordColor);
+    if (!isTablet()) {
+      TextView textViewAsHeader = findCastedViewById(R.id.passworddetaillayout_textview_header);
+      ViewUtils.setColor(textViewAsHeader, programString, passwordString);
+    } else {
+      MaterialView v = findCastedViewById(R.id.passworddetaillayout_view_artboard);
+      v.setOverlayColor(ViewUtils.setColor(null, programString, passwordString));
+    }
 
     if (mCurrentPassword.getPasswordItems().size() > 1) {
       nohistory.setVisibility(View.GONE);
@@ -136,7 +150,13 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
         changeContainerItem(indexOfContainer(mCurrentPassword), mCurrentPassword);
       }
 
-//      PasswordProvider.getInstance(this).editPassword(mPasswordId, newProgram, newUsername);
+
+      String program = mProgramTextWatcher.needUpdate() ? mEditTextAsProgram.getText().toString() : null;
+      String username = mUsernameTextWatcher.needUpdate() ? mEditTextAsUsername.getText().toString() : null;
+      mCurrentPassword.update(-1, program, username);
+      if(mProgramTextWatcher.needUpdate() || mUsernameTextWatcher.needUpdate()) {
+        changeContainerItem(indexOfContainer(mCurrentPassword), mCurrentPassword);
+      }
     } catch (Exception e) {
       showErrorLog(getClass(), e);
     }
@@ -154,11 +174,11 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
   @Override
   protected void onActivityChange() {
-
+    // TODO:
     Log.d(getClass().getSimpleName(), "asdf");
   }
 
-  public void enableSave(boolean enable){
+  public void enableSave(boolean enable) {
     setMenuItemEnabled(mToolbarAsActionbar, 0, enable);
   }
 }

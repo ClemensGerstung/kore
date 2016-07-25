@@ -18,6 +18,11 @@
     <dimen name="font_lg">22sp</dimen>
     <dimen name="font_xl">26sp</dimen>
 
+    <item name="card_tablet_width_sm" type="dimen">429dp</item>
+    <item name="card_tablet_width_md" type="dimen">666dp</item>
+
+
+
     <!-- Specific dimensions for some special elements -->
     <dimen name="loginlayout_edittext_width">300dp</dimen>
     <dimen name="loginlayout_background_diameter">250dp</dimen>
@@ -29,5 +34,4 @@
     <dimen name="createpassword_body_minheight">500dp</dimen>
     <dimen name="separator_height">1dp</dimen>
     <dimen name="floatingactionbutton_translatz_elevation">6dp</dimen>
-    <item name="card_tablet_width" type="dimen">65%</item>
 </resources>
