@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager.adapter;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.*;
 import com.typingsolutions.passwordmanager.BaseAdapter;
 import com.typingsolutions.passwordmanager.IContainer;
@@ -11,9 +12,7 @@ import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import com.typingsolutions.passwordmanager.viewholder.PasswordOverviewViewHolder;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHolder, PasswordOverviewActivity> {
@@ -133,11 +132,13 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     int j = right;
 
     while (i <= j) {
-      while (compare(i, pivot, option) < 0) i++;
-      while (compare(j, pivot, option) > 0) j--;
+      while (compare(i, pivot, option) < 0 && i < right) i++;
+      while (compare(j, pivot, option) > 0 && j > left) j--;
 
-      if(i <= j) {
+      if (i <= j) {
         notifyItemMoved(i, j);
+        Log.d(getClass().getSimpleName(), "From " + i + " to " + j);
+
         i++;
         j--;
       }
@@ -164,7 +165,15 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   }
 
   private class PasswordContainerComparator implements Comparator<PasswordContainer> {
-    private OrderOptions mOrderOption;
+    OrderOptions mOrderOption;
+
+    public PasswordContainerComparator() {
+      this(null);
+    }
+
+    public PasswordContainerComparator(OrderOptions mOrderOption) {
+      this.mOrderOption = mOrderOption;
+    }
 
     public int compare(PasswordContainer left, PasswordContainer right, OrderOptions orderOptions) {
       mOrderOption = orderOptions;
@@ -175,17 +184,17 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     public int compare(PasswordContainer left, PasswordContainer right) {
       switch (mOrderOption) {
         case PasswordAscending:
-          return left.getDefaultPassword().compareTo(right.getDefaultPassword());
+          return left.getDefaultPassword().compareToIgnoreCase(right.getDefaultPassword());
         case PasswordDescending:
-          return right.getDefaultPassword().compareTo(left.getDefaultPassword());
+          return ~left.getDefaultPassword().compareToIgnoreCase(right.getDefaultPassword());
         case ProgramAscending:
-          return left.getProgram().compareTo(right.getProgram());
+          return left.getProgram().compareToIgnoreCase(right.getProgram());
         case ProgramDescending:
-          return right.getProgram().compareTo(left.getProgram());
+          return ~left.getProgram().compareToIgnoreCase(right.getProgram());
         case UsernameAscending:
-          return left.getUsername().compareTo(right.getUsername());
+          return left.getUsername().compareToIgnoreCase(right.getUsername());
         case UsernameDescending:
-          return right.getUsername().compareTo(left.getUsername());
+          return ~left.getUsername().compareToIgnoreCase(right.getUsername());
       }
 
       return 0;

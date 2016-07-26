@@ -27,8 +27,6 @@ public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverview
 
     mRadioGroupAsOrderSelection = (RadioGroup) alertDialog.findViewById(R.id.orderlayout_radiogroup_wrapper);
     mCheckboxAsInverseOrder = (CheckBox) alertDialog.findViewById(R.id.orderlayout_checkbox_inverse);
-
-    alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "order", this);
   }
 
   @Override
