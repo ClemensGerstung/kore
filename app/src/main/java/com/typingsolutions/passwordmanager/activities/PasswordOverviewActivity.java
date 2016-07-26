@@ -1,9 +1,6 @@
 package com.typingsolutions.passwordmanager.activities;
 
 import android.app.AlertDialog;
-import android.app.SearchManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -242,5 +239,9 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
   public void search(String query) {
     mPasswordOverviewAdapter.search(query);
+  }
+
+  public void order(PasswordOverviewAdapter.OrderOptions options) {
+    mPasswordOverviewAdapter.order(options);
   }
 }
