@@ -90,26 +90,29 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
       PasswordContainer container = (PasswordContainer) mActivity.getContainerAt(i);
 //      if (mRemovedItems.contains(container.getId())) continue;
 
-      if (mActivity.isSafe()) {
-        if (!p.matcher(container.getProgram()).matches()) {
+      boolean match = mActivity.isSafe() ?
+          p.matcher(container.getProgram()).matches() :
+          p.matcher(container.getDefaultPassword()).matches() ||
+              p.matcher(container.getProgram()).matches() ||
+              p.matcher(container.getUsername()).matches();
+      boolean removed = mRemovedItems.contains(container.getId());
+
+      if(!match) {
+        if(!removed) {
           remove(container, i);
-        } else {
-          if (mRemovedItems.contains(container.getId())) {
-            add(container, i);
-          }
         }
       } else {
-        if (!p.matcher(container.getDefaultPassword()).matches() ||
-            !p.matcher(container.getProgram()).matches() ||
-            !p.matcher(container.getUsername()).matches()) {
-          remove(container, i);
+        if(removed) {
+          add(container, i);
         }
       }
+
     }
   }
 
   public void reset() {
-
+    mRemovedItems.clear();
+    notifyDataSetChanged();
   }
 
   private void remove(PasswordContainer container, int pos) {
