@@ -1,7 +1,5 @@
 package com.typingsolutions.passwordmanager;
 
-import android.content.res.ColorStateList;
-import android.support.annotation.Nullable;
 import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -19,7 +17,6 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     BaseDatabaseActivity.connection = (BaseDatabaseConnection) connection.clone();
   }
 
-  @Nullable
   public static SQLiteDatabase getDatabase() {
     return connection != null ? connection.getDatabase() : null;
   }
