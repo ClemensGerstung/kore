@@ -1,19 +1,18 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import com.typingsolutions.passwordmanager.BaseDialogCallback;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import core.data.PasswordProvider;
+import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 
 public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverviewActivity> {
 
-  private CheckBox inverse;
-  private RadioGroup group;
+  private CheckBox mCheckboxAsInverseOrder;
+  private RadioGroup mRadioGroupAsOrderSelection;
 
   public OrderDialogShowCallback(PasswordOverviewActivity activity) {
     super(activity);
@@ -26,21 +25,39 @@ public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverview
 
     AlertDialog alertDialog = (AlertDialog) dialog;
 
-    group = (RadioGroup) alertDialog.findViewById(R.id.orderlayout_radiogroup_wrapper);
-    inverse = (CheckBox) alertDialog.findViewById(R.id.orderlayout_checkbox_inverse);
+    mRadioGroupAsOrderSelection = (RadioGroup) alertDialog.findViewById(R.id.orderlayout_radiogroup_wrapper);
+    mCheckboxAsInverseOrder = (CheckBox) alertDialog.findViewById(R.id.orderlayout_checkbox_inverse);
 
     alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "order", this);
   }
 
   @Override
   public void OnPositiveButtonPressed(DialogInterface dialog) {
-    int checkedId = group.getCheckedRadioButtonId();
-    boolean invert = inverse.isChecked();
-    int order = (checkedId == R.id.orderlayout_radiobutton_password ? 2 :
-        (checkedId == R.id.orderlayout_radiobutton_username ? 0 :
-            (checkedId == R.id.orderlayout_radiobutton_program ? 4 : 0)))
-        + (invert ? 1 : 0);
+    int checkedId = mRadioGroupAsOrderSelection.getCheckedRadioButtonId();
+    boolean invert = mCheckboxAsInverseOrder.isChecked();
 
-//    PasswordProvider.getInstance(context).order(order);
+    switch (checkedId) {
+      case R.id.orderlayout_radiobutton_password:
+        if(invert) {
+          mActivity.order(PasswordOverviewAdapter.OrderOptions.PasswordDescending);
+        } else {
+          mActivity.order(PasswordOverviewAdapter.OrderOptions.PasswordAscending);
+        }
+        break;
+      case R.id.orderlayout_radiobutton_username:
+        if(invert) {
+          mActivity.order(PasswordOverviewAdapter.OrderOptions.UsernameDescending);
+        } else {
+          mActivity.order(PasswordOverviewAdapter.OrderOptions.UsernameAscending);
+        }
+        break;
+      case R.id.orderlayout_radiobutton_program:
+        if(invert) {
+          mActivity.order(PasswordOverviewAdapter.OrderOptions.ProgramDescending);
+        } else {
+          mActivity.order(PasswordOverviewAdapter.OrderOptions.ProgramAscending);
+        }
+        break;
+    }
   }
 }

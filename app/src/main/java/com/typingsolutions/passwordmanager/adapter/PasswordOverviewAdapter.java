@@ -1,25 +1,24 @@
 package com.typingsolutions.passwordmanager.adapter;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Paint;
 import android.support.v7.app.AlertDialog;
 import android.view.*;
 import com.typingsolutions.passwordmanager.BaseAdapter;
+import com.typingsolutions.passwordmanager.IContainer;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.activities.LoginActivity;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import com.typingsolutions.passwordmanager.viewholder.PasswordOverviewViewHolder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHolder, PasswordOverviewActivity> {
   private List<Integer> mRemovedItems = new ArrayList<>();
+  private PasswordContainerComparator mComperator = new PasswordContainerComparator();
 
   public PasswordOverviewAdapter(PasswordOverviewActivity activity) {
     super(activity);
@@ -97,22 +96,17 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
               p.matcher(container.getUsername()).matches();
       boolean removed = mRemovedItems.contains(container.getId());
 
-      if(!match) {
-        if(!removed) {
+      if (!match) {
+        if (!removed) {
           remove(container, i);
         }
       } else {
-        if(removed) {
+        if (removed) {
           add(container, i);
         }
       }
 
     }
-  }
-
-  public void reset() {
-    mRemovedItems.clear();
-    notifyDataSetChanged();
   }
 
   private void remove(PasswordContainer container, int pos) {
@@ -123,5 +117,78 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   private void add(PasswordContainer container, int pos) {
     mRemovedItems.remove((Integer) container.getId());
     notifyItemInserted(pos);
+  }
+
+  public void order(OrderOptions option) {
+    sort(0, mActivity.containerCount() - 1, option);
+  }
+
+  private void sort(int left, int right, OrderOptions option) {
+    if (left >= right) {
+      return;
+    }
+
+    IContainer pivot = mActivity.getContainerAt(left + (right - left) / 2);
+    int i = left;
+    int j = right;
+
+    while (i <= j) {
+      while (compare(i, pivot, option) < 0) i++;
+      while (compare(j, pivot, option) > 0) j--;
+
+      if(i <= j) {
+        notifyItemMoved(i, j);
+        i++;
+        j--;
+      }
+    }
+
+    if (left < j)
+      sort(left, j, option);
+
+    if (right > i)
+      sort(i, right, option);
+  }
+
+  private int compare(int index, IContainer pivot, OrderOptions option) {
+    return mComperator.compare((PasswordContainer) mActivity.getContainerAt(index), (PasswordContainer) pivot, option);
+  }
+
+  public static enum OrderOptions {
+    PasswordAscending,
+    PasswordDescending,
+    UsernameAscending,
+    UsernameDescending,
+    ProgramAscending,
+    ProgramDescending
+  }
+
+  private class PasswordContainerComparator implements Comparator<PasswordContainer> {
+    private OrderOptions mOrderOption;
+
+    public int compare(PasswordContainer left, PasswordContainer right, OrderOptions orderOptions) {
+      mOrderOption = orderOptions;
+      return compare(left, right);
+    }
+
+    @Override
+    public int compare(PasswordContainer left, PasswordContainer right) {
+      switch (mOrderOption) {
+        case PasswordAscending:
+          return left.getDefaultPassword().compareTo(right.getDefaultPassword());
+        case PasswordDescending:
+          return right.getDefaultPassword().compareTo(left.getDefaultPassword());
+        case ProgramAscending:
+          return left.getProgram().compareTo(right.getProgram());
+        case ProgramDescending:
+          return right.getProgram().compareTo(left.getProgram());
+        case UsernameAscending:
+          return left.getUsername().compareTo(right.getUsername());
+        case UsernameDescending:
+          return right.getUsername().compareTo(left.getUsername());
+      }
+
+      return 0;
+    }
   }
 }
