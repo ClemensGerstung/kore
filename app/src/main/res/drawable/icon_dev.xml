@@ -4,7 +4,5 @@
     <item android:drawable="@drawable/build_grey"
           android:gravity="center"
           android:top="@dimen/dimen_sm"
-          android:left="@dimen/dimen_sm"
-          android:height="@dimen/dimen_sm"
-          android:width="@dimen/dimen_sm"/>
+          android:left="@dimen/dimen_sm"/>
 </layer-list>
