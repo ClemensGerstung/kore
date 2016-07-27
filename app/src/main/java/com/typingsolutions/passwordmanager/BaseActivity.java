@@ -163,9 +163,12 @@ public abstract class BaseActivity extends AppCompatActivity {
   protected abstract void onActivityChange();
 
   public void makeSnackbar(String message) {
-    if (getSnackbarRelatedView() == null) return;
+    View v = getWindow().getDecorView();
+    if (getSnackbarRelatedView() != null) {
+      v = getSnackbarRelatedView();
+    }
 
-    Snackbar.make(getSnackbarRelatedView(), message, Snackbar.LENGTH_LONG).show();
+    Snackbar.make(v, message, Snackbar.LENGTH_LONG).show();
   }
 
   public static void showErrorLog(Class sender, Exception e) {

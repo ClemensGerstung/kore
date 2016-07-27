@@ -1,5 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.animation.ObjectAnimator;
+import android.animation.StateListAnimator;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -28,6 +30,7 @@ import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordTextWatcher;
+import com.typingsolutions.passwordmanager.callbacks.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
@@ -89,7 +92,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mRecyclerviewAsPasswordHistory.setLayoutManager(new LinearLayoutManager(this));
     mRecyclerviewAsPasswordHistory.setAdapter(new PasswordHistoryAdapter(this, mCurrentPassword));
 
-    //button.setOnClickListener(new GeneratePasswordCallback(this, mTextViewAsPassword));
+    button.setOnClickListener(new GeneratePasswordCallback(this, mEditTextAsPassword));
 
     String programString = mCurrentPassword.getProgram();
     mProgramTextWatcher = new AddPasswordTextWatcher(this, programString, true);
@@ -111,7 +114,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-//    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
+    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
 //    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
 
     if (!isTablet()) {
@@ -127,6 +130,11 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
       mRecyclerviewAsPasswordHistory.setVisibility(View.VISIBLE);
       mRecyclerviewAsPasswordHistory.setNestedScrollingEnabled(false);
       mRecyclerviewAsPasswordHistory.setEnabled(false);
+    }
+
+    if(Build.VERSION.SDK_INT >= 21) {
+//      getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+      getWindow().setStatusBarColor(0x44000000);
     }
 
     button.requestFocus();
