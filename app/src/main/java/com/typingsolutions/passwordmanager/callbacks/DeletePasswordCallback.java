@@ -1,43 +1,44 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
+import com.typingsolutions.passwordmanager.AlertBuilder;
+import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseClickCallback;
+import com.typingsolutions.passwordmanager.BaseDialogCallback;
 import com.typingsolutions.passwordmanager.activities.PasswordDetailActivity;
-import com.typingsolutions.passwordmanager.BaseCallback;
-import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
-import core.data.Password;
-import core.data.PasswordProvider;
+import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
 public class DeletePasswordCallback extends BaseClickCallback<PasswordDetailActivity> {
-    private Password currentPassword;
+  private DeletePasswordDialogCallback mDialogCallback;
 
-    public DeletePasswordCallback(PasswordDetailActivity passwordDetailActivity, Password password) {
-        super(passwordDetailActivity);
-        this.currentPassword = password;
-    }
+  public DeletePasswordCallback(PasswordDetailActivity passwordDetailActivity, PasswordContainer password) {
+    super(passwordDetailActivity);
+    mDialogCallback = new DeletePasswordDialogCallback(mActivity, password);
+  }
 
-    @Override
-    public void setValues(Object... values) {
-    }
+  @Override
+  public void onClick(View v) {
+    AlertBuilder.create(mActivity)
+        .setMessage("Delete Password?")
+        .setPositiveButton("delete")
+        .setNegativeButton("cancel")
+        .setCallback(mDialogCallback)
+        .show();
 
-    @Override
-    public void onClick(View v) {
 //        AlertDialog dialog = new AlertDialog.Builder(mActivity)
 //                .setTitle("Delete mTextViewAsPassword")
 //                .setMessage("Are you sure to delete this mTextViewAsPassword?")
 //                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {
-//                        PasswordProvider.getInstance(context).removePassword(currentPassword);
+//                        PasswordProvider.getInstance(context).removePassword(mCurrentPassword);
 //                        passwordDetailActivity.onBackPressed();
 //                    }
 //                })
 //                .setNegativeButton("DISCARD", null)
 //                .create();
 //        dialog.show();
-    }
+  }
 }

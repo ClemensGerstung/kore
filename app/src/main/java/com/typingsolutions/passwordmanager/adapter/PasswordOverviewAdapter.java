@@ -4,10 +4,12 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.*;
+import com.typingsolutions.passwordmanager.AlertBuilder;
 import com.typingsolutions.passwordmanager.BaseAdapter;
 import com.typingsolutions.passwordmanager.IContainer;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.PasswordOverviewActivity;
+import com.typingsolutions.passwordmanager.callbacks.DeletePasswordDialogCallback;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import com.typingsolutions.passwordmanager.viewholder.PasswordOverviewViewHolder;
@@ -17,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHolder, PasswordOverviewActivity> {
   private List<Integer> mRemovedItems = new ArrayList<>();
-  private PasswordContainerComparator mComperator = new PasswordContainerComparator();
+  private PasswordContainerComparator mComparator = new PasswordContainerComparator();
 
   public PasswordOverviewAdapter(PasswordOverviewActivity activity) {
     super(activity);
@@ -63,23 +65,12 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
 
   @Override
   public void onItemDismiss(final int position) {
-    AlertDialog dialog = new AlertDialog.Builder(mActivity)
+    AlertBuilder.create(mActivity)
         .setMessage("Delete this password?")
-        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-//            PasswordProvider.getInstance(mActivity).removePassword(position);
-            notifyItemRemoved(position);
-          }
-        })
-        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            notifyItemChanged(position);
-          }
-        })
-        .create();
-    dialog.show();
+        .setPositiveButton("DELETE")
+        .setNegativeButton("CANCEL")
+        .setCallback(new DeletePasswordDialogCallback(mActivity, (PasswordContainer) mActivity.getContainerAt(position)))
+        .show();
   }
 
   public void search(String query) {
@@ -152,7 +143,7 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   }
 
   private int compare(int index, IContainer pivot, OrderOptions option) {
-    return mComperator.compare((PasswordContainer) mActivity.getContainerAt(index), (PasswordContainer) pivot, option);
+    return mComparator.compare((PasswordContainer) mActivity.getContainerAt(index), (PasswordContainer) pivot, option);
   }
 
   public static enum OrderOptions {

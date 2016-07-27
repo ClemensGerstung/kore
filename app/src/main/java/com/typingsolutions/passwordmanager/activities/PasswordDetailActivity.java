@@ -1,20 +1,9 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.ArcShape;
-import android.graphics.drawable.shapes.RectShape;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,20 +11,18 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.adapter.PasswordHistoryAdapter;
 import com.typingsolutions.passwordmanager.callbacks.AddPasswordTextWatcher;
+import com.typingsolutions.passwordmanager.callbacks.DeletePasswordCallback;
+import com.typingsolutions.passwordmanager.callbacks.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
-import core.data.PasswordProvider;
 import ui.MaterialView;
-
-import java.util.Random;
 
 public class PasswordDetailActivity extends BaseDatabaseActivity {
 
@@ -50,6 +37,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private RecyclerView mRecyclerviewAsPasswordHistory;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
+  private GeneratePasswordCallback mGeneratePasswordCallback;
 
   private AddPasswordTextWatcher mUsernameTextWatcher;
   private AddPasswordTextWatcher mProgramTextWatcher;
@@ -89,7 +77,8 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mRecyclerviewAsPasswordHistory.setLayoutManager(new LinearLayoutManager(this));
     mRecyclerviewAsPasswordHistory.setAdapter(new PasswordHistoryAdapter(this, mCurrentPassword));
 
-    //button.setOnClickListener(new GeneratePasswordCallback(this, mTextViewAsPassword));
+    mGeneratePasswordCallback = new GeneratePasswordCallback(this, mEditTextAsPassword);
+    button.setOnClickListener(mGeneratePasswordCallback);
 
     String programString = mCurrentPassword.getProgram();
     mProgramTextWatcher = new AddPasswordTextWatcher(this, programString, true);
@@ -106,8 +95,8 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mEditTextAsPassword.setText(passwordString);
     mEditTextAsPassword.addTextChangedListener(mPasswordTextWatcher);
 
-//    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, mCurrentPassword, this);
-    //mCardviewAsDelete.setOnClickListener(onClickListener);
+    DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, mCurrentPassword);
+    mCardviewAsDelete.setOnClickListener(onClickListener);
 
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
