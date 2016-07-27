@@ -139,7 +139,7 @@ public class PasswordContainer implements IContainer {
       }
 
       database.beginTransaction();
-      database.delete(DatabaseConnection.PASSWORDS_TABLE_NAME, "id", where);
+      database.delete(DatabaseConnection.PASSWORDS_TABLE_NAME, "id=?", where);
       database.setTransactionSuccessful();
     } catch (Exception e) {
       result = false;

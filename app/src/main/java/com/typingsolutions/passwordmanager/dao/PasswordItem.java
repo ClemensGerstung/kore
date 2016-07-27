@@ -64,7 +64,7 @@ public class PasswordItem {
 
     try {
       database.beginTransaction();
-      database.delete(DatabaseConnection.HISTORY_TABLE_NAME, DatabaseConnection.TABLE_ID, where);
+      database.delete(DatabaseConnection.HISTORY_TABLE_NAME, "id=?", where);
       database.setTransactionSuccessful();
       result = true;
     } finally {

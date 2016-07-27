@@ -201,7 +201,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
   @Override
   protected View getSnackbarRelatedView() {
-    return this.mFloatingActionButtonAsAddPassword;
+    return mFloatingActionButtonAsAddPassword;
   }
 
   @Override
@@ -225,11 +225,14 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   }
 
   @Override
-  public void onItemRemoved(int index, IContainer item) {
+  public void onItemRemoved(int index, final IContainer item) {
     mPasswordOverviewAdapter.notifyItemRemoved(index);
     if (mTextViewAsNoPasswordsYet.getVisibility() == View.GONE && containerCount() == 0) {
       mTextViewAsNoPasswordsYet.setVisibility(View.VISIBLE);
     }
+
+    ((PasswordContainer) item).delete();
+    makeSnackbar("Password deleted");
   }
 
   @Override

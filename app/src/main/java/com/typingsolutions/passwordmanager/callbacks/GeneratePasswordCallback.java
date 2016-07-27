@@ -1,19 +1,17 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.EditText;
 import com.typingsolutions.passwordmanager.BaseActivity;
-import com.typingsolutions.passwordmanager.BaseCallback;
 import com.typingsolutions.passwordmanager.BaseClickCallback;
 import core.Utils;
 
 public class GeneratePasswordCallback extends BaseClickCallback {
-  private EditText editText;
+  private EditText mEditText;
 
   public GeneratePasswordCallback(BaseActivity activity, EditText editText) {
     super(activity);
-    this.editText = editText;
+    this.mEditText = editText;
   }
 
   @Override
@@ -74,8 +72,8 @@ public class GeneratePasswordCallback extends BaseClickCallback {
       builder.append(array[rand]);
     }
 
-    editText.setText("");
-    editText.append(builder.toString());
+    mEditText.setText("");
+    mEditText.append(builder.toString());
   }
 
 
