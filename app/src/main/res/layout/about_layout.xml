@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                app:theme="@style/Base.AppTheme"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-  <LinearLayout android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_centerInParent="true"
-                android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:orientation="vertical"
+              android:gravity="center"
+              android:layout_centerInParent="true"
+              android:layout_height="wrap_content">
     <ImageView android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:src="@mipmap/icon"/>
@@ -18,7 +14,7 @@
               android:textSize="24sp"
               android:layout_marginTop="20dp"
               android:textColor="#616161"
-              android:text="Password.Manager for Android"/>
+              android:text="kore for Android"/>
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:textSize="6sp"
@@ -32,11 +28,11 @@
               android:layout_height="wrap_content"
               android:layout_marginTop="14sp"
               android:textSize="16sp"
-              android:text="Copyright 2015 TypingSolutions"/>
+              android:text="Copyright 2015 Clemens Gerstung"/>
     <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/aboutlayout_button_license"
+            android:layout_margin="@dimen/dimen_md"
             android:text="Licenses"/>
-  </LinearLayout>
+</LinearLayout>
 
-</RelativeLayout>

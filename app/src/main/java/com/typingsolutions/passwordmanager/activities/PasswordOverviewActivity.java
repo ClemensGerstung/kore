@@ -24,6 +24,8 @@ import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.*;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
+import java.util.List;
+
 public class PasswordOverviewActivity extends BaseDatabaseActivity
     implements IListChangedListener<IContainer> {
 
@@ -45,6 +47,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   private RecyclerView.LayoutManager layoutManager;
 
   private boolean mSafe = false;
+
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

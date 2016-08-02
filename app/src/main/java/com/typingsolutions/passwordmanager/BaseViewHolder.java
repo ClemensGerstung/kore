@@ -32,8 +32,4 @@ public abstract class BaseViewHolder<TActivity extends BaseActivity> extends Rec
     // child class will override
   }
 
-  public void onItemReleased() {
-    // nothing to do
-    // child class will override
-  }
 }

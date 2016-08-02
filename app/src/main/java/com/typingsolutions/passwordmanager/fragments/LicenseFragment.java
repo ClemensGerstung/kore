@@ -7,12 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import com.typingsolutions.passwordmanager.BaseFragment;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.activities.AboutActivity;
+import com.typingsolutions.passwordmanager.activities.SetupActivity;
 
 import java.io.InputStream;
 
 
-public class LicenseFragment extends Fragment {
+public class LicenseFragment extends BaseFragment<AboutActivity> {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

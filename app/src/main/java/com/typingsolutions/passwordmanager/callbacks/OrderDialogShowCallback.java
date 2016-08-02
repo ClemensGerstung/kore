@@ -56,6 +56,9 @@ public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverview
           mActivity.order(PasswordOverviewAdapter.OrderOptions.ProgramAscending);
         }
         break;
+      case R.id.orderlayout_radiobutton_custom:
+        mActivity.order(PasswordOverviewAdapter.OrderOptions.Custom);
+        break;
     }
   }
 }

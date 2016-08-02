@@ -14,14 +14,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways"
+                app:layout_scrollFlags="snap"
                 android:clickable="true"
                 app:navigationIcon="@mipmap/arrow_back"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
     </android.support.design.widget.AppBarLayout>
 
-    <fragment android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/aboutlicenselayout_fragment_host"
-              android:name="com.typingsolutions.passwordmanager.fragments.AboutFragment"/>
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/aboutlicenselayout_fragment_host"/>
 </android.support.design.widget.CoordinatorLayout>
