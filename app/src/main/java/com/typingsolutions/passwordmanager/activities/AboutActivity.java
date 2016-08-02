@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.fragments.AboutFragment;
 
 
 public class AboutActivity extends BaseActivity {
@@ -19,6 +20,11 @@ public class AboutActivity extends BaseActivity {
 
     mToolbarAsActionbar = findCastedViewById(R.id.aboutlayout_toolbar_actionbar);
     setSupportActionBar(mToolbarAsActionbar);
+
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.aboutlicenselayout_fragment_host, new AboutFragment())
+        .commit();
   }
 
   @Override
