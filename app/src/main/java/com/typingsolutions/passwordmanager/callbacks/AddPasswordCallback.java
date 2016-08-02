@@ -22,24 +22,6 @@ public class AddPasswordCallback extends BaseClickCallback<PasswordOverviewActiv
   @Override
   public void onClick(View view) {
     BaseDatabaseActivity.logout = false;
-
-
-    Intent intent = new Intent(mActivity, CreatePasswordActivity.class);
-    Bundle bundle;
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Log.d(getClass().getSimpleName(), "override");
-      //bundle = ActivityOptionsCompat
-      //    .makeCustomAnimation(context, R.anim.activity_open_animation, R.anim.no_animation)
-      //    .toBundle();
-
-      ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, view, "asdf");
-
-      mActivity.startActivity(intent);
-      //passwordOverviewActivity.overridePendingTransition(R.anim.activity_open_animation, R.anim.no_animation);
-
-    } else {
-      mActivity.startActivity(intent);
-    }
-
+    mActivity.startActivity(CreatePasswordActivity.class);
   }
 }

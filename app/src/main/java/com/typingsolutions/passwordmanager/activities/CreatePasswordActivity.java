@@ -88,6 +88,7 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
 
     mNestedScrollViewAsWrapperForInput.setOnScrollChangeListener(scrollChangeListener);
     mNestedScrollViewAsWrapperForInput.requestFocus();
+
   }
 
   @Override
