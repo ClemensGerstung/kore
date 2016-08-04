@@ -24,9 +24,11 @@ android {
 dependencies {
     compile fileTree(dir:'libs', include:['*.jar'])
     compile 'net.zetetic:android-database-sqlcipher:3.3.1-2@aar'
+    compile 'com.github.aakira:expandable-layout:1.5.1@aar'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:cardview-v7:24.1.1'
+    compile 'com.android.support:gridlayout-v7:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.1.1'
     compile 'com.android.support:design:24.1.1'
 //    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
