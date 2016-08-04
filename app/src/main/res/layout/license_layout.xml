@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WebView xmlns:android="http://schemas.android.com/apk/res/android"
-         xmlns:app="http://schemas.android.com/apk/res-auto"
-         app:theme="@style/Base.AppTheme"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_margin="@dimen/dimen_sm"
-         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-         android:id="@+id/licenselayout_webview_about"/>
+<android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <WebView android:theme="@style/Base.AppTheme"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_margin="@dimen/dimen_sm"
+             android:id="@+id/licenselayout_webview_about"/>
+
+</android.support.v4.widget.NestedScrollView>

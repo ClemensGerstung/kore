@@ -21,6 +21,10 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     return connection != null ? connection.getDatabase() : null;
   }
 
+  public List<IContainer> getItems() {
+    return items;
+  }
+
   public void registerListChangedListener(IListChangedListener<IContainer> listener) {
     itemsChangedListener.add(listener);
   }

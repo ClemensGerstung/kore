@@ -48,7 +48,7 @@
         </activity>
 
         <activity android:name=".activities.CreatePasswordActivity"
-                  android:theme="@style/Base.AppTheme.Detail"
+                  android:theme="@style/Base.AppTheme"
                   android:label=""/>
 
         <activity android:name=".activities.PasswordDetailActivity"
@@ -58,7 +58,7 @@
 
         <activity android:name=".activities.AboutActivity"
                   android:theme="@style/Base.AppTheme"
-                  android:label="About and Licenses"/>
+                  android:label="About"/>
 
         <activity android:name=".activities.BackupRestoreActivity"
                   android:theme="@style/Base.AppTheme"
@@ -66,6 +66,7 @@
 
         <activity android:name=".activities.SetupActivity"
                   android:theme="@style/Base.AppTheme"
+                  android:windowSoftInputMode="adjustResize"
                   android:label=""/>
 
     </application>

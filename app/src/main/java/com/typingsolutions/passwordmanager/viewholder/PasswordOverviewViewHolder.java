@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Paint;
+import android.support.v4.view.ViewCompat;
 import android.text.TextPaint;
 import android.view.View;
 import android.view.ViewManager;
@@ -77,11 +78,6 @@ public class PasswordOverviewViewHolder extends BaseViewHolder<PasswordOverviewA
   public void onItemSelected() {
 //    itemView.setBackgroundColor(0xFFFFFFFF);
 //    ViewCompat.setElevation(itemView, 10.f);
-  }
-
-  @Override
-  public void onItemReleased() {
-//    ViewCompat.setElevation(itemView, 0.f);
   }
 
   @Override

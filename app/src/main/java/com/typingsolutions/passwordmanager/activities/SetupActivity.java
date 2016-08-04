@@ -55,7 +55,7 @@ public class SetupActivity extends BaseDatabaseActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.setup_main_layout);
 
-    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+//    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
     if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x44000000);
 

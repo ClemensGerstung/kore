@@ -1,5 +1,16 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.animation.ObjectAnimator;
+import android.animation.StateListAnimator;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.ArcShape;
+import android.graphics.drawable.shapes.RectShape;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -100,7 +111,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-//    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
+    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
 //    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
 
     if (!isTablet()) {
@@ -116,6 +127,11 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
       mRecyclerviewAsPasswordHistory.setVisibility(View.VISIBLE);
       mRecyclerviewAsPasswordHistory.setNestedScrollingEnabled(false);
       mRecyclerviewAsPasswordHistory.setEnabled(false);
+    }
+
+    if(Build.VERSION.SDK_INT >= 21) {
+//      getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+      getWindow().setStatusBarColor(0x44000000);
     }
 
     button.requestFocus();
