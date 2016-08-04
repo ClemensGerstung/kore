@@ -1,21 +1,30 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.*;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.*;
-import android.widget.ImageView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.*;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
+
+import java.util.List;
 
 public class PasswordOverviewActivity extends BaseDatabaseActivity
     implements IListChangedListener<IContainer> {
@@ -27,7 +36,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   private MenuItem mMenuItemAsSearchViewWrapper;
   private SwipeRefreshLayout mSwipeRefreshLayoutAsLoadingIndication;
   private SearchView mSearchViewAsSearchView;
-  private ImageView mImageViewAsBackground;
+  private AppBarLayout mAppBarLayoutAsWrapper;
 
   private PasswordOverviewAdapter mPasswordOverviewAdapter;
   private LogoutDialogCallback mLogoutDialogCallback = new LogoutDialogCallback(this);
@@ -38,6 +47,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   private RecyclerView.LayoutManager layoutManager;
 
   private boolean mSafe = false;
+
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +63,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     mFloatingActionButtonAsAddPassword = findCastedViewById(R.id.passwordlistlayout_floatingactionbutton_add);
     mTextViewAsNoPasswordsYet = findCastedViewById(R.id.passwordlistlayout_textview_nopasswords);
     mSwipeRefreshLayoutAsLoadingIndication = findCastedViewById(R.id.passwordlistlayout_swiperefreshlayout_wrapper);
-    mImageViewAsBackground = findCastedViewById(R.id.passwordlistlayout_imageview_background);
+    mAppBarLayoutAsWrapper = findCastedViewById(R.id.passwordlistlayout_appbarlayout_wrapper);
 
 
     mSwipeRefreshLayoutAsLoadingIndication.setEnabled(false);
@@ -104,7 +115,6 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     });
     loadPasswords.execute();
 
-    //mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.lock_large, 1, 0.75f));
     mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
   }
 
@@ -212,6 +222,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
       clearChangeListener();
       mPasswordOverviewAdapter.notifyDataSetChanged();
       mRecyclerViewAsPasswordsList.destroyDrawingCache();
+      if (connection != null)
+        connection.close();
     }
   }
 
@@ -221,6 +233,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
     if (mTextViewAsNoPasswordsYet != null && mTextViewAsNoPasswordsYet.getVisibility() != View.GONE) {
       mTextViewAsNoPasswordsYet.setVisibility(View.GONE);
+      ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm)); // WHY???
     }
   }
 

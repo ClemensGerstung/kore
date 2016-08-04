@@ -11,6 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:id="@+id/loginlayout_appbarlayout_wrapper"
             app:elevation="@dimen/dimen_sm">
         <android.support.v7.widget.Toolbar
                 android:id="@+id/loginlayout_toolbar_actionbar"
@@ -41,14 +42,6 @@
     <RelativeLayout android:layout_width="wrap_content"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content">
-        <!--<android.support.design.widget.TextInputLayout-->
-        <!--android:mCurrentId="@+mCurrentId/loginlayout_textinputlayout_wrapper"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_marginStart="@dimen/dimen_sm"-->
-        <!--android:layout_marginTop="@dimen/dimen_sm"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="@dimen/dimen_sm"-->
-        <!--app:hintTextAppearance="@android:style/TextAppearance.DeviceDefault.Small">-->
         <android.support.v7.widget.EditText
                 android:id="@+id/loginlayout_edittext_password"
                 android:layout_width="@dimen/loginlayout_edittext_width"
@@ -59,8 +52,6 @@
                 android:background="@drawable/roundedrechtangle"
                 android:inputType="textPassword"
                 android:hint="Password"/>
-        <!--</android.support.design.widget.TextInputLayout>-->
-
         <CheckBox android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:id="@+id/loginlayout_checkbox_safelogin"

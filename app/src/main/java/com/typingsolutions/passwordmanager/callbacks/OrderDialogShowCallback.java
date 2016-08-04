@@ -1,7 +1,7 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import android.content.DialogInterface;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import com.typingsolutions.passwordmanager.BaseDialogCallback;
@@ -55,6 +55,9 @@ public class OrderDialogShowCallback extends BaseDialogCallback<PasswordOverview
         } else {
           mActivity.order(PasswordOverviewAdapter.OrderOptions.ProgramAscending);
         }
+        break;
+      case R.id.orderlayout_radiobutton_custom:
+        mActivity.order(PasswordOverviewAdapter.OrderOptions.Custom);
         break;
     }
   }

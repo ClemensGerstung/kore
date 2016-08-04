@@ -2,15 +2,17 @@ package com.typingsolutions.passwordmanager.callbacks;
 
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import com.typingsolutions.passwordmanager.BaseAdapter;
 import com.typingsolutions.passwordmanager.BaseViewHolder;
+import com.typingsolutions.passwordmanager.R;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
   private Context mContext;
   private BaseAdapter mAdapter;
-  private BaseViewHolder mViewHolder;
+  private boolean mViewBeingCleared;
 
   public SimpleItemTouchHelperCallback(Context context, BaseAdapter adapter) {
     this.mContext = context;
@@ -51,18 +53,21 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     BaseViewHolder itemViewHolder = (BaseViewHolder) viewHolder;
     itemViewHolder.onItemClear();
+
+    ViewCompat.setElevation(viewHolder.itemView, 0);
+    mViewBeingCleared = true;
   }
 
   @Override
   public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-    // TODO: check why onItemSelected isn't called the first time when dragged
-    if(viewHolder != null && actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-      mViewHolder = (BaseViewHolder) viewHolder;
-    }
     if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-      mViewHolder.onItemSelected();
-    } else {
-      mViewHolder.onItemReleased();
+      ((BaseViewHolder) viewHolder).onItemSelected();
+      if (mViewBeingCleared) {
+        mViewBeingCleared = false;
+      } else {
+        float dimension = mContext.getResources().getDimension(R.dimen.dimen_md);
+        ViewCompat.setElevation(viewHolder.itemView, dimension);
+      }
     }
 
     super.onSelectedChanged(viewHolder, actionState);

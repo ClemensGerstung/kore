@@ -7,19 +7,17 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.callbacks.GeneratePasswordCallback;
 import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
-import core.data.PasswordProvider;
 
 public class CreatePasswordActivity extends BaseDatabaseActivity {
 
@@ -63,6 +61,7 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
       ViewCompat.setElevation(mAppBarLayoutAsWrapperForToolbarAsActionBar, elevation);
     }
   };
+  private GeneratePasswordCallback mGeneratePasswordCallback;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +83,12 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
     mEditTextAsProgram.addTextChangedListener(switchTextWatcher);
     mEditTextAsPassword.addTextChangedListener(switchTextWatcher);
 
-//    mButtonAsGenerateRandomPassword.setOnClickListener(new GeneratePasswordCallback(this, mEditTextAsPassword));
+    mGeneratePasswordCallback = new GeneratePasswordCallback(this, mEditTextAsPassword);
+    mButtonAsGenerateRandomPassword.setOnClickListener(mGeneratePasswordCallback);
 
     mNestedScrollViewAsWrapperForInput.setOnScrollChangeListener(scrollChangeListener);
     mNestedScrollViewAsWrapperForInput.requestFocus();
+
   }
 
   @Override
@@ -104,9 +105,9 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
 
     if (id != R.id.createusermenu_item_done) return false;
 
-    String program = mEditTextAsProgram.getText().toString();
-    String username = mEditTextAsUsername.getText().toString();
-    String password = mEditTextAsPassword.getText().toString();
+    String program = mEditTextAsProgram.getText() + "";
+    String username = mEditTextAsUsername.getText() + "";
+    String password = mEditTextAsPassword.getText() + "";
 
     PasswordContainer container = PasswordContainer.create(program, username, password);
     addContainerItem(container);

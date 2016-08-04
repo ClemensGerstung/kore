@@ -13,6 +13,7 @@ import com.typingsolutions.passwordmanager.callbacks.DeletePasswordDialogCallbac
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.utils.ViewUtils;
 import com.typingsolutions.passwordmanager.viewholder.PasswordOverviewViewHolder;
+import core.data.Password;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -95,7 +96,6 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
           add(container, i);
         }
       }
-
     }
   }
 
@@ -110,7 +110,10 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
   }
 
   public void order(OrderOptions option) {
-    sort(0, mActivity.containerCount() - 1, option);
+    Collections.sort(mActivity.getItems(), new PasswordContainerComparator(option));
+    notifyDataSetChanged();
+
+    //sort(0, mActivity.containerCount() - 1, option);
   }
 
   private void sort(int left, int right, OrderOptions option) {
@@ -152,10 +155,11 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     UsernameAscending,
     UsernameDescending,
     ProgramAscending,
-    ProgramDescending
+    ProgramDescending,
+    Custom
   }
 
-  private class PasswordContainerComparator implements Comparator<PasswordContainer> {
+  private class PasswordContainerComparator implements Comparator<IContainer> {
     OrderOptions mOrderOption;
 
     public PasswordContainerComparator() {
@@ -172,20 +176,25 @@ public class PasswordOverviewAdapter extends BaseAdapter<PasswordOverviewViewHol
     }
 
     @Override
-    public int compare(PasswordContainer left, PasswordContainer right) {
+    public int compare(IContainer l, IContainer r) {
+      PasswordContainer left = (PasswordContainer) l;
+      PasswordContainer right = (PasswordContainer) r;
+
       switch (mOrderOption) {
         case PasswordAscending:
           return left.getDefaultPassword().compareToIgnoreCase(right.getDefaultPassword());
         case PasswordDescending:
-          return ~left.getDefaultPassword().compareToIgnoreCase(right.getDefaultPassword());
+          return right.getDefaultPassword().compareToIgnoreCase(left.getDefaultPassword());
         case ProgramAscending:
           return left.getProgram().compareToIgnoreCase(right.getProgram());
         case ProgramDescending:
-          return ~left.getProgram().compareToIgnoreCase(right.getProgram());
+          return right.getProgram().compareToIgnoreCase(left.getProgram());
         case UsernameAscending:
           return left.getUsername().compareToIgnoreCase(right.getUsername());
         case UsernameDescending:
-          return ~left.getUsername().compareToIgnoreCase(right.getUsername());
+          return right.getUsername().compareToIgnoreCase(left.getUsername());
+        case Custom:
+          return Integer.compare(left.getPosition(), right.getPosition());
       }
 
       return 0;

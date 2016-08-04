@@ -1,18 +1,21 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.AlertBuilder;
@@ -41,6 +44,7 @@ public class LoginActivity extends BaseActivity {
   private ILoginServiceRemote mLoginServiceRemote;
   private boolean mServiceIsRegistered = false;
 
+  private AppBarLayout mAppBarLayoutAsWrapper;
   private Toolbar mToolbarAsActionBar;
   private FloatingActionButton mFloatingActionButtonAsLogin;
   private EditText mEditTextAsLoginPassword;
@@ -66,6 +70,7 @@ public class LoginActivity extends BaseActivity {
     }
   };
 
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -82,6 +87,7 @@ public class LoginActivity extends BaseActivity {
     mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
     setSupportActionBar(mToolbarAsActionBar);
 
+    mAppBarLayoutAsWrapper = findCastedViewById(R.id.loginlayout_appbarlayout_wrapper);
     mFloatingActionButtonAsLogin = findCastedViewById(R.id.loginlayout_floatingactionbutton_login);
     mEditTextAsLoginPassword = findCastedViewById(R.id.loginlayout_edittext_password);
     mCheckBoxAsSafeLoginFlag = findCastedViewById(R.id.loginlayout_checkbox_safelogin);
@@ -107,6 +113,8 @@ public class LoginActivity extends BaseActivity {
 
     mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.verified, 2, 1));
     mOutlinedImageViewAsLockedBackground.setImageBitmap(getBitmap(this, R.mipmap.unverified, 2, 1));
+
+
   }
 
   @Override
@@ -117,6 +125,8 @@ public class LoginActivity extends BaseActivity {
     startService(intent);
     bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
     mServiceIsRegistered = true;
+
+    ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm));
   }
 
   @Override
