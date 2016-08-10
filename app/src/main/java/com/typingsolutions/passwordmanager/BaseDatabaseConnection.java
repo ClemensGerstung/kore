@@ -2,7 +2,9 @@ package com.typingsolutions.passwordmanager;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteDatabaseHook;
@@ -18,13 +20,6 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper
   protected String mName;
   private Context mContext;
 
-  private static final Comparator<Map.Entry<Integer, String[]>> ENTRY_COMPARATOR = new Comparator<Map.Entry<Integer, String[]>>() {
-    @Override
-    public int compare(Map.Entry<Integer, String[]> lhs, Map.Entry<Integer, String[]> rhs) {
-      return lhs.getKey().compareTo(rhs.getKey());
-    }
-  };
-
   protected BaseDatabaseConnection(Context context, String name, int version, String password, int pim) {
     super(context, name, null, pim, BaseDatabaseConnection.getDatabaseHook(pim));
     SQLiteDatabase.loadLibs(context);
@@ -35,15 +30,17 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper
     this.mPassword = password;
   }
 
+  @NonNull
   protected abstract String[] getCreationSqlQueries();
 
-  protected abstract HashMap<Integer, String[]> getUpdateSqlQueries();
+  @NonNull
+  protected abstract SortedMap<Integer, String[]> getUpdateSqlQueries();
 
   protected Context getContext() {
     return mContext;
   }
 
-  protected String getPassword() {
+  public String getPassword() {
     return mPassword;
   }
 
@@ -73,12 +70,7 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper
 
   @Override
   public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-    List<Map.Entry<Integer, String[]>> tmp =
-        new ArrayList<>(getUpdateSqlQueries().entrySet());
-
-    Collections.sort(tmp, ENTRY_COMPARATOR);
-
-    for (Map.Entry<Integer, String[]> element : tmp) {
+    for (Map.Entry<Integer, String[]> element : getUpdateSqlQueries().entrySet()) {
       if (element.getKey() <= oldVersion) continue;
 
       for (String query : element.getValue()) {
@@ -101,6 +93,7 @@ public abstract class BaseDatabaseConnection extends SQLiteOpenHelper
 //      throw new IllegalArgumentException("pim must be greater than 485");
 
     final String iterations = Integer.toString(15000 + (pim * 1000));
+    Log.d(BaseDatabaseConnection.class.getSimpleName(), iterations);
 
     return new SQLiteDatabaseHook() {
       @Override

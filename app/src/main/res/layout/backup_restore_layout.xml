@@ -29,7 +29,11 @@
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="vertical">
-            <include layout="@layout/simple_backup_layout"/>
+
+            <fragment android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/backuplayout_fragment_simplebackup"
+                      class="com.typingsolutions.passwordmanager.fragments.BackupFragment"/>
 
             <include layout="@layout/scheduled_backup_layout"/>
 

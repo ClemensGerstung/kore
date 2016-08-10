@@ -19,6 +19,7 @@ import android.widget.*;
 import com.github.aakira.expandablelayout.ExpandableLayoutListener;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.typingsolutions.passwordmanager.BaseActivity;
+import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.LoginSafeLoginCheckBoxChangeCallback;
 import core.DatabaseProvider;
@@ -32,7 +33,7 @@ import java.io.File;
 import java.util.List;
 
 
-public class BackupRestoreActivity extends BaseActivity {
+public class BackupRestoreActivity extends BaseDatabaseActivity {
   public static final int BACKUP_REQUEST_CODE = 36;
   public static final int RESTORE_REQUEST_CODE = 37;
 
@@ -81,26 +82,11 @@ public class BackupRestoreActivity extends BaseActivity {
     setContentView(R.layout.backup_restore_layout);
 
     mToolbarAsActionbar = findCastedViewById(R.id.backuprestorelayout_toolbar_actionbar);
-    mButtonAsBackup = findCastedViewById(R.id.backuplayout_button_dobackup);
-//    mImageButtonAsExpandBackupCard = findCastedViewById(R.id.backuprestorelayout_imagebutton_expand);
-//    mTextInputLayoutAsWrapperForEditTextAsBackupPassword = findCastedViewById(R.id.backuprestorelayout_textinputlayout_passwordwrapper);
-//    mTextInputLayoutAsWrapperForEditTextAsRepeatBackupPassword = findCastedViewById(R.id.backuprestorelayout_textinputlayout_repeatpasswordwrapper);
-//    mTextViewAsHintForBackupPassword = findCastedViewById(R.id.backuprestorelayout_textview_hint);
-//    mEditTextAsBackupPassword = findCastedViewById(R.id.backuprestorelayout_edittext_password);
-//    mEditTextAsRepeatedBackupPassword = findCastedViewById(R.id.backuprestorelayout_edittext_repeatpassword);
+
     mEditTextAsRestorePassword = findCastedViewById(R.id.backuprestorelayout_edittext_restorepassword);
     mButtonAsRestore = findCastedViewById(R.id.backuprestorelayout_button_loadbackup);
-    mSwitchAsSetPasswordForBackup = findCastedViewById(R.id.backuplayout_switch_setpassword);
-    mExpandableLinearLayoutAsInputWrapper = findCastedViewById(R.id.backuplayout_expandablelayout_inputwrapper);
     mSwitchAsScheduleBackup = findCastedViewById(R.id.backuplayout_switch_schedulebackup);
     mExpandableLinearLayoutAsScheduleWrapper = findCastedViewById(R.id.backuplayout_expandablelayout_schedulerwrapper);
-
-    mSwitchAsSetPasswordForBackup.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        mExpandableLinearLayoutAsInputWrapper.toggle();
-      }
-    });
 
     mSwitchAsScheduleBackup.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
       @Override

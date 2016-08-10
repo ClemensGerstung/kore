@@ -21,6 +21,10 @@ public abstract class BaseDatabaseActivity extends BaseActivity {
     return connection != null ? connection.getDatabase() : null;
   }
 
+  public BaseDatabaseConnection getConnection() {
+    return connection;
+  }
+
   public List<IContainer> getItems() {
     return items;
   }

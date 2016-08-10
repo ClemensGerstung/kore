@@ -1,9 +1,12 @@
 package com.typingsolutions.passwordmanager.database;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.typingsolutions.passwordmanager.BaseDatabaseConnection;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class DatabaseConnection extends BaseDatabaseConnection {
   public static final String DATABASE_NAME = "database.db";
@@ -53,12 +56,14 @@ public class DatabaseConnection extends BaseDatabaseConnection {
   }
 
   @Override
+  @NonNull
   protected String[] getCreationSqlQueries() {
     return new String[]{CREATE_PASSWORDS_TABLE, CREATE_HISTORY_TABLE};
   }
 
   @Override
-  protected HashMap<Integer, String[]> getUpdateSqlQueries() {
-    return new HashMap<>();
+  @NonNull
+  protected SortedMap<Integer, String[]> getUpdateSqlQueries() {
+    return new TreeMap<>();
   }
 }

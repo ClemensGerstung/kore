@@ -30,25 +30,6 @@
                 android:id="@+id/backuplayout_expandablelayout_schedulerwrapper"
                 app:ael_interpolator="decelerate"
                 android:orientation="vertical">
-            <android.support.v7.widget.GridLayout
-                    android:layout_width="match_parent"
-                    app:columnCount="7"
-                    android:layout_height="match_parent">
-                <CheckBox app:layout_columnWeight="1"
-                          android:text="M"/>
-                <CheckBox app:layout_columnWeight="1"
-                          android:text="T"/>
-                <CheckBox app:layout_columnWeight="1"
-                          android:text="W"/>
-                <CheckBox app:layout_columnWeight="1"
-                          android:text="T"/>
-                <CheckBox app:layout_columnWeight="1"
-                          android:text="F"/>
-                <CheckBox app:layout_columnWeight="1"
-                          android:text="S"/>
-                <CheckBox android:text="S"
-                          android:paddingEnd="@dimen/dimen_sm"/>
-            </android.support.v7.widget.GridLayout>
 
             <CheckBox android:layout_width="match_parent"
                       android:layout_height="wrap_content"
