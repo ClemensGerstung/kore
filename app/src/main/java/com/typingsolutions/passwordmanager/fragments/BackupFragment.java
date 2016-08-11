@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.*;
+import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.SwitchCompat;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
@@ -41,10 +43,13 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
   private ExpandableLinearLayout mExpandableAsPasswordWrapper;
   private TextInputEditText mEditTextAsEnterPassword;
   private TextInputEditText mEditTextAsRepeatPassword;
+  private LinearLayout mLinearLayoutAsLoader;
+  private LinearLayout mLinearLayoutAsContent;
   private Looper mLooper;
   private Handler mHandler;
   private String mPassword;
   private Uri mURI;
+  private boolean mStartToFileSelector = false;
 
   @Nullable
   @Override
@@ -56,16 +61,28 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
     mExpandableAsPasswordWrapper = (ExpandableLinearLayout) root.findViewById(R.id.backuplayout_expandablelayout_inputwrapper);
     mEditTextAsEnterPassword = (TextInputEditText) root.findViewById(R.id.backuplayout_edittext_enterpassword);
     mEditTextAsRepeatPassword = (TextInputEditText) root.findViewById(R.id.backuplayout_edittext_repeatpassword);
+    mLinearLayoutAsContent = (LinearLayout) root.findViewById(R.id.backuplayout_linearlayout_content);
+    mLinearLayoutAsLoader = (LinearLayout) root.findViewById(R.id.backuplayout_linearlayout_loader);
 
     mSwitchAsSetPassword.setOnCheckedChangeListener(this::toggleExpandableLayout);
     mButtonAsDoBackup.setOnClickListener(this::doBackupClick);
 
-    HandlerThread thread = new HandlerThread("BackupThread");
+    HandlerThread thread = new HandlerThread("BackupThread", Process.THREAD_PRIORITY_MORE_FAVORABLE);
     thread.start();
     mLooper = thread.getLooper();
     mHandler = new Handler(mLooper);
+    mStartToFileSelector = false;
 
     return root;
+  }
+
+  @Override
+  public void onPause() {
+    if (!mHandler.hasMessages(0) && !mStartToFileSelector) {
+      mLooper.quit();
+    }
+
+    super.onPause();
   }
 
   private void toggleExpandableLayout(CompoundButton btn, boolean checked) {
@@ -102,6 +119,7 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
   }
 
   public void startFileSelector() {
+    mStartToFileSelector = true;
     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
     intent.addCategory(Intent.CATEGORY_OPENABLE);
 
@@ -136,6 +154,9 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
   }
 
   private void copy() {
+    getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsContent, R.animator.fade_out);
+    getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsLoader, R.animator.fade_in);
+
     PasswordContainer[] passwords = new PasswordContainer[getSupportActivity().containerCount()];
     getSupportActivity().getItems().toArray(passwords);
     File file = getContext().getDatabasePath(BackupDatabaseConnection.NAME);
@@ -151,13 +172,27 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
       FileInputStream inputStream = new FileInputStream(file);
       FileOutputStream outputStream = new FileOutputStream(parcelFileDescriptor.getFileDescriptor());
 
-      byte[] buffer = new byte[2048];
+      byte[] buffer = new byte[512];
       int length;
       int size = 0;
 
-      ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES);
+      ByteBuffer byteBuffer = ByteBuffer.allocate(8);
       byteBuffer.putLong(new Date().getTime());
       byte[] time = byteBuffer.array();
+
+      MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
+
+      while ((length = inputStream.read(buffer)) > 0) {
+        shaDigest.update(buffer, 0, length);
+      }
+
+      byte[] hash = shaDigest.digest();
+
+      inputStream.close();
+      inputStream = new FileInputStream(file);
+
+      outputStream.write(time, 0, time.length);
+      outputStream.write(hash, 0, hash.length);
 
       while ((length = inputStream.read(buffer)) > 0) {
         outputStream.write(buffer, 0, length);
@@ -167,6 +202,7 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
       inputStream.close();
       outputStream.close();
 
+
       getSupportActivity().makeSnackbar("Backup done!");
     } catch (Exception e) {
       getSupportActivity().makeSnackbar(e.getMessage());
@@ -174,6 +210,8 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
     } finally {
       file.delete();
       mLooper.quit();
+      getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsContent, R.animator.fade_in);
+      getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsLoader, R.animator.fade_out);
     }
   }
 

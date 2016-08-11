@@ -4,8 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Service;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -13,12 +14,9 @@ import android.os.Bundle;
 import android.support.annotation.*;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.IntentCompat;
-import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,13 +26,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
-import com.typingsolutions.passwordmanager.services.LoginService;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -62,7 +56,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    if(!debug) {
+    if (!debug) {
       setSecurityFlags();
     }
     isTablet = getResources().getBoolean(R.bool.is_tablet);
@@ -251,7 +245,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   protected <T extends TextView> void clearText(@Nullable T v) {
-    if(v == null) return;
+    if (v == null) return;
     try {
       CharSequence text = v.getText();
       Field field = text.getClass().getDeclaredField("mText");
