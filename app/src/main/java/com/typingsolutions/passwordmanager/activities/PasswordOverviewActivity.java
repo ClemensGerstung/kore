@@ -24,8 +24,6 @@ import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.*;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 
-import java.util.List;
-
 public class PasswordOverviewActivity extends BaseDatabaseActivity
     implements IListChangedListener<IContainer> {
 
@@ -189,7 +187,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
         break;
       case R.id.passwordoverviewlayout_menuitem_backup:
         logout = false;
-        startActivity(BackupRestoreActivity.class);
+        startActivity(BackupActivity.class);
         break;
     }
 

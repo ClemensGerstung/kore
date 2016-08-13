@@ -1,15 +1,13 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
-import android.content.Intent;
 import android.view.View;
 import com.typingsolutions.passwordmanager.BaseClickCallback;
-import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
-import com.typingsolutions.passwordmanager.BaseCallback;
+import com.typingsolutions.passwordmanager.activities.BackupActivity;
 
 
-public class LoadBackupCallback extends BaseClickCallback<BackupRestoreActivity> {
+public class LoadBackupCallback extends BaseClickCallback<BackupActivity> {
 
-  public LoadBackupCallback(BackupRestoreActivity activity) {
+  public LoadBackupCallback(BackupActivity activity) {
     super(activity);
   }
 
@@ -24,6 +22,6 @@ public class LoadBackupCallback extends BaseClickCallback<BackupRestoreActivity>
 //    intent.addCategory(Intent.CATEGORY_OPENABLE);
 //
 //    intent.setType("*/*");
-//    activity.startActivityForResult(intent, BackupRestoreActivity.RESTORE_REQUEST_CODE);
+//    activity.startActivityForResult(intent, BackupActivity.RESTORE_REQUEST_CODE);
   }
 }
