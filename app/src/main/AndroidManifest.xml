@@ -7,6 +7,9 @@
     <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
     <application
             android:allowBackup="true"
@@ -60,7 +63,7 @@
                   android:theme="@style/Base.AppTheme"
                   android:label="About"/>
 
-        <activity android:name=".activities.BackupRestoreActivity"
+        <activity android:name=".activities.BackupActivity"
                   android:theme="@style/Base.AppTheme"
                   android:windowSoftInputMode="stateHidden|adjustResize"
                   android:label=""/>
@@ -70,5 +73,7 @@
                   android:windowSoftInputMode="adjustResize"
                   android:label=""/>
 
+        <meta-data android:name="com.google.android.gms.version"
+                   android:value="@integer/google_play_services_version"/>
     </application>
 </manifest>

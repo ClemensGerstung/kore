@@ -9,7 +9,7 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
 
 
-public class BackupRestoreActivity extends BaseDatabaseActivity {
+public class BackupActivity extends BaseDatabaseActivity {
   public static final int BACKUP_REQUEST_CODE = 36;
   public static final int RESTORE_REQUEST_CODE = 37;
 
@@ -18,7 +18,7 @@ public class BackupRestoreActivity extends BaseDatabaseActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.backup_restore_layout);
+    setContentView(R.layout.backup_layout);
 
     mToolbarAsActionbar = findCastedViewById(R.id.backuprestorelayout_toolbar_actionbar);
     setSupportActionBar(mToolbarAsActionbar);

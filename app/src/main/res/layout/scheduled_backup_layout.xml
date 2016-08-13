@@ -27,9 +27,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:ael_duration="@integer/animation_duration"
+                app:ael_expanded="true"
                 android:id="@+id/backuplayout_expandablelayout_schedulerwrapper"
                 app:ael_interpolator="decelerate"
                 android:orientation="vertical">
+
+            <GridLayout android:layout_width="match_parent"
+                        android:columnCount="2"
+                        android:clickable="true"
+                        android:id="@+id/backuplayout_layout_chooseaccount"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_height="wrap_content">
+                <ImageView android:layout_width="48dp"
+                           android:layout_height="48dp"
+                           app:srcCompat="@drawable/account_circle"/>
+                <TextView android:layout_width="wrap_content"
+                          android:text="Choose Google account"
+                          android:padding="@dimen/dimen_sm"
+                          android:layout_gravity="center_vertical"
+                          android:layout_height="match_parent"/>
+            </GridLayout>
+
 
             <CheckBox android:layout_width="match_parent"
                       android:layout_height="wrap_content"

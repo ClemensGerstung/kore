@@ -1,21 +1,16 @@
 package com.typingsolutions.passwordmanager.callbacks;
 
 import android.animation.Animator;
-import android.content.Context;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.TextView;
 import com.typingsolutions.passwordmanager.BaseClickCallback;
-import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
-import com.typingsolutions.passwordmanager.BaseCallback;
+import com.typingsolutions.passwordmanager.activities.BackupActivity;
 
-public class ExpandCallback extends BaseClickCallback<BackupRestoreActivity> {
+public class ExpandCallback extends BaseClickCallback<BackupActivity> {
 
   private boolean expanded;
 
-  public ExpandCallback(BackupRestoreActivity backupRestoreActivity) {
-    super(backupRestoreActivity);
+  public ExpandCallback(BackupActivity backupActivity) {
+    super(backupActivity);
     expanded = false;
   }
 

@@ -9,7 +9,6 @@ import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.typingsolutions.passwordmanager.*;
-import com.typingsolutions.passwordmanager.activities.BackupRestoreActivity;
+import com.typingsolutions.passwordmanager.activities.BackupActivity;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.database.BackupDatabaseConnection;
 import core.Utils;
@@ -32,11 +31,10 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
+public class BackupFragment extends BaseFragment<BackupActivity> {
 
   private Button mButtonAsDoBackup;
   private SwitchCompat mSwitchAsSetPassword;
@@ -127,13 +125,13 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
     String fileName = String.format("kore-backup-%s.encrypt", dateFormat.format(new Date()));
     intent.putExtra(Intent.EXTRA_TITLE, fileName);
     intent.setType("*/*");
-    startActivityForResult(intent, BackupRestoreActivity.BACKUP_REQUEST_CODE);
+    startActivityForResult(intent, BackupActivity.BACKUP_REQUEST_CODE);
   }
 
   @Override
   @AfterPermissionGranted(0x100)
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode != BackupRestoreActivity.BACKUP_REQUEST_CODE || resultCode != Activity.RESULT_OK) {
+    if (requestCode != BackupActivity.BACKUP_REQUEST_CODE || resultCode != Activity.RESULT_OK) {
       return;
     }
     if (data == null) return;
@@ -215,9 +213,9 @@ public class BackupFragment extends BaseFragment<BackupRestoreActivity> {
     }
   }
 
-  private class AlertCallback extends BaseDialogCallback<BackupRestoreActivity> {
+  private class AlertCallback extends BaseDialogCallback<BackupActivity> {
 
-    public AlertCallback(BackupRestoreActivity activity) {
+    public AlertCallback(BackupActivity activity) {
       super(activity);
     }
 
