@@ -33,6 +33,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 public class BackupFragment extends BaseFragment<BackupActivity> {
 
@@ -174,9 +175,16 @@ public class BackupFragment extends BaseFragment<BackupActivity> {
       int length;
       int size = 0;
 
-      ByteBuffer byteBuffer = ByteBuffer.allocate(8);
+      ByteBuffer byteBuffer = ByteBuffer.allocate(512);
       byteBuffer.putLong(new Date().getTime());
+      Random r = new Random(SystemClock.elapsedRealtimeNanos());
+
+      for (int i = 0; i < 63; i++) {
+        byteBuffer.putLong(r.nextLong()); // generate random padding.
+      }
+
       byte[] time = byteBuffer.array();
+      byteBuffer.clear();
 
       MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
 

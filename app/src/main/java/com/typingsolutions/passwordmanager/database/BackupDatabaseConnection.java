@@ -39,7 +39,7 @@ public class BackupDatabaseConnection extends BaseDatabaseConnection {
 
         for (int j = 0; j < password.getPasswordItems().size(); j++) {
           PasswordItem item = password.getPasswordItems().valueAt(j);
-          passwordValues.put(DatabaseConnection.PASSWORD, item.getPassword());
+          passwordValues.put(DatabaseConnection.PASSWORD_ID, password.getId());
           passwordValues.put(DatabaseConnection.CHANGED, Utils.getStringFromDate(item.getDate()));
           passwordValues.put(DatabaseConnection.PASSWORD, item.getPassword());
 
