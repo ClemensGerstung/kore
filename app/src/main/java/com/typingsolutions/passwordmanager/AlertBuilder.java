@@ -1,12 +1,18 @@
 package com.typingsolutions.passwordmanager;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 public class AlertBuilder {
   private static AlertBuilder builder = new AlertBuilder();
@@ -44,6 +50,22 @@ public class AlertBuilder {
     mNeutralText = text;
     return this;
   }
+
+  public AlertBuilder setPositiveButton(CharSequence text, DialogInterface.OnClickListener listener) {
+    mAlertDialog.setButton(AlertDialog.BUTTON_POSITIVE, text, listener);
+    return this;
+  }
+
+  public AlertBuilder setNegativeButton(CharSequence text, DialogInterface.OnClickListener listener) {
+    mAlertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, text, listener);
+    return this;
+  }
+
+  public AlertBuilder setNeutralButton(CharSequence text, DialogInterface.OnClickListener listener) {
+    mAlertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, text, listener);
+    return this;
+  }
+
 
   /**
    * Need to be called after {@see setPositiveButton}, {@see setNegativeButton} or {@see setNeutralButton}
@@ -97,13 +119,27 @@ public class AlertBuilder {
     return mAlertDialog;
   }
 
-  public void show() {
-    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-    lp.copyFrom(mAlertDialog.getWindow().getAttributes());
-    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+  public AlertBuilder setItems(AlertBuilder.OnItemClickListener itemClickListener, String... items) {
+    Context context = getDialog().getContext();
+    ListView lv = new ListView(context);
+    ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    int dimension = (int) context.getResources().getDimension(R.dimen.dimen_md);
+    lv.setLayoutParams(params);
+    lv.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, items));
+    lv.setOnItemClickListener((adapterView, view, i, l) -> itemClickListener.onItemClick(mAlertDialog, adapterView, view, i, l));
 
+    LinearLayout layout = new LinearLayout(context);
+    layout.addView(lv);
+    layout.setPadding(dimension, dimension, dimension, dimension);
+
+    return setView(layout);
+  }
+
+  public void show() {
     mAlertDialog.show();
-//    mAlertDialog.getWindow().setAttributes(lp);
+  }
+
+  public interface OnItemClickListener {
+    void onItemClick(DialogInterface dialog, AdapterView<?> parent, View view, int position, long id);
   }
 }
