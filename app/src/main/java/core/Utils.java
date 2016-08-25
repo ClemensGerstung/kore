@@ -25,7 +25,7 @@ public class Utils {
   /**
    * Hashes the data with the SHA1 algorithm
    *
-   * @param data to create hash from
+   * @param data to notify hash from
    * @return the generated hash
    * @throws NoSuchAlgorithmException
    */

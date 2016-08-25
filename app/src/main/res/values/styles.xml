@@ -1,7 +1,7 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <!--<item name="colorPrimary">@color/primary</item>-->
+        <item name="colorPrimaryDark">@color/mediumgrey</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="colorControlNormal">@color/primary</item>
@@ -9,6 +9,10 @@
         <!--<item name="colorControlHighlight">#BBDEFB</item>-->
         <item name="android:itemTextAppearance">@style/CustomMenu</item>
         <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="Base.AppTheme.Overview" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/mediumgrey</item>
     </style>
 
     <style name="Base.AppTheme.Setup">

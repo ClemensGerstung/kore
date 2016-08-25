@@ -44,8 +44,8 @@ public class LoginActivity extends BaseActivity {
   private ILoginServiceRemote mLoginServiceRemote;
   private boolean mServiceIsRegistered = false;
 
-  private AppBarLayout mAppBarLayoutAsWrapper;
-  private Toolbar mToolbarAsActionBar;
+//  private AppBarLayout mAppBarLayoutAsWrapper;
+//  private Toolbar mToolbarAsActionBar;
   private FloatingActionButton mFloatingActionButtonAsLogin;
   private EditText mEditTextAsLoginPassword;
   private CheckBox mCheckBoxAsSafeLoginFlag;
@@ -84,10 +84,10 @@ public class LoginActivity extends BaseActivity {
 
     setContentView(R.layout.login_layout);
 
-    mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
-    setSupportActionBar(mToolbarAsActionBar);
+//    mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
+//    setSupportActionBar(mToolbarAsActionBar);
 
-    mAppBarLayoutAsWrapper = findCastedViewById(R.id.loginlayout_appbarlayout_wrapper);
+//    mAppBarLayoutAsWrapper = findCastedViewById(R.id.loginlayout_appbarlayout_wrapper);
     mFloatingActionButtonAsLogin = findCastedViewById(R.id.loginlayout_floatingactionbutton_login);
     mEditTextAsLoginPassword = findCastedViewById(R.id.loginlayout_edittext_password);
     mCheckBoxAsSafeLoginFlag = findCastedViewById(R.id.loginlayout_checkbox_safelogin);
@@ -126,7 +126,7 @@ public class LoginActivity extends BaseActivity {
     bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
     mServiceIsRegistered = true;
 
-    ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm));
+//    ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm));
   }
 
   @Override

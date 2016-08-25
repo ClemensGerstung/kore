@@ -134,7 +134,7 @@ public class SetupActivity extends BaseDatabaseActivity {
     DatabaseConnection connection = new DatabaseConnection(getApplicationContext(), mPassword, mPim);
     SQLiteDatabase database = connection.getWritableDatabase(mPassword);
     if (!database.isOpen()) {
-      makeSnackbar("Couldn't create database");
+      makeSnackbar("Couldn't notify database");
     }
     database.close();
   }

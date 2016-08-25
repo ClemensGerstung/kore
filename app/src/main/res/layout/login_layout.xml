@@ -7,22 +7,22 @@
         android:id="@+id/loginlayout_coordinatorlayout_root"
         android:padding="0dp">
 
-    <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:id="@+id/loginlayout_appbarlayout_wrapper"
-            app:elevation="@dimen/dimen_sm">
-        <android.support.v7.widget.Toolbar
-                android:id="@+id/loginlayout_toolbar_actionbar"
-                android:clickable="true"
-                android:layout_margin="0dp"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:title="@string/app_name"/>
-    </android.support.design.widget.AppBarLayout>
+    <!--<android.support.design.widget.AppBarLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:clickable="true"-->
+            <!--android:id="@+id/loginlayout_appbarlayout_wrapper"-->
+            <!--app:elevation="@dimen/dimen_sm">-->
+        <!--<android.support.v7.widget.Toolbar-->
+                <!--android:id="@+id/loginlayout_toolbar_actionbar"-->
+                <!--android:clickable="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:background="?attr/colorPrimary"-->
+                <!--android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
+                <!--app:title="@string/app_name"/>-->
+    <!--</android.support.design.widget.AppBarLayout>-->
 
     <ImageView android:layout_width="@dimen/loginlayout_background_diameter"
                android:layout_height="@dimen/loginlayout_background_diameter"
@@ -82,7 +82,7 @@
             app:elevation="@dimen/dimen_sm"
             android:clickable="true"
             app:pressedTranslationZ="@dimen/dimen_sm"
-            android:src="@mipmap/send"/>
+            app:srcCompat="@drawable/send"/>
 
     <ProgressBar android:indeterminate="true"
                  android:layout_width="35dp"

@@ -53,7 +53,7 @@ public class Dictionary<K, V> implements Iterable<Dictionary.Element>, Iterator<
     private Element<T, U> prev;
 
     /**
-     * Constructor to create an element
+     * Constructor to notify an element
      *
      * @param key   for the element
      * @param value for the element

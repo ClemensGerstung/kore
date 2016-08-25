@@ -18,22 +18,15 @@ import android.widget.LinearLayout;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.typingsolutions.passwordmanager.*;
 import com.typingsolutions.passwordmanager.activities.BackupActivity;
-import com.typingsolutions.passwordmanager.dao.PasswordContainer;
-import com.typingsolutions.passwordmanager.database.BackupDatabaseConnection;
 import core.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 
 public class BackupFragment extends BaseFragment<BackupActivity> {
 
@@ -106,10 +99,10 @@ public class BackupFragment extends BaseFragment<BackupActivity> {
         !password1.isEmpty() &&
         !Utils.isSafe(password1)) {
       AlertBuilder.create(getContext())
-          .setPositiveButton("got it")
-          .setNegativeButton("change")
+          .setPositiveButton("got it", (dialog, which) -> dialog.dismiss())
+          .setNegativeButton("change", null)
           .setMessage("The password doesn't seems to be save")
-          .setCallback(new AlertCallback(getSupportActivity()))
+//          .setCallback(new AlertCallback(getSupportActivity()))
           .show();
       return;
     }
@@ -156,65 +149,15 @@ public class BackupFragment extends BaseFragment<BackupActivity> {
     getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsContent, R.animator.fade_out);
     getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsLoader, R.animator.fade_in);
 
-    PasswordContainer[] passwords = new PasswordContainer[getSupportActivity().containerCount()];
-    getSupportActivity().getItems().toArray(passwords);
-    File file = getContext().getDatabasePath(BackupDatabaseConnection.NAME);
-    if (file.exists()) file.delete();
-
-    BackupDatabaseConnection connection = new BackupDatabaseConnection(getContext(), mPassword, 0x400);
-    connection.load(passwords);
-    connection.close();
-
     try {
       ParcelFileDescriptor parcelFileDescriptor = getContext().getContentResolver().openFileDescriptor(mURI, "w");
-
-      FileInputStream inputStream = new FileInputStream(file);
       FileOutputStream outputStream = new FileOutputStream(parcelFileDescriptor.getFileDescriptor());
 
-      byte[] buffer = new byte[512];
-      int length;
-      int size = 0;
-
-      ByteBuffer byteBuffer = ByteBuffer.allocate(512);
-      byteBuffer.putLong(new Date().getTime());
-      Random r = new Random(SystemClock.elapsedRealtimeNanos());
-
-      for (int i = 0; i < 63; i++) {
-        byteBuffer.putLong(r.nextLong()); // generate random padding.
-      }
-
-      byte[] time = byteBuffer.array();
-      byteBuffer.clear();
-
-      MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
-
-      while ((length = inputStream.read(buffer)) > 0) {
-        shaDigest.update(buffer, 0, length);
-      }
-
-      byte[] hash = shaDigest.digest();
-
-      inputStream.close();
-      inputStream = new FileInputStream(file);
-
-      outputStream.write(time, 0, time.length);
-      outputStream.write(hash, 0, hash.length);
-
-      while ((length = inputStream.read(buffer)) > 0) {
-        outputStream.write(buffer, 0, length);
-        size += length;
-      }
-
-      inputStream.close();
-      outputStream.close();
-
-
-      getSupportActivity().makeSnackbar("Backup done!");
+      getSupportActivity().backup(mPassword, outputStream);
     } catch (Exception e) {
-      getSupportActivity().makeSnackbar(e.getMessage());
+//      getSupportActivity().makeSnackbar(e.getMessage());
       BaseActivity.showErrorLog(getClass(), e);
     } finally {
-      file.delete();
       mLooper.quit();
       getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsContent, R.animator.fade_in);
       getSupportActivity().startAnimatorOnUiThread(mLinearLayoutAsLoader, R.animator.fade_out);
