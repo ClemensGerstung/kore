@@ -1,26 +1,19 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.animation.ObjectAnimator;
-import android.animation.StateListAnimator;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.ArcShape;
-import android.graphics.drawable.shapes.RectShape;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.CardView;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,9 +38,10 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private EditText mEditTextAsProgram;
   private EditText mEditTextAsUsername;
   private EditText mEditTextAsPassword;
-  private CardView mCardviewAsDelete;
+  private Button mButtonAsDelete;
   private RecyclerView mRecyclerviewAsPasswordHistory;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
+  private NestedScrollView mNestedScrollViewAsContainer;
 
   private GeneratePasswordCallback mGeneratePasswordCallback;
 
@@ -55,6 +49,17 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
   private AddPasswordTextWatcher mProgramTextWatcher;
   private AddPasswordTextWatcher mPasswordTextWatcher;
   private PasswordContainer mCurrentPassword;
+
+  private final NestedScrollView.OnScrollChangeListener scrollChangeListener = (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+    float elevation = 0;
+    if (scrollY > 0) {
+      elevation = getResources().getDimension(R.dimen.dimen_sm);
+    } else if (scrollY <= 0) {
+      elevation = getResources().getDimension(R.dimen.zero);
+    }
+
+    ViewCompat.setElevation(mAppBarLayoutAsWrapper, elevation);
+  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +70,11 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mEditTextAsProgram = findCastedViewById(R.id.passworddetaillayout_edittext_program);
     mEditTextAsUsername = findCastedViewById(R.id.passworddetaillayout_edittext_username);
     mEditTextAsPassword = findCastedViewById(R.id.passworddetaillayout_edittext_password);
-    mCardviewAsDelete = findCastedViewById(R.id.passworddetaillayout_cardview_delete);
+    mButtonAsDelete = findCastedViewById(R.id.passworddetaillayout_button_delete);
     mAppBarLayoutAsWrapper = findCastedViewById(R.id.passworddetaillayout_appbarlayout_wrapper);
     mRecyclerviewAsPasswordHistory = findCastedViewById(R.id.passworddetaillayout_recyclerview_passwordhistory);
     mCollapsingToolbarLayout = findCastedViewById(R.id.passworddetaillayout_collapsiontoolbarlayout_wrapper);
+    mNestedScrollViewAsContainer = findCastedViewById(R.id.passworddetaillayout_nestedscrollview_scroll);
     Button button = findCastedViewById(R.id.passworddetaillayout_button_generatepassword);
     TextView nohistory = findCastedViewById(R.id.passworddetaillayout_textview_nohistory);
 
@@ -108,16 +114,28 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
     mEditTextAsPassword.addTextChangedListener(mPasswordTextWatcher);
 
     DeletePasswordCallback onClickListener = new DeletePasswordCallback(this, mCurrentPassword);
-    mCardviewAsDelete.setOnClickListener(onClickListener);
+    mButtonAsDelete.setOnClickListener(onClickListener);
 
     mCollapsingToolbarLayout.setTitle(programString);
     mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
-    ViewCompat.setElevation(mAppBarLayoutAsWrapper, 10);
-//    ViewCompat.setElevation(mCollapsingToolbarLayout, getResources().getDimension(R.dimen.dimen_sm));
+//    ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm));
+
+    mNestedScrollViewAsContainer.setOnScrollChangeListener(scrollChangeListener);
 
     if (!isTablet()) {
       TextView textViewAsHeader = findCastedViewById(R.id.passworddetaillayout_textview_header);
-      ViewUtils.setColor(textViewAsHeader, programString, passwordString);
+      int color = ViewUtils.setColor(textViewAsHeader, programString, passwordString);
+
+      int red = calcAlphaOverlay(Color.red(color), 0x44);
+      int green = calcAlphaOverlay(Color.green(color), 0x44);
+      int blue = calcAlphaOverlay(Color.blue(color), 0x44);
+
+      int rgb = Color.rgb(red, green, blue);
+      Log.d(getClass().getSimpleName(), "RGB: " + Integer.toHexString(color) + " -> " + Integer.toHexString(rgb));
+      setStatusBarColor(rgb);
+
+      mCollapsingToolbarLayout.setCollapsedTitleTextColor(0xFFFFFFFF);
+      mCollapsingToolbarLayout.setContentScrimColor(color);
     } else {
       MaterialView v = findCastedViewById(R.id.passworddetaillayout_view_artboard);
       v.setOverlayColor(ViewUtils.setColor(null, programString, passwordString));
@@ -130,12 +148,11 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
       mRecyclerviewAsPasswordHistory.setEnabled(false);
     }
 
-    if(Build.VERSION.SDK_INT >= 21) {
-//      getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-      getWindow().setStatusBarColor(0x44000000);
-    }
-
     button.requestFocus();
+  }
+
+  int calcAlphaOverlay(int in, int alpha) {
+    return (((0xFF - alpha) * in) / 0xFF) & 0xFF;
   }
 
   @Override
@@ -160,7 +177,7 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
       String program = mProgramTextWatcher.needUpdate() ? mEditTextAsProgram.getText().toString() : null;
       String username = mUsernameTextWatcher.needUpdate() ? mEditTextAsUsername.getText().toString() : null;
       mCurrentPassword.update(-1, program, username);
-      if(mProgramTextWatcher.needUpdate() || mUsernameTextWatcher.needUpdate()) {
+      if (mProgramTextWatcher.needUpdate() || mUsernameTextWatcher.needUpdate()) {
         changeContainerItem(indexOfContainer(mCurrentPassword), mCurrentPassword);
       }
     } catch (Exception e) {

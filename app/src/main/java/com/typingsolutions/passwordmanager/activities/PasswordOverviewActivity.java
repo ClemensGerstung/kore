@@ -3,6 +3,7 @@ package com.typingsolutions.passwordmanager.activities;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
@@ -45,7 +46,6 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   private RecyclerView.LayoutManager layoutManager;
 
   private boolean mSafe = false;
-
 
 
   @Override
@@ -113,7 +113,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     });
     loadPasswords.execute();
 
-    mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
+//    mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
   }
 
   @Override
@@ -161,6 +161,12 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     mSearchViewAsSearchView = (SearchView) MenuItemCompat.getActionView(mMenuItemAsSearchViewWrapper);
     mSearchViewAsSearchView.setOnQueryTextListener(onQueryTextListener);
     MenuItemCompat.setOnActionExpandListener(mMenuItemAsSearchViewWrapper, searchViewExpandCallback);
+
+    VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(getResources(), R.drawable.sort, null);
+    mToolbarAsActionBar.getMenu().getItem(0).setIcon(drawableCompat);
+
+    drawableCompat = VectorDrawableCompat.create(getResources(), R.drawable.search, null);
+    mToolbarAsActionBar.getMenu().getItem(1).setIcon(drawableCompat);
 
     return true;
   }

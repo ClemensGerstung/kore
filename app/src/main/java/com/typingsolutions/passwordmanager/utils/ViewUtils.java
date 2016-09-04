@@ -79,7 +79,7 @@ public final class ViewUtils {
 
       if(view !=null) {
         view.getBackground()
-            .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.DARKEN);
+            .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.SRC);
 
         if (view instanceof TextView) {
           ((TextView) view).setText(first.toCharArray(), 0, 1);

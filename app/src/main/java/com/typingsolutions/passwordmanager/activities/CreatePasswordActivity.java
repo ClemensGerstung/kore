@@ -1,7 +1,11 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.annotation.TargetApi;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
@@ -89,6 +93,7 @@ public class CreatePasswordActivity extends BaseDatabaseActivity {
     mNestedScrollViewAsWrapperForInput.setOnScrollChangeListener(scrollChangeListener);
     mNestedScrollViewAsWrapperForInput.requestFocus();
 
+    setStatusBarColorRes(R.color.primaryDark);
   }
 
   @Override

@@ -2,6 +2,7 @@ package com.typingsolutions.passwordmanager;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.*;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -255,6 +257,16 @@ public abstract class BaseActivity extends AppCompatActivity {
     } catch (IllegalAccessException | NoSuchFieldException e) {
       showErrorLog(getClass(), e);
     }
+  }
+
+  @TargetApi(21)
+  protected void setStatusBarColorRes(@ColorRes int color) {
+    getWindow().setStatusBarColor(ContextCompat.getColor(this, color));
+  }
+
+  @TargetApi(21)
+  protected void setStatusBarColor(@ColorInt int color) {
+    getWindow().setStatusBarColor(color);
   }
 
   private static class LocalAnimationListener implements Animation.AnimationListener {
