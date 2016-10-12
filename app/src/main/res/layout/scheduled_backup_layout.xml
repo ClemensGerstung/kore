@@ -102,6 +102,25 @@
                           android:layout_height="wrap_content"/>
             </GridLayout>
 
+            <GridLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:layout_marginTop="@dimen/dimen_lg"
+                        android:visibility="gone"
+                        android:id="@+id/backuplayout_gridlayout_everythingdone">
+                <ImageView android:layout_width="48dp"
+                           android:layout_height="48dp"
+                           app:srcCompat="@drawable/done_all"/>
+
+                <TextView android:layout_width="wrap_content"
+                          android:text="Everything is done"
+                          android:paddingStart="@dimen/dimen_sm"
+                          android:textColor="@color/black"
+                          android:layout_gravity="center_vertical"
+                          android:layout_column="1"
+                          android:layout_height="match_parent"/>
+            </GridLayout>
+
             <TextView android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:layout_marginTop="@dimen/dimen_md"

@@ -64,6 +64,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
   static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
   private static final String PREF_ACCOUNT_NAME = "accountName";
+  private static final String PREF_SCHEDULE = "schedule";
   private static final String[] SCOPES = {DriveScopes.DRIVE_FILE};
 
   private GoogleAccountCredential mCredential;
@@ -71,9 +72,13 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
   private GridLayout mGridLayoutAsChooseAccount;
   private GridLayout mGridLayoutAsChooseScheduling;
+  private GridLayout mGridLayoutAsEverythinDone;
   private SwitchCompat mSwitchCompatAsSwitcher;
   private ExpandableLinearLayout mLinearLayoutAsContainer;
   private TextView mTextViewAsAccountName;
+  private TextView mTextViewAsSchedule;
+  private String[] mScheduleTimes = new String[]{"Every day", "Once a week", "First day of month"};
+  private SharedPreferences mPreferences;
 
   @Nullable
   @Override
@@ -85,6 +90,9 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
     mGridLayoutAsChooseScheduling = (GridLayout) root.findViewById(R.id.backuplayout_layout_choosescheduling);
     mGridLayoutAsChooseScheduling.setOnClickListener(this::onChooseScheduleClick);
+    mTextViewAsSchedule = (TextView) root.findViewById(R.id.backuplayout_textview_scheduled);
+
+    mGridLayoutAsEverythinDone = (GridLayout) root.findViewById(R.id.backuplayout_gridlayout_everythingdone);
 
     mCredential = GoogleAccountCredential.usingOAuth2(getActivity().getApplicationContext(), Arrays.asList(SCOPES))
         .setBackOff(new ExponentialBackOff());
@@ -94,9 +102,14 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     mTextViewAsAccountName = (TextView) root.findViewById(R.id.backuplayout_textview_username);
 
     mSwitchCompatAsSwitcher.setOnCheckedChangeListener(this::onSwitchChecked);
-    String accountName = getSupportActivity().getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
+    mPreferences = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
+    String accountName = mPreferences.getString(PREF_ACCOUNT_NAME, null);
     if (accountName != null) {
       mTextViewAsAccountName.setText(accountName);
+    }
+    String scheduledTime = mPreferences.getString(PREF_SCHEDULE, null);
+    if(scheduledTime != null) {
+      mTextViewAsSchedule.setText(scheduledTime);
     }
 
     return root;
@@ -117,12 +130,23 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   }
 
   private void onChooseScheduleClick(View v) {
-    AlertBuilder.create(getContext()).setItems(this::onChooseScheduleDialogItemClick, "Every day", "Once a week", "First day of month").show();
+    AlertBuilder.create(getContext()).setItems(this::onChooseScheduleDialogItemClick, mScheduleTimes).show();
   }
 
   private void onChooseScheduleDialogItemClick(DialogInterface dialog, AdapterView<?> parent, View view, int position, long id) {
     dialog.dismiss();
-    Log.d(getClass().getSimpleName(), "" + position);
+    String time = mScheduleTimes[position];
+    SharedPreferences settings = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = settings.edit();
+    editor.putString(PREF_SCHEDULE, time);
+    editor.apply();
+
+    mTextViewAsSchedule.setText(time);
+
+    String accountName = mPreferences.getString(PREF_ACCOUNT_NAME, null);
+    if (accountName != null) {
+      mGridLayoutAsChooseScheduling.setVisibility(View.VISIBLE);
+    }
   }
 
   @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
@@ -155,6 +179,11 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
       editor.apply();
       mCredential.setSelectedAccountName(accountName);
       mTextViewAsAccountName.setText(accountName);
+
+      String scheduledTime = mPreferences.getString(PREF_SCHEDULE, null);
+      if(scheduledTime != null) {
+        mGridLayoutAsChooseScheduling.setVisibility(View.VISIBLE);
+      }
     } else {
       Intent addAccountIntent = new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT)
           .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
