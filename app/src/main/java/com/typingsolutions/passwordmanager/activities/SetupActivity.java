@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
@@ -17,13 +18,13 @@ import com.typingsolutions.passwordmanager.fragments.SetupPasswordFragment;
 import com.typingsolutions.passwordmanager.fragments.SimpleViewFragment;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Random;
 
 public class SetupActivity extends BaseDatabaseActivity {
-  private String mPassword;
-
   private CoordinatorLayout mCoordinatorLayoutAsRootLayout;
   private ui.ViewPager mViewPagerAsFragmentHost;
   private ImageButton mImageButtonAsNext;
@@ -60,7 +61,7 @@ public class SetupActivity extends BaseDatabaseActivity {
     mViewPagerAsFragmentHost.setOffscreenPageLimit(1);
     mViewPagerAsFragmentHost.canSwipe(false);
 
-    mImageButtonAsNext.setOnClickListener(v -> moveToNextPage());
+    mImageButtonAsNext.setOnClickListener(v -> next());
   }
 
   private void toggleHelp() {
@@ -78,34 +79,31 @@ public class SetupActivity extends BaseDatabaseActivity {
 
   }
 
-  public void moveToNextPage() {
+  public void next() {
     int index = mViewPagerAsFragmentHost.getCurrentItem();
     if (index == 0) {
       mViewPagerAsFragmentHost.setCurrentItem(index + 1, true);
-    } else if(index == 1) {
-      setupDatabase();
-      // TODO: login
+    } else if (index == 1) {
+      SetupPasswordFragment item = (SetupPasswordFragment) mSetupPagerAdapter.getItem(index);
 
+      item.getEnteredPassword();
     }
   }
 
-  public void setupDatabase() {
+  public void setupDatabase(String password) {
     try {
       MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
-      shaDigest.update(mPassword.getBytes());
+      shaDigest.update(password.getBytes());
 
-      SecureRandom random = new SecureRandom(shaDigest.digest());
-      byte[] buffer = new byte[4];
-      random.nextBytes(buffer);
-
-      int pim = buffer[3] | buffer[2] << 8 | buffer[1] << 16 | buffer[0] << 24;
-      pim = (pim % (1100)) + 485;
+      BigInteger integer = new BigInteger(shaDigest.digest());
+      Random r = new Random(integer.longValue());
+      int pim = r.nextInt(1100) + 485;
+      Log.d(getClass().getSimpleName(), "SETUPPIM: " + pim);
 
       shaDigest.reset();
-      buffer = null;
 
-      DatabaseConnection connection = new DatabaseConnection(getApplicationContext(), mPassword, pim);
-      SQLiteDatabase database = connection.getWritableDatabase(mPassword);
+      DatabaseConnection connection = new DatabaseConnection(getApplicationContext(), password, pim);
+      SQLiteDatabase database = connection.getWritableDatabase(password);
       if (!database.isOpen()) {
         makeSnackbar("Couldn't create database");
       }
@@ -115,7 +113,11 @@ public class SetupActivity extends BaseDatabaseActivity {
     }
   }
 
-  public void setPassword(String mPassword) {
-    this.mPassword = mPassword;
+  public void setPassword(String password) {
+    if(password == null) return;
+
+    setupDatabase(password);
+
+    startActivity(PasswordOverviewActivity.class, true);
   }
 }
