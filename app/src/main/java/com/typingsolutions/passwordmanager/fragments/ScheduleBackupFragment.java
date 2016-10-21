@@ -3,7 +3,6 @@ package com.typingsolutions.passwordmanager.fragments;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,6 +64,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
   private static final String PREF_ACCOUNT_NAME = "accountName";
   private static final String PREF_SCHEDULE = "schedule";
+  private static final String PREF_SCHEDULE_ENABLED = "enable";
   private static final String[] SCOPES = {DriveScopes.DRIVE_FILE};
 
   private GoogleAccountCredential mCredential;
@@ -94,7 +94,8 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
     mGridLayoutAsEverythinDone = (GridLayout) root.findViewById(R.id.backuplayout_gridlayout_everythingdone);
 
-    mCredential = GoogleAccountCredential.usingOAuth2(getActivity().getApplicationContext(), Arrays.asList(SCOPES))
+    mCredential = GoogleAccountCredential
+        .usingOAuth2(getActivity().getApplicationContext(), Arrays.asList(SCOPES))
         .setBackOff(new ExponentialBackOff());
 
     mSwitchCompatAsSwitcher = (SwitchCompat) root.findViewById(R.id.backuplayout_switch_schedulebackup);
@@ -103,6 +104,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
     mSwitchCompatAsSwitcher.setOnCheckedChangeListener(this::onSwitchChecked);
     mPreferences = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
+
     String accountName = mPreferences.getString(PREF_ACCOUNT_NAME, null);
     if (accountName != null) {
       mTextViewAsAccountName.setText(accountName);
@@ -112,11 +114,24 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
       mTextViewAsSchedule.setText(scheduledTime);
     }
 
+    if(accountName != null && scheduledTime != null) {
+      mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
+    }
+
+    mSwitchCompatAsSwitcher.setChecked(mPreferences.getBoolean(PREF_SCHEDULE_ENABLED, false));
+
     return root;
   }
 
   private void onSwitchChecked(CompoundButton button, boolean checked) {
     mLinearLayoutAsContainer.toggle();
+
+
+    mPreferences.edit()
+        .putBoolean(PREF_SCHEDULE_ENABLED, checked)
+        .apply();
+
+    // TODO: enable alarm
   }
 
   @Override
@@ -138,24 +153,23 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     String time = mScheduleTimes[position];
     SharedPreferences settings = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = settings.edit();
-    editor.putString(PREF_SCHEDULE, time);
+    editor.putInt(PREF_SCHEDULE, position);
     editor.apply();
 
     mTextViewAsSchedule.setText(time);
 
     String accountName = mPreferences.getString(PREF_ACCOUNT_NAME, null);
     if (accountName != null) {
-      mGridLayoutAsChooseScheduling.setVisibility(View.VISIBLE);
+      mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
     }
   }
 
   @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
   private void chooseAccount() {
     if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.GET_ACCOUNTS)) {
-      String accountName = getSupportActivity().getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
-
       AccountManager accountManager = AccountManager.get(getContext());
       mAvailableGoogleAccounts = accountManager.getAccountsByType("com.google");
+
       String[] names = new String[mAvailableGoogleAccounts.length + 1];
       for (int i = 0; i < mAvailableGoogleAccounts.length; i++) {
         names[i] = mAvailableGoogleAccounts[i].name;
@@ -166,7 +180,10 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
           .setItems(this::onAccountSelected, names)
           .show();
     } else {
-      EasyPermissions.requestPermissions(this, "This app needs to access your Google account (via Contacts).", REQUEST_PERMISSION_GET_ACCOUNTS, Manifest.permission.GET_ACCOUNTS);
+      EasyPermissions.requestPermissions(this,
+          "This app needs to access your Google account (via Contacts).",
+          REQUEST_PERMISSION_GET_ACCOUNTS,
+          Manifest.permission.GET_ACCOUNTS);
     }
   }
 
@@ -182,7 +199,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
       String scheduledTime = mPreferences.getString(PREF_SCHEDULE, null);
       if(scheduledTime != null) {
-        mGridLayoutAsChooseScheduling.setVisibility(View.VISIBLE);
+        mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
       }
     } else {
       Intent addAccountIntent = new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT)
@@ -220,16 +237,20 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
   private void acquireGooglePlayServices() {
     GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-    final int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(getContext());
+    int connectionStatusCode = apiAvailability.isGooglePlayServicesAvailable(getContext());
+
     if (apiAvailability.isUserResolvableError(connectionStatusCode)) {
-      showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+      showGPlayErrorDialog(connectionStatusCode);
     }
   }
 
-  void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
-    GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-    Dialog dialog = apiAvailability.getErrorDialog(getSupportActivity(), connectionStatusCode, REQUEST_GOOGLE_PLAY_SERVICES);
-    dialog.show();
+  void showGPlayErrorDialog(final int connectionStatusCode) {
+    GoogleApiAvailability
+        .getInstance()
+        .getErrorDialog(getSupportActivity(),
+                        connectionStatusCode,
+                        REQUEST_GOOGLE_PLAY_SERVICES)
+        .show();
   }
 
   @Override
@@ -239,8 +260,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
       case REQUEST_GOOGLE_PLAY_SERVICES:
         if (resultCode != RESULT_OK) {
           AlertBuilder.create(getActivity())
-              .setPositiveButton("OK", (dialogInterface, i) -> {
-              })
+              .setPositiveButton("OK", null)
               .setMessage("This app requires Google Play Services. Please install Google Play Services on your device and relaunch this app.")
               .show();
         } else {
@@ -343,7 +363,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
         Log.d(getClass().getSimpleName(), "Request cancelled.");
       } else {
         if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-          showGooglePlayServicesAvailabilityErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
+          showGPlayErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
         } else if (mLastError instanceof UserRecoverableAuthIOException) {
           startActivityForResult(((UserRecoverableAuthIOException) mLastError).getIntent(), REQUEST_AUTHORIZATION);
         } else {

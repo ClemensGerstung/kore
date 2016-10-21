@@ -98,12 +98,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
     loadPasswords.registerCallback(new BaseAsyncTask.IExecutionCallback<PasswordContainer>() {
       @Override
       public void executed(final PasswordContainer result) {
-        runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            addContainerItem(result);
-          }
-        });
+        runOnUiThread(() -> addContainerItem(result));
       }
 
       @Override

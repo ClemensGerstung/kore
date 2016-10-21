@@ -122,24 +122,21 @@ public class PasswordDetailActivity extends BaseDatabaseActivity {
 
     mNestedScrollViewAsContainer.setOnScrollChangeListener(scrollChangeListener);
 
-    if (!isTablet()) {
-      TextView textViewAsHeader = findCastedViewById(R.id.passworddetaillayout_textview_header);
-      int color = ViewUtils.setColor(textViewAsHeader, programString, passwordString);
+    MaterialView v = findCastedViewById(R.id.passworddetaillayout_materialview_header);
+    int color = ViewUtils.setColor(null, programString, passwordString);
+    v.setOverlayColor(color);
 
-      int red = calcAlphaOverlay(Color.red(color), 0x44);
-      int green = calcAlphaOverlay(Color.green(color), 0x44);
-      int blue = calcAlphaOverlay(Color.blue(color), 0x44);
+    int red = calcAlphaOverlay(Color.red(color), 0x44);
+    int green = calcAlphaOverlay(Color.green(color), 0x44);
+    int blue = calcAlphaOverlay(Color.blue(color), 0x44);
 
-      int rgb = Color.rgb(red, green, blue);
-      Log.d(getClass().getSimpleName(), "RGB: " + Integer.toHexString(color) + " -> " + Integer.toHexString(rgb));
-      setStatusBarColor(rgb);
+    int rgb = Color.rgb(red, green, blue);
+    Log.d(getClass().getSimpleName(), "RGB: " + Integer.toHexString(color) + " -> " + Integer.toHexString(rgb));
+    setStatusBarColor(rgb);
 
-      mCollapsingToolbarLayout.setCollapsedTitleTextColor(0xFFFFFFFF);
-      mCollapsingToolbarLayout.setContentScrimColor(color);
-    } else {
-      MaterialView v = findCastedViewById(R.id.passworddetaillayout_view_artboard);
-      v.setOverlayColor(ViewUtils.setColor(null, programString, passwordString));
-    }
+    mCollapsingToolbarLayout.setCollapsedTitleTextColor(0xFFFFFFFF);
+    mCollapsingToolbarLayout.setContentScrimColor(color);
+
 
     if (mCurrentPassword.getPasswordItems().size() > 1) {
       nohistory.setVisibility(View.GONE);

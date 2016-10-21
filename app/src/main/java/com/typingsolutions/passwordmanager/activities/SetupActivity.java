@@ -1,90 +1,71 @@
 package com.typingsolutions.passwordmanager.activities;
 
-import android.animation.ObjectAnimator;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
+import com.typingsolutions.passwordmanager.BaseFragment;
 import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.adapter.BottomSheetViewerFragment;
 import com.typingsolutions.passwordmanager.adapter.SetupPagerAdapter;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
-import com.typingsolutions.passwordmanager.utils.ViewUtils;
+import com.typingsolutions.passwordmanager.fragments.SetupPasswordFragment;
+import com.typingsolutions.passwordmanager.fragments.SimpleViewFragment;
 import net.sqlcipher.database.SQLiteDatabase;
 
-public class SetupActivity extends BaseDatabaseActivity {
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
-  private int mPim;
+public class SetupActivity extends BaseDatabaseActivity {
   private String mPassword;
-  private int mScrollWidth = -1;
 
   private CoordinatorLayout mCoordinatorLayoutAsRootLayout;
   private ui.ViewPager mViewPagerAsFragmentHost;
-  private ImageView mImageViewAsBackground;
-  private ImageSwitcher mImageSwitcherAsIcon;
+  private ImageButton mImageButtonAsNext;
 
   private SetupPagerAdapter mSetupPagerAdapter;
 
   private final int[] imageResources = {R.drawable.android, R.mipmap.security, R.mipmap.pim, R.mipmap.setup_done};
 
-  private final ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
-    @Override
-    public boolean onPreDraw() {
-      float[] matrix = new float[9];
-      mImageViewAsBackground.getImageMatrix().getValues(matrix);
-      float entryPoint = matrix[2];
-
-      mImageViewAsBackground.setScrollX((int) entryPoint);
-      mScrollWidth = (int) ((entryPoint * -2) / (mSetupPagerAdapter.getCount() - 1));
-
-      mImageViewAsBackground.getViewTreeObserver().removeOnPreDrawListener(this);
-      return true;
-    }
-  };
-
-  static {
-    logout = false;
-  }
+  private final int[] mHelpLayouts = {R.layout.setup_1_help_layout, R.layout.setup_2_help_layout};
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.setup_main_layout);
-
-//    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-    if (Build.VERSION.SDK_INT >= 21) getWindow().setStatusBarColor(0x44000000);
+    logout = false;
 
     mCoordinatorLayoutAsRootLayout = findCastedViewById(R.id.setuplayout_coordinatorlayout_root);
     mViewPagerAsFragmentHost = findCastedViewById(R.id.setuplayout_viewpager_content);
-    mImageViewAsBackground = findCastedViewById(R.id.setuplayout_image_background);
-    mImageSwitcherAsIcon = findCastedViewById(R.id.setuplayout_imageswitcher_wrapper);
+    mImageButtonAsNext = findCastedViewById(R.id.setuplayout_button_next);
 
-    mSetupPagerAdapter = new SetupPagerAdapter(getSupportFragmentManager());
+    setStatusBarColor(0x44000000);
+
+    FloatingActionButton fab = findCastedViewById(R.id.setuplayout_fab_expandBottom);
+    fab.setOnClickListener(v -> toggleHelp());
+
+    mSetupPagerAdapter = new SetupPagerAdapter(getSupportFragmentManager(),
+        new BaseFragment[]{
+            SimpleViewFragment.create(R.layout.setup_1_content_layout),
+            new SetupPasswordFragment()
+        });
+
 
     mViewPagerAsFragmentHost.setAdapter(mSetupPagerAdapter);
-    mViewPagerAsFragmentHost.setOffscreenPageLimit(3);
+    mViewPagerAsFragmentHost.setOffscreenPageLimit(1);
     mViewPagerAsFragmentHost.canSwipe(false);
 
-    mImageViewAsBackground.getViewTreeObserver().addOnPreDrawListener(onPreDrawListener);
-
-    mImageSwitcherAsIcon.setFactory(ViewUtils.getSimpleViewFactory(this));
-    mImageSwitcherAsIcon.setImageResource(imageResources[0]);
+    mImageButtonAsNext.setOnClickListener(v -> moveToNextPage());
   }
 
-
-
-  @Override
-  public void onBackPressed() {
-    if (mViewPagerAsFragmentHost.getCurrentItem() == 0) {
-      super.onBackPressed();
-    } else {
-      moveToPreviousPage();
-    }
+  private void toggleHelp() {
+    BottomSheetDialogFragment fragment = BottomSheetViewerFragment.create(mHelpLayouts[mViewPagerAsFragmentHost.getCurrentItem()]);
+    fragment.show(getSupportFragmentManager(), fragment.getTag());
   }
 
   @Override
@@ -99,59 +80,42 @@ public class SetupActivity extends BaseDatabaseActivity {
 
   public void moveToNextPage() {
     int index = mViewPagerAsFragmentHost.getCurrentItem();
-    if (index < mSetupPagerAdapter.getCount()) {
+    if (index == 0) {
       mViewPagerAsFragmentHost.setCurrentItem(index + 1, true);
+    } else if(index == 1) {
+      setupDatabase();
+      // TODO: login
 
-      mImageSwitcherAsIcon.setOutAnimation(this, R.anim.zoom_slide_out_left);
-      mImageSwitcherAsIcon.setInAnimation(this, R.anim.zoom_slide_in_right);
-      mImageSwitcherAsIcon.setImageResource(imageResources[index + 1]);
-
-      int x = mImageViewAsBackground.getScrollX();
-
-      ObjectAnimator anim = ObjectAnimator.ofInt(mImageViewAsBackground, "scrollX", x, x + mScrollWidth);
-      anim.setDuration(250);
-      anim.start();
-
-    }
-  }
-
-  public void moveToPreviousPage() {
-    int index = mViewPagerAsFragmentHost.getCurrentItem();
-    if (index > 0) {
-      mViewPagerAsFragmentHost.setCurrentItem(index - 1, true);
-
-      mImageSwitcherAsIcon.setOutAnimation(this, R.anim.zoom_slide_out_right);
-      mImageSwitcherAsIcon.setInAnimation(this, R.anim.zoom_slide_in_left);
-      mImageSwitcherAsIcon.setImageResource(imageResources[index - 1]);
-
-      ObjectAnimator anim = ObjectAnimator.ofInt(mImageViewAsBackground, "scrollX", mImageViewAsBackground.getScrollX(), mImageViewAsBackground.getScrollX() - mScrollWidth);
-      anim.setDuration(250);
-      anim.start();
     }
   }
 
   public void setupDatabase() {
-    DatabaseConnection connection = new DatabaseConnection(getApplicationContext(), mPassword, mPim);
-    SQLiteDatabase database = connection.getWritableDatabase(mPassword);
-    if (!database.isOpen()) {
-      makeSnackbar("Couldn't notify database");
-    }
-    database.close();
-  }
+    try {
+      MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
+      shaDigest.update(mPassword.getBytes());
 
-  public void setPim(int mPim) {
-    this.mPim = mPim;
+      SecureRandom random = new SecureRandom(shaDigest.digest());
+      byte[] buffer = new byte[4];
+      random.nextBytes(buffer);
+
+      int pim = buffer[3] | buffer[2] << 8 | buffer[1] << 16 | buffer[0] << 24;
+      pim = (pim % (1100)) + 485;
+
+      shaDigest.reset();
+      buffer = null;
+
+      DatabaseConnection connection = new DatabaseConnection(getApplicationContext(), mPassword, pim);
+      SQLiteDatabase database = connection.getWritableDatabase(mPassword);
+      if (!database.isOpen()) {
+        makeSnackbar("Couldn't create database");
+      }
+      database.close();
+    } catch (NoSuchAlgorithmException e) {
+      makeSnackbar("Couldn't create database");
+    }
   }
 
   public void setPassword(String mPassword) {
     this.mPassword = mPassword;
-  }
-
-  public int getPim() {
-    return mPim;
-  }
-
-  public String getPassword() {
-    return mPassword;
   }
 }

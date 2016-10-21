@@ -75,8 +75,6 @@ public final class ViewUtils {
       hexColor = Integer.parseInt(programHash, 16)
           & Integer.parseInt(passwordHash, 16);
 
-      hexColor += 0x0000FF;
-
       if(view !=null) {
         view.getBackground()
             .setColorFilter(hexColor | 0xFF000000, PorterDuff.Mode.SRC);

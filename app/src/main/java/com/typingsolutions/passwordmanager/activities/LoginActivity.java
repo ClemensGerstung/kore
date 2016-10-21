@@ -77,7 +77,7 @@ public class LoginActivity extends BaseActivity {
     // check if database exists
     // if false, it needs to be setup
     File database = getDatabasePath(DatabaseConnection.DATABASE_NAME);
-    if (!database.exists()) {
+    if (database.exists()) {
       startActivity(SetupActivity.class, true);
       return;
     }

@@ -18,8 +18,6 @@ import core.Utils;
 
 public class SetupPasswordFragment extends BaseFragment<SetupActivity> {
 
-  private Button mButtonAsGoBack;
-  private Button mButtonAsSetupPassword;
   private EditText mEditTextAsEnterPassword;
   private EditText mEditTextAsRepeatPassword;
 
@@ -30,18 +28,13 @@ public class SetupPasswordFragment extends BaseFragment<SetupActivity> {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.setup_2_layout, container, false);
+    View view = inflater.inflate(R.layout.setup_2_content_layout, container, false);
 
     mCallbackAsGoBack = new SwitchFragmentCallback(getSupportActivity(), SwitchFragmentCallback.Direction.Previous);
     mCallbackAsSetupPassword = new SetupPasswordCallback(getSupportActivity(), this);
 
-    mButtonAsGoBack = (Button) view.findViewById(R.id.setuplayout_button_prev);
-    mButtonAsSetupPassword = (Button) view.findViewById(R.id.setuplayout_button_setuppassword);
     mEditTextAsEnterPassword = (EditText) view.findViewById(R.id.setuplayout_edittext_password);
     mEditTextAsRepeatPassword = (EditText) view.findViewById(R.id.setuplayout_edittext_repeatpassword);
-
-    mButtonAsGoBack.setOnClickListener(mCallbackAsGoBack);
-    mButtonAsSetupPassword.setOnClickListener(mCallbackAsSetupPassword);
 
     return view;
   }
