@@ -62,10 +62,10 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   static final int REQUEST_AUTHORIZATION = 1001;
   static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
   static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
-  private static final String PREF_ACCOUNT_NAME = "accountName";
-  private static final String PREF_SCHEDULE = "schedule";
+  public static final String PREF_ACCOUNT_NAME = "accountName";
+  public static final String PREF_SCHEDULE = "schedule";
   private static final String PREF_SCHEDULE_ENABLED = "enable";
-  private static final String[] SCOPES = {DriveScopes.DRIVE_FILE};
+  public static final String[] SCOPES = {DriveScopes.DRIVE_FILE};
 
   private GoogleAccountCredential mCredential;
   private Account[] mAvailableGoogleAccounts;
@@ -85,6 +85,10 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.scheduled_backup_layout, container, false);
 
+    mCredential = GoogleAccountCredential
+        .usingOAuth2(getActivity().getApplicationContext(), Arrays.asList(SCOPES))
+        .setBackOff(new ExponentialBackOff());
+
     mGridLayoutAsChooseAccount = (GridLayout) root.findViewById(R.id.backuplayout_layout_chooseaccount);
     mGridLayoutAsChooseAccount.setOnClickListener(this::onChooseAccountClick);
 
@@ -94,9 +98,6 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
 
     mGridLayoutAsEverythinDone = (GridLayout) root.findViewById(R.id.backuplayout_gridlayout_everythingdone);
 
-    mCredential = GoogleAccountCredential
-        .usingOAuth2(getActivity().getApplicationContext(), Arrays.asList(SCOPES))
-        .setBackOff(new ExponentialBackOff());
 
     mSwitchCompatAsSwitcher = (SwitchCompat) root.findViewById(R.id.backuplayout_switch_schedulebackup);
     mLinearLayoutAsContainer = (ExpandableLinearLayout) root.findViewById(R.id.backuplayout_expandablelayout_schedulerwrapper);
@@ -109,7 +110,9 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     if (accountName != null) {
       mTextViewAsAccountName.setText(accountName);
     }
-    String scheduledTime = mPreferences.getString(PREF_SCHEDULE, null);
+
+    int index = mPreferences.getInt(PREF_SCHEDULE, -1);
+    String scheduledTime = index >= 0 ? mScheduleTimes[index] : null;
     if(scheduledTime != null) {
       mTextViewAsSchedule.setText(scheduledTime);
     }
@@ -210,18 +213,6 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     dialog.dismiss();
   }
 
-  private void getResultsFromApi() {
-    if (!isGooglePlayServicesAvailable()) {
-      acquireGooglePlayServices();
-    } else if (mCredential.getSelectedAccountName() == null) {
-      chooseAccount();
-    } else if (!isDeviceOnline()) {
-      getSupportActivity().makeSnackbar("No network connection available.");
-    } else {
-      new MakeRequestTask(mCredential).execute();
-    }
-  }
-
   private boolean isDeviceOnline() {
     ConnectivityManager connMgr = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -254,28 +245,6 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   }
 
   @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    switch (requestCode) {
-      case REQUEST_GOOGLE_PLAY_SERVICES:
-        if (resultCode != RESULT_OK) {
-          AlertBuilder.create(getActivity())
-              .setPositiveButton("OK", null)
-              .setMessage("This app requires Google Play Services. Please install Google Play Services on your device and relaunch this app.")
-              .show();
-        } else {
-          getResultsFromApi();
-        }
-        break;
-      case REQUEST_AUTHORIZATION:
-        if (resultCode == RESULT_OK) {
-          getResultsFromApi();
-        }
-        break;
-    }
-  }
-
-  @Override
   public void onPermissionsGranted(int requestCode, List<String> perms) {
 
   }
@@ -283,93 +252,5 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   @Override
   public void onPermissionsDenied(int requestCode, List<String> perms) {
 
-  }
-
-  private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
-    private Drive mService = null;
-    private Exception mLastError = null;
-
-    public MakeRequestTask(GoogleAccountCredential credential) {
-      HttpTransport transport = AndroidHttp.newCompatibleTransport();
-      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-      mService = new Drive.Builder(transport, jsonFactory, credential)
-          .setApplicationName("kore")
-          .build();
-    }
-
-    @Override
-    protected List<String> doInBackground(Void... params) {
-      try {
-        return getDataFromApi();
-      } catch (Exception e) {
-        mLastError = e;
-        cancel(true);
-        return null;
-      }
-    }
-
-    private List<String> getDataFromApi() throws IOException {
-      List<String> fileInfo = new ArrayList<>();
-
-      File folderMetadata = new File();
-      folderMetadata.setName("kore");
-      folderMetadata.setMimeType("application/vnd.google-apps.folder");
-
-      List<File> results = mService.files().list().setQ("name='kore' and trashed=false").execute().getFiles();
-      File folder = null;
-
-      if (results.isEmpty()) {
-        folder = mService.files()
-            .create(folderMetadata)
-            .setFields("id, name")
-            .execute();
-
-        fileInfo.add(String.format("%s (%s)", folder.getName(), folder.getId()));
-      } else {
-        folder = results.get(0);
-      }
-
-      java.io.File local = getContext().getDatabasePath(DatabaseConnection.DATABASE_NAME);
-      FileContent localContent = new FileContent("application/octet-stream", local);
-      File remote = new File();
-      remote.setName("backup-123");
-      remote.setDescription("This is backup file created by the awesome password manager kore.");
-      remote.setParents(Collections.singletonList(folder.getId()));
-
-
-      File file = mService.files()
-          .create(remote, localContent)
-          .setFields("id, parents")
-          .execute();
-
-      Log.d(getClass().getSimpleName(), "Uploaded " + file.getId());
-
-      return fileInfo;
-    }
-
-    @Override
-    protected void onPostExecute(List<String> output) {
-      if (output == null || output.size() == 0) {
-        Log.d(getClass().getSimpleName(), "No results returned.");
-      } else {
-        output.add(0, "Data retrieved using the Drive API:");
-        Log.d(getClass().getSimpleName(), TextUtils.join("\n", output));
-      }
-    }
-
-    @Override
-    protected void onCancelled() {
-      if (mLastError == null) {
-        Log.d(getClass().getSimpleName(), "Request cancelled.");
-      } else {
-        if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-          showGPlayErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
-        } else if (mLastError instanceof UserRecoverableAuthIOException) {
-          startActivityForResult(((UserRecoverableAuthIOException) mLastError).getIntent(), REQUEST_AUTHORIZATION);
-        } else {
-          Log.e(getClass().getSimpleName(), "The following error occurred:" + mLastError.getMessage());
-        }
-      }
-    }
   }
 }
