@@ -7,16 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,47 +22,27 @@ import android.widget.TextView;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
 import com.typingsolutions.passwordmanager.AlertBuilder;
 import com.typingsolutions.passwordmanager.BaseFragment;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.activities.BackupActivity;
-import com.typingsolutions.passwordmanager.database.DatabaseConnection;
+import com.typingsolutions.passwordmanager.utils.BackupScheduleHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import static android.app.Activity.RESULT_OK;
 
 
 public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     implements EasyPermissions.PermissionCallbacks {
-  static final int REQUEST_ACCOUNT_PICKER = 1000;
-  static final int REQUEST_AUTHORIZATION = 1001;
   static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
   static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
   public static final String PREF_ACCOUNT_NAME = "accountName";
-  public static final String PREF_SCHEDULE = "schedule";
+  public static final String PREF_SCHEDULE_TIME = "schedule";
   private static final String PREF_SCHEDULE_ENABLED = "enable";
   public static final String[] SCOPES = {DriveScopes.DRIVE_FILE};
 
-  private GoogleAccountCredential mCredential;
   private Account[] mAvailableGoogleAccounts;
 
   private GridLayout mGridLayoutAsChooseAccount;
@@ -77,7 +52,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   private ExpandableLinearLayout mLinearLayoutAsContainer;
   private TextView mTextViewAsAccountName;
   private TextView mTextViewAsSchedule;
-  private String[] mScheduleTimes = new String[]{"Every day", "Once a week", "First day of month"};
+  private String[] mScheduleTimes = new String[]{"Every day", "Once a week", "Once a month"};
   private SharedPreferences mPreferences;
 
   @Nullable
@@ -85,43 +60,21 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.scheduled_backup_layout, container, false);
 
-    mCredential = GoogleAccountCredential
-        .usingOAuth2(getActivity().getApplicationContext(), Arrays.asList(SCOPES))
-        .setBackOff(new ExponentialBackOff());
-
     mGridLayoutAsChooseAccount = (GridLayout) root.findViewById(R.id.backuplayout_layout_chooseaccount);
-    mGridLayoutAsChooseAccount.setOnClickListener(this::onChooseAccountClick);
-
     mGridLayoutAsChooseScheduling = (GridLayout) root.findViewById(R.id.backuplayout_layout_choosescheduling);
-    mGridLayoutAsChooseScheduling.setOnClickListener(this::onChooseScheduleClick);
     mTextViewAsSchedule = (TextView) root.findViewById(R.id.backuplayout_textview_scheduled);
-
     mGridLayoutAsEverythinDone = (GridLayout) root.findViewById(R.id.backuplayout_gridlayout_everythingdone);
-
-
     mSwitchCompatAsSwitcher = (SwitchCompat) root.findViewById(R.id.backuplayout_switch_schedulebackup);
     mLinearLayoutAsContainer = (ExpandableLinearLayout) root.findViewById(R.id.backuplayout_expandablelayout_schedulerwrapper);
     mTextViewAsAccountName = (TextView) root.findViewById(R.id.backuplayout_textview_username);
 
+    mGridLayoutAsChooseAccount.setOnClickListener(this::onChooseAccountClick);
+    mGridLayoutAsChooseScheduling.setOnClickListener(this::onChooseScheduleClick);
     mSwitchCompatAsSwitcher.setOnCheckedChangeListener(this::onSwitchChecked);
     mPreferences = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
-
-    String accountName = mPreferences.getString(PREF_ACCOUNT_NAME, null);
-    if (accountName != null) {
-      mTextViewAsAccountName.setText(accountName);
-    }
-
-    int index = mPreferences.getInt(PREF_SCHEDULE, -1);
-    String scheduledTime = index >= 0 ? mScheduleTimes[index] : null;
-    if(scheduledTime != null) {
-      mTextViewAsSchedule.setText(scheduledTime);
-    }
-
-    if(accountName != null && scheduledTime != null) {
-      mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
-    }
-
     mSwitchCompatAsSwitcher.setChecked(mPreferences.getBoolean(PREF_SCHEDULE_ENABLED, false));
+
+    init();
 
     return root;
   }
@@ -129,12 +82,56 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   private void onSwitchChecked(CompoundButton button, boolean checked) {
     mLinearLayoutAsContainer.toggle();
 
-
     mPreferences.edit()
         .putBoolean(PREF_SCHEDULE_ENABLED, checked)
         .apply();
 
-    // TODO: enable alarm
+    notifyChange(null, -1);
+  }
+
+  private void init() {
+    if (isGooglePlayServicesAvailable()) {
+      acquireGooglePlayServices();
+
+      String username = mPreferences.getString(PREF_ACCOUNT_NAME, null);
+      int index = mPreferences.getInt(PREF_SCHEDULE_TIME, -1);
+
+      notifyChange(username, index);
+
+    } else {
+      AlertBuilder.create(getContext())
+          .setMessage("Google Play Services are not available.\nPlease install them and try again.")
+          .setPositiveButton("ok", null)
+          .show();
+    }
+  }
+
+  private void notifyChange(@Nullable String username, int time) {
+    boolean userOK = false;
+    boolean timeOK = false;
+
+    if (username != null) {
+      mTextViewAsAccountName.setText(username);
+      mPreferences.edit().putString(PREF_ACCOUNT_NAME, username).apply();
+      userOK = true;
+    }
+
+    if (time >= 0) {
+      String scheduledTime = mScheduleTimes[time];
+      mTextViewAsSchedule.setText(scheduledTime);
+      mPreferences.edit().putInt(PREF_SCHEDULE_TIME, time).apply();
+      timeOK = true;
+    }
+
+    if(userOK && timeOK && mSwitchCompatAsSwitcher.isChecked()) {
+      mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
+
+      BackupScheduleHelper.schedule(getContext(), time, true);
+    } else {
+      mGridLayoutAsEverythinDone.setVisibility(View.GONE);
+
+      BackupScheduleHelper.cancel(getContext());
+    }
   }
 
   @Override
@@ -148,23 +145,14 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   }
 
   private void onChooseScheduleClick(View v) {
-    AlertBuilder.create(getContext()).setItems(this::onChooseScheduleDialogItemClick, mScheduleTimes).show();
+    AlertBuilder.create(getContext())
+        .setItems(this::onChooseScheduleDialogItemClick, mScheduleTimes)
+        .show();
   }
 
   private void onChooseScheduleDialogItemClick(DialogInterface dialog, AdapterView<?> parent, View view, int position, long id) {
     dialog.dismiss();
-    String time = mScheduleTimes[position];
-    SharedPreferences settings = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
-    SharedPreferences.Editor editor = settings.edit();
-    editor.putInt(PREF_SCHEDULE, position);
-    editor.apply();
-
-    mTextViewAsSchedule.setText(time);
-
-    String accountName = mPreferences.getString(PREF_ACCOUNT_NAME, null);
-    if (accountName != null) {
-      mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
-    }
+    notifyChange(null, position);
   }
 
   @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
@@ -193,17 +181,7 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   void onAccountSelected(DialogInterface dialog, AdapterView<?> parent, View view, int position, long id) {
     if (position < parent.getCount() - 1) {
       String accountName = mAvailableGoogleAccounts[position].name;
-      SharedPreferences settings = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
-      SharedPreferences.Editor editor = settings.edit();
-      editor.putString(PREF_ACCOUNT_NAME, accountName);
-      editor.apply();
-      mCredential.setSelectedAccountName(accountName);
-      mTextViewAsAccountName.setText(accountName);
-
-      String scheduledTime = mPreferences.getString(PREF_SCHEDULE, null);
-      if(scheduledTime != null) {
-        mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
-      }
+      notifyChange(accountName, -1);
     } else {
       Intent addAccountIntent = new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT)
           .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -211,13 +189,6 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
       getContext().startActivity(addAccountIntent);
     }
     dialog.dismiss();
-  }
-
-  private boolean isDeviceOnline() {
-    ConnectivityManager connMgr = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-    // TODO: check WIFI
-    return (networkInfo != null && networkInfo.isConnected());
   }
 
   private boolean isGooglePlayServicesAvailable() {
@@ -239,8 +210,8 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     GoogleApiAvailability
         .getInstance()
         .getErrorDialog(getSupportActivity(),
-                        connectionStatusCode,
-                        REQUEST_GOOGLE_PLAY_SERVICES)
+            connectionStatusCode,
+            REQUEST_GOOGLE_PLAY_SERVICES)
         .show();
   }
 

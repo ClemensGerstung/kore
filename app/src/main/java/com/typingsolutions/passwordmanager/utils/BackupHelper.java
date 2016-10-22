@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -36,6 +37,7 @@ public class BackupHelper extends BroadcastReceiver {
   public void onReceive(Context context, Intent intent) {
     SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
     String accountName = preferences.getString(ScheduleBackupFragment.PREF_ACCOUNT_NAME, null);
+    int time = preferences.getInt(ScheduleBackupFragment.PREF_SCHEDULE_TIME, -1);
 
     if(accountName == null) {
       NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -51,6 +53,9 @@ public class BackupHelper extends BroadcastReceiver {
     }
 
     try {
+      if(core.Utils.isDeviceOnline(context))
+        throw new Exception("Device wasn't online");
+
       GoogleAccountCredential credential = GoogleAccountCredential
           .usingOAuth2(context.getApplicationContext(), Arrays.asList(ScheduleBackupFragment.SCOPES))
           .setBackOff(new ExponentialBackOff());
@@ -95,8 +100,11 @@ public class BackupHelper extends BroadcastReceiver {
         throw new Exception("Backup was not created!");
       }
 
-      // TODO: reschedule
+      if(time == -1) {
+        throw new Exception("Didn't know when to reschedule");
+      }
 
+      BackupScheduleHelper.schedule(context, time, false);
     } catch (Exception e) {
       NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
           .setContentTitle("There was an error during uploading: " + e.getMessage())

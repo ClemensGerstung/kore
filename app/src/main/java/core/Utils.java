@@ -1,5 +1,9 @@
 package core;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -88,64 +92,11 @@ public class Utils {
     return found;
   }
 
-  public static int copyFile(File source, File target, Flag flag) {
-    int size = 0;
-
-    try {
-      size = copyFile(new FileInputStream(source), new FileOutputStream(target), flag);
-    } catch (Exception e) {
-      return -1;
-    }
-
-    return size;
+  public static boolean isDeviceOnline(Context context) {
+    ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+    // TODO: check WIFI
+    return (networkInfo != null && networkInfo.isConnected());
   }
 
-  public static int copyFile(FileDescriptor source, File target, Flag flag) {
-    int size = 0;
-
-    try {
-      size = copyFile(new FileInputStream(source), new FileOutputStream(target), flag);
-    } catch (Exception e) {
-      return -1;
-    }
-
-    return size;
-  }
-
-  public static int copyFile(File source, FileDescriptor target, Flag flag) {
-    int size = 0;
-
-    try {
-      size = copyFile(new FileInputStream(source), new FileOutputStream(target), flag);
-    } catch (Exception e) {
-      return -1;
-    }
-
-    return size;
-  }
-
-  private static int copyFile(FileInputStream source, FileOutputStream target, Flag flag) {
-    //TODO: check hash?
-    int size = 0;
-    byte[] buffer = new byte[1024];
-    int length;
-
-    try {
-      while ((length = source.read(buffer)) > 0) {
-        target.write(buffer, 0, length);
-        size += length;
-      }
-
-      source.close();
-      target.close();
-    } catch (IOException e) {
-      return -1;
-    }
-
-    return size;
-  }
-
-  public enum Flag {
-    Backup, Restore
-  }
 }
