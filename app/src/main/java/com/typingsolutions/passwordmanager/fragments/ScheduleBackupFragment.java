@@ -68,11 +68,11 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     mLinearLayoutAsContainer = (ExpandableLinearLayout) root.findViewById(R.id.backuplayout_expandablelayout_schedulerwrapper);
     mTextViewAsAccountName = (TextView) root.findViewById(R.id.backuplayout_textview_username);
 
+    mPreferences = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
+    mSwitchCompatAsSwitcher.setChecked(mPreferences.getBoolean(PREF_SCHEDULE_ENABLED, false));
     mGridLayoutAsChooseAccount.setOnClickListener(this::onChooseAccountClick);
     mGridLayoutAsChooseScheduling.setOnClickListener(this::onChooseScheduleClick);
     mSwitchCompatAsSwitcher.setOnCheckedChangeListener(this::onSwitchChecked);
-    mPreferences = getSupportActivity().getPreferences(Context.MODE_PRIVATE);
-    mSwitchCompatAsSwitcher.setChecked(mPreferences.getBoolean(PREF_SCHEDULE_ENABLED, false));
 
     init();
 
@@ -80,7 +80,8 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   }
 
   private void onSwitchChecked(CompoundButton button, boolean checked) {
-    mLinearLayoutAsContainer.toggle();
+    if(checked) mLinearLayoutAsContainer.expand();
+    else mLinearLayoutAsContainer.collapse();
 
     mPreferences.edit()
         .putBoolean(PREF_SCHEDULE_ENABLED, checked)
@@ -123,7 +124,16 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
       timeOK = true;
     }
 
+    if(!userOK) {
+      userOK = mPreferences.getString(PREF_ACCOUNT_NAME, null) != null;
+    }
+
+    if(!timeOK) {
+      timeOK = mPreferences.getInt(PREF_SCHEDULE_TIME, -1) >= 0;
+    }
+
     if(userOK && timeOK && mSwitchCompatAsSwitcher.isChecked()) {
+      mLinearLayoutAsContainer.setExpanded(true);
       mGridLayoutAsEverythinDone.setVisibility(View.VISIBLE);
 
       BackupScheduleHelper.schedule(getContext(), time, true);

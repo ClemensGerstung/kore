@@ -123,6 +123,8 @@ public class LoginActivity extends BaseActivity {
     DatabaseConnection connection = null;
 
     try {
+      showViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_in);
+
       String password = mEditTextAsLoginPassword.getText().toString();
 
       MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
@@ -143,7 +145,6 @@ public class LoginActivity extends BaseActivity {
     } finally {
       if (connection != null) {
         connection.close();
-        connection = null;
       }
     }
   }
@@ -182,17 +183,14 @@ public class LoginActivity extends BaseActivity {
   }
 
   public void hideInput() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        //mEditTextAsLoginPassword.hide();
-        ViewUtils.hide(LoginActivity.this, mCheckBoxAsSafeLoginFlag, R.anim.checkbox_hide);
-        ViewUtils.hide(LoginActivity.this, mTextViewAsHintForRootedDevices, android.support.design.R.anim.design_fab_out);
-        ViewUtils.hide(LoginActivity.this, mEditTextAsLoginPassword, android.support.design.R.anim.design_fab_out);
+    runOnUiThread(() -> {
+      //mEditTextAsLoginPassword.hide();
+      ViewUtils.hide(LoginActivity.this, mCheckBoxAsSafeLoginFlag, R.anim.checkbox_hide);
+      ViewUtils.hide(LoginActivity.this, mTextViewAsHintForRootedDevices, android.support.design.R.anim.design_fab_out);
+      ViewUtils.hide(LoginActivity.this, mEditTextAsLoginPassword, android.support.design.R.anim.design_fab_out);
 
-        startAnimator(mImageViewAsBackground, R.animator.flip_right_out);
-        startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_right_in);
-      }
+      startAnimator(mImageViewAsBackground, R.animator.flip_right_out);
+      startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_right_in);
     });
   }
 
