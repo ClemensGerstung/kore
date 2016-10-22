@@ -4,26 +4,20 @@ import android.content.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewManager;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.typingsolutions.passwordmanager.AlertBuilder;
 import com.typingsolutions.passwordmanager.BaseActivity;
 import com.typingsolutions.passwordmanager.ILoginServiceRemote;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.async.OpenDatabaseTask;
-import com.typingsolutions.passwordmanager.callbacks.LoginCallback;
 import com.typingsolutions.passwordmanager.callbacks.LoginSafeLoginCheckBoxChangeCallback;
 import com.typingsolutions.passwordmanager.callbacks.OpenDatabaseAsyncCallback;
 import com.typingsolutions.passwordmanager.callbacks.ServiceCallbackImplementation;
@@ -34,18 +28,19 @@ import core.Utils;
 import ui.OutlinedImageView;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.Random;
 
 public class LoginActivity extends BaseActivity {
 
   public static final String SAFE_LOGIN = "safelogin";
   private ServiceCallbackImplementation mServiceCallback = new ServiceCallbackImplementation(this);
-  private LoginCallback mLoginCallback = new LoginCallback(this);
   private ILoginServiceRemote mLoginServiceRemote;
   private boolean mServiceIsRegistered = false;
 
-  private AppBarLayout mAppBarLayoutAsWrapper;
-  private Toolbar mToolbarAsActionBar;
+  //  private AppBarLayout mAppBarLayoutAsWrapper;
+//  private Toolbar mToolbarAsActionBar;
   private FloatingActionButton mFloatingActionButtonAsLogin;
   private EditText mEditTextAsLoginPassword;
   private CheckBox mCheckBoxAsSafeLoginFlag;
@@ -57,18 +52,6 @@ public class LoginActivity extends BaseActivity {
 
   private final ServiceConnection mLoginServiceConnection = new LoginServiceConnection();
   private OpenDatabaseAsyncCallback openDatabaseAsyncCallback = new OpenDatabaseAsyncCallback(this);
-  private LoginSafeLoginCheckBoxChangeCallback safeLoginCheckedChangeListener = new LoginSafeLoginCheckBoxChangeCallback(this);
-
-
-  private TextView.OnEditorActionListener setupKeyBoardActionListener = new TextView.OnEditorActionListener() {
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-      if (actionId != EditorInfo.IME_ACTION_DONE) return false;
-      mLoginCallback.onClick(mFloatingActionButtonAsLogin);
-      //LoginActivity.this.startActivity(PasswordOverviewActivity.class, true);
-      return true;
-    }
-  };
 
 
   @Override
@@ -84,10 +67,10 @@ public class LoginActivity extends BaseActivity {
 
     setContentView(R.layout.login_layout);
 
-    mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
-    setSupportActionBar(mToolbarAsActionBar);
+//    mToolbarAsActionBar = findCastedViewById(R.id.loginlayout_toolbar_actionbar);
+//    setSupportActionBar(mToolbarAsActionBar);
 
-    mAppBarLayoutAsWrapper = findCastedViewById(R.id.loginlayout_appbarlayout_wrapper);
+//    mAppBarLayoutAsWrapper = findCastedViewById(R.id.loginlayout_appbarlayout_wrapper);
     mFloatingActionButtonAsLogin = findCastedViewById(R.id.loginlayout_floatingactionbutton_login);
     mEditTextAsLoginPassword = findCastedViewById(R.id.loginlayout_edittext_password);
     mCheckBoxAsSafeLoginFlag = findCastedViewById(R.id.loginlayout_checkbox_safelogin);
@@ -105,16 +88,14 @@ public class LoginActivity extends BaseActivity {
 
 //    mFloatingActionButtonAsLogin.hide();
 
-    mFloatingActionButtonAsLogin.setOnClickListener(mLoginCallback);
+    mFloatingActionButtonAsLogin.setOnClickListener(this::loginCallback);
 //    mEditTextAsLoginPassword.addTextChangedListener(loginTextWatcher);
-    mCheckBoxAsSafeLoginFlag.setOnCheckedChangeListener(safeLoginCheckedChangeListener);
+    mCheckBoxAsSafeLoginFlag.setOnCheckedChangeListener(this::onSafeLoginCheckedChanged);
     mCheckBoxAsSafeLoginFlag.setChecked(isSafe);
-    mEditTextAsLoginPassword.setOnEditorActionListener(setupKeyBoardActionListener);
+    mEditTextAsLoginPassword.setOnEditorActionListener(this::onKeyBoardAction);
 
     mImageViewAsBackground.setImageBitmap(getBitmap(this, R.mipmap.verified, 2, 1));
     mOutlinedImageViewAsLockedBackground.setImageBitmap(getBitmap(this, R.mipmap.unverified, 2, 1));
-
-
   }
 
   @Override
@@ -126,7 +107,7 @@ public class LoginActivity extends BaseActivity {
     bindService(intent, mLoginServiceConnection, Context.BIND_AUTO_CREATE);
     mServiceIsRegistered = true;
 
-    ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm));
+//    ViewCompat.setElevation(mAppBarLayoutAsWrapper, getResources().getDimension(R.dimen.dimen_sm));
   }
 
   @Override
@@ -138,36 +119,48 @@ public class LoginActivity extends BaseActivity {
     super.onDestroy();
   }
 
-  public void login(String pim) {
+  private void loginCallback(View v) {
     DatabaseConnection connection = null;
-
-    if (pim == null || pim.length() == 0) {
-      makeSnackbar("You have to enter Your magic number");
-      return;
-    }
 
     try {
       showViewAnimated(mProgressBarAsLoadingIndicator, android.R.anim.fade_in);
 
-      if (mLoginServiceRemote.isBlocked())
-        makeSnackbar("Sorry, but You're currently blocked!");
-
       String password = mEditTextAsLoginPassword.getText().toString();
-      connection = new DatabaseConnection(this.getBaseContext(), password, Integer.parseInt(pim));
+
+      MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
+      shaDigest.update(password.getBytes());
+
+      BigInteger integer = new BigInteger(shaDigest.digest());
+      Random r = new Random(integer.longValue());
+      int pim = r.nextInt(1100) + 485;
+
+      connection = new DatabaseConnection(this.getBaseContext(), password, pim);
 
       OpenDatabaseTask openDatabaseTask = new OpenDatabaseTask();
 
       openDatabaseTask.registerCallback(openDatabaseAsyncCallback);
       openDatabaseTask.execute(connection);
-
     } catch (Exception e) {
       makeSnackbar("Sorry, something went wrong");
     } finally {
       if (connection != null) {
         connection.close();
-        connection = null;
       }
     }
+  }
+
+  private void onSafeLoginCheckedChanged(CompoundButton compoundButton, boolean b) {
+    final SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+    preferences.edit().putBoolean(LoginActivity.SAFE_LOGIN, b).apply();
+  }
+
+  public boolean onKeyBoardAction(TextView v, int actionId, KeyEvent event) {
+    if (actionId != EditorInfo.IME_ACTION_DONE) return false;
+    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+    loginCallback(mFloatingActionButtonAsLogin);
+    return true;
   }
 
   public OutlinedImageView getBackground() {
@@ -190,17 +183,14 @@ public class LoginActivity extends BaseActivity {
   }
 
   public void hideInput() {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        //mEditTextAsLoginPassword.hide();
-        ViewUtils.hide(LoginActivity.this, mCheckBoxAsSafeLoginFlag, R.anim.checkbox_hide);
-        ViewUtils.hide(LoginActivity.this, mTextViewAsHintForRootedDevices, android.support.design.R.anim.design_fab_out);
-        ViewUtils.hide(LoginActivity.this, mEditTextAsLoginPassword, android.support.design.R.anim.design_fab_out);
+    runOnUiThread(() -> {
+      //mEditTextAsLoginPassword.hide();
+      ViewUtils.hide(LoginActivity.this, mCheckBoxAsSafeLoginFlag, R.anim.checkbox_hide);
+      ViewUtils.hide(LoginActivity.this, mTextViewAsHintForRootedDevices, android.support.design.R.anim.design_fab_out);
+      ViewUtils.hide(LoginActivity.this, mEditTextAsLoginPassword, android.support.design.R.anim.design_fab_out);
 
-        startAnimator(mImageViewAsBackground, R.animator.flip_right_out);
-        startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_right_in);
-      }
+      startAnimator(mImageViewAsBackground, R.animator.flip_right_out);
+      startAnimator(mOutlinedImageViewAsLockedBackground, R.animator.flip_right_in);
     });
   }
 

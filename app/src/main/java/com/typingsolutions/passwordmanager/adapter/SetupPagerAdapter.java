@@ -4,18 +4,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import com.typingsolutions.passwordmanager.BaseFragment;
-import com.typingsolutions.passwordmanager.fragments.SetupLoginFragment;
-import com.typingsolutions.passwordmanager.fragments.SetupPasswordFragment;
-import com.typingsolutions.passwordmanager.fragments.SetupPimFragment;
-import com.typingsolutions.passwordmanager.fragments.SetupWelcomeFragment;
 
 
 public class SetupPagerAdapter extends FragmentPagerAdapter {
 
-  private final BaseFragment[] mFragments = {new SetupWelcomeFragment(), new SetupPasswordFragment(), new SetupPimFragment(), new SetupLoginFragment()};
+  private BaseFragment[] mFragments;
 
-  public SetupPagerAdapter(FragmentManager fragmentManager) {
+  public SetupPagerAdapter(FragmentManager fragmentManager, BaseFragment[] fragments) {
     super(fragmentManager);
+    mFragments = fragments;
   }
 
   @Override

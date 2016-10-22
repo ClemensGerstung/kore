@@ -18,16 +18,31 @@
                   android:text="Scheduled backup"/>
 
 
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/black"
+                  android:layout_marginBottom="@dimen/dimen_md"
+                  android:text="You can create a backup repeatedly. Just select your Google account and when to backup."/>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/black"
+                  android:layout_marginBottom="@dimen/dimen_md"
+                  android:text="The backup will be created with the currently set master password during the backup."/>
+
+
         <android.support.v7.widget.SwitchCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_md"
                 android:id="@+id/backuplayout_switch_schedulebackup"
                 android:text="Schedule backup"/>
+
         <com.github.aakira.expandablelayout.ExpandableLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:ael_duration="@integer/animation_duration"
-                app:ael_expanded="true"
+                app:ael_expanded="false"
                 android:id="@+id/backuplayout_expandablelayout_schedulerwrapper"
                 app:ael_interpolator="decelerate"
                 android:orientation="vertical">
@@ -35,19 +50,82 @@
             <GridLayout android:layout_width="match_parent"
                         android:columnCount="2"
                         android:clickable="true"
+                        android:rowCount="2"
                         android:id="@+id/backuplayout_layout_chooseaccount"
                         android:background="?attr/selectableItemBackground"
                         android:layout_height="wrap_content">
                 <ImageView android:layout_width="48dp"
                            android:layout_height="48dp"
+                           android:layout_rowSpan="2"
                            app:srcCompat="@drawable/account_circle"/>
                 <TextView android:layout_width="wrap_content"
                           android:text="Choose Google account"
-                          android:padding="@dimen/dimen_sm"
+                          android:paddingStart="@dimen/dimen_sm"
+                          android:textColor="@color/black"
                           android:layout_gravity="center_vertical"
+                          android:layout_height="wrap_content"/>
+                <TextView android:layout_width="wrap_content"
+                          android:text="(select)"
+                          android:id="@+id/backuplayout_textview_username"
+                          android:paddingStart="@dimen/dimen_sm"
+                          android:layout_column="1"
+                          android:layout_gravity="top"
+                          android:layout_height="wrap_content"/>
+            </GridLayout>
+
+            <GridLayout android:layout_width="match_parent"
+                        android:columnCount="2"
+                        android:clickable="true"
+                        android:rowCount="2"
+                        android:layout_marginTop="@dimen/dimen_lg"
+                        android:id="@+id/backuplayout_layout_choosescheduling"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_height="wrap_content">
+                <ImageView android:layout_width="48dp"
+                           android:layout_height="48dp"
+                           android:layout_rowSpan="2"
+                           app:srcCompat="@drawable/time"/>
+                <TextView android:layout_width="wrap_content"
+                          android:text="Select when to do the backup"
+                          android:paddingStart="@dimen/dimen_sm"
+                          android:layout_row="0"
+                          android:textColor="@color/black"
+                          android:layout_gravity="bottom"
+                          android:layout_column="1"
+                          android:layout_height="wrap_content"/>
+                <TextView android:layout_width="wrap_content"
+                          android:text="(select)"
+                          android:id="@+id/backuplayout_textview_scheduled"
+                          android:paddingStart="@dimen/dimen_sm"
+                          android:layout_column="1"
+                          android:layout_gravity="top"
+                          android:layout_height="wrap_content"/>
+            </GridLayout>
+
+            <GridLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:layout_marginTop="@dimen/dimen_lg"
+                        android:visibility="gone"
+                        android:id="@+id/backuplayout_gridlayout_everythingdone">
+                <ImageView android:layout_width="48dp"
+                           android:layout_height="48dp"
+                           app:srcCompat="@drawable/done_all"/>
+
+                <TextView android:layout_width="wrap_content"
+                          android:text="Everything is done"
+                          android:paddingStart="@dimen/dimen_sm"
+                          android:textColor="@color/black"
+                          android:layout_gravity="center_vertical"
+                          android:layout_column="1"
                           android:layout_height="match_parent"/>
             </GridLayout>
 
+            <TextView android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="@dimen/dimen_md"
+                      android:textColor="@color/black"
+                      android:text="You can also create a local copy of your backup at the same time it will be uploaded to Google Drive."/>
 
             <CheckBox android:layout_width="match_parent"
                       android:layout_height="wrap_content"

@@ -1,34 +1,33 @@
 <resources>
     <string name="app_name">Kore</string>
     <string name="hidden">hidden</string>
-    <array name="order_options">
-        <item>username ascending</item>
-        <item>username descending</item>
-        <item>password ascending</item>
-        <item>password descending</item>
-        <item>program ascending</item>
-        <item>program descending</item>
-    </array>
 
     <string name="servicedescription">Loginservice of this app</string>
     <string name="createpassword_program_hint">Where\'s the password used for (program, website, etc.)?</string>
     <string name="createpassword_disclaimer">For now these are the only values you can set.\nI will add some more
         configurable items to the password in the future. For now I think it\'s okay, because I want the app to become
-        ready.\nIf you have any idea for additional values YOU want to configure for an password, please tell me so I can
+        ready.\nIf you have any idea for additional values YOU want to configure for an password, please tell me so I
+        can
         add them soon.
     </string>
     <string name="next_password_hint">Click Next to setup Your main password.\nThis password should be easy to remember
-        but also be strong enough so no one can break it.
+        but also be strong enough so no one can break it.\n
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
+        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
+        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
+        diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+        takimata sanctus est Lorem ipsum dolor sit amet.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
+        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
+        consetetur sadipscing elitr.
     </string>
     <string name="welcome_message">This app offers You simple, easy and most of all a secure way to store your
         passwords.\nAlways with You and no drawbacks!
     </string>
     <string name="welcome">Hello and Welcome</string>
     <string name="next">Next</string>
-    <string name="pim_hin">To provide even more security, You have to enter additional number.\nThis number enhances the
-        encryption on the database so these bad boys out there will have a bad time.
-    </string>
-    <string name="pim_instructions">This number should be easy to remember and somewhere above 485.</string>
     <string name="password_hint">Your main password is used to log into this app. This password should be easily to
         remember but also hard to guess.\nRecommend is to use at least a length of 8. Also use upper and lower case
         letters, numbers and some special characters!

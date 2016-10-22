@@ -16,7 +16,6 @@ public class AsyncPasswordLoader extends AsyncTask<String, Void, Void> {
   public AsyncPasswordLoader(Context context) {
     super();
     this.context = context;
-
   }
 
   /**

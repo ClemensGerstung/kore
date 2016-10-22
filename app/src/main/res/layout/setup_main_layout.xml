@@ -1,39 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/setuplayout_coordinatorlayout_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:theme="@style/Base.AppTheme.Setup"
+        android:fitsSystemWindows="true"
+        android:theme="@style/Base.AppTheme"
         android:padding="0dp">
 
-    <ImageView android:layout_width="wrap_content"
-               android:layout_height="match_parent"
-               android:adjustViewBounds="true"
-               android:scaleType="centerCrop"
-               android:padding="@dimen/zero"
-               android:id="@+id/setuplayout_image_background"
-               android:src="@mipmap/setup_background"/>
+    <ui.MaterialView android:layout_width="match_parent"
+                     android:fitsSystemWindows="true"
+                     android:layout_height="match_parent"/>
 
-    <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@color/white"
+                  android:layout_gravity="bottom"
+                  android:id="@+id/setuplayput_linearlayout_wrapper"
+                  android:padding="@dimen/dimen_md"
+                  android:orientation="vertical">
+
         <ui.ViewPager
                 android:id="@+id/setuplayout_viewpager_content"
                 android:layout_width="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+        </ui.ViewPager>
 
-        <ImageSwitcher android:layout_width="match_parent"
-                       android:layout_height="match_parent"
-                       android:outAnimation="@anim/zoom_slide_out_left"
-                       android:inAnimation="@anim/zoom_slide_in_right"
-                       android:layout_gravity="center"
-                       android:id="@+id/setuplayout_imageswitcher_wrapper"
-                       android:layout_above="@id/setuplayout_viewpager_content">
-            <!--<ImageView android:layout_width="match_parent"-->
-                       <!--android:layout_height="match_parent"-->
-                       <!--android:src="@mipmap/clear"/>-->
-        </ImageSwitcher>
-    </RelativeLayout>
+        <ImageButton android:layout_width="wrap_content"
+                     app:srcCompat="@drawable/right"
+                     android:layout_gravity="end"
+                     android:id="@+id/setuplayout_button_next"
+                     android:visibility="visible"
+                     style="@style/Base.Widget.AppCompat.Button.Borderless"
+                     android:layout_height="wrap_content"
+                     android:contentDescription="@string/next"/>
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            app:srcCompat="@drawable/help"
+            app:layout_anchor="@+id/setuplayput_linearlayout_wrapper"
+            app:layout_anchorGravity="end"
+            app:backgroundTint="@color/primary"
+            app:rippleColor="@color/primaryDark"
+            app:elevation="@dimen/dimen_sm"
+            android:clickable="true"
+            android:id="@+id/setuplayout_fab_expandBottom"
+            android:layout_marginEnd="@dimen/dimen_lg"
+            android:layout_height="wrap_content"/>
+
 
 </android.support.design.widget.CoordinatorLayout>

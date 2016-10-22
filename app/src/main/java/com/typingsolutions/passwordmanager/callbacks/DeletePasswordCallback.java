@@ -38,7 +38,7 @@ public class DeletePasswordCallback extends BaseClickCallback<PasswordDetailActi
 //                    }
 //                })
 //                .setNegativeButton("DISCARD", null)
-//                .create();
+//                .notify();
 //        dialog.show();
   }
 }

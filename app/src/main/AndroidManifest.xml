@@ -30,6 +30,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".utils.AutoDismissNotification"/>
+
         <activity
                 android:name=".activities.LoginActivity"
                 android:theme="@style/Base.AppTheme"
