@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.2'
+    buildToolsVersion '24.0.3'
 
     defaultConfig {
         applicationId "com.typingsolutions.passwordmanager.dev"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 56
-        versionName "1.9.0"
+        versionCode 370
+        versionName "2.0.5"
         vectorDrawables.useSupportLibrary = true
 
         jackOptions {
@@ -26,6 +26,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        javaMaxHeapSize "6g"
+        setJavaMaxHeapSize("6g")
     }
 }
 

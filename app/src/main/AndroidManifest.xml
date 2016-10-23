@@ -13,7 +13,7 @@
 
     <application
             android:allowBackup="true"
-            android:icon="@drawable/icon_dev"
+            android:icon="@mipmap/icon"
             android:backupAgent=".utils.PasswordManagerBackupManager"
             android:label="@string/app_name">
 
@@ -31,6 +31,8 @@
         </receiver>
 
         <receiver android:name=".utils.AutoDismissNotification"/>
+
+        <receiver android:name=".utils.BackupHelper"/>
 
         <activity
                 android:name=".activities.LoginActivity"
