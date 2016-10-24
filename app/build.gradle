@@ -8,7 +8,7 @@ android {
         applicationId "com.typingsolutions.passwordmanager"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 372
+        versionCode 755
         versionName "2.0.7"
         vectorDrawables.useSupportLibrary = true
 
