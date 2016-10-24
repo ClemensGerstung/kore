@@ -30,9 +30,9 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".utils.AutoDismissNotification"/>
+        <receiver android:name=".receiver.AutoDismissNotification"/>
 
-        <receiver android:name=".utils.BackupHelper"/>
+        <receiver android:name=".receiver.BackupHelper"/>
 
         <activity
                 android:name=".activities.LoginActivity"

@@ -41,7 +41,7 @@ android {
 
 dependencies {
 //    compile fileTree(dir:'libs', include:['*.jar'])
-    compile 'net.zetetic:android-database-sqlcipher:3.5.3@aar'
+    compile 'net.zetetic:android-database-sqlcipher:3.5.4@aar'
     compile 'com.github.aakira:expandable-layout:1.5.1@aar'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:appcompat-v7:24.2.1'
@@ -58,5 +58,5 @@ dependencies {
     compile('com.google.apis:google-api-services-drive:v3-rev37-1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta1'
 }

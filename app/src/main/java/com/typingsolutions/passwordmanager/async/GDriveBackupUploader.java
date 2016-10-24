@@ -1,15 +1,12 @@
-package com.typingsolutions.passwordmanager.utils;
+package com.typingsolutions.passwordmanager.async;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.util.Utils;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -20,47 +17,29 @@ import com.google.api.services.drive.model.File;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import com.typingsolutions.passwordmanager.fragments.ScheduleBackupFragment;
+import com.typingsolutions.passwordmanager.receiver.BackupHelper;
+import core.Utils;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class BackupHelper extends BroadcastReceiver {
-  private static final String SHARED_PREFS = " com.typingsolutions.passwordmanager.activities.BackupActivity.xml";
-  private static final int FAILED_NOTIFICATION_ID = 563465457;
+public class GDriveBackupUploader extends AsyncTask<String, Void, Void> {
+  private Context mContext;
 
-  public BackupHelper() {
-
+  public GDriveBackupUploader(Context context) {
+    mContext = context;
   }
 
   @Override
-  public void onReceive(Context context, Intent intent) {
-    SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-    String accountName = preferences.getString(ScheduleBackupFragment.PREF_ACCOUNT_NAME, null);
-    int time = preferences.getInt(ScheduleBackupFragment.PREF_SCHEDULE_TIME, -1);
-
-    if(accountName == null) {
-      NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-          .setContentTitle("Could not create a Backup, because no there is no valid Google account")
-          .setAutoCancel(true)
-          .setPriority(Notification.PRIORITY_HIGH)
-          .setSmallIcon(R.drawable.lock_outline);
-
-      NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-      notificationManager.notify(FAILED_NOTIFICATION_ID, builder.build());
-
-      return;
-    }
-
+  protected Void doInBackground(String... params) {
     try {
-      if(core.Utils.isDeviceOnline(context))
-        throw new Exception("Device wasn't online");
-
       GoogleAccountCredential credential = GoogleAccountCredential
-          .usingOAuth2(context.getApplicationContext(), Arrays.asList(ScheduleBackupFragment.SCOPES))
+          .usingOAuth2(mContext.getApplicationContext(), Arrays.asList(ScheduleBackupFragment.SCOPES))
           .setBackOff(new ExponentialBackOff());
 
-      credential.setSelectedAccountName(accountName);
+      credential.setSelectedAccountName(params[0]);
       HttpTransport transport = AndroidHttp.newCompatibleTransport();
       JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
       Drive service = new Drive.Builder(transport, jsonFactory, credential)
@@ -84,10 +63,10 @@ public class BackupHelper extends BroadcastReceiver {
         folder = results.get(0);
       }
 
-      java.io.File local = context.getDatabasePath(DatabaseConnection.DATABASE_NAME);
+      java.io.File local = mContext.getDatabasePath(DatabaseConnection.DATABASE_NAME);
       FileContent localContent = new FileContent("application/octet-stream", local);
       File remote = new File();
-      remote.setName("backup-123");
+      remote.setName("backup-" + Utils.getToday());
       remote.setDescription("This is backup file created by the awesome password manager kore.");
       remote.setParents(Collections.singletonList(folder.getId()));
 
@@ -97,23 +76,19 @@ public class BackupHelper extends BroadcastReceiver {
           .execute();
 
       if(file.getId() == null) {
-        throw new Exception("Backup was not created!");
+        throw new IOException("Backup was not created!");
       }
-
-      if(time == -1) {
-        throw new Exception("Didn't know when to reschedule");
-      }
-
-      BackupScheduleHelper.schedule(context, time, false);
-    } catch (Exception e) {
-      NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-          .setContentTitle("There was an error during uploading: " + e.getMessage())
+    } catch (IOException e) {
+      NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
+          .setContentTitle("There was an error during uploading")
+          .setContentText(e.getMessage())
           .setAutoCancel(true)
           .setPriority(Notification.PRIORITY_HIGH)
           .setSmallIcon(R.drawable.lock_outline);
 
-      NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-      notificationManager.notify(FAILED_NOTIFICATION_ID, builder.build());
+      NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+      notificationManager.notify(BackupHelper.FAILED_NOTIFICATION_ID, builder.build());
     }
+    return null;
   }
 }

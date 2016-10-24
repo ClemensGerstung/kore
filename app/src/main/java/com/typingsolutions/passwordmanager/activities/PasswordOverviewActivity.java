@@ -1,5 +1,7 @@
 package com.typingsolutions.passwordmanager.activities;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +26,7 @@ import com.typingsolutions.passwordmanager.adapter.PasswordOverviewAdapter;
 import com.typingsolutions.passwordmanager.async.LoadPasswordsTask;
 import com.typingsolutions.passwordmanager.callbacks.*;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
+import com.typingsolutions.passwordmanager.receiver.BackupHelper;
 
 public class PasswordOverviewActivity extends BaseDatabaseActivity
     implements IListChangedListener<IContainer> {
@@ -72,6 +75,18 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
 
     // set onClick-event to add new passwords
     mFloatingActionButtonAsAddPassword.setOnClickListener(new AddPasswordCallback(this));
+    mFloatingActionButtonAsAddPassword.setOnLongClickListener(v -> {
+      try {
+        Intent intent = new Intent(this, BackupHelper.class);
+        intent.putExtra("id", 48596485);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent.send();
+      } catch (PendingIntent.CanceledException e) {
+        e.printStackTrace();
+      }
+
+      return true;
+    });
 
     // ...
     setSupportActionBar(mToolbarAsActionBar);
@@ -107,8 +122,6 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
       }
     });
     loadPasswords.execute();
-
-//    mFloatingActionButtonAsAddPassword.setImageBitmap(getBitmap(this, R.mipmap.add, 1, 1));
   }
 
   @Override
@@ -179,6 +192,16 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
             .setCallback(mOrderDialogCallback)
             .show();
         break;
+      case R.id.passwordoverviewlayout_menuitem_restore:
+        AlertBuilder.create(this)
+            .setMessage("Where to load backup from?")
+            .setItems((dialog, parent, view, position, id1) -> {
+              Bundle bundle = new Bundle(1);
+              bundle.putInt("selection", position);
+              startActivity(RestoreActivity.class, bundle);
+            }, "Local storage", "Google Drive")
+            .show();
+        break;
       case R.id.passwordoverviewlayout_menuitem_logout:
         onBackPressed();
         break;
@@ -196,12 +219,7 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
   }
 
   public void setRefreshing(final boolean refreshing) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        mSwipeRefreshLayoutAsLoadingIndication.setRefreshing(refreshing);
-      }
-    });
+    runOnUiThread(() -> mSwipeRefreshLayoutAsLoadingIndication.setRefreshing(refreshing));
   }
 
   public boolean isSafe() {

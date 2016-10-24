@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.BaseFragment;
 import com.typingsolutions.passwordmanager.R;
-import com.typingsolutions.passwordmanager.adapter.BottomSheetViewerFragment;
+import com.typingsolutions.passwordmanager.fragments.BottomSheetViewerFragment;
 import com.typingsolutions.passwordmanager.adapter.SetupPagerAdapter;
 import com.typingsolutions.passwordmanager.database.DatabaseConnection;
 import com.typingsolutions.passwordmanager.fragments.SetupPasswordFragment;
@@ -21,7 +21,6 @@ import net.sqlcipher.database.SQLiteDatabase;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Random;
 
 public class SetupActivity extends BaseDatabaseActivity {
