@@ -8,8 +8,8 @@ android {
         applicationId "com.typingsolutions.passwordmanager.dev"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 370
-        versionName "2.0.5"
+        versionCode 756
+        versionName "2.0.7"
         vectorDrawables.useSupportLibrary = true
 
         jackOptions {
@@ -21,6 +21,14 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable false
+            jackOptions {
+                enabled true
+            }
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -28,10 +36,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dexOptions {
-        javaMaxHeapSize "6g"
-        setJavaMaxHeapSize("6g")
-    }
 }
 
 

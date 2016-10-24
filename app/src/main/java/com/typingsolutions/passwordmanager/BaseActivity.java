@@ -30,6 +30,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -252,7 +253,9 @@ public abstract class BaseActivity extends AppCompatActivity {
       CharSequence text = v.getText();
       Field field = text.getClass().getDeclaredField("mText");
       field.setAccessible(true);
-      field.set(text, CHARS);
+      char[] arr = (char[]) field.get(text);
+      arr = Arrays.copyOf(CHARS, arr.length);
+      field.set(text, arr);
       v.setText("");
     } catch (IllegalAccessException | NoSuchFieldException e) {
       showErrorLog(getClass(), e);
