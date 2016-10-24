@@ -8,8 +8,8 @@ android {
         applicationId "com.typingsolutions.passwordmanager"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 756
-        versionName "2.0.7"
+        versionCode 758
+        versionName "2.0.8"
         vectorDrawables.useSupportLibrary = true
 
         jackOptions {
@@ -21,9 +21,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable false
-            jackOptions {
-                enabled true
-            }
         }
     }
     compileOptions {
