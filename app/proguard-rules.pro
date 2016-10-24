@@ -87,3 +87,6 @@
 -keepclasseswithmembers class * {
     @android.support.annotation.Keep <init>(...);
 }
+
+# SQLCipher
+-keep class net.sqlcipher.** {*;}
