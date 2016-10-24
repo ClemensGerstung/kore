@@ -35,7 +35,7 @@ import java.util.List;
 public abstract class BaseActivity extends AppCompatActivity {
 
   public static final long FAST_ANIMATION_DURATION = 250;
-  public static boolean debug = true;
+  public static boolean debug = false;
   private static LruCache<Integer, Bitmap> images;
   private static final char[] CHARS = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
