@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.adapter;
+package com.typingsolutions.passwordmanager.fragments;
 
 import android.app.Dialog;
 import android.support.annotation.LayoutRes;
