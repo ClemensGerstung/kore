@@ -199,6 +199,8 @@ public class PasswordOverviewActivity extends BaseDatabaseActivity
               Bundle bundle = new Bundle(1);
               bundle.putInt("selection", position);
               startActivity(RestoreActivity.class, bundle);
+
+              dialog.dismiss();
             }, "Local storage", "Google Drive")
             .show();
         break;

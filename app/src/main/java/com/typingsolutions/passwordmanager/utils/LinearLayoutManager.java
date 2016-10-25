@@ -70,10 +70,8 @@ public class LinearLayoutManager extends android.support.v7.widget.LinearLayoutM
     View view = recycler.getViewForPosition(position);
     if (view != null) {
       RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
-      int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
-          getPaddingLeft() + getPaddingRight(), p.width);
-      int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
-          getPaddingTop() + getPaddingBottom(), p.height);
+      int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec, getPaddingLeft() + getPaddingRight(), p.width);
+      int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec, getPaddingTop() + getPaddingBottom(), p.height);
       view.measure(childWidthSpec, childHeightSpec);
       measuredDimension[0] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;
       measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;

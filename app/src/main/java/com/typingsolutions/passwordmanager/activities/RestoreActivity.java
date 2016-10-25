@@ -7,6 +7,7 @@ import android.view.View;
 import com.typingsolutions.passwordmanager.BaseDatabaseActivity;
 import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.fragments.BottomSheetViewerFragment;
+import com.typingsolutions.passwordmanager.fragments.GDriveRestoreBottomSheetFragment;
 
 public class RestoreActivity extends BaseDatabaseActivity {
 
@@ -14,11 +15,14 @@ public class RestoreActivity extends BaseDatabaseActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     int selection = getIntent().getIntExtra("selection", -1);
+    logout = false;
 
     if (selection == 0) {
 
     } else if(selection == 1) {
-
+      GDriveRestoreBottomSheetFragment gDriveRestoreBottomSheetFragment = new GDriveRestoreBottomSheetFragment();
+      gDriveRestoreBottomSheetFragment.setOnDismissListener(fragment -> finish());
+      gDriveRestoreBottomSheetFragment.show(getSupportFragmentManager(), "GDriveLoader");
     }
   }
 

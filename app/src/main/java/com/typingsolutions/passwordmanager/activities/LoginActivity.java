@@ -234,13 +234,7 @@ public class LoginActivity extends BaseActivity {
 
   @Override
   protected void onActivityChange() {
-
     clearText(mEditTextAsLoginPassword);
-
-    AlertDialog lastCreated = AlertBuilder.getLastCreated();
-    if (lastCreated == null) return;
-    EditText alertEditText = (EditText) lastCreated.findViewById(R.id.loginlayout_edittext_pim);
-    clearText(alertEditText);
   }
 
   @Override

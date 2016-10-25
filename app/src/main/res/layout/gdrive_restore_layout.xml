@@ -5,11 +5,17 @@
         android:orientation="vertical"
         android:layout_height="match_parent">
     <TextView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="56dp"
+              android:textSize="16sp"
+              android:textColor="@color/titlegrey"
+              android:gravity="center_vertical"
+              android:padding="@dimen/dimen_lg"
               android:text="Select a backup file"/>
 
     <android.support.v7.widget.RecyclerView
             android:id="@+id/gdriverestorelayout_recyclerview_items"
             android:layout_width="match_parent"
+            android:paddingStart="@dimen/dimen_lg"
+            android:paddingEnd="@dimen/dimen_lg"
             android:layout_height="match_parent"/>
 </LinearLayout>
