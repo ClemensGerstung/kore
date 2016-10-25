@@ -1,4 +1,4 @@
-package com.typingsolutions.passwordmanager.utils;
+package com.typingsolutions.passwordmanager.receiver;
 
 import android.app.AlarmManager;
 import android.app.Notification;
