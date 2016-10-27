@@ -21,8 +21,6 @@ public class GDriveRestoreBottomSheetFragment extends BottomSheetDialogFragment 
     public void onStateChanged(@NonNull View bottomSheet, int newState) {
       if (newState == BottomSheetBehavior.STATE_HIDDEN) {
         dismiss();
-        if(mOnDismissListener != null)
-          mOnDismissListener.onDismiss(GDriveRestoreBottomSheetFragment.this);
       }
 
     }

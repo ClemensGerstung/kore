@@ -8,8 +8,8 @@ android {
         applicationId "com.typingsolutions.passwordmanager.dev"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 756
-        versionName "2.0.7"
+        versionCode 760
+        versionName "2.0.8"
         vectorDrawables.useSupportLibrary = true
 
         jackOptions {

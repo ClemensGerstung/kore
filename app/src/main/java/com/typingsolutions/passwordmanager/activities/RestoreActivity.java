@@ -21,7 +21,7 @@ public class RestoreActivity extends BaseDatabaseActivity {
 
     } else if(selection == 1) {
       GDriveRestoreBottomSheetFragment gDriveRestoreBottomSheetFragment = new GDriveRestoreBottomSheetFragment();
-      gDriveRestoreBottomSheetFragment.setOnDismissListener(fragment -> finish());
+      gDriveRestoreBottomSheetFragment.setOnDismissListener(fragment -> RestoreActivity.this.finish());
       gDriveRestoreBottomSheetFragment.show(getSupportFragmentManager(), "GDriveLoader");
     }
   }
