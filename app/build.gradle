@@ -5,10 +5,10 @@ android {
     buildToolsVersion '24.0.3'
 
     defaultConfig {
-        applicationId "com.typingsolutions.passwordmanager.dev"
+        applicationId "com.typingsolutions.passwordmanager"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 760
+        versionCode 762
         versionName "2.0.8"
         vectorDrawables.useSupportLibrary = true
 
