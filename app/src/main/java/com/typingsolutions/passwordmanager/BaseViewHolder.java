@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
-public abstract class BaseViewHolder<TActivity extends BaseActivity> extends RecyclerView.ViewHolder {
+public class BaseViewHolder<TActivity extends BaseActivity> extends RecyclerView.ViewHolder {
 
   protected TActivity activity;
 

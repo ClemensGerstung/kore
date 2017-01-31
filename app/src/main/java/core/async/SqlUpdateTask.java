@@ -20,7 +20,7 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
   private ISqlTaskCallback callback = null;
 
   /**
-   * Constructor if we don't need to notify a Loader of the change.
+   * Constructor if we don't need to notify a GDriveBackupFileMetaLoader of the change.
    *
    * @param db            A writable db connection.
    * @param table
@@ -33,7 +33,7 @@ public class SqlUpdateTask extends AsyncTask<Void, Void, Integer> {
   }
 
   /**
-   * Constructor to add a Loader that should be notified, if the change has been successful.
+   * Constructor to add a GDriveBackupFileMetaLoader that should be notified, if the change has been successful.
    *
    * @param db
    * @param table

@@ -1,36 +1,26 @@
 package com.typingsolutions.passwordmanager.fragments;
 
 import android.app.Dialog;
-import android.support.annotation.LayoutRes;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.widget.ScrollView;
+import com.typingsolutions.passwordmanager.BaseActivity;
+import com.typingsolutions.passwordmanager.R;
+import com.typingsolutions.passwordmanager.adapter.GDriveRestoreLoadBackupsAdapter;
+import com.typingsolutions.passwordmanager.utils.LinearLayoutManager;
 
-public class BottomSheetViewerFragment extends BottomSheetDialogFragment {
-
-  private int mLayout;
+public class GDriveRestoreBottomSheetFragment extends BottomSheetDialogFragment {
   private OnDismissListener mOnDismissListener;
-
-  public static BottomSheetViewerFragment create(@LayoutRes int layout) {
-    BottomSheetViewerFragment fragment = new BottomSheetViewerFragment();
-    fragment.mLayout = layout;
-    return fragment;
-  }
 
   private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
     @Override
     public void onStateChanged(@NonNull View bottomSheet, int newState) {
       if (newState == BottomSheetBehavior.STATE_HIDDEN) {
         dismiss();
-        if(mOnDismissListener != null)
-          mOnDismissListener.onDismiss(BottomSheetViewerFragment.this);
       }
 
     }
@@ -42,21 +32,25 @@ public class BottomSheetViewerFragment extends BottomSheetDialogFragment {
   };
 
   @Override
+  public void onDismiss(DialogInterface dialog) {
+    super.onDismiss(dialog);
+
+    if(mOnDismissListener != null)
+      mOnDismissListener.onDismiss(this);
+  }
+
+  @Override
   public void setupDialog(Dialog dialog, int style) {
     super.setupDialog(dialog, style);
-    View root = View.inflate(getContext(), mLayout, null);
+
+    View root = View.inflate(getContext(), R.layout.gdrive_restore_layout, null);
+
+    RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.gdriverestorelayout_recyclerview_items);
+    recyclerView.setAdapter(new GDriveRestoreLoadBackupsAdapter((BaseActivity) getActivity()));
+    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+    dialog.setContentView(root);
     View parent = (View) root.getParent();
-
-    if (!(root instanceof RecyclerView) && !(root instanceof ListView)) {
-      ScrollView.LayoutParams paramsScrollView = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-
-      ScrollView scrollView = new ScrollView(getContext());
-      scrollView.setLayoutParams(paramsScrollView);
-      scrollView.addView(root);
-      dialog.setContentView(scrollView);
-
-      parent = (View) scrollView.getParent();
-    }
 
     CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
     CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -71,6 +65,6 @@ public class BottomSheetViewerFragment extends BottomSheetDialogFragment {
   }
 
   public static interface OnDismissListener {
-    void onDismiss(BottomSheetViewerFragment fragment);
+    void onDismiss(GDriveRestoreBottomSheetFragment fragment);
   }
 }

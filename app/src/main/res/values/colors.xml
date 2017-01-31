@@ -10,6 +10,7 @@
     <color name="lightgrey">#EEE</color>
     <color name="white">#FFF</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="titlegrey">#FF8f8f8f</color>
 
     <color name="orange">#FF9800</color>
     <color name="green">#7CB342</color>

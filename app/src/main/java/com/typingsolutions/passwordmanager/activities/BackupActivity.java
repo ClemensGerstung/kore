@@ -13,7 +13,7 @@ import com.typingsolutions.passwordmanager.R;
 import com.typingsolutions.passwordmanager.callbacks.ToolbarNavigationCallback;
 import com.typingsolutions.passwordmanager.dao.PasswordContainer;
 import com.typingsolutions.passwordmanager.database.BackupDatabaseConnection;
-import com.typingsolutions.passwordmanager.utils.AutoDismissNotification;
+import com.typingsolutions.passwordmanager.receiver.AutoDismissNotification;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -22,7 +23,17 @@ import android.widget.TextView;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.FileList;
 import com.typingsolutions.passwordmanager.AlertBuilder;
 import com.typingsolutions.passwordmanager.BaseFragment;
 import com.typingsolutions.passwordmanager.R;
@@ -31,17 +42,19 @@ import com.typingsolutions.passwordmanager.utils.BackupScheduleHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import java.util.Arrays;
 import java.util.List;
 
 
 public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     implements EasyPermissions.PermissionCallbacks {
+  static final int REQUEST_AUTHORIZATION = 1001;
   static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
   static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
   public static final String PREF_ACCOUNT_NAME = "accountName";
   public static final String PREF_SCHEDULE_TIME = "schedule";
   private static final String PREF_SCHEDULE_ENABLED = "enable";
-  public static final String[] SCOPES = {DriveScopes.DRIVE_FILE};
+  public static final String[] SCOPES = {DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA};
 
   private Account[] mAvailableGoogleAccounts;
 
@@ -192,6 +205,14 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
     if (position < parent.getCount() - 1) {
       String accountName = mAvailableGoogleAccounts[position].name;
       notifyChange(accountName, -1);
+
+      GoogleAccountCredential credential = GoogleAccountCredential
+          .usingOAuth2(getContext().getApplicationContext(), Arrays.asList(ScheduleBackupFragment.SCOPES))
+          .setBackOff(new ExponentialBackOff());
+
+      credential.setSelectedAccountName(accountName);
+
+      new PermissionTask(credential).execute();
     } else {
       Intent addAccountIntent = new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT)
           .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -233,5 +254,47 @@ public class ScheduleBackupFragment extends BaseFragment<BackupActivity>
   @Override
   public void onPermissionsDenied(int requestCode, List<String> perms) {
 
+  }
+
+  private class PermissionTask extends AsyncTask<Void, Void, Void> {
+    private com.google.api.services.drive.Drive mService = null;
+    private Exception mLastError = null;
+
+    public PermissionTask(GoogleAccountCredential credential) {
+      HttpTransport transport = AndroidHttp.newCompatibleTransport();
+      JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+      mService = new Drive.Builder(transport, jsonFactory, credential)
+          .setApplicationName("kore")
+          .build();
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+      try {
+        FileList result = mService.files().list()
+            .setPageSize(10)
+            .setFields("nextPageToken, items(id, name)")
+            .execute();
+      } catch (Exception e) {
+        mLastError = e;
+        cancel(true);
+      }
+      return null;
+    }
+
+    @Override
+    protected void onCancelled() {
+      if (mLastError == null) {
+        return;
+      }
+
+      if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+        showGPlayErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
+      } else if (mLastError instanceof UserRecoverableAuthIOException) {
+        startActivityForResult(
+            ((UserRecoverableAuthIOException) mLastError).getIntent(),
+            REQUEST_AUTHORIZATION);
+      }
+    }
   }
 }

@@ -15,7 +15,7 @@ public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResul
   protected ISqlTaskCallback<TResult> mCallback;
 
   /**
-   * Constructor to insert data if we don't need to notify a Loader of the change.
+   * Constructor to insert data if we don't need to notify a GDriveBackupFileMetaLoader of the change.
    *
    * @param db
    * @param table
@@ -27,7 +27,7 @@ public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResul
   }
 
   /**
-   * Constructor to insert data and add a Loader that should be notified, if the change has been successful.
+   * Constructor to insert data and add a GDriveBackupFileMetaLoader that should be notified, if the change has been successful.
    *
    * @param db
    * @param table
@@ -40,7 +40,7 @@ public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResul
   }
 
   /**
-   * Constructor to delete data if we don't need to notify a Loader of the change.
+   * Constructor to delete data if we don't need to notify a GDriveBackupFileMetaLoader of the change.
    *
    * @param db
    * @param table
@@ -52,7 +52,7 @@ public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResul
   }
 
   /**
-   * Constructor to delete data and add a Loader that should be notified, if the change has been successful.
+   * Constructor to delete data and add a GDriveBackupFileMetaLoader that should be notified, if the change has been successful.
    *
    * @param db
    * @param table
@@ -64,7 +64,7 @@ public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResul
   }
 
   /**
-   * Constructor to update data if we don't need to notify a Loader of the change.
+   * Constructor to update data if we don't need to notify a GDriveBackupFileMetaLoader of the change.
    *
    * @param db
    * @param table
@@ -77,7 +77,7 @@ public abstract class SqlAsyncTask<TResult> extends AsyncTask<Void, Void, TResul
   }
 
   /**
-   * Constructor to update data and add a Loader that should be notified, if the change has been successful.
+   * Constructor to update data and add a GDriveBackupFileMetaLoader that should be notified, if the change has been successful.
    *
    * @param db
    * @param table

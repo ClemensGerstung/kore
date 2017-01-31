@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS"/>-->
 
     <application
             android:allowBackup="true"
@@ -30,9 +30,9 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".utils.AutoDismissNotification"/>
+        <receiver android:name=".receiver.AutoDismissNotification"/>
 
-        <receiver android:name=".utils.BackupHelper"/>
+        <receiver android:name=".receiver.BackupHelper"/>
 
         <activity
                 android:name=".activities.LoginActivity"
@@ -76,6 +76,9 @@
                   android:theme="@style/Base.AppTheme"
                   android:windowSoftInputMode="adjustResize"
                   android:label=""/>
+
+        <activity android:name=".activities.RestoreActivity"
+                  android:theme="@style/Theme.Transparent"/>
 
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version"/>

@@ -18,7 +18,7 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
   private ISqlTaskCallback mCallback = null;
 
   /**
-   * Constructor if we don't need to notify a Loader of the change.
+   * Constructor if we don't need to notify a GDriveBackupFileMetaLoader of the change.
    *
    * @param db
    * @param table
@@ -30,7 +30,7 @@ public class SqlDeleteTask extends AsyncTask<Void, Void, Integer> {
   }
 
   /**
-   * Constructor to add a Loader that should be notified, if the change has been successful.
+   * Constructor to add a GDriveBackupFileMetaLoader that should be notified, if the change has been successful.
    *
    * @param db
    * @param table

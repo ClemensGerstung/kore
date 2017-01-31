@@ -4,12 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import com.typingsolutions.passwordmanager.activities.BackupActivity;
 import com.typingsolutions.passwordmanager.fragments.ScheduleBackupFragment;
 import com.typingsolutions.passwordmanager.services.LoginService;
 import com.typingsolutions.passwordmanager.utils.BackupScheduleHelper;
 
 public class BootReceiver extends BroadcastReceiver {
-  private static final String SHARED_PREFS = " com.typingsolutions.passwordmanager.activities.BackupActivity.xml";
+  private static final String SHARED_PREFS = BackupActivity.class.getName();
 
   @Override
   public void onReceive(Context context, Intent intent) {
