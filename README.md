@@ -1,3 +1,6 @@
+## Switch to the dev_kore branch to get newest version of the app and of the code!
+
+
 ![Logo](https://gitlab.hopul.net/Clemens/Password.Manager/raw/9940d7cfa22952c765d6555b2a1aa55df0b52eb9/app/src/main/res/mipmap-xxhdpi/icon.png)
 # kore - the simple keystore
 
