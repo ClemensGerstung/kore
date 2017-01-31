@@ -1,0 +1,13 @@
+<resources>
+    <dimen name="font_primary">16sp</dimen>
+    <dimen name="font_secondary">14sp</dimen>
+
+    <dimen name="zero">0dp</dimen>
+    <dimen name="single">1dp</dimen>
+    <dimen name="xs">4dp</dimen>
+    <dimen name="sm">8dp</dimen>
+    <dimen name="md">16dp</dimen>
+
+    <dimen name="activity_horizontal_margin">@dimen/zero</dimen>
+    <dimen name="activity_vertical_margin">@dimen/zero</dimen>
+</resources>
