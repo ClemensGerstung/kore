@@ -14,13 +14,13 @@
             android:id="@+id/setuplayout_guideline_center"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5"
-            tools:layout_editor_absoluteY="284dp"
-            tools:layout_editor_absoluteX="0dp"/>
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="364dp"/>
 
     <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             app:srcCompat="@drawable/help"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/setuplayout_viewpager_contenthost"
             android:layout_marginEnd="@dimen/md"
             app:backgroundTint="@color/primary"
             app:rippleColor="@color/primaryDark"
@@ -37,8 +37,23 @@
             android:background="@color/blue"
             android:id="@+id/setuplayout_viewpager_contenthost"
             app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_center"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="1.0"/>
+            app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticaldelimiterend"
+            app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticaldelimiterstart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticaldelimiterstart"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticaldelimiterend"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75"/>
 
 </android.support.constraint.ConstraintLayout>
