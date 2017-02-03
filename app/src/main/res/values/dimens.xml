@@ -4,6 +4,7 @@
 
     <dimen name="zero">0dp</dimen>
     <dimen name="single">1dp</dimen>
+    <dimen name="xxs">2dp</dimen>
     <dimen name="xs">4dp</dimen>
     <dimen name="sm">8dp</dimen>
     <dimen name="md">16dp</dimen>

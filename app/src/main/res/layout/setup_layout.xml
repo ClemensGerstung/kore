@@ -5,25 +5,58 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme"
         tools:context="com.typingsolutions.kore.setup.SetupActivity">
 
+    <android.support.v7.widget.CardView
+            android:layout_width="@dimen/zero"
+            android:layout_height="@dimen/zero"
+            app:cardElevation="@dimen/xs"
+            app:cardCornerRadius="@dimen/zero"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/setuplayout_guideline_top">
+        <ui.MaterialView android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:fitsSystemWindows="true"/>
+    </android.support.v7.widget.CardView>
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/setuplayout_guideline_center"
+            android:id="@+id/setuplayout_guideline_top"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"
-            tools:layout_editor_absoluteY="284dp"
-            tools:layout_editor_absoluteX="0dp"/>
+            app:layout_constraintGuide_percent="0.4"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_bottom"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <android.support.v4.view.ViewPager
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/setuplayout_viewpager_contenthost"
+            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_top"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/setuplayout_guideline_bottom"/>
 
     <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             app:srcCompat="@drawable/help"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginEnd="@dimen/md"
-            app:backgroundTint="@color/primary"
-            app:rippleColor="@color/primaryDark"
+            app:backgroundTint="@color/accent"
+            app:rippleColor="@color/accentDark"
             app:elevation="@dimen/xs"
             android:clickable="true"
             android:id="@+id/setuplayout_fab_expandBottom"
@@ -31,14 +64,27 @@
             app:layout_constraintBottom_toTopOf="@+id/setuplayout_viewpager_contenthost"
             app:layout_constraintTop_toTopOf="@+id/setuplayout_viewpager_contenthost"/>
 
-    <android.support.v4.view.ViewPager
-            android:layout_width="0dp"
+    <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="@color/blue"
-            android:id="@+id/setuplayout_viewpager_contenthost"
-            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_center"
+            android:text="@string/next"
+            android:layout_margin="@dimen/xs"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="1.0"/>
+            app:backgroundTint="@color/primary"
+            app:layout_constraintHorizontal_bias="1.0"/>
+
+    <TextView android:layout_width="0dp"
+              android:layout_height="0dp"
+              style="@style/NormalText"
+              android:text="@string/setup_help"
+              android:textColor="@color/mediumgrey"
+              app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_bottom"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintLeft_toLeftOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

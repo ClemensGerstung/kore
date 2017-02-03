@@ -1,14 +1,28 @@
 <resources>
-
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
 
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="CardHeaderText" parent="TextAppearance.AppCompat.Title">
+        <item name="android:padding">@dimen/md</item>
+        <item name="android:textSize">@dimen/font_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NormalText">
+        <item name="android:padding">@dimen/md</item>
+        <item name="android:textSize">@dimen/font_secondary</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="ColoredButton">
+        <item name="android:layout_margin">@dimen/sm</item>
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="android:padding">@dimen/xxs</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>

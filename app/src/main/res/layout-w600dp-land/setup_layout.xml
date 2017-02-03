@@ -11,16 +11,39 @@
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/setuplayout_guideline_center"
+            android:id="@+id/setuplayout_guideline_top"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintGuide_percent="0.15"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="364dp"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_bottom"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="364dp"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_center"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.35"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="364dp"/>
+
+    <ui.MaterialView android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     app:layout_constraintBottom_toBottomOf="@+id/setuplayout_guideline_center"/>
+
 
     <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             app:srcCompat="@drawable/help"
-            app:layout_constraintRight_toRightOf="@+id/setuplayout_viewpager_contenthost"
+            app:layout_constraintRight_toRightOf="@+id/setuplayout_cardview_contenthost"
             android:layout_marginEnd="@dimen/md"
             app:backgroundTint="@color/primary"
             app:rippleColor="@color/primaryDark"
@@ -28,32 +51,38 @@
             android:clickable="true"
             android:id="@+id/setuplayout_fab_expandBottom"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/setuplayout_viewpager_contenthost"
-            app:layout_constraintTop_toTopOf="@+id/setuplayout_viewpager_contenthost"/>
+            app:layout_constraintBottom_toTopOf="@+id/setuplayout_cardview_contenthost"
+            app:layout_constraintTop_toTopOf="@+id/setuplayout_cardview_contenthost"/>
 
-    <android.support.v4.view.ViewPager
+    <android.support.v7.widget.CardView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/blue"
-            android:id="@+id/setuplayout_viewpager_contenthost"
-            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_center"
+            app:cardElevation="@dimen/xxs"
+            android:id="@+id/setuplayout_cardview_contenthost"
+            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_top"
             app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticaldelimiterend"
             app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticaldelimiterstart"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="1.0"/>
+            app:layout_constraintVertical_bias="1.0">
+        <android.support.v4.view.ViewPager
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/setuplayout_viewpager_contenthost"/>
+    </android.support.v7.widget.CardView>
+
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/setuplayout_guideline_verticaldelimiterstart"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25"/>
+            app:layout_constraintGuide_percent="0.375"/>
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/setuplayout_guideline_verticaldelimiterend"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75"/>
+            app:layout_constraintGuide_percent="0.875"/>
 
 </android.support.constraint.ConstraintLayout>
