@@ -4,9 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.*;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -52,24 +52,30 @@ public class MaterialView extends View {
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
 
-    Color.colorToHSV(mOverlayColor, mHsvOverlayColor);
-    mHsvOverlayColor[2] = mHsvOverlayColor[2] + 0.33f;
+    float min = Math.min(canvas.getWidth(), canvas.getHeight());
 
-    Log.d(getClass().getSimpleName(), "L: " + mHsvOverlayColor[2]);
+    if (min >= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 112, getResources().getDisplayMetrics())) {
+      Color.colorToHSV(mOverlayColor, mHsvOverlayColor);
+      mHsvOverlayColor[2] = mHsvOverlayColor[2] + 0.33f;
 
-    if(mHsvOverlayColor[2] > 1.0f) {
-      mHsvOverlayColor[2] = mHsvOverlayColor[2] - 1;
-    }
+      Log.d(getClass().getSimpleName(), "L: " + mHsvOverlayColor[2]);
 
-    canvas.drawColor(Color.HSVToColor(mHsvOverlayColor));
-    int i = mRandom.nextInt(2);
-    switch (i) {
-      case 0:
-        generateType1(canvas);
-        break;
-      case 1:
-        generateType2(canvas);
-        break;
+      if (mHsvOverlayColor[2] > 1.0f) {
+        mHsvOverlayColor[2] = mHsvOverlayColor[2] - 1;
+      }
+
+      canvas.drawColor(Color.HSVToColor(mHsvOverlayColor));
+      int i = mRandom.nextInt(2);
+      switch (i) {
+        case 0:
+          generateType1(canvas);
+          break;
+        case 1:
+          generateType2(canvas);
+          break;
+      }
+    } else {
+      canvas.drawColor(mOverlayColor);
     }
 
     if (mText != null) {

@@ -16,9 +16,19 @@ public class SimpleViewFragment extends Fragment {
     return fragment;
   }
 
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt("layout", mLayout);
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    if(mLayout == 0 && savedInstanceState != null) {
+      mLayout = savedInstanceState.getInt("layout");
+    }
+
     return inflater.inflate(mLayout, container, false);
   }
 }
