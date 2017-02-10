@@ -45,7 +45,7 @@ public class DatabaseConnection extends SQLiteOpenHelper {
   }
 
   private static SQLiteDatabaseHook getDatabaseHook(int pim) {
-    final String iterations = Integer.toString(15000 + (pim * 1000));
+    final String iterations = Integer.toString(pim);
     Log.d(DatabaseConnection.class.getSimpleName(), iterations);
 
     return new SQLiteDatabaseHook() {

@@ -2,4 +2,30 @@
 <resources>
     <string name="next">Weiter</string>
     <string name="setup_help">Klicke auf das ? für mehr Details</string>
+    <string name="setuplayout_string_hellowelcome">Hallo und willkommen!</string>
+    <string name="setuplayout_string_smallexplanaition">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+        diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+        dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    </string>
+    <string name="setuplayout_string_setmasterpassword">Wähle dein Masterpasswort</string>
+    <string name="extended">Erweitert</string>
+    <string name="setuplayout_string_enterpassword">Gib dein Passwort ein</string>
+    <string name="setuplayout_string_repeatpassword">Wiederhole dein Passwort</string>
+    <string name="setuplayout_string_exportheader">Du bist also ein Experte…!</string>
+    <string name="setuplayout_string_helpextended">Um Hilfe für die richtigen Werte zu bekommen, klicke auf den
+        ?-Button
+    </string>
+    <string name="setuplayout_string_pimhelp">Wenn du keine PIM angibst, wird die berechnete behalten</string>
+    <string name="setuplayout_string_calcpim">Deine berechnete PIM: ${_pim_}</string>
+    <string name="setuplayout_string_enterpim">Gib deine PIM ein</string>
+    <string name="setuplayout_string_repeatpim">Wiederhole deine PIM</string>
+    <string name="setuplayout_string_extendedtext">In dieser Ansicht kannst du das Passwort setzen und die dazugehörige
+        PIM einsehen und ändern.
+    </string>
+    <string name="setuplayout_string_passwordhelp">Um Hilfe bei der richtigen Passwortwahl zu bekommen, klicke auf den
+        ?-Button
+    </string>
 </resources>

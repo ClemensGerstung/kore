@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/CardHeaderText"
+                  android:text="@string/setuplayout_string_exportheader"/>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/HintText"
+                  android:text="@string/setuplayout_string_helpextended"/>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/NormalText"
+                  android:text="@string/setuplayout_string_extendedtext"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/xs"
+                app:passwordToggleEnabled="true"
+                android:theme="@style/StandardEditText"
+                android:layout_marginStart="@dimen/md"
+                android:layout_marginEnd="@dimen/md">
+            <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/setuplayout_string_enterpassword"
+                    android:inputType="textPassword"
+                    android:id="@+id/setuplayout_edittext_passwordenter"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                android:theme="@style/StandardEditText"
+                android:layout_marginStart="@dimen/md"
+                android:layout_marginEnd="@dimen/md">
+            <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/setuplayout_string_repeatpassword"
+                    android:inputType="textPassword"
+                    android:id="@+id/setuplayout_edittext_passwordrepeat"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/HintText"
+                  android:text="@string/setuplayout_string_pimhelp"/>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  style="@style/NormalText"
+                  android:text="@string/setuplayout_string_calcpim"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/StandardEditText"
+                android:layout_marginStart="@dimen/md"
+                android:layout_marginEnd="@dimen/md">
+            <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/setuplayout_string_enterpim"
+                    android:inputType="number"
+                    android:id="@+id/setuplayout_edittext_pimenterextended"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/StandardEditText"
+                android:layout_marginStart="@dimen/md"
+                android:layout_marginEnd="@dimen/md">
+            <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/setuplayout_string_repeatpim"
+                    android:inputType="number"
+                    android:id="@+id/setuplayout_edittext_pimrepeatextended"/>
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

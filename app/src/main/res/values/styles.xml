@@ -3,6 +3,11 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
+
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="colorControlActivated">@color/primaryLight</item>
+
+        <item name="android:textCursorDrawable">@null</item>
     </style>
 
     <style name="CardHeaderText" parent="TextAppearance.AppCompat.Title">
@@ -17,10 +22,39 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="HintText" parent="NormalText">
+        <item name="android:padding">@dimen/zero</item>
+        <item name="android:paddingStart">@dimen/md</item>
+        <item name="android:paddingEnd">@dimen/md</item>
+        <item name="android:textColor">@color/graphite</item>
+    </style>
+
     <style name="ColoredButton">
         <item name="android:layout_margin">@dimen/sm</item>
         <item name="colorControlNormal">@color/primary</item>
         <item name="android:padding">@dimen/xxs</item>
+    </style>
+
+    <style name="StandardEditText">
+        <item name="colorControlNormal">@color/mediumgrey</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textColorHint">@color/mediumgrey</item>
+        <item name="android:cacheColorHint">@null</item>
+        <item name="colorControlActivated">@color/primary</item>
+    </style>
+
+    <style name="ColoredAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <!--<item name="colorControlHighlight">@color/primaryLight</item>-->
+        <item name="buttonBarButtonStyle">@style/ColoredBorderlessButton</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="ColoredBorderlessButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/primary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>

@@ -17,12 +17,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent">
-        <ui.MaterialView android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:fitsSystemWindows="true"/>
+        <android.support.v7.widget.Toolbar
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="Setup your kore"/>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <ui.NotSwipeableViewPager
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/setuplayout_viewpager_contenthost"
@@ -38,7 +41,8 @@
             android:layout_marginEnd="@dimen/md"
             app:backgroundTint="@color/accent"
             app:rippleColor="@color/accentDark"
-            app:elevation="@dimen/xs"
+            app:elevation="@dimen/fab_resting"
+            app:pressedTranslationZ="@dimen/fab_resting"
             android:clickable="true"
             android:id="@+id/setuplayout_fab_expandBottom"
             android:layout_height="wrap_content"
@@ -62,9 +66,25 @@
     <TextView android:layout_width="0dp"
               android:layout_height="wrap_content"
               style="@style/NormalText"
+              android:id="@+id/setuplayout_textview_hint"
               android:text="@string/setup_help"
               android:textColor="@color/mediumgrey"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintRight_toRightOf="parent"
               app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <android.support.v7.widget.AppCompatButton
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/extended"
+            android:layout_margin="@dimen/xs"
+            android:textColor="@color/graphite"
+            android:id="@+id/setuplayout_button_extended"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:backgroundTint="@color/primary"
+            app:layout_constraintHorizontal_bias="0.0"/>
 </android.support.constraint.ConstraintLayout>
