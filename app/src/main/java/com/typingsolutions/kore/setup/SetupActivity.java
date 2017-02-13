@@ -29,6 +29,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.StringJoiner;
 
 // entropy = length * log2(numberofavailablechars)
 // avg is 40.54 bit
@@ -111,12 +112,37 @@ public class SetupActivity extends AppCompatActivity {
         mViewPagerAsContentWrapper.setCurrentItem(1, true);
         next.setText("Setup");
       } else {
-        ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
+        String pw = null;
+        CharSequence rp = null;
+        int pim = 0;
 
-        String pw = fragment.getPassword1().toString();
-        CharSequence rp = fragment.getPassword2();
+        if(currentItem == 2) {
+          ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
 
-        // Todo: get entered PIM!
+          pw = fragment.getPassword1().toString();
+          rp = fragment.getPassword2();
+
+          String pim1 = fragment.getPIM1().toString();
+          String pim2 = fragment.getPIM2().toString();
+
+          if(!pim1.equals(pim2)) {
+            AlertBuilder.create(this)
+                .setMessage("The entered PIMs don't match!")
+                .setPositiveButton("OK", null)
+                .show();
+
+            return;
+          }
+
+          if(!pim1.isEmpty()) {
+            pim = Integer.parseInt(pim1);
+          }
+        } else {
+          Fragment fragment = mSetupPageAdapter.getItem(currentItem);
+
+          pw = ((TextInputEditText)fragment.getView().findViewById(R.id.setuplayout_edittext_passwordenter)).getText().toString();
+          rp = ((TextInputEditText)fragment.getView().findViewById(R.id.setuplayout_edittext_passwordrepeat)).getText();
+        }
 
         if(!pw.equals(rp.toString())) {
           AlertBuilder.create(this)
@@ -127,20 +153,23 @@ public class SetupActivity extends AppCompatActivity {
           return;
         }
 
+        if(pim == 0) {
+          int calcPim = calcPim(pw);
+          if (calcPim <= 0) {
+            AlertBuilder.create(this)
+                .setMessage("Error during setup. Please try again.\nIf it still fails, please select another password.")
+                .setPositiveButton("OK", null)
+                .show();
 
-        int calcPim = calcPim(pw);
-        if(calcPim == -1) {
-          AlertBuilder.create(this)
-              .setMessage("Error during setup. Please try again.\nIf it still fails, please select another password.")
-              .setPositiveButton("OK", null)
-              .show();
+            return;
+          }
 
-          return;
+          pim = calcPim;
         }
 
         // selected pim at least 50 (=> 20000 iterations)
         // calculated pim at least 50 (=> 20000 iterations) and 150 (=> 30000 iterations)
-        app.openDatabaseConnection(pw, calcPim);
+        app.openDatabaseConnection(pw, pim);
       }
     });
 

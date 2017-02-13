@@ -56,7 +56,7 @@ public class ExtendSetupFragment extends Fragment {
   }
 
   private void setCurrentPIM() {
-    if(mBackupText == null) {
+    if (mBackupText == null) {
       mBackupText = mTextViewAsPIMHint.getText().toString();
     }
 
@@ -77,5 +77,13 @@ public class ExtendSetupFragment extends Fragment {
 
   CharSequence getPassword2() {
     return mEditTextAsRepeatPassword.getText();
+  }
+
+  CharSequence getPIM1() {
+    return mEditTextAsEnterPIM.getText();
+  }
+
+  CharSequence getPIM2() {
+    return mEditTextAsRepeatPIM.getText();
   }
 }

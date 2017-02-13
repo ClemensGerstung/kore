@@ -3,6 +3,7 @@ package com.typingsolutions.kore.common;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -69,6 +70,12 @@ public class AlertBuilder {
 
   public AlertBuilder setMessage(CharSequence message) {
     mAlertDialog.setMessage(message);
+    return this;
+  }
+
+  public AlertBuilder setMessage(@StringRes int message) {
+    mAlertDialog.setMessage(getDialog().getContext().getResources().getString(message));
+
     return this;
   }
 
