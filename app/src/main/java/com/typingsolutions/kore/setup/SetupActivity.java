@@ -11,8 +11,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import org.jetbrains.annotations.NotNull;
 import ui.NotSwipeableViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -46,6 +49,12 @@ public class SetupActivity extends AppCompatActivity {
       getWindow().setStatusBarColor(0x44000000);
     }
 
+    KoreApplication app = (KoreApplication) getApplicationContext();
+    app.setOnDatabaseOpened((sender, e) -> {
+      Log.d(getClass().getSimpleName(), "" + e.getData());
+      // todo: start overview activity
+    });
+
     mViewPagerAsContentWrapper = (NotSwipeableViewPager) findViewById(R.id.setuplayout_viewpager_contenthost);
     mTextViewAsHint = (TextView) findViewById(R.id.setuplayout_textview_hint);
     mButtonAsExtended = (AppCompatButton) findViewById(R.id.setuplayout_button_extended);
@@ -54,7 +63,7 @@ public class SetupActivity extends AppCompatActivity {
         {
             SimpleViewFragment.create(R.layout.setup_fragment_1),
             SimpleViewFragment.create(R.layout.setup_fragment_2),
-            SimpleViewFragment.create(R.layout.setup_fragment_3)
+            new ExtendSetupFragment()
         });
 
     mViewPagerAsContentWrapper.canSwipe(false);
@@ -102,28 +111,28 @@ public class SetupActivity extends AppCompatActivity {
         mViewPagerAsContentWrapper.setCurrentItem(1, true);
         next.setText("Setup");
       } else {
-        Fragment fragment = mSetupPageAdapter.getItem(currentItem);
+        ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
 
-        CharSequence pw = ((TextInputEditText)fragment.getView().findViewById(R.id.setuplayout_edittext_passwordenter)).getText();
-        CharSequence rp = ((TextInputEditText)fragment.getView().findViewById(R.id.setuplayout_edittext_passwordrepeat)).getText();
+        String pw = fragment.getPassword1().toString();
+        CharSequence rp = fragment.getPassword2();
 
         // Todo: get entered PIM!
 
-        if(!pw.equals(rp)) {
+        if(!pw.equals(rp.toString())) {
           AlertBuilder.create(this)
               .setMessage("Passwords don't match!")
-              .setPositiveButton("OK", (dialog, which) -> {})
+              .setPositiveButton("OK", null)
               .show();
 
           return;
         }
 
 
-        int calcPim = calcPim(pw.toString());
+        int calcPim = calcPim(pw);
         if(calcPim == -1) {
           AlertBuilder.create(this)
               .setMessage("Error during setup. Please try again.\nIf it still fails, please select another password.")
-              .setPositiveButton("OK", (dialog, which) -> {})
+              .setPositiveButton("OK", null)
               .show();
 
           return;
@@ -131,9 +140,7 @@ public class SetupActivity extends AppCompatActivity {
 
         // selected pim at least 50 (=> 20000 iterations)
         // calculated pim at least 50 (=> 20000 iterations) and 150 (=> 30000 iterations)
-        int pim = calcPim * 100 + 15000;
-
-
+        app.openDatabaseConnection(pw, calcPim);
       }
     });
 
@@ -142,15 +149,13 @@ public class SetupActivity extends AppCompatActivity {
           .setMessage("Uhh, an expert coming along!")
           .setPositiveButton("Yes, continue", (dialog, which) -> {
             Fragment password = mSetupPageAdapter.getItem(1);
-            Fragment extended = mSetupPageAdapter.getItem(2);
+            ExtendSetupFragment extended = (ExtendSetupFragment) mSetupPageAdapter.getItem(2);
 
-            CharSequence pw = ((TextInputEditText)password.getView().findViewById(R.id.setuplayout_edittext_passwordenter)).getText();
+            TextInputEditText passwordInputText = (TextInputEditText) password.getView().findViewById(R.id.setuplayout_edittext_passwordenter);
+            CharSequence pw = passwordInputText.getText();
             CharSequence rp = ((TextInputEditText)password.getView().findViewById(R.id.setuplayout_edittext_passwordrepeat)).getText();
 
-            ((TextInputEditText)extended.getView().findViewById(R.id.setuplayout_edittext_passwordenter)).setText(pw);
-            ((TextInputEditText)extended.getView().findViewById(R.id.setuplayout_edittext_passwordrepeat)).setText(rp);
-
-            // TODO: calc pim and set to textview
+            extended.setEnteredPasswords(pw, rp);
 
             mViewPagerAsContentWrapper.setCurrentItem(2, true);
             mButtonAsExtended.animate()
@@ -165,8 +170,7 @@ public class SetupActivity extends AppCompatActivity {
           .show();
     });
 
-    KoreApplication app = (KoreApplication) getApplicationContext();
-    app.setOnDatabaseOpened((sender, e) -> Log.d(getClass().getSimpleName(), "" + e.getData()));
+
   }
 
   @TargetApi(21)
@@ -179,14 +183,14 @@ public class SetupActivity extends AppCompatActivity {
     appbar.setStateListAnimator(stateListAnimator);
   }
 
-  private int calcPim(String password) {
+  int calcPim(String password) {
     try {
       MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
       shaDigest.update(password.getBytes());
 
       BigInteger integer = new BigInteger(shaDigest.digest());
       Random r = new Random(integer.longValue());
-      int pim = r.nextInt(100) + 50;
+      int pim = r.nextInt(10000) + 20000;
       Log.d(getClass().getSimpleName(), "SETUPPIM: " + pim);
 
       shaDigest.reset();

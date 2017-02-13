@@ -25,7 +25,7 @@ public class SimpleViewFragment extends Fragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    if(mLayout == 0 && savedInstanceState != null) {
+    if (mLayout == 0 && savedInstanceState != null) {
       mLayout = savedInstanceState.getInt("layout");
     }
 
