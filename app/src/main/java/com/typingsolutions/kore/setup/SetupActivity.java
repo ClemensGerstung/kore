@@ -6,16 +6,9 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.Button;
-import android.widget.EditText;
-import org.jetbrains.annotations.NotNull;
 import ui.NotSwipeableViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -29,7 +22,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
-import java.util.StringJoiner;
 
 // entropy = length * log2(numberofavailablechars)
 // avg is 40.54 bit
@@ -40,6 +32,8 @@ public class SetupActivity extends AppCompatActivity {
   private TextView mTextViewAsHint;
   private SimplePagerAdapter mSetupPageAdapter;
   private AppCompatButton mButtonAsExtended;
+  private AppCompatButton mButtonAsNextOrSetup;
+  private KoreApplication mKoreApplication;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +44,8 @@ public class SetupActivity extends AppCompatActivity {
       getWindow().setStatusBarColor(0x44000000);
     }
 
-    KoreApplication app = (KoreApplication) getApplicationContext();
-    app.setOnDatabaseOpened((sender, e) -> {
+    mKoreApplication = (KoreApplication) getApplicationContext();
+    mKoreApplication.setOnDatabaseOpened((sender, e) -> {
       Log.d(getClass().getSimpleName(), "" + e.getData());
       // todo: start overview activity
     });
@@ -63,7 +57,7 @@ public class SetupActivity extends AppCompatActivity {
     mSetupPageAdapter = new SimplePagerAdapter(getSupportFragmentManager(), new Fragment[]
         {
             SimpleViewFragment.create(R.layout.setup_fragment_1),
-            SimpleViewFragment.create(R.layout.setup_fragment_2),
+            new SimpleSetupFragment(),
             new ExtendSetupFragment()
         });
 
@@ -105,71 +99,37 @@ public class SetupActivity extends AppCompatActivity {
     AppBarLayout header = (AppBarLayout) findViewById(R.id.setuplayout_appbarlayout_header);
     setAppbarElevation(header);
 
-    AppCompatButton next = (AppCompatButton) findViewById(R.id.setuplayout_button_next);
-    next.setOnClickListener(v -> {
+    mButtonAsNextOrSetup = (AppCompatButton) findViewById(R.id.setuplayout_button_next);
+    mButtonAsNextOrSetup.setOnClickListener(v -> {
       int currentItem = mViewPagerAsContentWrapper.getCurrentItem();
       if(currentItem == 0) {
         mViewPagerAsContentWrapper.setCurrentItem(1, true);
-        next.setText("Setup");
+        mButtonAsNextOrSetup.setText("Setup");
+        mButtonAsNextOrSetup.setEnabled(false);
       } else {
         String pw = null;
         CharSequence rp = null;
         int pim = 0;
 
+        IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(currentItem);
+        pw = password.getPassword1().toString();
+        rp = password.getPassword2();
+
         if(currentItem == 2) {
           ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
-
-          pw = fragment.getPassword1().toString();
-          rp = fragment.getPassword2();
 
           String pim1 = fragment.getPIM1().toString();
           String pim2 = fragment.getPIM2().toString();
 
-          if(!pim1.equals(pim2)) {
-            AlertBuilder.create(this)
-                .setMessage("The entered PIMs don't match!")
-                .setPositiveButton("OK", null)
-                .show();
+          pim = checkPim(pw, rp, pim1, pim2);
 
+          if(pim < 0)
             return;
-          }
-
-          if(!pim1.isEmpty()) {
-            pim = Integer.parseInt(pim1);
-          }
-        } else {
-          Fragment fragment = mSetupPageAdapter.getItem(currentItem);
-
-          pw = ((TextInputEditText)fragment.getView().findViewById(R.id.setuplayout_edittext_passwordenter)).getText().toString();
-          rp = ((TextInputEditText)fragment.getView().findViewById(R.id.setuplayout_edittext_passwordrepeat)).getText();
         }
 
-        if(!pw.equals(rp.toString())) {
-          AlertBuilder.create(this)
-              .setMessage("Passwords don't match!")
-              .setPositiveButton("OK", null)
-              .show();
+        checkPassword(pw, rp, pim);
 
-          return;
-        }
-
-        if(pim == 0) {
-          int calcPim = calcPim(pw);
-          if (calcPim <= 0) {
-            AlertBuilder.create(this)
-                .setMessage("Error during setup. Please try again.\nIf it still fails, please select another password.")
-                .setPositiveButton("OK", null)
-                .show();
-
-            return;
-          }
-
-          pim = calcPim;
-        }
-
-        // selected pim at least 50 (=> 20000 iterations)
-        // calculated pim at least 50 (=> 20000 iterations) and 150 (=> 30000 iterations)
-        app.openDatabaseConnection(pw, pim);
+        setup(pw, pim);
       }
     });
 
@@ -177,14 +137,10 @@ public class SetupActivity extends AppCompatActivity {
       AlertBuilder.create(this)
           .setMessage("Uhh, an expert coming along!")
           .setPositiveButton("Yes, continue", (dialog, which) -> {
-            Fragment password = mSetupPageAdapter.getItem(1);
-            ExtendSetupFragment extended = (ExtendSetupFragment) mSetupPageAdapter.getItem(2);
+            IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(1);
+            IPasswordProvider extended = (IPasswordProvider) mSetupPageAdapter.getItem(2);
 
-            TextInputEditText passwordInputText = (TextInputEditText) password.getView().findViewById(R.id.setuplayout_edittext_passwordenter);
-            CharSequence pw = passwordInputText.getText();
-            CharSequence rp = ((TextInputEditText)password.getView().findViewById(R.id.setuplayout_edittext_passwordrepeat)).getText();
-
-            extended.setEnteredPasswords(pw, rp);
+            extended.setPasswords(password.getPassword1(), password.getPassword2());
 
             mViewPagerAsContentWrapper.setCurrentItem(2, true);
             mButtonAsExtended.animate()
@@ -194,6 +150,7 @@ public class SetupActivity extends AppCompatActivity {
                 .setStartDelay(50)
                 .setListener(new SetGoneOnEndAnimationListener(mButtonAsExtended))
                 .start();
+            mButtonAsNextOrSetup.setEnabled(false);
           })
           .setNegativeButton("No, get me out!", null)
           .show();
@@ -210,6 +167,10 @@ public class SetupActivity extends AppCompatActivity {
             "elevation",
             getResources().getDimensionPixelSize(R.dimen.xs)));
     appbar.setStateListAnimator(stateListAnimator);
+  }
+
+  void enableSetupButton(boolean enable) {
+    mButtonAsNextOrSetup.setEnabled(enable);
   }
 
   int calcPim(String password) {
@@ -230,6 +191,84 @@ public class SetupActivity extends AppCompatActivity {
 
       return -1;
     }
+  }
+
+  private int checkPim(final String pw, final CharSequence rp, String pim1, String pim2) {
+    int pim = 0;
+    if(!pim1.equals(pim2)) {
+      AlertBuilder.create(this)
+          .setMessage("The entered PIMs don't match!")
+          .setPositiveButton("OK", null)
+          .show();
+
+      return pim;
+    }
+
+    if(!pim1.isEmpty()) {
+      pim = Integer.parseInt(pim1);
+      final int finalPim = pim;
+
+      if (pim < 20000) {
+        AlertBuilder.create(this)
+            .setMessage("Your entered PIM seems to be a bit low! You should use a 5 digit number between 20000 and 30000.\nCheck help if you're not sure.")
+            .setPositiveButton("Change", null)
+            .setNegativeButton("Keep PIM", (dialog, which) -> checkPassword(pw, rp, finalPim))
+            .show();
+
+        return -1;
+      }
+
+      if (pim > 30000) {
+        AlertBuilder.create(this)
+            .setMessage("Your entered PIM seems to be a bit high! If you choose a high PIM the mKoreApplication may slow down significantly.\nCheck help if you're not sure.")
+            .setPositiveButton("Change", null)
+            .setNegativeButton("Keep PIM", (dialog, which) -> checkPassword(pw, rp, finalPim))
+            .show();
+
+        return -1;
+      }
+    }
+
+    return pim;
+  }
+
+  private void checkPassword(String pw, CharSequence rp, int pim) {
+    if(!pw.equals(rp.toString())) {
+      AlertBuilder.create(this)
+          .setMessage("Passwords don't match!")
+          .setPositiveButton("OK", null)
+          .show();
+
+      return;
+    }
+
+    if(!pw.matches(Constants.REGEX_PASSWORD_SAFETY)) {
+      AlertBuilder.create(this)
+          .setMessage("Your password doesn't seem to be safe enough! Check help for more information.")
+          .setPositiveButton("Change", null)
+          .setNegativeButton("Continue anyway", (dialog, which) -> setup(pw, pim))
+          .show();
+    }
+  }
+
+  private void setup(String pw, int pim) {
+    if(pim == 0) {
+      int calcPim = calcPim(pw);
+      if (calcPim <= 0) {
+        AlertBuilder.create(this)
+            .setMessage("Error during setup. Please try again.\nIf it still fails, please select another password.")
+            .setPositiveButton("OK", null)
+            .show();
+
+        return;
+      }
+
+      pim = calcPim;
+    }
+
+    // selected pim at least 50 (=> 20000 iterations)
+    // calculated pim at least 50 (=> 20000 iterations) and 150 (=> 30000 iterations)
+    mKoreApplication.openDatabaseConnection(pw, pim);
   }
 }
 

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,7 @@ import android.widget.TextView;
 import com.typingsolutions.kore.R;
 
 
-public class ExtendSetupFragment extends Fragment {
+public class ExtendSetupFragment extends Fragment implements IPasswordProvider {
 
   private TextInputEditText mEditTextAsEnterPassword;
   private TextInputEditText mEditTextAsRepeatPassword;
@@ -35,27 +33,16 @@ public class ExtendSetupFragment extends Fragment {
 
     mTextViewAsPIMHint = (TextView) root.findViewById(R.id.setuplayout_textview_currentpim);
 
-    mEditTextAsEnterPassword.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    mEditTextAsEnterPassword.addTextChangedListener(new EnableSetupTextWatcher((SetupActivity)getActivity(), this, mEditTextAsRepeatPassword, true));
+    mEditTextAsRepeatPassword.addTextChangedListener(new EnableSetupTextWatcher((SetupActivity)getActivity(), this, mEditTextAsEnterPassword));
 
-      }
-
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-      }
-
-      @Override
-      public void afterTextChanged(Editable s) {
-        setCurrentPIM();
-      }
-    });
+    mEditTextAsEnterPIM.addTextChangedListener(new EnableSetupTextWatcher((SetupActivity)getActivity(), mEditTextAsRepeatPIM));
+    mEditTextAsRepeatPIM.addTextChangedListener(new EnableSetupTextWatcher((SetupActivity)getActivity(), mEditTextAsEnterPIM));
 
     return root;
   }
 
-  private void setCurrentPIM() {
+  void setCurrentPIM() {
     if (mBackupText == null) {
       mBackupText = mTextViewAsPIMHint.getText().toString();
     }
@@ -66,16 +53,19 @@ public class ExtendSetupFragment extends Fragment {
     mTextViewAsPIMHint.setText(mBackupText.replace("${_pim_}", Integer.toString(calcPim)));
   }
 
-  void setEnteredPasswords(CharSequence pw1, CharSequence pw2) {
+  @Override
+  public void setPasswords(CharSequence pw1, CharSequence pw2) {
     mEditTextAsEnterPassword.setText(pw1);
     mEditTextAsRepeatPassword.setText(pw2);
   }
 
-  CharSequence getPassword1() {
+  @Override
+  public CharSequence getPassword1() {
     return mEditTextAsEnterPassword.getText();
   }
 
-  CharSequence getPassword2() {
+  @Override
+  public CharSequence getPassword2() {
     return mEditTextAsRepeatPassword.getText();
   }
 
