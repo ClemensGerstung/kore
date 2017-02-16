@@ -1,29 +1,33 @@
 <resources>
-    <string name="app_name">Kore</string>
-    <string name="next">Next</string>
-    <string name="setup_help">Click on the ? for mor details</string>
-    <string name="setuplayout_string_hellowelcome">Hello and welcome!</string>
-    <string name="setuplayout_string_smallexplanaition">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-        diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-        dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    <string name="common_string_appname">Kore</string>
+    <string name="common_string_next">Next</string>
+    <string name="common_string_extended">Extended</string>
+
+    <string name="setuplayout_string_help">Click on the ? for mor details</string>
+    <string name="setuplayout_string_hellowelcome">Hello and welcome</string>
+    <string name="setuplayout_string_smallexplanaition">
+        To this awesome App!\n\n
+        You\'re on the right way to safely keep your most important things (the access data to all of your accounts)
+        right next to you in your pocket.\n\n
+        This App lets you do this in a nice and easy way. I (the developer) hope you enjoy this app the little time you
+        going to use it.\n\n
+        In the next step you have to setup your master password so don\'t wait and hit "setup"👇
     </string>
     <string name="setuplayout_string_setmasterpassword">Set your master password</string>
-    <string name="extended">Extended</string>
     <string name="setuplayout_string_enterpassword">Enter your password</string>
     <string name="setuplayout_string_repeatpassword">Repeat your password</string>
-    <string name="setuplayout_string_exportheader">So you\'re an expert...!</string>
+    <string name="setuplayout_string_exportheader">So you\'re an expert…!</string>
     <string name="setuplayout_string_helpextended">To get help by choosing the right values click the ?-button</string>
     <string name="setuplayout_string_pimhelp">If you don\'t enter a PIM it will keep the calculated.</string>
     <string name="setuplayout_string_calcpim">Your calculated PIM: ${_pim_}</string>
     <string name="setuplayout_string_enterpim">Enter your PIM</string>
     <string name="setuplayout_string_repeatpim">Repeat your PIM</string>
-    <string name="setuplayout_string_extendedtext">In this view you can see your password and the correlating PIM. You
-        can keep the PIM or change it, but be careful!
+    <string name="setuplayout_string_extendedtext">
+        In this view you can see your password and the correlating PIM. You can keep the PIM or change it, but be
+        careful!
     </string>
-    <string name="setuplayout_string_passwordhelp">To get help by choosing the right password click the ?-button
+    <string name="setuplayout_string_passwordhelp">
+        To get help by choosing the right password click the ?-button
     </string>
 
 </resources>

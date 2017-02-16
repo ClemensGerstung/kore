@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="next">Weiter</string>
-    <string name="setup_help">Klicke auf das ? für mehr Details</string>
+    <string name="common_string_next">Weiter</string>
+    <string name="setuplayout_string_help">Klicke auf das ? für mehr Details</string>
     <string name="setuplayout_string_hellowelcome">Hallo und willkommen!</string>
     <string name="setuplayout_string_smallexplanaition">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
         diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
@@ -11,7 +11,7 @@
         rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
     </string>
     <string name="setuplayout_string_setmasterpassword">Wähle dein Masterpasswort</string>
-    <string name="extended">Erweitert</string>
+    <string name="common_string_extended">Erweitert</string>
     <string name="setuplayout_string_enterpassword">Gib dein Passwort ein</string>
     <string name="setuplayout_string_repeatpassword">Wiederhole dein Passwort</string>
     <string name="setuplayout_string_exportheader">Du bist also ein Experte…!</string>
