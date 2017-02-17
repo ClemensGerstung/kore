@@ -42,21 +42,33 @@ public class ExtendSetupFragment extends Fragment implements IPasswordProvider {
     return root;
   }
 
-  void setCurrentPIM() {
-    if (mBackupText == null) {
-      mBackupText = mTextViewAsPIMHint.getText().toString();
-    }
-
-    SetupActivity activity = (SetupActivity) getActivity();
-
-    int calcPim = activity.calcPim(mEditTextAsEnterPassword.getText().toString());
-    mTextViewAsPIMHint.setText(mBackupText.replace("${_pim_}", Integer.toString(calcPim)));
-  }
-
   @Override
   public void setPasswords(CharSequence pw1, CharSequence pw2) {
     mEditTextAsEnterPassword.setText(pw1);
     mEditTextAsRepeatPassword.setText(pw2);
+  }
+
+  @Override
+  public void cleanUp() {
+    SetupActivity activity = (SetupActivity) getActivity();
+
+    activity.clearText(mEditTextAsEnterPassword);
+    activity.clearText(mEditTextAsRepeatPassword);
+
+    mEditTextAsEnterPassword.clearComposingText();
+    mEditTextAsRepeatPassword.clearComposingText();
+
+    mEditTextAsEnterPassword = null;
+    mEditTextAsRepeatPassword = null;
+
+    activity.clearText(mEditTextAsEnterPIM);
+    activity.clearText(mEditTextAsRepeatPIM);
+
+    mEditTextAsEnterPIM.clearComposingText();
+    mEditTextAsRepeatPIM.clearComposingText();
+
+    mEditTextAsEnterPIM = null;
+    mEditTextAsRepeatPIM = null;
   }
 
   @Override
@@ -75,5 +87,16 @@ public class ExtendSetupFragment extends Fragment implements IPasswordProvider {
 
   CharSequence getPIM2() {
     return mEditTextAsRepeatPIM.getText();
+  }
+
+  void setCurrentPIM() {
+    if (mBackupText == null) {
+      mBackupText = mTextViewAsPIMHint.getText().toString();
+    }
+
+    SetupActivity activity = (SetupActivity) getActivity();
+
+    int calcPim = activity.calcPim(mEditTextAsEnterPassword.getText().toString());
+    mTextViewAsPIMHint.setText(mBackupText.replace("${_pim_}", Integer.toString(calcPim)));
   }
 }

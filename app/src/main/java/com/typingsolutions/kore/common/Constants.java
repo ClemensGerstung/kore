@@ -11,4 +11,6 @@ public final class Constants {
    * (min 8 chars, upper, lower case letters, digits and some special chars)
    */
   public static String REGEX_PASSWORD_SAFETY = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-_.:,;+*?!%&/]).{8,})";
+
+  public static final char[] CHARS = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 }

@@ -6,4 +6,6 @@ interface IPasswordProvider {
   CharSequence getPassword2();
 
   void setPasswords(CharSequence pw1, CharSequence pw2);
+
+  void cleanUp();
 }

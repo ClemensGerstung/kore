@@ -40,4 +40,18 @@ public class SimpleSetupFragment extends Fragment implements IPasswordProvider {
   public void setPasswords(CharSequence pw1, CharSequence pw2) {
 
   }
+
+  @Override
+  public void cleanUp() {
+    SetupActivity activity = (SetupActivity) getActivity();
+
+    activity.clearText(mEditTextAsEnterPassword);
+    activity.clearText(mEditTextAsRepeatPassword);
+
+    mEditTextAsEnterPassword.clearComposingText();
+    mEditTextAsRepeatPassword.clearComposingText();
+
+    mEditTextAsEnterPassword = null;
+    mEditTextAsRepeatPassword = null;
+  }
 }

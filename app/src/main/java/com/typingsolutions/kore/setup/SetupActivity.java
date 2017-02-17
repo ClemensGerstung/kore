@@ -5,22 +5,26 @@ import android.animation.StateListAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatButton;
-import ui.NotSwipeableViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import com.typingsolutions.kore.R;
 import com.typingsolutions.kore.common.*;
+import ui.NotSwipeableViewPager;
 
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Random;
 
 // entropy = length * log2(numberofavailablechars)
@@ -46,8 +50,17 @@ public class SetupActivity extends AppCompatActivity {
 
     mKoreApplication = (KoreApplication) getApplicationContext();
     mKoreApplication.setOnDatabaseOpened((sender, e) -> {
-      Log.d(getClass().getSimpleName(), "" + e.getData());
-      // todo: start overview activity
+      int i = e.getData();
+
+      Log.d(getClass().getSimpleName(), "" + i);
+
+      if (i == 0) {
+        ((IPasswordProvider) mSetupPageAdapter.getItem(1)).cleanUp();
+        ((IPasswordProvider) mSetupPageAdapter.getItem(2)).cleanUp();
+
+
+        // todo: start overview activity
+      }
     });
 
     mViewPagerAsContentWrapper = (NotSwipeableViewPager) findViewById(R.id.setuplayout_viewpager_contenthost);
@@ -63,38 +76,6 @@ public class SetupActivity extends AppCompatActivity {
 
     mViewPagerAsContentWrapper.canSwipe(false);
     mViewPagerAsContentWrapper.setAdapter(mSetupPageAdapter);
-    mViewPagerAsContentWrapper.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-      @Override
-      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-      }
-
-      @Override
-      public void onPageSelected(int position) {
-        if (position > 0) {
-          mTextViewAsHint.animate()
-              .alpha(0)
-              .setDuration(150)
-              .setInterpolator(new AccelerateInterpolator())
-              .setStartDelay(50)
-              .setListener(new SetGoneOnEndAnimationListener(mTextViewAsHint))
-              .start();
-
-          mButtonAsExtended.animate()
-              .alpha(1)
-              .setDuration(150)
-              .setInterpolator(new DecelerateInterpolator())
-              .setStartDelay(50)
-              .setListener(new SetVisibleOnStartAnimationListener(mButtonAsExtended))
-              .start();
-        }
-      }
-
-      @Override
-      public void onPageScrollStateChanged(int state) {
-
-      }
-    });
 
     AppBarLayout header = (AppBarLayout) findViewById(R.id.setuplayout_appbarlayout_header);
     setAppbarElevation(header);
@@ -102,10 +83,26 @@ public class SetupActivity extends AppCompatActivity {
     mButtonAsNextOrSetup = (AppCompatButton) findViewById(R.id.setuplayout_button_next);
     mButtonAsNextOrSetup.setOnClickListener(v -> {
       int currentItem = mViewPagerAsContentWrapper.getCurrentItem();
-      if(currentItem == 0) {
+      if (currentItem == 0) {
         mViewPagerAsContentWrapper.setCurrentItem(1, true);
         mButtonAsNextOrSetup.setText("Setup");
         mButtonAsNextOrSetup.setEnabled(false);
+
+        mTextViewAsHint.animate()
+            .alpha(0)
+            .setDuration(150)
+            .setInterpolator(new AccelerateInterpolator())
+            .setStartDelay(50)
+            .setListener(new SetGoneOnEndAnimationListener(mTextViewAsHint))
+            .start();
+
+        mButtonAsExtended.animate()
+            .alpha(1)
+            .setDuration(150)
+            .setInterpolator(new DecelerateInterpolator())
+            .setStartDelay(50)
+            .setListener(new SetVisibleOnStartAnimationListener(mButtonAsExtended))
+            .start();
       } else {
         String pw = null;
         CharSequence rp = null;
@@ -115,7 +112,7 @@ public class SetupActivity extends AppCompatActivity {
         pw = password.getPassword1().toString();
         rp = password.getPassword2();
 
-        if(currentItem == 2) {
+        if (currentItem == 2) {
           ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
 
           String pim1 = fragment.getPIM1().toString();
@@ -123,7 +120,7 @@ public class SetupActivity extends AppCompatActivity {
 
           pim = checkPim(pw, rp, pim1, pim2);
 
-          if(pim < 0)
+          if (pim < 0)
             return;
         }
 
@@ -156,7 +153,16 @@ public class SetupActivity extends AppCompatActivity {
           .show();
     });
 
+    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setuplayout_fab_expandBottom);
+    fab.setOnClickListener(v -> {
+      BottomSheetDialogFragment fragment = BottomSheetViewerFragment.create(R.layout.setup_fragment_1);
+      fragment.show(getSupportFragmentManager(), fragment.getTag());
+    });
+  }
 
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
   }
 
   @TargetApi(21)
@@ -195,7 +201,7 @@ public class SetupActivity extends AppCompatActivity {
 
   private int checkPim(final String pw, final CharSequence rp, String pim1, String pim2) {
     int pim = 0;
-    if(!pim1.equals(pim2)) {
+    if (!pim1.equals(pim2)) {
       AlertBuilder.create(this)
           .setMessage("The entered PIMs don't match!")
           .setPositiveButton("OK", null)
@@ -204,7 +210,7 @@ public class SetupActivity extends AppCompatActivity {
       return pim;
     }
 
-    if(!pim1.isEmpty()) {
+    if (!pim1.isEmpty()) {
       pim = Integer.parseInt(pim1);
       final int finalPim = pim;
 
@@ -233,7 +239,7 @@ public class SetupActivity extends AppCompatActivity {
   }
 
   private void checkPassword(String pw, CharSequence rp, int pim) {
-    if(!pw.equals(rp.toString())) {
+    if (!pw.equals(rp.toString())) {
       AlertBuilder.create(this)
           .setMessage("Passwords don't match!")
           .setPositiveButton("OK", null)
@@ -242,7 +248,7 @@ public class SetupActivity extends AppCompatActivity {
       return;
     }
 
-    if(!pw.matches(Constants.REGEX_PASSWORD_SAFETY)) {
+    if (!pw.matches(Constants.REGEX_PASSWORD_SAFETY)) {
       AlertBuilder.create(this)
           .setMessage("Your password doesn't seem to be safe enough! Check help for more information.")
           .setPositiveButton("Change", null)
@@ -252,7 +258,7 @@ public class SetupActivity extends AppCompatActivity {
   }
 
   private void setup(String pw, int pim) {
-    if(pim == 0) {
+    if (pim == 0) {
       int calcPim = calcPim(pw);
       if (calcPim <= 0) {
         AlertBuilder.create(this)
@@ -269,6 +275,21 @@ public class SetupActivity extends AppCompatActivity {
     // selected pim at least 50 (=> 20000 iterations)
     // calculated pim at least 50 (=> 20000 iterations) and 150 (=> 30000 iterations)
     mKoreApplication.openDatabaseConnection(pw, pim);
+  }
+
+  <T extends TextView> void clearText(@Nullable T v) {
+    if (v == null) return;
+    try {
+      CharSequence text = v.getText();
+      Field field = text.getClass().getDeclaredField("mText");
+      field.setAccessible(true);
+      char[] arr = (char[]) field.get(text);
+      arr = Arrays.copyOf(Constants.CHARS, arr.length);
+      field.set(text, arr);
+      v.setText("");
+    } catch (IllegalAccessException | NoSuchFieldException e) {
+      Log.d(getClass().getSimpleName(), e.getMessage());
+    }
   }
 }
 

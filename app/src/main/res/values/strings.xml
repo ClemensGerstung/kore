@@ -3,7 +3,7 @@
     <string name="common_string_next">Next</string>
     <string name="common_string_extended">Extended</string>
 
-    <string name="setuplayout_string_help">Click on the ? for mor details</string>
+    <string name="setuplayout_string_help">Click on the ❓ for mor details</string>
     <string name="setuplayout_string_hellowelcome">Hello and welcome</string>
     <string name="setuplayout_string_smallexplanaition">
         To this awesome App!\n\n
@@ -27,7 +27,7 @@
         careful!
     </string>
     <string name="setuplayout_string_passwordhelp">
-        To get help by choosing the right password click the ?-button
+        To get help by choosing the right password click the ❓
     </string>
 
 </resources>
