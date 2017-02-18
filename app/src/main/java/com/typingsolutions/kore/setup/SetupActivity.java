@@ -3,16 +3,19 @@ package com.typingsolutions.kore.setup;
 import android.animation.ObjectAnimator;
 import android.animation.StateListAnimator;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
@@ -56,19 +59,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     mKoreApplication = (KoreApplication) getApplicationContext();
-    mKoreApplication.setOnDatabaseOpened((sender, e) -> {
-      int i = e.getData();
-
-      Log.d(getClass().getSimpleName(), "" + i);
-
-      if (i == 0) {
-        ((IPasswordProvider) mSetupPageAdapter.getItem(1)).cleanUp();
-        ((IPasswordProvider) mSetupPageAdapter.getItem(2)).cleanUp();
-
-
-        // todo: start overview activity
-      }
-    });
+    mKoreApplication.setOnDatabaseOpened(this::onDatabaseOpened);
 
     mViewPagerAsContentWrapper = (NotSwipeableViewPager) findViewById(R.id.setuplayout_viewpager_contenthost);
     mTextViewAsHint = (TextView) findViewById(R.id.setuplayout_textview_hint);
@@ -88,97 +79,119 @@ public class SetupActivity extends AppCompatActivity {
     setAppbarElevation(header);
 
     mButtonAsNextOrSetup = (AppCompatButton) findViewById(R.id.setuplayout_button_next);
-    mButtonAsNextOrSetup.setOnClickListener(v -> {
-      int currentItem = mViewPagerAsContentWrapper.getCurrentItem();
-      if (currentItem == 0) {
-        mViewPagerAsContentWrapper.setCurrentItem(1, true);
-        mButtonAsNextOrSetup.setText(R.string.setuplayout_string_setuptext);
-        mButtonAsNextOrSetup.setEnabled(false);
+    mButtonAsNextOrSetup.setOnClickListener(this::onNextOrSetupClicked);
 
-        mTextViewAsHint.animate()
-            .alpha(0)
-            .setDuration(150)
-            .setInterpolator(new AccelerateInterpolator())
-            .setStartDelay(50)
-            .setListener(new SetGoneOnEndAnimationListener(mTextViewAsHint))
-            .start();
-
-        mButtonAsExtended.animate()
-            .alpha(1)
-            .setDuration(150)
-            .setInterpolator(new DecelerateInterpolator())
-            .setStartDelay(50)
-            .setListener(new SetVisibleOnStartAnimationListener(mButtonAsExtended))
-            .start();
-      } else {
-        String pw = null;
-        CharSequence rp = null;
-        int pim = 0;
-
-        IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(currentItem);
-        pw = password.getPassword1().toString();
-        rp = password.getPassword2();
-
-        if (currentItem == 2) {
-          ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
-
-          String pim1 = fragment.getPIM1().toString();
-          String pim2 = fragment.getPIM2().toString();
-
-          pim = checkPim(pw, rp, pim1, pim2);
-
-          if (pim < 0)
-            return;
-        }
-
-        checkPassword(pw, rp, pim);
-
-        setup(pw, pim);
-      }
-    });
-
-    mButtonAsExtended.setOnClickListener(v -> {
-      AlertBuilder.create(this)
-          .setMessage(R.string.setuplayout_string_hintextended)
-          .setPositiveButton(getString(R.string.setuplayout_string_extenedcontinue), (dialog, which) -> {
-            IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(1);
-            IPasswordProvider extended = (IPasswordProvider) mSetupPageAdapter.getItem(2);
-
-            extended.setPasswords(password.getPassword1(), password.getPassword2());
-
-            mViewPagerAsContentWrapper.setCurrentItem(2, true);
-            mButtonAsExtended.animate()
-                .alpha(0)
-                .setDuration(150)
-                .setInterpolator(new AccelerateInterpolator())
-                .setStartDelay(50)
-                .setListener(new SetGoneOnEndAnimationListener(mButtonAsExtended))
-                .start();
-            mButtonAsNextOrSetup.setEnabled(false);
-          })
-          .setNegativeButton(getString(R.string.setuplayout_string_cancelextended), null)
-          .show();
-    });
+    mButtonAsExtended.setOnClickListener(this::onExtendedClicked);
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setuplayout_fab_expandBottom);
-    fab.setOnClickListener(v -> {
-      int layout = mHelpViews[mViewPagerAsContentWrapper.getCurrentItem()];
-
-      if (getResources().getBoolean(R.bool.common_bool_istablet)) {
-        AlertBuilder.create(this)
-            .setView(layout)
-            .setPositiveButton(getString(R.string.common_string_close), null)
-            .show();
-      } else {
-        BottomSheetDialogFragment fragment = BottomSheetViewerFragment.create(layout);
-        fragment.show(getSupportFragmentManager(), fragment.getTag());
-      }
-    });
+    fab.setOnClickListener(this::onHelpButtonClicked);
   }
 
   @Override
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
+  }
+
+  private void onDatabaseOpened(Object sender, EventArgs<Integer> e) {
+    int i = e.getData();
+
+    Log.d(getClass().getSimpleName(), "" + i);
+
+    if (i == 0) {
+      ((IPasswordProvider) mSetupPageAdapter.getItem(1)).cleanUp();
+      ((IPasswordProvider) mSetupPageAdapter.getItem(2)).cleanUp();
+
+
+      // todo: start overview activity
+    }
+  }
+
+  private void onNextOrSetupClicked(View v) {
+    int currentItem = mViewPagerAsContentWrapper.getCurrentItem();
+    if (currentItem == 0) {
+      mViewPagerAsContentWrapper.setCurrentItem(1, true);
+      mButtonAsNextOrSetup.setText(R.string.setuplayout_string_setuptext);
+      mButtonAsNextOrSetup.setEnabled(false);
+
+      mTextViewAsHint.animate()
+          .alpha(0)
+          .setDuration(150)
+          .setInterpolator(new AccelerateInterpolator())
+          .setStartDelay(50)
+          .setListener(new SetGoneOnEndAnimationListener(mTextViewAsHint))
+          .start();
+
+      mButtonAsExtended.animate()
+          .alpha(1)
+          .setDuration(150)
+          .setInterpolator(new DecelerateInterpolator())
+          .setStartDelay(50)
+          .setListener(new SetVisibleOnStartAnimationListener(mButtonAsExtended))
+          .start();
+    } else {
+      String pw = null;
+      CharSequence rp = null;
+      int pim = 0;
+
+      IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(currentItem);
+      pw = password.getPassword1().toString();
+      rp = password.getPassword2();
+
+      if (currentItem == 2) {
+        ExtendSetupFragment fragment = (ExtendSetupFragment) mSetupPageAdapter.getItem(currentItem);
+
+        String pim1 = fragment.getPIM1().toString();
+        String pim2 = fragment.getPIM2().toString();
+
+        pim = checkPim(pw, rp, pim1, pim2);
+
+        if (pim < 0)
+          return;
+      }
+
+      checkPassword(pw, rp, pim);
+
+      setup(pw, pim);
+    }
+  }
+
+  private void onExtendedClicked(View v) {
+    AlertBuilder.create(this)
+        .setMessage(R.string.setuplayout_string_hintextended)
+        .setPositiveButton(getString(R.string.setuplayout_string_extenedcontinue), this::onExtendedDialogClicked)
+        .setNegativeButton(getString(R.string.setuplayout_string_cancelextended), null)
+        .show();
+  }
+
+  private void onExtendedDialogClicked(DialogInterface dialog, int which) {
+    IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(1);
+    IPasswordProvider extended = (IPasswordProvider) mSetupPageAdapter.getItem(2);
+
+    extended.setPasswords(password.getPassword1(), password.getPassword2());
+
+    mViewPagerAsContentWrapper.setCurrentItem(2, true);
+    mButtonAsExtended.animate()
+        .alpha(0)
+        .setDuration(150)
+        .setInterpolator(new AccelerateInterpolator())
+        .setStartDelay(50)
+        .setListener(new SetGoneOnEndAnimationListener(mButtonAsExtended))
+        .start();
+    mButtonAsNextOrSetup.setEnabled(false);
+  }
+
+  private void onHelpButtonClicked(View v) {
+    int layout = mHelpViews[mViewPagerAsContentWrapper.getCurrentItem()];
+
+    if (getResources().getBoolean(R.bool.common_bool_istablet)) {
+      AlertBuilder.create(this)
+          .setView(layout)
+          .setPositiveButton(getString(R.string.common_string_close), null)
+          .show();
+    } else {
+      BottomSheetDialogFragment fragment = BottomSheetViewerFragment.create(layout);
+      fragment.show(getSupportFragmentManager(), fragment.getTag());
+    }
   }
 
   @TargetApi(21)
