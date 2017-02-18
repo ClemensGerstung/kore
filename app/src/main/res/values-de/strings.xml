@@ -1,31 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="common_string_next">Weiter</string>
-    <string name="setuplayout_string_help">Klicke auf das ? für mehr Details</string>
+    <string name="common_string_close">Schließen</string>
+    <string name="common_string_extended">Erweitert</string>
+    <string name="common_string_ok">OK</string>
+    <string name="common_string_change">Ändern</string>
+
+    <string name="setuplayout_string_help">Klicke auf das ❓ für mehr Details</string>
     <string name="setuplayout_string_hellowelcome">Hallo und willkommen!</string>
-    <string name="setuplayout_string_smallexplanaition">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-        diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-        dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
-        ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    <string name="setuplayout_string_smallexplanaition">
+        Zu dieser großartigen App!\n\n
+        Du bist genau auf den richtigen Weg alle deine wichtigen Daten (die Zugangsdaten zu deinen Accounts) sicher zu
+        speichern und abzurufen.\n\n
+        Diese App erlaubt dir dies einfach und angenehm zu tun. Ich (der Entwickler) hoffe, dass du die App die kurze
+        Zeit, die du sie verwendest, genießt.\n\n
+        Im nächsten Schritt musst du das Hauptpasswort für die App setzen, also nicht lange fackeln, klick "setup"👇
     </string>
     <string name="setuplayout_string_setmasterpassword">Wähle dein Masterpasswort</string>
-    <string name="common_string_extended">Erweitert</string>
     <string name="setuplayout_string_enterpassword">Gib dein Passwort ein</string>
     <string name="setuplayout_string_repeatpassword">Wiederhole dein Passwort</string>
     <string name="setuplayout_string_exportheader">Du bist also ein Experte…!</string>
-    <string name="setuplayout_string_helpextended">Um Hilfe für die richtigen Werte zu bekommen, klicke auf den
-        ?-Button
+    <string name="setuplayout_string_helpextended">
+        Um Hilfe für die richtigen Werte zu bekommen, klicke auf den ❓
     </string>
     <string name="setuplayout_string_pimhelp">Wenn du keine PIM angibst, wird die berechnete behalten</string>
     <string name="setuplayout_string_calcpim">Deine berechnete PIM: ${_pim_}</string>
     <string name="setuplayout_string_enterpim">Gib deine PIM ein</string>
     <string name="setuplayout_string_repeatpim">Wiederhole deine PIM</string>
-    <string name="setuplayout_string_extendedtext">In dieser Ansicht kannst du das Passwort setzen und die dazugehörige
-        PIM einsehen und ändern.
+    <string name="setuplayout_string_extendedtext">
+        In dieser Ansicht kannst du das Passwort setzen und die dazugehörige PIM einsehen und ändern.
     </string>
-    <string name="setuplayout_string_passwordhelp">Um Hilfe bei der richtigen Passwortwahl zu bekommen, klicke auf den
-        ?-Button
+    <string name="setuplayout_string_passwordhelp">
+        Um Hilfe bei der richtigen Passwortwahl zu bekommen, klicke auf das ❓
+    </string>
+    <string name="setuplayout_string_cancelextended">Nein, raus hier!</string>
+    <string name="setuplayout_string_hintextended">Uhh, ein Experte!</string>
+    <string name="setuplayout_string_extenedcontinue">Ja, weiter</string>
+    <string name="setuplayout_string_setuptext">Setup</string>
+    <string name="setuplayout_string_enteredpimsdontmatch">Die eingegebenen PIMs stimmen nicht überein!</string>
+    <string name="setuplayout_string_pimhint">
+        Deine eingegebene PIM scheint sehr niedrig zu sein. Die PIM sollte eine 5-stellige Nummer zwischen 20.000 und
+        30.000 sein. Wenn du dir nicht sicher bist, schaue in die Hilfe!
+    </string>
+    <string name="setuplayout_string_keeppim">Behalte PIM</string>
+    <string name="setuplayout_string_pimhinthigh">
+        Deine eingegebene PIM scheint etwas zu hoch zu sein. Wenn die PIM zu hoch ist, kann die App unnötig langsam
+        werden. Die PIM sollte eine 5-stellige Nummer zwischen 20.000 und 30.000 sein. Wenn du dir nicht sicher bist,
+        schaue in die Hilfe!
+    </string>
+    <string name="setuplayout_string_passwordsdontmatch">Die Passwörter stimmen nicht überein!</string>
+    <string name="setuplayout_string_continueanyway">Weiter</string>
+    <string name="setuplayout_string_weakpasswordhint">
+        Dein Passwort schein nicht sonderlich stark zu sein. Wenn du dir nicht sicher bist, schaue in die Hilfe!
+    </string>
+    <string name="setuplayout_string_setuperror">
+        Fehler während des Setups. Versuche bitte erneut, wenn der Fehler weiterhin auftritt, wähle bitte ein anderes
+        Passwort.
+    </string>
+    <string name="setuplayout_string_helptext1">
+        In dieser App kannst du alle deine Passwörter sicher und einfach speichern. Wahrscheinlich weist du das schon
+        längst, weil das in der kleinen Beschreibung auf der ersten Seite der App stand und im PlayStore Eintrag.
+    </string>
+    <string name="setuplayout_string_helptext2">
+        Diese App speichert alle Daten mit einer 256bit Verschlüsselung, was der derzeitige beste Standard für die
+        Veschlüsselung ist.
+    </string>
+    <string name="setuplayout_string_helptext3">
+        Hier könnte noch mehr Text stehen, aber ich bin gerade zu faul den zu schreiben.
+    </string>
+    <string name="setuplayout_string_helpheader">Hilfe!</string>
+    <string name="setuplayout_string_helppassword1">
+        Als erstes musst du dir zwei Fragen stellen:\n\t1.\tIst das Passwort leicht zu \"brutforcen\"? Heißt, ist das
+        Passwort leicht erratbar, indem alle Möglichkeiten durchprobiert werden. Das tritt auf, wenn das Passwort kürzer
+        als 8 Zeichen ist und nicht viele unterschiedliche Zeichen verwendet wurden. (Das wird dann Entropie genannt,
+        was die kleine Ansicht unter den Passwort Eingabefeldern ist, welche da eventuell irgendwann in der Zukunft sein
+        werden)\n
+        \t2.\tKann dein Passwort in sog. Passwort Wörterbüchern auftauchen? Diese Wörterbücher stammen von
+        Passwort-Datenbanken von Firmen, welche durch unzureichende Sicherheit gehackt und veröffentlicht wurden. Wenn
+        dein Passwort sehr simpel ist, kann es in diesen Wörterbüchern auftauchen und dadurch sehr einfach erraten
+        werden.
+    </string>
+    <string name="setuplayout_string_helppassword2">
+        Also \"Passwort\" als Passwort zu wählen ist ziemlich schlecht. \"Passwort123\" ist auch nicht besser.
+    </string>
+    <string name="setuplayout_string_helppassword3">
+        Wie soll man jetzt aber das richtige Passwort wählen? Ein Weg ist, drei bis vier zufällige Wörter auszuwählen,
+        welche (und das ist wichtig) nicht häufig verwendet werden. Wenn du ein Passwort so wählst, ist es lang genug,
+        als dass es schwer wird es zu \"brutforcen\", weil es zu lang ist und die Wahrscheinlichkeit, dass es in einem
+        Passwort Wörterbuch auftaucht ist auch sehr gering.\nHört sich doch gut an, oder?
+    </string>
+    <string name="setuplayout_string_helppassword4">
+        Um jetzt ein noch besseres Passwort zu bekommen (und fast jeden zu nerven) pack einfach einen Unterstrich
+        (\"_\") einfach in die Mitte der Wortsequenz. Oder ein Undzeichen (\"&amp;\") in die Mitte von einem Wort, z.B.
+        wird aus \"Pferd\" wird \"Pf&amp;erd\".
+    </string>
+    <string name="setuplayout_string_helppassword5">
+        Der zweite Weg ein Passwort zu wählen ist der althergebrachte Weg. Wähle zufällig mehr (wirklich viel mehr) als
+        9 Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen. Dieses Passwort wird durch die hohe Entropie schwierig zu
+        brutforcen und wird sehr wahrscheinlich nicht in einem Passwort Wörterbuch auftauchen.\n
+        Allerdings sind diese Passwörter schwer zu merken, also vergiss es nicht.
+    </string>
+    <string name="setuplayout_string_helpsubheader">
+        Diese kleine Hilfe soll dir helfen das richtige Passwort zu wählen.
+    </string>
+
+    <string name="setuplayout_string_helpextended1">
+        Da du ein Experte bist, weist du, wie man ein Passwort zu wählen hat. Wenn du es nicht weist, hier ist die
+        TL;DR-Version:\n\t1.\tWähle ein Passwort mit einer hohen Entropie. Also mit vielen unterschiedlichen Zeichen,
+        dass es schwer zu brutforcen ist.\n\t2.\tDein Passwort sollte einzigartig sein, dass es nicht in irgendwelchen
+        Passwort Wörterbüchern auftaucht. Wenn du Wörter als Passwort wählst, wähle 4 zufällige unübliche Passwörter und
+        pache ein Sonderzeichen wie ein &amp; oder ein \'_\' irgendwo in dein Passwort.
+    </string>
+    <string name="setuplayout_string_helpextended2">
+        Was ist jetzt die PIM?\nPIM steht für \"Personal Iterations Multiplier\" und ist eine einfache Zahl. Diese Zahl
+        wird benutzt und das finale Passwort zu generieren, mit dem dann die Datenbank verschlüsselt wird. Es ist also
+        die Anzahl an Iterationen für die Schlüsselberechnung.
+    </string>
+    <string name="setuplayout_string_helpextended3">
+        Wenn du jetzt deine eigene PIM wählst, sollte es eine fünfstellige Zahl zwischen 20.000 und 30.000 sein. Obwohl
+        die Entwickler der Bibliothek für die veschlüsselte Datenbank auf ihrer Webseite sagen, dass wenn ein Passwort
+        gesetzt ist, die PIM um die 10.000 liegen sollte. Um aber etwas mehr Sicherheit zu haben, ist die generierte PIM
+        und etwas höher. Die PIM sollte allerdings nicht zu hoch sein, da sonst der Login und das Setup sehr lange
+        brauchen werden und damit die Erfahrung mit der App schlechter und nervig wird.
     </string>
 </resources>

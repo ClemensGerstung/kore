@@ -1,6 +1,9 @@
 package com.typingsolutions.kore.common;
 
 import android.app.Dialog;
+import android.content.res.Configuration;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -49,7 +52,14 @@ public class BottomSheetViewerFragment extends BottomSheetDialogFragment {
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
+    if(savedInstanceState != null) {
 
+      int layout = savedInstanceState.getInt("layout", -1);
+
+      if (layout > 0) {
+        mLayout = layout;
+      }
+    }
 
     return super.onCreateDialog(savedInstanceState);
   }
@@ -76,6 +86,14 @@ public class BottomSheetViewerFragment extends BottomSheetDialogFragment {
     CoordinatorLayout.Behavior behavior = params.getBehavior();
 
     if (behavior != null && behavior instanceof BottomSheetBehavior) {
+      if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Point size = new Point();
+        getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+        ((BottomSheetBehavior) behavior).setPeekHeight(size.y / 3);
+
+      }
+
+
       ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
     }
   }

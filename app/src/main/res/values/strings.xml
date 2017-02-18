@@ -2,6 +2,9 @@
     <string name="common_string_appname">Kore</string>
     <string name="common_string_next">Next</string>
     <string name="common_string_extended">Extended</string>
+    <string name="common_string_ok">OK</string>
+    <string name="common_string_change">Change</string>
+    <string name="common_string_close">Close</string>
 
     <string name="setuplayout_string_help">Click on the ❓ for mor details</string>
     <string name="setuplayout_string_hellowelcome">Hello and welcome</string>
@@ -29,5 +32,87 @@
     <string name="setuplayout_string_passwordhelp">
         To get help by choosing the right password click the ❓
     </string>
-
+    <string name="setuplayout_string_cancelextended">No, get me out!</string>
+    <string name="setuplayout_string_hintextended">Uhh, an expert coming along!</string>
+    <string name="setuplayout_string_extenedcontinue">Yes, continue</string>
+    <string name="setuplayout_string_setuptext">Setup</string>
+    <string name="setuplayout_string_enteredpimsdontmatch">The entered PIMs don\'t match!</string>
+    <string name="setuplayout_string_pimhint">
+        Your entered PIM seems to be a bit low! You should use a 5 digit number between 20000 and 30000. Check help if
+        you\'re not sure.
+    </string>
+    <string name="setuplayout_string_keeppim">Keep PIM</string>
+    <string name="setuplayout_string_pimhinthigh">
+        Your entered PIM seems to be a bit high! If you choose a high PIM the app may slow down significantly. Check
+        help if you\'re not sure.
+    </string>
+    <string name="setuplayout_string_passwordsdontmatch">Passwords don\'t match!</string>
+    <string name="setuplayout_string_continueanyway">Continue anyway</string>
+    <string name="setuplayout_string_weakpasswordhint">
+        Your password doesn\'t seem to be safe enough! Check help for more information.
+    </string>
+    <string name="setuplayout_string_setuperror">
+        Error during setup. Please try again. If it still fails, please select another password.
+    </string>
+    <string name="setuplayout_string_helptext1">
+        In this app you can easily store all of your passwords. You may know this because the small description from
+        this app and the PlayStore site already told you.
+    </string>
+    <string name="setuplayout_string_helptext2">
+        To store your passwords this app uses an 256bit encrypted database which is state of the art of encrypting
+        files.
+    </string>
+    <string name="setuplayout_string_helptext3">
+        Here may be some more text but I\'m to lazy to write even more text.
+    </string>
+    <string name="setuplayout_string_helpheader">Help!</string>
+    <string name="setuplayout_string_helppassword1">First of all you have to ask this few questions:\n\t1.\tIs the
+        password \"burtforcable\". This means can it be guessed by trying all possibilities. This happens if your
+        password has less than 8 characters and has not much diversity. (This is what called entropy, which is the
+        little view beneath the password input, which will be there some time in the future).\n
+        \t2.\tMay your password appear in some password dictionaries. These dictionaries are leaked password databases
+        from some companies which got hacked by some bad guys. If your password is pretty simple it may appear in one of
+        these dictionaries and can be guessed easily.
+    </string>
+    <string name="setuplayout_string_helppassword2">
+        So choosing \"password\" as password is pretty bad. Also \"password123\" is not good.
+    </string>
+    <string name="setuplayout_string_helppassword3">
+        Now how to choose a good password? First way is to choose three to four random words which (and this is
+        important) are not so common to speak or write. If you choose a password like this your password is long enough
+        not to be brutforced and is not this likely to be found in a dictionary.\nSounds good, doesn\'t it?
+    </string>
+    <string name="setuplayout_string_helppassword4">
+        To get an even better password (and annoy almost everyone) just put an underscore (\"_\") right in the middle
+        of your word sequence. Or an ampersand (\"&amp;\") right in the middle of a
+        word like \"horse\" becomes \"ho&amp;rse\".
+    </string>
+    <string name="setuplayout_string_helppassword5">
+        And the second way is the old fashioned way to choose a password. Choose randomly more (a lot more) than 8 upper
+        and lower case letters, some digits and special characters. This way your password is hard to brutforce and the
+        possibility to find this in a password dictionary is pretty low.\n
+        Of course these passwords are hard to remember, so don\'t forget it.
+    </string>
+    <string name="setuplayout_string_helpsubheader">
+        So this little help is supposed to help you to find the right password.
+    </string>
+    <string name="setuplayout_string_helpextended1">
+        Because you are an expert you probably know how to choose a password. If you don\'t know here\'s the TL;DR
+        version:\n\t1.\tChoose a password with a high entropy. So many different characters in your password so it
+        cannot be brutforced easily.\n\t2.\tYour password should be unique so it doesn\'t appear in any password
+        dictionary. If you choose words as password, select 4 random uncommon words and put a special character like
+        &amp; or an underscore \'_\' somewhere in your password.
+    </string>
+    <string name="setuplayout_string_helpextended2">
+        So what\'s this PIM?\nPIM stands for \"Personal Iterations Multiplier\" and is a simple number. This number is
+        used by the generation for the final password to encrypt the database. So it\'s the number of iterations used
+        for the key derivation.
+    </string>
+    <string name="setuplayout_string_helpextended3">
+        If you choose your own PIM it should be a five digit number between 20,000 and 30,000. Though the developer of
+        the encrypted database library says on his website if a password is set the PIM should be about 10000. But to
+        provide more security the generated and your selected PIM should be a little bit higher. But the PIM shouldn\'t
+        be to high because the login and setup will take ages and you won\'t have a good experience and using the app
+        will be annoying.
+    </string>
 </resources>

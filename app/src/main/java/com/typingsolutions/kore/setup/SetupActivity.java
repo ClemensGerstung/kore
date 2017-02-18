@@ -39,6 +39,13 @@ public class SetupActivity extends AppCompatActivity {
   private AppCompatButton mButtonAsNextOrSetup;
   private KoreApplication mKoreApplication;
 
+  private final int[] mHelpViews =
+      {
+          R.layout.setup_help_1,
+          R.layout.setup_help_2,
+          R.layout.setup_help_3
+      };
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -85,7 +92,7 @@ public class SetupActivity extends AppCompatActivity {
       int currentItem = mViewPagerAsContentWrapper.getCurrentItem();
       if (currentItem == 0) {
         mViewPagerAsContentWrapper.setCurrentItem(1, true);
-        mButtonAsNextOrSetup.setText("Setup");
+        mButtonAsNextOrSetup.setText(R.string.setuplayout_string_setuptext);
         mButtonAsNextOrSetup.setEnabled(false);
 
         mTextViewAsHint.animate()
@@ -132,8 +139,8 @@ public class SetupActivity extends AppCompatActivity {
 
     mButtonAsExtended.setOnClickListener(v -> {
       AlertBuilder.create(this)
-          .setMessage("Uhh, an expert coming along!")
-          .setPositiveButton("Yes, continue", (dialog, which) -> {
+          .setMessage(R.string.setuplayout_string_hintextended)
+          .setPositiveButton(getString(R.string.setuplayout_string_extenedcontinue), (dialog, which) -> {
             IPasswordProvider password = (IPasswordProvider) mSetupPageAdapter.getItem(1);
             IPasswordProvider extended = (IPasswordProvider) mSetupPageAdapter.getItem(2);
 
@@ -149,14 +156,23 @@ public class SetupActivity extends AppCompatActivity {
                 .start();
             mButtonAsNextOrSetup.setEnabled(false);
           })
-          .setNegativeButton("No, get me out!", null)
+          .setNegativeButton(getString(R.string.setuplayout_string_cancelextended), null)
           .show();
     });
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setuplayout_fab_expandBottom);
     fab.setOnClickListener(v -> {
-      BottomSheetDialogFragment fragment = BottomSheetViewerFragment.create(R.layout.setup_fragment_1);
-      fragment.show(getSupportFragmentManager(), fragment.getTag());
+      int layout = mHelpViews[mViewPagerAsContentWrapper.getCurrentItem()];
+
+      if (getResources().getBoolean(R.bool.common_bool_istablet)) {
+        AlertBuilder.create(this)
+            .setView(layout)
+            .setPositiveButton(getString(R.string.common_string_close), null)
+            .show();
+      } else {
+        BottomSheetDialogFragment fragment = BottomSheetViewerFragment.create(layout);
+        fragment.show(getSupportFragmentManager(), fragment.getTag());
+      }
     });
   }
 
@@ -203,8 +219,8 @@ public class SetupActivity extends AppCompatActivity {
     int pim = 0;
     if (!pim1.equals(pim2)) {
       AlertBuilder.create(this)
-          .setMessage("The entered PIMs don't match!")
-          .setPositiveButton("OK", null)
+          .setMessage(R.string.setuplayout_string_enteredpimsdontmatch)
+          .setPositiveButton(getString(R.string.common_string_ok), null)
           .show();
 
       return pim;
@@ -216,9 +232,9 @@ public class SetupActivity extends AppCompatActivity {
 
       if (pim < 20000) {
         AlertBuilder.create(this)
-            .setMessage("Your entered PIM seems to be a bit low! You should use a 5 digit number between 20000 and 30000.\nCheck help if you're not sure.")
-            .setPositiveButton("Change", null)
-            .setNegativeButton("Keep PIM", (dialog, which) -> checkPassword(pw, rp, finalPim))
+            .setMessage(R.string.setuplayout_string_pimhint)
+            .setPositiveButton(getString(R.string.common_string_change), null)
+            .setNegativeButton(getString(R.string.setuplayout_string_keeppim), (dialog, which) -> checkPassword(pw, rp, finalPim))
             .show();
 
         return -1;
@@ -226,9 +242,9 @@ public class SetupActivity extends AppCompatActivity {
 
       if (pim > 30000) {
         AlertBuilder.create(this)
-            .setMessage("Your entered PIM seems to be a bit high! If you choose a high PIM the mKoreApplication may slow down significantly.\nCheck help if you're not sure.")
-            .setPositiveButton("Change", null)
-            .setNegativeButton("Keep PIM", (dialog, which) -> checkPassword(pw, rp, finalPim))
+            .setMessage(R.string.setuplayout_string_pimhinthigh)
+            .setPositiveButton(getString(R.string.common_string_change), null)
+            .setNegativeButton(getString(R.string.setuplayout_string_keeppim), (dialog, which) -> checkPassword(pw, rp, finalPim))
             .show();
 
         return -1;
@@ -241,8 +257,8 @@ public class SetupActivity extends AppCompatActivity {
   private void checkPassword(String pw, CharSequence rp, int pim) {
     if (!pw.equals(rp.toString())) {
       AlertBuilder.create(this)
-          .setMessage("Passwords don't match!")
-          .setPositiveButton("OK", null)
+          .setMessage(R.string.setuplayout_string_passwordsdontmatch)
+          .setPositiveButton(getString(R.string.common_string_ok), null)
           .show();
 
       return;
@@ -250,9 +266,9 @@ public class SetupActivity extends AppCompatActivity {
 
     if (!pw.matches(Constants.REGEX_PASSWORD_SAFETY)) {
       AlertBuilder.create(this)
-          .setMessage("Your password doesn't seem to be safe enough! Check help for more information.")
-          .setPositiveButton("Change", null)
-          .setNegativeButton("Continue anyway", (dialog, which) -> setup(pw, pim))
+          .setMessage(R.string.setuplayout_string_weakpasswordhint)
+          .setPositiveButton(getString(R.string.common_string_change), null)
+          .setNegativeButton(getString(R.string.setuplayout_string_continueanyway), (dialog, which) -> setup(pw, pim))
           .show();
     }
   }
@@ -262,8 +278,8 @@ public class SetupActivity extends AppCompatActivity {
       int calcPim = calcPim(pw);
       if (calcPim <= 0) {
         AlertBuilder.create(this)
-            .setMessage("Error during setup. Please try again.\nIf it still fails, please select another password.")
-            .setPositiveButton("OK", null)
+            .setMessage(R.string.setuplayout_string_setuperror)
+            .setPositiveButton(getString(R.string.common_string_ok), null)
             .show();
 
         return;
