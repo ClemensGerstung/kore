@@ -1,0 +1,46 @@
+image: jacekmarchwicki/android:java8-r25
+stages:
+  - build
+  - test
+  
+before_script:
+  - chmod +x ./gradlew
+  - cp -r $ANDROID_HOME/tools/templates/gradle/wrapper/gradle gradle/
+  # Upgrade to Version 3.3
+  - sed -i '/distributionUrl=/c\distributionUrl=http://services.gradle.org/distributions/gradle-3.3-all.zip' gradle/wrapper/gradle-wrapper.properties
+  # License BS
+  - mkdir -p "$ANDROID_HOME/licenses"
+  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - echo -e "\nd975f751698a77b662f1254ddbeed3901e976f5a" > "$ANDROID_HOME/licenses/intel-android-extra-license"
+
+build-debug:
+  stage: build
+  script:
+    - ./gradlew assembleDebug
+  artifacts:
+    expire_in: 4 weeks
+    paths:
+      - app/build/outputs/
+  except:
+    - tags
+
+build-release:
+  stage: build
+  script:
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+      - app/build/outputs/
+  only:
+    - tags
+    
+unitTests:
+  stage: test
+  script:
+    - ./gradlew test
+    
+cache:
+  paths:
+     - /root/.gradle/wrapper
+     - /root/.gradle/caches
