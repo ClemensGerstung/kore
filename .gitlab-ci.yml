@@ -41,6 +41,7 @@ unitTests:
     - ./gradlew test
     
 cache:
+  key: sharedcache
   paths:
      - /root/.gradle/wrapper
      - /root/.gradle/caches
