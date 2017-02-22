@@ -7,7 +7,7 @@ import net.sqlcipher.database.SQLiteDatabaseHook;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
 public class DatabaseConnection extends SQLiteOpenHelper {
-  private static final String NAME = "database.db";
+  public static final String NAME = "kore.db";
   private static final int VERSION = 1;
 
 

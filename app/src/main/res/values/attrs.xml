@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditText">
+        <attr name="support_elevation" format="dimension" />
+        <attr name="support_translationZ" format="dimension" />
+    </declare-styleable>
+</resources>

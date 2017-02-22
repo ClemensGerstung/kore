@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme"
+        tools:context="com.typingsolutions.kore.login.LoginActivity">
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticalimagedelimiterstart"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticalimagedelimiterend"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticaledittextdelimiterstart"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticaledittextdelimiterend"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_center"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"/>
+
+    <ImageView android:layout_width="@dimen/zero"
+               android:layout_height="@dimen/zero"
+               app:layout_constraintDimensionRatio="1:1"
+               android:background="@drawable/circle"
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticalimagedelimiterend"
+               app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticalimagedelimiterstart"
+               app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <android.support.v7.widget.EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/roundedrechtangle"
+            android:inputType="textPassword"
+            android:hint="@string/loginlayout_string_password"
+            app:support_elevation="@dimen/sm"
+            app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticaledittextdelimiterend"
+            app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticaledittextdelimiterstart"
+            app:layout_constraintBottom_toTopOf="@+id/setuplayout_guideline_center"
+            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_center"/>
+</android.support.constraint.ConstraintLayout>

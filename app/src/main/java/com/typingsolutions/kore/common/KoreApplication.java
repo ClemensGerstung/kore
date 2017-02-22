@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import java.io.File;
+
 
 public class KoreApplication extends Application {
 
@@ -30,6 +32,12 @@ public class KoreApplication extends Application {
     if(mDatabaseConnection != null) {
       mDatabaseConnection.close();
     }
+  }
+
+  public boolean wasSetup() {
+    File f = getDatabasePath(DatabaseConnection.NAME);
+
+    return f.exists();
   }
 
   public DatabaseConnection getDatabaseConnection() {

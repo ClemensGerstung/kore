@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.StateListAnimator;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import com.typingsolutions.kore.R;
 import com.typingsolutions.kore.common.*;
+import com.typingsolutions.kore.login.LoginActivity;
 import ui.NotSwipeableViewPager;
 
 import java.lang.reflect.Field;
@@ -51,6 +53,15 @@ public class SetupActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    mKoreApplication = (KoreApplication) getApplicationContext();
+
+    if(mKoreApplication.wasSetup()) {
+      Intent intent = new Intent(mKoreApplication, LoginActivity.class);
+      startActivity(intent);
+
+      finish();
+    }
+
     super.onCreate(savedInstanceState);
     setContentView(R.layout.setup_layout);
 
@@ -58,12 +69,13 @@ public class SetupActivity extends AppCompatActivity {
       getWindow().setStatusBarColor(0x44000000);
     }
 
-    mKoreApplication = (KoreApplication) getApplicationContext();
-    mKoreApplication.setOnDatabaseOpened(this::onDatabaseOpened);
 
     mViewPagerAsContentWrapper = (NotSwipeableViewPager) findViewById(R.id.setuplayout_viewpager_contenthost);
     mTextViewAsHint = (TextView) findViewById(R.id.setuplayout_textview_hint);
     mButtonAsExtended = (AppCompatButton) findViewById(R.id.setuplayout_button_extended);
+    mButtonAsNextOrSetup = (AppCompatButton) findViewById(R.id.setuplayout_button_next);
+    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setuplayout_fab_expandBottom);
+    AppBarLayout header = (AppBarLayout) findViewById(R.id.setuplayout_appbarlayout_header);
 
     mSetupPageAdapter = new SimplePagerAdapter(getSupportFragmentManager(), new Fragment[]
         {
@@ -75,15 +87,11 @@ public class SetupActivity extends AppCompatActivity {
     mViewPagerAsContentWrapper.canSwipe(false);
     mViewPagerAsContentWrapper.setAdapter(mSetupPageAdapter);
 
-    AppBarLayout header = (AppBarLayout) findViewById(R.id.setuplayout_appbarlayout_header);
     setAppbarElevation(header);
 
-    mButtonAsNextOrSetup = (AppCompatButton) findViewById(R.id.setuplayout_button_next);
+    mKoreApplication.setOnDatabaseOpened(this::onDatabaseOpened);
     mButtonAsNextOrSetup.setOnClickListener(this::onNextOrSetupClicked);
-
     mButtonAsExtended.setOnClickListener(this::onExtendedClicked);
-
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setuplayout_fab_expandBottom);
     fab.setOnClickListener(this::onHelpButtonClicked);
   }
 

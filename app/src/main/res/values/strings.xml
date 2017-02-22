@@ -115,4 +115,5 @@
         be to high because the login and setup will take ages and you won\'t have a good experience and using the app
         will be annoying.
     </string>
+    <string name="loginlayout_string_password">Password</string>
 </resources>
