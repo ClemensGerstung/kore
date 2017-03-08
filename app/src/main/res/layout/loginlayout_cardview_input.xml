@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/loginlayout_cardview_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="@string/loginlayout_string_password"
+        app:cardElevation="@dimen/xs"
+        app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticaledittextdelimiterend"
+        app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticaledittextdelimiterstart"
+        app:layout_constraintBottom_toTopOf="@+id/setuplayout_guideline_center"
+        app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_center">
+    <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:layout_margin="@dimen/sm"
+            android:inputType="textPassword"
+            android:id="@+id/loginlayout_edittext_password"/>
+</android.support.v7.widget.CardView>

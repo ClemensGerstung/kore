@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme"
+        tools:context="com.typingsolutions.kore.login.LoginActivity">
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticalimagedelimiterstart"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.3"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticalimagedelimiterend"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.7"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticaledittextdelimiterstart"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_verticaledittextdelimiterend"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75"/>
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/setuplayout_guideline_center"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5"/>
+
+    <include layout="@layout/loginlayout_imageview_background"/>
+
+    <include layout="@layout/loginlayout_cardview_input"/>
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/loginlayout_fab_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/md"
+            android:clickable="true"
+            app:srcCompat="@drawable/lockopen"
+            app:elevation="@dimen/fab_resting"
+            app:pressedTranslationZ="@dimen/fab_resting"
+            app:backgroundTint="@color/primary"
+            app:rippleColor="@color/primaryDark"
+            app:layout_constraintTop_toBottomOf="@+id/loginlayout_cardview_password"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+</android.support.constraint.ConstraintLayout>

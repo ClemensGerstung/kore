@@ -9,12 +9,12 @@
     <string name="setuplayout_string_help">Click on the ❓ for mor details</string>
     <string name="setuplayout_string_hellowelcome">Hello and welcome</string>
     <string name="setuplayout_string_smallexplanaition">
-        To this awesome App!\n\n
+        To this awesome App!\n
         You\'re on the right way to safely keep your most important things (the access data to all of your accounts)
-        right next to you in your pocket.\n\n
+        right next to you in your pocket.\n
         This App lets you do this in a nice and easy way. I (the developer) hope you enjoy this app the little time you
-        going to use it.\n\n
-        In the next step you have to setup your master password so don\'t wait and hit "setup"👇
+        going to use it.\n
+        In the next step you have to setup your master password so don\'t wait and hit "setup"
     </string>
     <string name="setuplayout_string_setmasterpassword">Set your master password</string>
     <string name="setuplayout_string_enterpassword">Enter your password</string>

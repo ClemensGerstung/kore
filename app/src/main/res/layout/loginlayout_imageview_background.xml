@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+           xmlns:app="http://schemas.android.com/apk/res-auto"
+           android:layout_width="@dimen/zero"
+           android:layout_height="@dimen/zero"
+           android:background="@drawable/circle"
+           app:layout_constraintDimensionRatio="1:1"
+           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticalimagedelimiterend"
+           app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticalimagedelimiterstart"
+           app:layout_constraintBottom_toBottomOf="parent"/>

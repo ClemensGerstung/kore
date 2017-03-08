@@ -13,28 +13,28 @@
             android:layout_height="wrap_content"
             android:id="@+id/setuplayout_guideline_verticalimagedelimiterstart"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25"/>
+            app:layout_constraintGuide_percent="0.3"/>
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/setuplayout_guideline_verticalimagedelimiterend"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75"/>
+            app:layout_constraintGuide_percent="0.7"/>
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/setuplayout_guideline_verticaledittextdelimiterstart"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.1"/>
+            app:layout_constraintGuide_percent="0.25"/>
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/setuplayout_guideline_verticaledittextdelimiterend"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.9"/>
+            app:layout_constraintGuide_percent="0.75"/>
 
     <android.support.constraint.Guideline
             android:layout_width="wrap_content"
@@ -43,24 +43,24 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.5"/>
 
-    <ImageView android:layout_width="@dimen/zero"
-               android:layout_height="@dimen/zero"
-               app:layout_constraintDimensionRatio="1:1"
-               android:background="@drawable/circle"
-               app:layout_constraintTop_toTopOf="parent"
-               app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticalimagedelimiterend"
-               app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticalimagedelimiterstart"
-               app:layout_constraintBottom_toBottomOf="parent"/>
+    <include layout="@layout/loginlayout_imageview_background"/>
 
-    <android.support.v7.widget.EditText
-            android:layout_width="0dp"
+    <include layout="@layout/loginlayout_cardview_input"/>
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/loginlayout_fab_login"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/roundedrechtangle"
-            android:inputType="textPassword"
-            android:hint="@string/loginlayout_string_password"
-            app:support_elevation="@dimen/sm"
-            app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticaledittextdelimiterend"
-            app:layout_constraintLeft_toLeftOf="@+id/setuplayout_guideline_verticaledittextdelimiterstart"
-            app:layout_constraintBottom_toTopOf="@+id/setuplayout_guideline_center"
-            app:layout_constraintTop_toTopOf="@+id/setuplayout_guideline_center"/>
+            android:layout_margin="@dimen/md"
+            android:clickable="true"
+            app:srcCompat="@drawable/lockopen"
+            app:elevation="@dimen/fab_resting"
+            app:pressedTranslationZ="@dimen/fab_resting"
+            app:backgroundTint="@color/primary"
+            app:rippleColor="@color/primaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"/>
+
 </android.support.constraint.ConstraintLayout>

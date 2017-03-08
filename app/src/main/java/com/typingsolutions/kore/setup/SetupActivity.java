@@ -204,6 +204,7 @@ public class SetupActivity extends AppCompatActivity {
 
   @TargetApi(21)
   private void setAppbarElevation(AppBarLayout appbar) {
+    if(Build.VERSION.SDK_INT < 21) return;
     StateListAnimator stateListAnimator = new StateListAnimator();
     stateListAnimator.addState(new int[0],
         ObjectAnimator.ofFloat(appbar,
