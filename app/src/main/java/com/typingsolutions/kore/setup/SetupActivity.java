@@ -5,6 +5,7 @@ import android.animation.StateListAnimator;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,12 +38,15 @@ import java.util.Random;
 // lower mid (yellow) -> everything below is bad, and +20 is good?
 
 public class SetupActivity extends AppCompatActivity {
+
+  public static final String NAME = SetupActivity.class.getName();
+
   private NotSwipeableViewPager mViewPagerAsContentWrapper;
   private TextView mTextViewAsHint;
   private SimplePagerAdapter mSetupPageAdapter;
   private AppCompatButton mButtonAsExtended;
   private AppCompatButton mButtonAsNextOrSetup;
-  private KoreApplication mKoreApplication;
+  KoreApplication mKoreApplication;
 
   private final int[] mHelpViews =
       {
@@ -217,26 +221,6 @@ public class SetupActivity extends AppCompatActivity {
     mButtonAsNextOrSetup.setEnabled(enable);
   }
 
-  int calcPim(String password) {
-    try {
-      MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
-      shaDigest.update(password.getBytes());
-
-      BigInteger integer = new BigInteger(shaDigest.digest());
-      Random r = new Random(integer.longValue());
-      int pim = r.nextInt(10000) + 20000;
-      Log.d(getClass().getSimpleName(), "SETUPPIM: " + pim);
-
-      shaDigest.reset();
-
-      return pim;
-    } catch (NoSuchAlgorithmException e) {
-      Log.d(getClass().getSimpleName(), "FAIL! " + e.getMessage());
-
-      return -1;
-    }
-  }
-
   private int checkPim(final String pw, final CharSequence rp, String pim1, String pim2) {
     int pim = 0;
     if (!pim1.equals(pim2)) {
@@ -251,6 +235,12 @@ public class SetupActivity extends AppCompatActivity {
     if (!pim1.isEmpty()) {
       pim = Integer.parseInt(pim1);
       final int finalPim = pim;
+
+      SharedPreferences pref = getSharedPreferences(NAME, MODE_PRIVATE);
+      SharedPreferences.Editor edit = pref.edit();
+      edit.putBoolean("pim", true);
+      edit.apply();
+      boolean b = edit.commit();
 
       if (pim < 20000) {
         AlertBuilder.create(this)
@@ -297,7 +287,7 @@ public class SetupActivity extends AppCompatActivity {
 
   private void setup(String pw, int pim) {
     if (pim == 0) {
-      int calcPim = calcPim(pw);
+      int calcPim = mKoreApplication.calculatePIM(pw);
       if (calcPim <= 0) {
         AlertBuilder.create(this)
             .setMessage(R.string.setuplayout_string_setuperror)

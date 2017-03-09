@@ -96,7 +96,7 @@ public class ExtendSetupFragment extends Fragment implements IPasswordProvider {
 
     SetupActivity activity = (SetupActivity) getActivity();
 
-    int calcPim = activity.calcPim(mEditTextAsEnterPassword.getText().toString());
+    int calcPim = activity.mKoreApplication.calculatePIM(mEditTextAsEnterPassword.getText().toString());
     mTextViewAsPIMHint.setText(mBackupText.replace("${_pim_}", Integer.toString(calcPim)));
   }
 }
