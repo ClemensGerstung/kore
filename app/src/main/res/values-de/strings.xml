@@ -5,6 +5,7 @@
     <string name="common_string_extended">Erweitert</string>
     <string name="common_string_ok">OK</string>
     <string name="common_string_change">Ändern</string>
+    <string name="common_string_cancel">Abbrechen</string>
 
     <string name="setuplayout_string_help">Klicke auf das ❓ für mehr Details</string>
     <string name="setuplayout_string_hellowelcome">Hallo und willkommen!</string>

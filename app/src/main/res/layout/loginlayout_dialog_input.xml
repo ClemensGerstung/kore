@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.TextInputLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/xs"
+        app:passwordToggleEnabled="true"
+        android:theme="@style/StandardEditText"
+        android:layout_marginStart="@dimen/md"
+        android:layout_marginEnd="@dimen/md">
+    <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Please enter your PIM"
+            android:inputType="number"
+            android:id="@+id/loginlayout_edittext_pim"/>
+</android.support.design.widget.TextInputLayout>

@@ -5,6 +5,8 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.support.design.widget.TextInputEditText
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatEditText
 import com.typingsolutions.kore.R
@@ -12,20 +14,19 @@ import com.typingsolutions.kore.common.AlertBuilder
 import com.typingsolutions.kore.common.EventArgs
 import com.typingsolutions.kore.common.IEvent
 import com.typingsolutions.kore.common.KoreApplication
-import com.typingsolutions.kore.setup.SetupActivity
 
 class LoginActivity : AppCompatActivity() {
     lateinit var mEditTextAsPassword: AppCompatEditText
     lateinit var mFabAsLogin: FloatingActionButton
     lateinit var mApplication: KoreApplication
 
-    val databaseCallback = IEvent<Int> { sender: Any, e: EventArgs<Int> ->
+    val databaseCallback = IEvent<Int> { _: Any, e: EventArgs<Int> ->
         val exitCode = e.data
 
         if(exitCode == 0) {
-            // TODO: login
+            // TODO: start overview activity
         } else {
-            Snackbar.make(mFabAsLogin, "WRONG", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(mFabAsLogin, "You have entered a wrong password", Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -44,13 +45,17 @@ class LoginActivity : AppCompatActivity() {
 
     fun login() {
         val password = mEditTextAsPassword.text.toString()
-        val ownPim = getSharedPreferences(SetupActivity.NAME, Context.MODE_PRIVATE).getBoolean("pim", false)
-        var pim: Int = 0
+        var pim: Int
 
-        if(ownPim) {
+        if(mApplication.hasCustomPIM()) {
             AlertBuilder.create(this)
-                    .setMessage("Enter your pim...")
-                    .setPositiveButton("OK", { dialog, which ->  /*TODO*/})
+                    .setView(R.layout.loginlayout_dialog_input)
+                    .setPositiveButton(getString(R.string.common_string_ok), { dialog, _ ->
+                        val editText = (dialog as AlertDialog).findViewById(R.id.loginlayout_edittext_pim) as TextInputEditText
+                        pim = (editText.text.toString()).toInt()
+                        mApplication.openDatabaseConnection(password, pim)
+                    })
+                    .setNegativeButton(getString(R.string.common_string_close))
                     .show()
 
             return
