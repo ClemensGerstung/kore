@@ -29,12 +29,12 @@ class KoreApplication : Application() {
     override fun onTerminate() {
         super.onTerminate()
 
-        if (mOpenDatabaseTask!!.status == AsyncTask.Status.RUNNING) {
-            mOpenDatabaseTask!!.cancel(true)
+        if (mOpenDatabaseTask?.status == AsyncTask.Status.RUNNING) {
+            mOpenDatabaseTask?.cancel(true)
         }
 
         if (databaseConnection != null) {
-            databaseConnection!!.close()
+            databaseConnection?.close()
         }
     }
 
@@ -65,7 +65,7 @@ class KoreApplication : Application() {
         databaseConnection = DatabaseConnection(this, password, pim)
         mOpenDatabaseTask = OpenDatabaseAsyncTask(databaseConnection!!, mHandler)
 
-        mOpenDatabaseTask!!.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        mOpenDatabaseTask?.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     fun setOnDatabaseOpened(onDatabaseOpened: IEvent<Int>) {
