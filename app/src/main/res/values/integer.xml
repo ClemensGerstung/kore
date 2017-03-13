@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="animation_duration">250</integer>
-    <item name="zoom_small" format="float" type="dimen">0.5</item>
-    <integer name="zoom_anim_slide_start_offset">50</integer>
-</resources>
