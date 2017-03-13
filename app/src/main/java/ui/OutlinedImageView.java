@@ -1,16 +1,13 @@
 package ui;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.drawable.PaintDrawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
-public class OutlinedImageView extends ImageView {
+public class OutlinedImageView extends android.support.v7.widget.AppCompatImageView {
 
   private static final Paint BLUE_ANTI_ALIASED;
   private static final Paint GREY_ANTI_ALIASED;
@@ -39,11 +36,6 @@ public class OutlinedImageView extends ImageView {
 
   public OutlinedImageView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-  }
-
-  @TargetApi(21)
-  public OutlinedImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
   }
 
   @Override

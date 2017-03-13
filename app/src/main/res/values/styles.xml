@@ -1,57 +1,41 @@
 <resources>
-    <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="colorPrimary">@color/primary</item>-->
-        <!--<item name="colorPrimaryDark">@color/mediumgrey</item>-->
-        <!--<item name="android:textColorPrimary">@color/white</item>-->
-        <item name="android:textCursorDrawable">@null</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
+
         <item name="colorControlNormal">@color/primary</item>
         <item name="colorControlActivated">@color/primaryLight</item>
-        <!--<item name="colorControlHighlight">#BBDEFB</item>-->
-        <item name="android:itemTextAppearance">@style/CustomMenu</item>
-        <item name="android:windowIsTranslucent">true</item>
+
+        <item name="android:textCursorDrawable">@null</item>
     </style>
 
-    <style name="Theme.Transparent" parent="Base.AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
+    <style name="CardHeaderText" parent="TextAppearance.AppCompat.Title">
+        <item name="android:padding">@dimen/md</item>
+        <item name="android:textSize">@dimen/font_primary</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Base.AlertDialog.LoginStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorControlNormal">@color/primary</item>
-        <item name="colorControlActivated">@color/primary</item>
-        <!--<item name="colorControlHighlight">@color/primaryLight</item>-->
-        <item name="buttonBarButtonStyle">@style/AlertDialog.ButtonBar.PositiveButton</item>
-        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
-        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
-    </style>
-
-    <style name="Base.AppTheme.Detail" parent="Base.AppTheme">
-        <item name="android:itemTextAppearance">@style/CustomMenu.Light</item>
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-    <style name="Base.AppTheme.Create" parent="Base.AppTheme">
-
-    </style>
-
-    <style name="CustomMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+    <style name="NormalText">
+        <item name="android:padding">@dimen/md</item>
+        <item name="android:textSize">@dimen/font_secondary</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/dimen_lg</item>
     </style>
 
-    <style name="CustomMenu.Light" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
-        <item name="android:textColor">@color/white</item>
+    <style name="HintText" parent="NormalText">
+        <item name="android:padding">@dimen/zero</item>
+        <item name="android:paddingStart">@dimen/md</item>
+        <item name="android:paddingEnd">@dimen/md</item>
+        <item name="android:textColor">@color/graphite</item>
     </style>
 
-    <style name="PasswordOverviewItem" parent="@android:style/Widget.ListView">
-        <item name="android:color">@color/white</item>
+    <style name="ColoredButton">
+        <item name="android:layout_margin">@dimen/sm</item>
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="android:padding">@dimen/xxs</item>
     </style>
 
-    <style name="standardEditText" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="StandardEditText">
         <item name="colorControlNormal">@color/mediumgrey</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textCursorDrawable">@null</item>
@@ -60,40 +44,19 @@
         <item name="colorControlActivated">@color/primary</item>
     </style>
 
-    <style name="CreatePasswordDetail" parent="Base.AppTheme">
-        <item name="android:itemTextAppearance">@style/CustomMenu.Light</item>
+    <style name="ColoredAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="colorControlActivated">@color/primary</item>
+        <!--<item name="colorControlHighlight">@color/primaryLight</item>-->
+        <item name="buttonBarButtonStyle">@style/ColoredBorderlessButton</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
     </style>
 
-    <style name="CreatePassword.EditText" parent="standardEditText">
-        <item name="android:textColorHint">@color/graphite</item>
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/font_md</item>
-        <item name="colorControlActivated">@color/darkgrey</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-
-    <style name="CreatePassword.EditText.Header" parent="standardEditText">
-        <item name="colorControlActivated">@color/white</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorHint">#88FFFFFF</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/createpassword_program_textsize</item>
-    </style>
-
-    <style name="CreatePassword.Button" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/font_sm</item>
-        <item name="android:padding">@dimen/dimen_md</item>
-        <item name="android:minHeight">@dimen/dimen_xl</item>
-        <item name="android:radius">@dimen/dimen_sm</item>
-    </style>
-
-    <style name="AlertDialog.ButtonBar.PositiveButton" parent="Widget.AppCompat.Button.Borderless">
+    <style name="ColoredBorderlessButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/primary</item>
     </style>
 
-
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

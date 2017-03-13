@@ -1,86 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.typingsolutions.passwordmanager">
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS"/>-->
+          package="com.typingsolutions.kore">
 
     <application
+            android:name=".common.KoreApplication"
             android:allowBackup="true"
-            android:icon="@mipmap/icon"
-            android:backupAgent=".utils.PasswordManagerBackupManager"
-            android:label="@string/app_name">
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/common_string_appname"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
 
-        <service android:name=".services.LoginService"
-                 android:process=":Service"
-                 android:stopWithTask="false"
-                 tools:ignore="ExportedService">
-        </service>
+        <service android:name=".login.LoginService"
+                 android:process=":service"/>
 
-        <receiver android:name=".receiver.BootReceiver"
-                  android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".receiver.AutoDismissNotification"/>
-
-        <receiver android:name=".receiver.BackupHelper"/>
-
-        <activity
-                android:name=".activities.LoginActivity"
-                android:theme="@style/Base.AppTheme"
-                android:configChanges="orientation|keyboardHidden|screenSize"
-                android:label="@string/app_name">
+        <activity android:name=".setup.SetupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.PasswordOverviewActivity"
-                  android:theme="@style/Base.AppTheme"
-                  android:configChanges="orientation"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.SCREEN_OFF"/>
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".activities.CreatePasswordActivity"
-                  android:theme="@style/Base.AppTheme"
-                  android:label=""/>
-
-        <activity android:name=".activities.PasswordDetailActivity"
-                  android:windowSoftInputMode="stateHidden"
-                  android:theme="@style/Base.AppTheme"
-                  android:label=""/>
-
-        <activity android:name=".activities.AboutActivity"
-                  android:theme="@style/Base.AppTheme"
-                  android:label="About"/>
-
-        <activity android:name=".activities.BackupActivity"
-                  android:theme="@style/Base.AppTheme"
-                  android:windowSoftInputMode="stateHidden|adjustResize"
-                  android:label=""/>
-
-        <activity android:name=".activities.SetupActivity"
-                  android:theme="@style/Base.AppTheme"
-                  android:windowSoftInputMode="adjustResize"
-                  android:label=""/>
-
-        <activity android:name=".activities.RestoreActivity"
-                  android:theme="@style/Theme.Transparent"/>
-
-        <meta-data android:name="com.google.android.gms.version"
-                   android:value="@integer/google_play_services_version"/>
+        <activity android:name=".login.LoginActivity"/>
     </application>
+
 </manifest>

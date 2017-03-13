@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              style="@style/AppTheme">
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              style="@style/CardHeaderText"
+              android:text="@string/setuplayout_string_setmasterpassword"/>
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              style="@style/HintText"
+              android:text="@string/setuplayout_string_passwordhelp"/>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/xs"
+            app:passwordToggleEnabled="true"
+            android:theme="@style/StandardEditText"
+            android:layout_marginStart="@dimen/md"
+            android:layout_marginEnd="@dimen/md">
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/setuplayout_string_enterpassword"
+                android:inputType="textPassword"
+                android:id="@+id/setuplayout_edittext_passwordenter"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            android:theme="@style/StandardEditText"
+            android:layout_marginStart="@dimen/md"
+            android:layout_marginEnd="@dimen/md">
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/setuplayout_string_repeatpassword"
+                android:inputType="textPassword"
+                android:id="@+id/setuplayout_edittext_passwordrepeat"/>
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>

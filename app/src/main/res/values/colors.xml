@@ -3,6 +3,8 @@
     <color name="primary">#2196F3</color>
     <color name="primaryDark">#1976D2</color>
     <color name="primaryLight">#42A5F5</color>
+    <color name="accent">#CDDC39</color>
+    <color name="accentDark">#C0CA33</color>
 
     <color name="black">#000</color>
     <color name="darkgrey">#212121</color>
@@ -17,14 +19,5 @@
     <color name="blue">#039BE5</color>
 
     <color name="delete_red">#d50000</color>
-
     <color name="graphite">#616161</color>
-
-    <color name="createpassword_red">#B71C1C</color>
-    <color name="createpassword_yellow">#F57F17</color>
-    <color name="createpassword_green">#1B5E20</color>
-    <color name="createpassword_purple">#4A148C</color>
-    <color name="createpassword_lime">#827717</color>
-    <color name="createpassword_orange">#E65100</color>
-    <color name="createpassword_grey">#424242</color>
 </resources>
