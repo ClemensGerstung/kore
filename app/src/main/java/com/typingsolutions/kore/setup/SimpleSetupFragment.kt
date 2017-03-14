@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.typingsolutions.kore.R
+import com.typingsolutions.kore.common.ViewUtil
 
 class SimpleSetupFragment : Fragment(), IPasswordProvider {
     private lateinit var mEditTextAsEnterPassword: TextInputEditText
@@ -36,10 +37,8 @@ class SimpleSetupFragment : Fragment(), IPasswordProvider {
     }
 
     override fun cleanUp() {
-        val activity = activity as SetupActivity
-
-        activity.clearText(mEditTextAsEnterPassword)
-        activity.clearText(mEditTextAsRepeatPassword)
+        ViewUtil.clearText(mEditTextAsEnterPassword)
+        ViewUtil.clearText(mEditTextAsRepeatPassword)
 
         mEditTextAsEnterPassword.clearComposingText()
         mEditTextAsRepeatPassword.clearComposingText()

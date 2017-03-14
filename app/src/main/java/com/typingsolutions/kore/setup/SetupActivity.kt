@@ -274,24 +274,6 @@ class SetupActivity : AppCompatActivity() {
         mKoreApplication.openDatabaseConnection(pw, calcPim)
     }
 
-    internal fun <T : TextView> clearText(v: T?) {
-        if (v == null) return
-        try {
-            val text = v.text
-            val field = text.javaClass.getDeclaredField("mText")
-            field.isAccessible = true
-            var arr = field.get(text) as CharArray
-            arr = Arrays.copyOf(Constants.CHARS, arr.size)
-            field.set(text, arr)
-            v.text = ""
-        } catch (e: IllegalAccessException) {
-            Log.d(javaClass.simpleName, e.message)
-        } catch (e: NoSuchFieldException) {
-            Log.d(javaClass.simpleName, e.message)
-        }
-
-    }
-
     companion object {
         val NAME: String = SetupActivity::class.java.name
     }

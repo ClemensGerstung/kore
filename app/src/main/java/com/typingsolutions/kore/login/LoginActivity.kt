@@ -17,6 +17,7 @@ import com.typingsolutions.kore.R
 import com.typingsolutions.kore.common.AlertBuilder
 import com.typingsolutions.kore.common.IEvent
 import com.typingsolutions.kore.common.KoreApplication
+import com.typingsolutions.kore.common.ViewUtil
 
 class LoginActivity : AppCompatActivity() {
     lateinit var mEditTextAsPassword: AppCompatEditText
@@ -74,6 +75,9 @@ class LoginActivity : AppCompatActivity() {
             mBound = false
         }
 
+        ViewUtil.clearText(mEditTextAsPassword)
+        mEditTextAsPassword.clearComposingText()
+
         super.onStop()
     }
 
@@ -85,9 +89,16 @@ class LoginActivity : AppCompatActivity() {
             AlertBuilder.create(this)
                     .setView(R.layout.loginlayout_dialog_input)
                     .setPositiveButton(getString(R.string.common_string_ok), { dialog, _ ->
+                        // get
                         val editText = (dialog as AlertDialog).findViewById(R.id.loginlayout_edittext_pim) as TextInputEditText
                         pim = (editText.text.toString()).toInt()
+
+                        // login
                         mApplication.openDatabaseConnection(password, pim)
+
+                        // cleanup
+                        ViewUtil.clearText(editText)
+                        editText.clearComposingText()
                     })
                     .setNegativeButton(getString(R.string.common_string_close))
                     .show()
