@@ -7,21 +7,24 @@ import android.os.SystemClock
 import com.typingsolutions.kore.common.EventArgs
 
 internal class LoginHandler(val mService: LoginService, looper: Looper) : Handler(looper) {
+    var mTimeLeftBlocked: Long = 0
+
     override fun handleMessage(msg: Message?) {
         mService.OnBlocked?.callback(mService, null)
+        mTimeLeftBlocked = msg?.data?.getLong("time")!!
         var lastTime = SystemClock.elapsedRealtime()
 
         do {
             val time = SystemClock.elapsedRealtime()
-            val diff = lastTime - time
+            val diff = time - lastTime
             lastTime = time
 
-            mService.mTimeLeftBlocked = mService.mTimeLeftBlocked - diff
+            mTimeLeftBlocked -= diff
 
-            val percentage = mService.mTimeLeftBlocked.toFloat() / mService.mTimeTotalBlocked
+            val percentage = 100 - mTimeLeftBlocked.toFloat() / mService.mTimeTotalBlocked
             mService.OnTick?.callback(mService, EventArgs(percentage))
 
-            SystemClock.sleep(32)
+            SystemClock.sleep(200)
         } while (mService.IsBlocked)
 
         mService.OnUnblocked?.callback(mService, null)

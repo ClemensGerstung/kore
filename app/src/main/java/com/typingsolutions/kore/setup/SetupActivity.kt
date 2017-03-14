@@ -137,8 +137,6 @@ class SetupActivity : AppCompatActivity() {
             }
 
             checkPassword(pw, rp, pim)
-
-            setup(pw, pim)
         }
     }
 

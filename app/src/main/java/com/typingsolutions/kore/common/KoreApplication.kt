@@ -72,6 +72,14 @@ class KoreApplication : Application() {
         mHandler = OpenDatabaseHandler(onDatabaseOpened)
     }
 
+    fun closeDatabaseConnection() {
+        if(databaseConnection == null)
+            return
+
+        databaseConnection?.close()
+        databaseConnection = null
+    }
+
     fun calculatePIM(value: String): Int {
         val shaDigest = MessageDigest.getInstance("SHA-256")
         val bigInt: BigInteger

@@ -11,8 +11,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <service android:name=".login.LoginService"
-                 android:process=":service"/>
+        <service android:name=".login.LoginService"/>
 
         <activity android:name=".setup.SetupActivity">
             <intent-filter>

@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatEditText
+import android.util.Log
 import com.typingsolutions.kore.R
 import com.typingsolutions.kore.common.AlertBuilder
 import com.typingsolutions.kore.common.IEvent
@@ -27,10 +28,13 @@ class LoginActivity : AppCompatActivity() {
 
     val databaseCallback = IEvent<Int> { _, e ->
         val exitCode = e.data
+        Log.d(javaClass.simpleName, "ExitCode: " + exitCode)
 
-        if (exitCode == 0) {
+        if (exitCode == 1) {
+            mService.reset()
             // TODO: start overview activity
         } else {
+            mApplication.closeDatabaseConnection()
             mService.increaseTries()
             Snackbar.make(mFabAsLogin, "You have entered a wrong password", Snackbar.LENGTH_LONG).show()
         }
