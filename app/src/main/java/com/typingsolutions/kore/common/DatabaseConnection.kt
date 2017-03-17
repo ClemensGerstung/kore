@@ -28,9 +28,10 @@ class DatabaseConnection internal constructor(context: Context, private var mPas
         mPassword = null
     }
 
-    val writableDatabase: SQLiteDatabase?
+    val database: SQLiteDatabase
         @Synchronized get() {
-            if (mPassword == null || mPassword?.length == 0) return null
+            if (mPassword == null || mPassword?.length == 0)
+                throw IllegalStateException("no password set to open the database")
 
             return super.getWritableDatabase(mPassword)
         }
@@ -41,13 +42,15 @@ class DatabaseConnection internal constructor(context: Context, private var mPas
 
         private fun getDatabaseHook(pim: Int): SQLiteDatabaseHook {
             val iterations = Integer.toString(pim)
-            Log.d(DatabaseConnection::class.java.simpleName, iterations)
+//            Log.d(DatabaseConnection::class.java.simpleName, iterations)
 
             return object : SQLiteDatabaseHook {
-                override fun preKey(sqLiteDatabase: SQLiteDatabase) {}
+                override fun preKey(sqLiteDatabase: SQLiteDatabase) {
+                    sqLiteDatabase.rawExecSQL(String.format("PRAGMA kdf_iter = %s", iterations))
+                }
 
                 override fun postKey(sqLiteDatabase: SQLiteDatabase) {
-                    sqLiteDatabase.rawExecSQL(String.format("PRAGMA kdf_iter = %s", iterations))
+
                 }
             }
         }

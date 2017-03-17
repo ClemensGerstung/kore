@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
-import com.typingsolutions.kore.login.LoginService
 import com.typingsolutions.kore.setup.SetupActivity
 import net.sqlcipher.database.SQLiteDatabase
+import java.lang.Error
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.util.*
@@ -22,8 +22,7 @@ class KoreApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.d(javaClass.simpleName, "onCreate - Application")
-        SQLiteDatabase.loadLibs(this)
-
+        SQLiteDatabase.loadLibs(applicationContext)
     }
 
     override fun onTerminate() {

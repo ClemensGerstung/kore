@@ -12,6 +12,8 @@ import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatEditText
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import com.typingsolutions.kore.R
 import com.typingsolutions.kore.common.AlertBuilder
@@ -55,9 +57,11 @@ class LoginActivity : AppCompatActivity() {
             if (!mService.IsBlocked) {
                 login()
             } else {
-                Snackbar.make(mFabAsLogin, "You have entered a wrong password", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(mFabAsLogin, getString(R.string.loginlayout_string_wrongpassword), Snackbar.LENGTH_LONG).show()
             }
         }
+        mFabAsLogin.hide()
+        mEditTextAsPassword.addTextChangedListener(LoginTextWatcher())
     }
 
     override fun onStart() {
@@ -120,6 +124,24 @@ class LoginActivity : AppCompatActivity() {
 
         override fun onServiceDisconnected(name: ComponentName?) {
             mBound = false
+        }
+    }
+
+    inner class LoginTextWatcher : TextWatcher {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if(s.isNullOrEmpty()) {
+                mFabAsLogin.hide()
+            } else {
+                mFabAsLogin.show()
+            }
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+
         }
     }
 }

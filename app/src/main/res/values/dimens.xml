@@ -8,7 +8,11 @@
     <dimen name="xs">4dp</dimen>
     <dimen name="sm">8dp</dimen>
     <dimen name="md">16dp</dimen>
+    <dimen name="lg">24dp</dimen>
+    <dimen name="xl">32dp</dimen>
 
+
+    <dimen name="loginlayout_background_padding">@dimen/xl</dimen>
     <dimen name="fab_resting">6dp</dimen>
     <dimen name="activity_horizontal_margin">@dimen/zero</dimen>
     <dimen name="activity_vertical_margin">@dimen/zero</dimen>

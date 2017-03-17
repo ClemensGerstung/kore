@@ -124,5 +124,7 @@
         und etwas höher. Die PIM sollte allerdings nicht zu hoch sein, da sonst der Login und das Setup sehr lange
         brauchen werden und damit die Erfahrung mit der App schlechter und nervig wird.
     </string>
-    <string name="loginlayout_string_password">Password</string>
+    <string name="loginlayout_string_password">Passwort</string>
+    <string name="loginlayout_string_wrongpassword">Das eingegebene Passwort ist falsch</string>
+    <string name="loginlayout_string_enterpim">Bitte PIM eingeben</string>
 </resources>

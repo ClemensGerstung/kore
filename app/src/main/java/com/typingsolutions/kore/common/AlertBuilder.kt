@@ -41,7 +41,7 @@ class AlertBuilder {
     }
 
     fun setView(view: View): AlertBuilder {
-        dialog!!.setView(view)
+        dialog?.setView(view)
         return this
     }
 

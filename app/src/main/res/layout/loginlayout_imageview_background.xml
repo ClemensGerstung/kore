@@ -4,6 +4,8 @@
            android:layout_width="@dimen/zero"
            android:layout_height="@dimen/zero"
            android:background="@drawable/circle"
+           android:padding="@dimen/loginlayout_background_padding"
+           app:srcCompat="@drawable/security"
            app:layout_constraintDimensionRatio="1:1"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintRight_toRightOf="@+id/setuplayout_guideline_verticalimagedelimiterend"

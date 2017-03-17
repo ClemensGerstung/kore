@@ -117,4 +117,6 @@
         will be annoying.
     </string>
     <string name="loginlayout_string_password">Password</string>
+    <string name="loginlayout_string_wrongpassword">You have entered a wrong password</string>
+    <string name="loginlayout_string_enterpim">Please enter your PIM</string>
 </resources>
