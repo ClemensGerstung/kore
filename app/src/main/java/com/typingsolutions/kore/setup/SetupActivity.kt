@@ -19,6 +19,7 @@ import android.widget.TextView
 import com.typingsolutions.kore.R
 import com.typingsolutions.kore.common.*
 import com.typingsolutions.kore.login.LoginActivity
+import com.typingsolutions.kore.overview.OverviewActivity
 import ui.NotSwipeableViewPager
 import java.util.*
 
@@ -89,7 +90,8 @@ class SetupActivity : AppCompatActivity() {
             (mSetupPageAdapter!!.getItem(2) as IPasswordProvider).cleanUp()
 
 
-            // todo: start overview activity
+            val intent = Intent(this,  OverviewActivity::class.java)
+            mKoreApplication.startActivity(intent)
         }
     }
 

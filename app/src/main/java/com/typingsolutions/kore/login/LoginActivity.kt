@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputEditText
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatEditText
@@ -20,6 +21,7 @@ import com.typingsolutions.kore.common.AlertBuilder
 import com.typingsolutions.kore.common.IEvent
 import com.typingsolutions.kore.common.KoreApplication
 import com.typingsolutions.kore.common.ViewUtil
+import com.typingsolutions.kore.overview.OverviewActivity
 
 class LoginActivity : AppCompatActivity() {
     lateinit var mEditTextAsPassword: AppCompatEditText
@@ -35,7 +37,8 @@ class LoginActivity : AppCompatActivity() {
 
         if (exitCode == 1) {
             mService.reset()
-            // TODO: start overview activity
+            val intent = Intent(this,  OverviewActivity::class.java)
+            mApplication.startActivity(intent)
         } else {
             mApplication.closeDatabaseConnection()
             mService.increaseTries()

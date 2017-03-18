@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.LoginActivity"/>
+        <activity android:name=".overview.OverviewActivity"/>
     </application>
 
 </manifest>
