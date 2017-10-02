@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!--<android.support.constraint.Guideline-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/overviewlistitem_guideline_verticalimagedelimiterstart"-->
+    <!--android:orientation="vertical"-->
+    <!--app:layout_constraintGuide_percent="0.3"/>-->
+
+    <TextView android:layout_width="56dp"
+              android:layout_height="56dp"
+              android:background="@drawable/circle"
+              android:layout_margin="@dimen/md"
+              android:text="H"
+              android:gravity="center"
+              android:textSize="18sp"
+              android:id="@+id/overviewitemlayout_textview_teaser"/>
+
+    <TextView app:layout_constraintStart_toEndOf="@+id/overviewitemlayout_textview_teaser"
+              app:layout_constraintEnd_toEndOf="parent"
+              android:gravity="start"
+              android:text="program"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/sm"
+              android:textStyle="bold"
+              android:textColor="@color/black"
+              android:lines="1"
+              android:id="@+id/overviewitemlayout_textview_program"/>
+
+    <TextView app:layout_constraintStart_toEndOf="@+id/overviewitemlayout_textview_teaser"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/overviewitemlayout_textview_program"
+              android:gravity="start"
+              android:text="username"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/sm"
+              android:textColor="@color/graphite"
+              android:lines="1"
+              android:id="@+id/overviewitemlayout_textview_username"/>
+
+    <TextView app:layout_constraintStart_toEndOf="@+id/overviewitemlayout_textview_teaser"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toBottomOf="@+id/overviewitemlayout_textview_username"
+              android:gravity="start"
+              android:text="password"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_margin="@dimen/sm"
+              android:textColor="@color/graphite"
+              android:lines="1"
+              android:id="@+id/overviewitemlayout_textview_password"/>
+
+</android.support.constraint.ConstraintLayout>

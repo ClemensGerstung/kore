@@ -31,7 +31,7 @@ class DatabaseConnection internal constructor(context: Context, private var mPas
     val database: SQLiteDatabase
         @Synchronized get() {
             if (mPassword == null || mPassword?.length == 0)
-                throw IllegalStateException("no password set to open the database")
+                throw IllegalStateException("no mPasswordTextView set to open the database")
 
             return super.getWritableDatabase(mPassword)
         }

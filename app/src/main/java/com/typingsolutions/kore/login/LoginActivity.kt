@@ -9,7 +9,6 @@ import android.os.IBinder
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputEditText
-import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.AppCompatEditText
@@ -35,9 +34,9 @@ class LoginActivity : AppCompatActivity() {
         val exitCode = e.data
         Log.d(javaClass.simpleName, "ExitCode: " + exitCode)
 
-        if (exitCode == 1) {
+        if (!mService.IsBlocked && exitCode == 1) {
             mService.reset()
-            val intent = Intent(this,  OverviewActivity::class.java)
+            val intent = Intent(this, OverviewActivity::class.java)
             mApplication.startActivity(intent)
         } else {
             mApplication.closeDatabaseConnection()
@@ -56,13 +55,7 @@ class LoginActivity : AppCompatActivity() {
         mEditTextAsPassword = findViewById(R.id.loginlayout_edittext_password) as AppCompatEditText
         mFabAsLogin = findViewById(R.id.loginlayout_fab_login) as FloatingActionButton
 
-        mFabAsLogin.setOnClickListener {
-            if (!mService.IsBlocked) {
-                login()
-            } else {
-                Snackbar.make(mFabAsLogin, getString(R.string.loginlayout_string_wrongpassword), Snackbar.LENGTH_LONG).show()
-            }
-        }
+        mFabAsLogin.setOnClickListener { login() }
         mFabAsLogin.hide()
         mEditTextAsPassword.addTextChangedListener(LoginTextWatcher())
     }
@@ -132,7 +125,7 @@ class LoginActivity : AppCompatActivity() {
 
     inner class LoginTextWatcher : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            if(s.isNullOrEmpty()) {
+            if (s.isNullOrEmpty()) {
                 mFabAsLogin.hide()
             } else {
                 mFabAsLogin.show()

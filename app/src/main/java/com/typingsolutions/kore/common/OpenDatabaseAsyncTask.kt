@@ -16,7 +16,7 @@ internal class OpenDatabaseAsyncTask(private val mDatabaseConnection: DatabaseCo
                 mExitCode = 3
             }
         } catch (e: Exception) {
-            // TODO: send extra code for wrong password?
+            // TODO: send extra code for wrong mPasswordTextView?
             mExitCode = 2
         }
 
